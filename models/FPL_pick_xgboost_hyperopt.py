@@ -713,15 +713,15 @@ def objective(inputs):
 
 
 space = {'00': hp.pchoice("00", gws_transfers[0]),
-         '01': hp.pchoice("01", gws_transfers[0]),
-         '10': hp.pchoice("10", gws_transfers[1]),
-         '11': hp.pchoice("11", gws_transfers[1]),
-         '20': hp.pchoice("20", gws_transfers[2]),
-         '21': hp.pchoice("21", gws_transfers[2]),
-         '30': hp.pchoice("30", gws_transfers[3]),
-         '31': hp.pchoice("31", gws_transfers[3]),
-         '40': hp.pchoice("40", gws_transfers[4]),
-         '41': hp.pchoice("41", gws_transfers[4]),
+         '01': hp.pchoice("01", gws_transfers[1]),
+         '10': hp.pchoice("10", gws_transfers[2]),
+         '11': hp.pchoice("11", gws_transfers[3]),
+         '20': hp.pchoice("20", gws_transfers[4]),
+         '21': hp.pchoice("21", gws_transfers[5]),
+         '30': hp.pchoice("30", gws_transfers[6]),
+         '31': hp.pchoice("31", gws_transfers[7]),
+         '40': hp.pchoice("40", gws_transfers[8]),
+         '41': hp.pchoice("41", gws_transfers[9]),
     }
 #initiate by testing no transfers
 trials = generate_trials_to_calculate([{'00': 0, '01': 0,  '10': 0,  '11': 0,  '20': 0, '21': 0,  '30': 0,  '31': 0, '40': 0, '41': 0}])
