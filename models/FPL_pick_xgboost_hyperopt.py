@@ -9,7 +9,7 @@ points_per_game_treshold = -1
 exclude_team = []
 
 #exclude player
-exclude_players = ['D.D.Fofana', 'Zinchenko', 'Archer', 'Wan-Bissaka', 'Schade', 'Olise', 'Yarmoliuk', 'Doku', 'Mbeumo', 'Henry', 'Hickey', 'Zanka', 'Quansah', 'Lascelles', 'Digne', 'Ghoddos', 'D.D.Fofana']
+exclude_players = ['Guéhi', 'Kluivert', 'D.D.Fofana', 'Zinchenko', 'Archer', 'Wan-Bissaka', 'Schade', 'Olise', 'Yarmoliuk', 'Doku', 'Mbeumo', 'Henry', 'Hickey', 'Zanka', 'Quansah', 'Lascelles', 'Digne', 'Ghoddos', 'D.D.Fofana']
 include_players = []
 
 include_minutes = []
@@ -35,7 +35,7 @@ manual_pred = 1
 #                  }
 manual_blanks = {}
 
-string = '{"picks":[{"element":597,"position":1,"selling_price":48,"multiplier":1,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":131,"position":2,"selling_price":50,"multiplier":1,"purchase_price":49,"is_captain":false,"is_vice_captain":false},{"element":506,"position":3,"selling_price":57,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":true},{"element":430,"position":4,"selling_price":66,"multiplier":1,"purchase_price":65,"is_captain":false,"is_vice_captain":false},{"element":396,"position":5,"selling_price":84,"multiplier":2,"purchase_price":84,"is_captain":true,"is_vice_captain":false},{"element":412,"position":6,"selling_price":59,"multiplier":1,"purchase_price":56,"is_captain":false,"is_vice_captain":false},{"element":353,"position":7,"selling_price":77,"multiplier":1,"purchase_price":75,"is_captain":false,"is_vice_captain":false},{"element":362,"position":8,"selling_price":56,"multiplier":1,"purchase_price":54,"is_captain":false,"is_vice_captain":false},{"element":8,"position":9,"selling_price":79,"multiplier":1,"purchase_price":79,"is_captain":false,"is_vice_captain":false},{"element":60,"position":10,"selling_price":85,"multiplier":1,"purchase_price":83,"is_captain":false,"is_vice_captain":false},{"element":343,"position":11,"selling_price":67,"multiplier":1,"purchase_price":66,"is_captain":false,"is_vice_captain":false},{"element":524,"position":12,"selling_price":41,"multiplier":0,"purchase_price":40,"is_captain":false,"is_vice_captain":false},{"element":29,"position":13,"selling_price":55,"multiplier":0,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":369,"position":14,"selling_price":54,"multiplier":0,"purchase_price":54,"is_captain":false,"is_vice_captain":false},{"element":557,"position":15,"selling_price":55,"multiplier":0,"purchase_price":55,"is_captain":false,"is_vice_captain":false}],"chips":[{"status_for_entry":"available","played_by_entry":[],"name":"wildcard","number":1,"start_event":21,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team"},{"status_for_entry":"available","played_by_entry":[],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team"}],"transfers":{"cost":4,"status":"cost","limit":2,"made":0,"bank":78,"value":955}}'
+string = '{"picks":[{"element":597,"position":1,"selling_price":48,"multiplier":1,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":506,"position":2,"selling_price":57,"multiplier":2,"purchase_price":55,"is_captain":true,"is_vice_captain":false},{"element":430,"position":3,"selling_price":66,"multiplier":1,"purchase_price":65,"is_captain":false,"is_vice_captain":false},{"element":29,"position":4,"selling_price":55,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":630,"position":5,"selling_price":50,"multiplier":1,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":396,"position":6,"selling_price":84,"multiplier":1,"purchase_price":84,"is_captain":false,"is_vice_captain":false},{"element":412,"position":7,"selling_price":58,"multiplier":1,"purchase_price":56,"is_captain":false,"is_vice_captain":false},{"element":353,"position":8,"selling_price":77,"multiplier":1,"purchase_price":75,"is_captain":false,"is_vice_captain":true},{"element":362,"position":9,"selling_price":56,"multiplier":1,"purchase_price":54,"is_captain":false,"is_vice_captain":false},{"element":60,"position":10,"selling_price":85,"multiplier":1,"purchase_price":83,"is_captain":false,"is_vice_captain":false},{"element":343,"position":11,"selling_price":67,"multiplier":1,"purchase_price":66,"is_captain":false,"is_vice_captain":false},{"element":524,"position":12,"selling_price":41,"multiplier":0,"purchase_price":40,"is_captain":false,"is_vice_captain":false},{"element":369,"position":13,"selling_price":54,"multiplier":0,"purchase_price":54,"is_captain":false,"is_vice_captain":false},{"element":8,"position":14,"selling_price":79,"multiplier":0,"purchase_price":79,"is_captain":false,"is_vice_captain":false},{"element":131,"position":15,"selling_price":50,"multiplier":0,"purchase_price":49,"is_captain":false,"is_vice_captain":false}],"chips":[{"status_for_entry":"available","played_by_entry":[],"name":"wildcard","number":1,"start_event":21,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team"},{"status_for_entry":"available","played_by_entry":[],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team"}],"transfers":{"cost":4,"status":"cost","limit":2,"made":0,"bank":83,"value":948}}'
 
 
 #set to non-zero to override substitute price
@@ -596,7 +596,7 @@ for player_out in slim_elements_df.iterrows():
             #check if not picked, not same the other player, any predictions >0 and same element
             if not player_in[1]['picked'] and sum(player_in[1].prediction) > 0 and  player_in[1].element_type == player_out[1].element_type:
                 
-                preds.append(predictions[player_in[0]] - predictions[player_out[0]])
+                preds.append(np.cumsum((predictions[player_in[0]] - predictions[player_out[0]])[::-1])[::-1])
  
 
 
@@ -613,7 +613,7 @@ else:
 sum_pred_main = np.sum(preds, axis=0) + no_main_gain
 
 
-hit_ratio = 0.5**(1/5)
+hit_ratio = 0.25**(1/5)
 no_hit_gain = (np.sum(preds, axis=0)*hit_ratio)/(1-hit_ratio)
 sum_pred_hit = np.sum(preds, axis=0) + no_hit_gain
     
@@ -681,7 +681,7 @@ def objective(inputs):
             # if sum(team) != 15:               
             #     print('overlap')
                 
-            return {'loss': np.inf, 'status': STATUS_OK }
+            return {'loss': np.nan, 'status': STATUS_OK }
     
         
     team = inputs[1].copy()
@@ -707,24 +707,22 @@ def objective(inputs):
         
         team_points.append(find_team_points(team_positions, gw_prediction))
         
-    print(sum(team_points))
-            
+    #print(sum(team_points))
+        
     return {'loss': -sum(team_points), 'status': STATUS_OK }
+
+
 
 
 space = {'00': hp.pchoice("00", gws_transfers[0]),
          '01': hp.pchoice("01", gws_transfers[1]),
          '10': hp.pchoice("10", gws_transfers[2]),
-         '11': hp.pchoice("11", gws_transfers[3]),
          '20': hp.pchoice("20", gws_transfers[4]),
-         '21': hp.pchoice("21", gws_transfers[5]),
-         '30': hp.pchoice("30", gws_transfers[6]),
-         '31': hp.pchoice("31", gws_transfers[7]),
-         '40': hp.pchoice("40", gws_transfers[8]),
-         '41': hp.pchoice("41", gws_transfers[9]),
+         '30': [np.nan, np.nan],
+         '40':[np.nan, np.nan],
     }
 #initiate by testing no transfers
-trials = generate_trials_to_calculate([{'00': 0, '01': 0,  '10': 0,  '11': 0,  '20': 0, '21': 0,  '30': 0,  '31': 0, '40': 0, '41': 0}])
+trials = generate_trials_to_calculate([{'00': 0, '01': 0, '10': 0,  '20': 0,  '30': 0,  '40': 0}])
 
 
 team = slim_elements_df['picked'].values.copy()
@@ -749,6 +747,8 @@ for i in range(len(trials.trials)+batch_size, max_evals + 1, batch_size):
         transfer = transfer_list[transfer_ind][1]
         if not np.isnan(transfer[0]):
             print('GW', gw, slim_elements_df.loc[transfer[1], 'web_name'], 'for', slim_elements_df.loc[transfer[0], 'web_name'])
+            print(predictions[transfer[1]])
+            print(predictions[transfer[0]])
         
         
         
@@ -917,9 +917,9 @@ for i in range(len(trials.trials)+batch_size, max_evals + 1, batch_size):
 # my_players_df['prediction'] = my_players_df['prediction'].apply(sum)
 # picked_players = slim_elements_df[slim_elements_df['picked'] == True]
 
-# #print original team
-# sort_list = np.argsort(my_players_df['points_1st_gw'])
-# print(my_players_df.iloc[sort_list][{'web_name', 'points_1st_gw', 'prediction', 'yellow_cards'}])
+#print original team
+sort_list = np.argsort(my_players_df['points_1st_gw'])
+print(my_players_df.iloc[sort_list][{'web_name', 'points_1st_gw', 'yellow_cards'}])
 
 # print(picked_players[list({'web_name', 'prediction', 'now_cost', 'points_1st_gw', 'yellow_cards'})])
 
