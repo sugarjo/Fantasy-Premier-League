@@ -20,16 +20,16 @@ rounds_to_value = 4
 #free_transfers = rounds_to_value + 1
 free_transfers = 2
 
-continue_optimize = True
+continue_optimize = False
 
             
 num_transfers = int((free_transfers + rounds_to_value))
 
 
 
-skip_gw = []
+skip_gw = [29]
 
-force_90 = []
+force_90 = ['Haaland', 'De Bruyne', 'Salah']
 
 manual_pred = 1
 
@@ -37,7 +37,7 @@ manual_pred = 1
 #                  }
 manual_blanks = {}
 
-string = '{"picks":[{"element":597,"position":1,"selling_price":48,"multiplier":1,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":506,"position":2,"selling_price":56,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":430,"position":3,"selling_price":66,"multiplier":1,"purchase_price":65,"is_captain":false,"is_vice_captain":false},{"element":369,"position":4,"selling_price":54,"multiplier":1,"purchase_price":54,"is_captain":false,"is_vice_captain":false},{"element":630,"position":5,"selling_price":50,"multiplier":1,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":396,"position":6,"selling_price":84,"multiplier":1,"purchase_price":84,"is_captain":false,"is_vice_captain":false},{"element":412,"position":7,"selling_price":58,"multiplier":1,"purchase_price":56,"is_captain":false,"is_vice_captain":false},{"element":353,"position":8,"selling_price":77,"multiplier":2,"purchase_price":75,"is_captain":true,"is_vice_captain":false},{"element":8,"position":9,"selling_price":79,"multiplier":1,"purchase_price":79,"is_captain":false,"is_vice_captain":false},{"element":60,"position":10,"selling_price":85,"multiplier":1,"purchase_price":83,"is_captain":false,"is_vice_captain":false},{"element":343,"position":11,"selling_price":66,"multiplier":1,"purchase_price":66,"is_captain":false,"is_vice_captain":true},{"element":524,"position":12,"selling_price":41,"multiplier":0,"purchase_price":40,"is_captain":false,"is_vice_captain":false},{"element":362,"position":13,"selling_price":56,"multiplier":0,"purchase_price":54,"is_captain":false,"is_vice_captain":false},{"element":29,"position":14,"selling_price":55,"multiplier":0,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":131,"position":15,"selling_price":49,"multiplier":0,"purchase_price":49,"is_captain":false,"is_vice_captain":false}],"chips":[{"status_for_entry":"available","played_by_entry":[],"name":"wildcard","number":1,"start_event":21,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team"},{"status_for_entry":"available","played_by_entry":[],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team"}],"transfers":{"cost":4,"status":"cost","limit":2,"made":0,"bank":83,"value":944}}'
+string = '{"picks":[{"element":597,"position":1,"selling_price":48,"multiplier":1,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":29,"position":2,"selling_price":55,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":430,"position":3,"selling_price":66,"multiplier":1,"purchase_price":65,"is_captain":false,"is_vice_captain":false},{"element":369,"position":4,"selling_price":54,"multiplier":1,"purchase_price":54,"is_captain":false,"is_vice_captain":false},{"element":630,"position":5,"selling_price":50,"multiplier":1,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":362,"position":6,"selling_price":56,"multiplier":1,"purchase_price":54,"is_captain":false,"is_vice_captain":false},{"element":412,"position":7,"selling_price":58,"multiplier":1,"purchase_price":56,"is_captain":false,"is_vice_captain":false},{"element":353,"position":8,"selling_price":77,"multiplier":3,"purchase_price":75,"is_captain":true,"is_vice_captain":false},{"element":117,"position":9,"selling_price":82,"multiplier":1,"purchase_price":82,"is_captain":false,"is_vice_captain":false},{"element":60,"position":10,"selling_price":85,"multiplier":1,"purchase_price":83,"is_captain":false,"is_vice_captain":false},{"element":343,"position":11,"selling_price":66,"multiplier":1,"purchase_price":66,"is_captain":false,"is_vice_captain":true},{"element":524,"position":12,"selling_price":41,"multiplier":0,"purchase_price":40,"is_captain":false,"is_vice_captain":false},{"element":396,"position":13,"selling_price":84,"multiplier":0,"purchase_price":84,"is_captain":false,"is_vice_captain":false},{"element":131,"position":14,"selling_price":49,"multiplier":0,"purchase_price":49,"is_captain":false,"is_vice_captain":false},{"element":506,"position":15,"selling_price":56,"multiplier":0,"purchase_price":55,"is_captain":false,"is_vice_captain":false}],"chips":[{"status_for_entry":"unavailable","played_by_entry":[],"name":"wildcard","number":1,"start_event":21,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"unavailable","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"unavailable","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team"},{"status_for_entry":"active","played_by_entry":[25],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team"}],"transfers":{"cost":4,"status":"cost","limit":2,"made":1,"bank":80,"value":947}}'
 
 
 #set to non-zero to override substitute price
@@ -163,34 +163,41 @@ df_gw['running_minutes'] = np.nan
     
 # Calculate rolling values not including the observaiton
 for player in df_gw['element'].unique():
-    selected_ind = df_gw['element'] == player                    
+    
+    slim_ind = slim_elements_df['id'] == player
+    name = slim_elements_df.loc[slim_ind, 'web_name'].values[0]
+    
+    if name in force_90:
+        selected_ind = (df_gw['element'] == player) & (df_gw['minutes'] > 0)
+    else:    
+        selected_ind = df_gw['element'] == player
+        
     player_df = df_gw[selected_ind]
     player_df.set_index('kickoff_time', inplace=True)
-    form = player_df['total_points'].rolling('30D').mean()
-    xG = player_df['expected_goals'].rolling('30D').mean()
-    xA = player_df['expected_assists'].rolling('30D').mean()
-    xGI = player_df['expected_goal_involvements'].rolling('30D').mean()
-    xGC = player_df['expected_goals_conceded'].rolling('30D').mean()
-    xP = player_df['xP'].rolling('30D').mean()
-    points_per_game =  player_df['total_points'].cumsum()/ (player_df['round'])
-    ict = player_df['ict_index'].rolling('30D').mean()
-    influence = player_df['influence'].rolling('30D').mean()
-    threat = player_df['threat'].rolling('30D').mean()
-    creativity = player_df['creativity'].rolling('30D').mean()
+    
+    if name in force_90:
+        minutes = player_df['minutes'].rolling('30D').mean().values
+        adjust = 90/minutes
+    else:    
+        minutes = player_df['minutes'].rolling('30D').mean().values
+        adjust = 1  
+    
+    
+    form = player_df['total_points'].rolling('30D').mean()*adjust
+    xG = player_df['expected_goals'].rolling('30D').mean()*adjust
+    xA = player_df['expected_assists'].rolling('30D').mean()*adjust
+    xGI = player_df['expected_goal_involvements'].rolling('30D').mean()*adjust
+    xGC = player_df['expected_goals_conceded'].rolling('30D').mean()*adjust
+    xP = player_df['xP'].rolling('30D').mean()*adjust
+    points_per_game =  player_df['total_points'].cumsum()/ (player_df['round'])*adjust
+    ict = player_df['ict_index'].rolling('30D').mean()*adjust
+    influence = player_df['influence'].rolling('30D').mean()*adjust
+    threat = player_df['threat'].rolling('30D').mean()*adjust
+    creativity = player_df['creativity'].rolling('30D').mean()*adjust
     bps = player_df['bps'].rolling('30D').mean()
-    minutes = player_df['minutes'].rolling('30D').mean().values
+    
     
     name_ind = np.where(slim_elements_df['id'] == player)[0][-1]
-    #average of two last matches
-    minutes_2g = np.mean(player_df['minutes'][-1:])
-    if minutes_2g > 60 or slim_elements_df.iloc[name_ind]['web_name'] in force_90:
-        selected = player_df['minutes'] > 0
-        use_minutes = np.max([np.mean(player_df['minutes'][selected]), player_df['minutes'].rolling('30D').mean().values[-1]])
-        minutes[-1] = use_minutes
-
-        if slim_elements_df.iloc[name_ind]['web_name'] in force_90:
-            print(player, slim_elements_df.iloc[name_ind]['web_name'], use_minutes)
-        
         
     #points per played game
     result = np.zeros(len(player_df['total_points'])+1)  # initialize result array
@@ -615,7 +622,7 @@ else:
 sum_pred_main = np.sum(preds, axis=0) + no_main_gain
 
 
-hit_ratio = 0.10**(1/5)
+hit_ratio = 0.10**(1/4)
 no_hit_gain = (np.sum(preds, axis=0)*hit_ratio)/(1-hit_ratio)
 sum_pred_hit = np.sum(preds, axis=0) + no_hit_gain
     
@@ -637,12 +644,16 @@ for i in range(5):
                 #check if not picked, not same the other player, any predictions >0 and same element
                 if not player_in[1]['picked'] and sum(player_in[1].prediction) > 0 and  player_in[1].element_type == player_out[1].element_type:
                     
+                    #remove no increase
                     if (i == 4 and preds[ind, i] == 0) or i < 4 and (preds[ind, i] == preds[ind, i+1]):
                         ind += 1
                         continue
                     
                     gw_transfers_main.append((preds[ind, i]/sum_pred_main[i], [player_out[0], player_in[0]]))
-                    gw_transfers_hit.append((preds[ind, i]/sum_pred_hit[i], [player_out[0], player_in[0]]))
+                   
+                    #remove no 4p increase
+                    if (i == 4 and preds[ind, i] >= 0) or i < 4 and (preds[ind, i] >= (preds[ind, i+1] + 4)):                  
+                        gw_transfers_hit.append((preds[ind, i]/sum_pred_hit[i], [player_out[0], player_in[0]]))
                     
                     ind += 1
                     
@@ -689,7 +700,7 @@ def objective(inputs):
                 
             return {'loss': np.nan, 'status': STATUS_OK }
     
-        
+    # print('ok')   
     team = inputs[1].copy()
     
     team_points = []
@@ -717,16 +728,17 @@ def objective(inputs):
         
     return {'loss': -sum(team_points), 'status': STATUS_OK }
 
+lists = [gws_transfers[1],
+         gws_transfers[3], 
+         gws_transfers[5],
+         gws_transfers[5]]
 
 
 
-space = {'00': hp.pchoice("00", gws_transfers[1]),
-         '01': hp.pchoice("01", gws_transfers[1]),
-         '10': [np.nan, np.nan],
-         '20': [np.nan, np.nan],
-         '30': hp.pchoice("30", gws_transfers[7]),
-         '31': hp.pchoice("31", gws_transfers[7]),
-         '40':[np.nan, np.nan],
+space = {'00': hp.pchoice("00", lists[0]),
+         '10': hp.pchoice("10", lists[1]),
+         '20': hp.pchoice("20", lists[2]),
+         '21': hp.pchoice("21", lists[3]),
     }
 
 
@@ -741,9 +753,9 @@ if continue_optimize:
         trials = pickle.load(f)
 else:
     #initiate by testing no transfers
-    trials = generate_trials_to_calculate([{'00': 0, '01': 0, '10': 0,  '20': 0,  '30': 0, '31': 0, '40': 0}])
+    trials = generate_trials_to_calculate([{'00': 0, '10': 0,  '20': 0,  '21': 0}])
 
-for i in range(len(trials.trials)+batch_size, max_evals + 1, batch_size):
+for i in range(len(trials.trials)+batch_size, max_evals+1, batch_size):
     best_transfers = fmin(fn = objective,
                     space = [space, team],
                     algo = tpe.suggest,
@@ -755,12 +767,13 @@ for i in range(len(trials.trials)+batch_size, max_evals + 1, batch_size):
     
     for transfer_list_ind, (gw, transfer_ind) in enumerate(best_transfers.items()):
         
-        transfer_list = gws_transfers[int(np.floor(transfer_list_ind/2))]
-        transfer = transfer_list[transfer_ind][1]
-        if not np.isnan(transfer[0]):
-            print('GW', gw, slim_elements_df.loc[transfer[1], 'web_name'], 'for', slim_elements_df.loc[transfer[0], 'web_name'])
-            print(predictions[transfer[1]])
-            print(predictions[transfer[0]])
+        if not lists[transfer_list_ind] ==[np.nan, np.nan]:
+            transfer_list = lists[transfer_list_ind]
+            transfer = transfer_list[transfer_ind][1]
+            if not np.isnan(transfer[0]):
+                print('GW', gw, slim_elements_df.loc[transfer[1], 'web_name'], 'for', slim_elements_df.loc[transfer[0], 'web_name'])
+                print(predictions[transfer[1]])
+                print(predictions[transfer[0]])
         
         
         
