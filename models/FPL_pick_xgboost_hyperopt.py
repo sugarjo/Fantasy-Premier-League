@@ -63,7 +63,7 @@ from datetime import datetime
 from joblib import Parallel, delayed
 import os
 from hyperopt.pyll import scope
-from hyperopt import STATUS_OK, Trials, fmin, hp, tpe, rand, SparkTrials
+from hyperopt import STATUS_OK, STATUS_FAIL, space_eval, Trials, fmin, hp, tpe, rand, SparkTrials
 from hyperopt.early_stop import no_progress_loss
 from hyperopt.fmin import generate_trials_to_calculate
 import random
@@ -674,23 +674,33 @@ for i in range(rounds_to_value+1):
     gws_transfers.append([(no_hit_gain[i]/sum_pred_hit[i], [np.nan, np.nan])] + gw_transfers_hit)
     
 
-def objective(inputs):
+def objective(inputs):      
+        
+    params = inputs[0]
     
-    space = inputs[0]
+    # #check if allready tested
+    # if len(trials.trials)>1:
+    #     for x in trials.trials[:-1]:
+    #         space_point_index = dict([(key,value[0]) for key,value in x['misc']['vals'].items() if len(value)>0])
+    #         if params == space_eval(space, space_point_index):
+    #             loss = x['result']['loss']
+    #             print('already tested')
+                
+    #             return {'loss': None, 'status': STATUS_FAIL}
+        
     team = inputs[1].copy()
     
     #loop through the transfers and check if they are possible
     
     #identify which gw each transfer belongs to
     gws = []
-    for key, transfer in space.items():
+    for key, transfer in params.items():
         gws.append(int(key[0]))
         
     #loop the gameweeks        
     for gw in np.unique(gws):
         
-        for key, transfer in space.items():
-            
+        for key, transfer in params.items():        
             if int(key[0]) == gw and not np.isnan(transfer[0]):
                 team[transfer[0]] = False
                 team[transfer[1]] = True
@@ -710,8 +720,7 @@ def objective(inputs):
             #     print('team')
             # if sum(team) != 15:               
             #     print('overlap')
-                
-            return {'loss': np.nan, 'status': STATUS_OK }
+            return {'loss': None, 'status': STATUS_FAIL}
     
     # print('ok')   
     team = inputs[1].copy()
@@ -721,7 +730,7 @@ def objective(inputs):
     for gw in np.unique(gws):
         
         #loop and do the transfers
-        for key, transfer in space.items():
+        for key, transfer in params.items():
             
             if int(key[0]) == gw and not np.isnan(transfer[0]):
                 team[transfer[0]] = False
@@ -736,8 +745,6 @@ def objective(inputs):
         team_positions = slim_elements_df.loc[team, 'element_type'].values
         
         team_points.append(find_team_points(team_positions, gw_prediction))
-        
-    #print(sum(team_points))
         
     return {'loss': -sum(team_points), 'status': STATUS_OK }
 
@@ -764,7 +771,7 @@ if continue_optimize:
         trials = pickle.load(f)
 else:
     #initiate by testing no transfers
-    trials = generate_trials_to_calculate([{'00': 0, '10': 0,  '20': 0}])
+    trials = generate_trials_to_calculate([{'00': 0, '10': 0,  '20': 0}, {'00': 32, '10': 2267, '20': 986}])
 
 for i in range(len(trials.trials)+batch_size, max_evals+1, batch_size):
     best_transfers = fmin(fn = objective,
