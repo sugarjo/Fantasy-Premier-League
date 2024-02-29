@@ -16,7 +16,7 @@ include_minutes = []
 do_not_exclude_players = []
 
 rounds_to_reset = 99999
-rounds_to_value = 4
+rounds_to_value = 1
 #free_transfers = rounds_to_value + 1
 free_transfers = 2
 
@@ -595,11 +595,6 @@ predictions = np.stack(slim_elements_df.prediction)
 preds = []
 
 for player_out in slim_elements_df.iterrows():
-    
-    #make sure that excluded players are transfered out.
-    if i==0 and len(exclude_players) > 0:
-        if not player_out[1]['web_name'] in exclude_players:
-            continue
                 
     #check if picked
     if player_out[1]['picked']:
@@ -607,7 +602,7 @@ for player_out in slim_elements_df.iterrows():
         for player_in in slim_elements_df.iterrows():
             
             #check if not picked, not same the other player, any predictions >0 and same element
-            if not player_in[1]['picked'] and (any(player_in[1].prediction > player_out[1].prediction) or player_in[1].now_cost < player_out[1].now_cost) and  player_in[1].element_type == player_out[1].element_type:
+            if not player_in[1]['picked'] and sum(player_in[1].prediction) > 0 and (any(player_in[1].prediction > player_out[1].prediction) or player_in[1].now_cost < player_out[1].now_cost) and  player_in[1].element_type == player_out[1].element_type:
                 
                 preds.append(np.cumsum((predictions[player_in[0]] - predictions[player_out[0]])[::-1])[::-1])
  
@@ -641,24 +636,28 @@ for i in range(rounds_to_value+1):
     ind = 0
     for player_out in slim_elements_df.iterrows():
         #check if picked
-        if player_out[1]['picked']:
-            
-            #make sure that excluded players are transfered out.
-            if i==0 and len(exclude_players) > 0:
-                if not player_out[1]['web_name'] in exclude_players:
-                    continue
-                    
+        if player_out[1]['picked']:                    
             
             for player_in in slim_elements_df.iterrows():
                 
                 #check if not picked, not same the other player, any predictions >0 and same element
-                if not player_in[1]['picked'] and sum(player_in[1].prediction) > 0 and  player_in[1].element_type == player_out[1].element_type:
+                if not player_in[1]['picked'] and sum(player_in[1].prediction) > 0 and (any(player_in[1].prediction > player_out[1].prediction) or player_in[1].now_cost < player_out[1].now_cost) and  player_in[1].element_type == player_out[1].element_type:
                     
+                    if all(player_in[1].prediction[i:] < player_out[1].prediction[i:]) and (player_in[1].now_cost > player_out[1].now_cost):
+                        ind += 1
+                        continue
+                    
+                    
+                    #make sure that excluded players are transfered out.
+                    if i==0 and len(exclude_players) > 0:
+                        if not player_out[1]['web_name'] in exclude_players:
+                            ind += 1
+                            continue
+                        
                     #remove no increase
                     if (i == rounds_to_value and preds[ind, i] == 0) or i < rounds_to_value and (preds[ind, i] == preds[ind, i+1]):
                         ind += 1
                         continue
-                    
                     
                     gw_transfers_main.append((preds[ind, i]/sum_pred_main[i], [player_out[0], player_in[0]]))
                    
@@ -675,6 +674,8 @@ for i in range(rounds_to_value+1):
 def objective(inputs):      
         
     params = inputs[0]
+    
+    # print(params)
     
     # #check if allready tested
     # if len(trials.trials)>1:
@@ -746,14 +747,10 @@ def objective(inputs):
         
     return {'loss': -sum(team_points), 'status': STATUS_OK }
 
-lists = [gws_transfers[0],
-         gws_transfers[2]]
 
-
-
-space = {'00': hp.pchoice("00", lists[0]),
-         '10': hp.pchoice("10", lists[1]),
-         '11': hp.pchoice("20", lists[1]),
+space = {'00': hp.pchoice("00", gws_transfers[0]),
+         '10': hp.pchoice("10", gws_transfers[2]),
+         '11': hp.pchoice("11", gws_transfers[2]),
     }
 
 
@@ -780,15 +777,15 @@ for i in range(len(trials.trials)+batch_size, max_evals+1, batch_size):
     filename = r'C:\Users\jorgels\Git\Fantasy-Premier-League\models\transfers.pkl'
     pickle.dump(trials, open(filename, "wb"))
     
-    for transfer_list_ind, (gw, transfer_ind) in enumerate(best_transfers.items()):
+    best_transfer_ind = space_eval(space, best_transfers)
+    
+    for gw, transfer_ind in best_transfer_ind.items():
         
-        if not lists[transfer_list_ind] ==[np.nan, np.nan]:
-            transfer_list = lists[transfer_list_ind]
-            transfer = transfer_list[transfer_ind][1]
-            if not np.isnan(transfer[0]):
-                print('GW', gw, slim_elements_df.loc[transfer[1], 'web_name'], 'for', slim_elements_df.loc[transfer[0], 'web_name'])
-                print(predictions[transfer[1]])
-                print(predictions[transfer[0]])
+        if not transfer_ind == (np.nan, np.nan):
+
+            print('GW', gw, slim_elements_df.loc[transfer_ind[1], 'web_name'], 'for', slim_elements_df.loc[transfer_ind[0], 'web_name'])
+            print(predictions[transfer_ind[1]])
+            print(predictions[transfer_ind[0]])
         
         
         
