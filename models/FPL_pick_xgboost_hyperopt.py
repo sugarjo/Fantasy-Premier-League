@@ -788,19 +788,27 @@ while True:
     selected = np.isnan(prob)
     prob[selected] = 0
     
-    parallel_results = Parallel(n_jobs=-1)(delayed(check_transfers)(i) for i in range(len(checked_transfers), len(checked_transfers)+6))
+    parallel_results = Parallel(n_jobs=-1)(delayed(check_transfers)(i) for i in range(len(checked_transfers), len(checked_transfers)+5))
 
     #store data for later
     #organize_output
-    num_teams = 0
+    iteration_teams = []
     for par in parallel_results:
         checked_points = checked_points + par[0]
         checked_transfers = checked_transfers + par[1]
         probabilities += par[2]
         counts += par[3]
-        num_teams += len(par[0])
+        iteration_teams = iteration_teams + par[1]
+     
+    a= np.array(iteration_teams)
+    b= np.unique(a, axis=0)
         
-    print('Checked teams: ', num_teams, len(checked_transfers))
+    print('This round: ', len(iteration_teams), b.shape[0])
+    a= np.array(checked_transfers)
+    b= np.unique(a, axis=0)
+    
+    
+    print('Checked teams: ', len(iteration_teams), len(checked_transfers), b.shape[0])
     
     #print results
     best_ind = np.nanargmax(checked_points)
@@ -819,10 +827,13 @@ while True:
     print('points: ', checked_points[best_ind]-baseline)
     print('\n')
     
+    best_p = []
     for transfer_ind in range(len(best_transfer)):
         
         max_ind = np.nanargmax(p[transfer_ind, :])
         transfer = transfers[max_ind]
+        
+        best_p.append(max_ind)
         
         if not transfer == [np.nan, np.nan]:    
             print('trans', transfer_ind, slim_elements_df.loc[transfer[0], 'web_name'], 'for', slim_elements_df.loc[transfer[1], 'web_name'],  p[transfer_ind, max_ind], counts[transfer_ind, max_ind])
@@ -831,179 +842,42 @@ while True:
         else:
             print('trans', 'no trans', p[transfer_ind, max_ind], counts[transfer_ind, max_ind])
     print('\n')
-
-
-
-
+    
+    # if not best_p in checked_transfers:
+       
+    #    putative_transfers = {'00': transfers[best_p[0]],
+    #                          '01': transfers[best_p[1]],
+    #              '10': transfers[best_p[2]]
+    #         }
         
+    #    checked_points.append(objective(putative_transfers))
+    #    checked_transfers.append(best_p)
 
-# #add variable to see when a player was added to the team
-# slim_elements_df['iterations'] = 0
-
-# #get those that we have picked not including substitutes.
-
-
-# check_again = True
-
-# total_price = 1
-
-# def delta_points_per_price(slim_elements_df, my_player, include_players, exclude_players, num_team, total_money, total_price, num_transfers):
-    
-#     #if picked_continue
-#     web_name_my_player = slim_elements_df.loc[my_player, 'web_name']
-    
-#     #trade out
-#     slim_elements_df.loc[my_player, 'picked'] = False
-    
-#     cost_my_player = slim_elements_df.loc[my_player, 'now_cost']
-    
-#     prediction_my_player = slim_elements_df.loc[my_player, 'prediction'] 
-    
-#     position_my_player = slim_elements_df.loc[my_player, 'element_type'] 
-    
-#     team_my_player = slim_elements_df.loc[my_player, 'team'] 
-    
-#     cost_my_player = slim_elements_df.loc[my_player, 'now_cost']
-    
-#     # initiate matrix that will be used to get most valuable transfer. 11 players and the price per point increase for all possible transfers of that player. set all to zeros to begin with.
-#     delta_price = np.zeros(slim_elements_df.shape[0]) + np.inf
-    
-#     for putative_player in range(slim_elements_df.shape[0]):
-        
-#         #if so do ot allow original player to be transfered out for a new player
-#         if sum(slim_elements_df['picked'] != slim_elements_df['original_player'])/2 >= num_transfers:
-#             if slim_elements_df.loc[my_player, 'original_player']:
-#                 if not slim_elements_df.loc[putative_player, 'original_player']:
-#                     continue
-                
-#             if not slim_elements_df.loc[my_player, 'original_player']:
-#                 if slim_elements_df.loc[putative_player, 'original_player']:
-#                     continue
-                    
-        
-#         #if not already picked and same category
-#         if not slim_elements_df.loc[putative_player, 'picked'] and position_my_player == slim_elements_df.loc[putative_player, 'element_type']:
-            
-#             prediction_putative_player = slim_elements_df.loc[putative_player, 'prediction'] 
-            
-#             team_putative_player = slim_elements_df.loc[putative_player, 'team'] 
-            
-#             cost_putative_player = slim_elements_df.loc[putative_player, 'now_cost'] 
-            
-#             web_name_putative_player = slim_elements_df.loc[putative_player, 'web_name']
-                               
-#             #if any increasing points or team is full and we have money
-#             if any(prediction_putative_player > prediction_my_player) and (num_team[team_putative_player-1]<3 or team_putative_player==team_my_player) and (total_money-total_price+cost_my_player-cost_putative_player) >= 0 and web_name_putative_player not in exclude_players:
-                
-#                 #trade in
-#                 slim_elements_df.loc[putative_player, 'picked'] = True
-                
-#                 potential_team_points = find_team_points(slim_elements_df[slim_elements_df['picked'] == True])
-                
-#                 #trade out 
-#                 slim_elements_df.loc[putative_player, 'picked'] = False
-                
-#                 cost_potential_player = slim_elements_df.loc[putative_player, 'now_cost']
-#                 #calculate price per point increase for each possible transfer of this player
-#                 if web_name_putative_player in include_players or web_name_my_player in exclude_players:
-#                     delta_price[putative_player] = -1000
-#                 elif potential_team_points == selected_team_points and  cost_potential_player < cost_my_player:
-#                     delta_price[putative_player] = (cost_potential_player - cost_my_player)
-#                 elif potential_team_points > selected_team_points:
-#                     delta_price[putative_player] = (cost_potential_player - cost_my_player)/(potential_team_points - selected_team_points)*100000
-    
-#     return delta_price
-
-# #loop until there are no more improvement (delta_points = 0) or that we cannot afford any changes
-# while check_again and total_price < total_money:
-    
-#     picked_players = slim_elements_df[slim_elements_df['picked'] == True]
-#     selected_team_points =  find_team_points(picked_players)
-           
-#     total_price = sum(picked_players['now_cost'])
-    
-#     print('\n', int(sum(slim_elements_df['iterations'])/15), total_money-total_price, selected_team_points)
-    
-#     #testable players are my players and is not in include players (probably to save time)
-#     testable_players = np.where(slim_elements_df['picked'] & ~slim_elements_df['web_name'].isin(include_players))[0]
-
-#     #fill out delta points. loop through all of my players
-#     results = Parallel(n_jobs=-1)(delayed(delta_points_per_price)(slim_elements_df, my_player, include_players, exclude_players, num_team, total_money, total_price, num_transfers) for my_player in testable_players)
-    
-#     # initiate matrix that will be used to get most valuable transfer. 11 players and the price per point increase for all possible transfers of that player. set all to zeros to begin with.
-#     delta_price = np.zeros([slim_elements_df.shape[0], slim_elements_df.shape[0]]) + np.inf
-    
-#     #organize output
-    
-#     #columns are my players and rows are possible transfers in
-#     for ind, my_player in enumerate(testable_players):
-#         # initiate matrix that will be used to get most valuable transfer. 11 players and the price per point increase for all possible transfers of that player. set all to zeros to begin with.
-#         delta_price[:, my_player] = results[ind]
-    
-            
-#     #continue if there are any transfers that will improve points return
-#     if np.min(delta_price) < np.inf:
-#         #find index of max valuable transfer
-        
-#         #if no more transfers. do not allow transfer out of original players. divide by two since the algo picks both diff players out and in
-#         if sum(slim_elements_df['picked'] != slim_elements_df['original_player'])/2 >= num_transfers:
-#             print('no more transfers:', sum(slim_elements_df['picked'] != slim_elements_df['original_player'])/2)
-#             # mesh_grid = np.ix_(~slim_elements_df['original_player'], slim_elements_df['original_player'])
-#             # delta_price[mesh_grid] = np.inf
-            
-#             # max_single = np.where(delta_price  == np.min(delta_price))
-            
-#             # own_out_mesh = np.ix_(~slim_elements_df[~'original_player'], slim_elements_df['original_player'])
-#             # own_in_mesh = np.ix_(~slim_elements_df['original_player'], ~slim_elements_df['original_player'])
-            
-#             # #these two must be combined
-#             # min_double1 = np.min(delta_price[own_out_mesh]) + np.max(delta_price[own_out_mesh])
-            
-#         else:
-#             #single transfer
-#             print('more transfers:', sum(slim_elements_df['picked'] != slim_elements_df['original_player'])/2)
-        
-        
-#         max_index = np.where(delta_price  == np.min(delta_price))
-
-#         #exchange players (row is player in, coloumn is player out)
-#         index_player_out = max_index[1][0]
-#         index_player_in = max_index[0][0]
-
-#         team_out = slim_elements_df['team'].iloc[index_player_out]
-#         position_out = slim_elements_df['element_type'].iloc[index_player_out]
-
-#         team_in = slim_elements_df['team'].iloc[index_player_in]
-#         position_in = slim_elements_df['element_type'].iloc[index_player_in]
-
-#         #set player as (not) selected
-#         slim_elements_df.loc[index_player_in, 'picked'] = True
-#         slim_elements_df.loc[index_player_out, 'picked'] = False
-
-#         #increase/decrease selected position
-#         num_position[position_in - 1] = num_position[position_in - 1] + 1
-#         num_position[position_out - 1] = num_position[position_out - 1] - 1
-
-#         #increase/decrease selected team
-#         num_team[team_in - 1] = num_team[team_in - 1] + 1
-#         num_team[team_out - 1] = num_team[team_out - 1] - 1
-
-#         # add to see how many iterations a player is in team
-#         slim_elements_df.loc[index_player_in, 'iterations'] = 0
-#         slim_elements_df.loc[slim_elements_df['picked'], 'iterations'] = slim_elements_df.loc[slim_elements_df['picked'], 'iterations'] + 1
-            
-#         print(slim_elements_df.loc[index_player_in, 'web_name'] + ' for ' + slim_elements_df.loc[index_player_out, 'web_name'])
-#     else:
-#         check_again = False
-
-
-# slim_elements_df['prediction'] = np.sum(original_prediction, axis=1)
-# my_players_df['prediction'] = my_players_df['prediction'].apply(sum)
-# picked_players = slim_elements_df[slim_elements_df['picked'] == True]
 
 #print original team
 sort_list = np.argsort(my_players_df['points_1st_gw'])
 print(my_players_df.iloc[sort_list][{'web_name', 'points_1st_gw', 'yellow_cards'}])
+
+
+max_points = np.nanmax(checked_points)
+max_ind = np.where(checked_points == max_points)
+
+for ind in max_ind[0]:
+    best_transfer =  checked_transfers[ind]
+    for gw, transfer_ind in zip(no_transfers.items(), best_transfer):
+        
+        transfer = transfers[transfer_ind]
+        
+        if not transfer == [np.nan, np.nan]:
+    
+            print('GW', gw[0], slim_elements_df.loc[transfer[0], 'web_name'], 'for', slim_elements_df.loc[transfer[1], 'web_name'], 'yellow cards: ', slim_elements_df.loc[transfer[1], 'yellow_cards'])
+            print(predictions[transfer[0], :])
+            print(predictions[transfer[1], :])
+    
+    print('points: ', checked_points[best_ind]-baseline)
+    print('\n')
+
+
 
 # print(picked_players[list({'web_name', 'prediction', 'now_cost', 'points_1st_gw', 'yellow_cards'})])
 
