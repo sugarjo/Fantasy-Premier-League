@@ -36,7 +36,7 @@ manual_pred = 1
 #                  }
 manual_blanks = {}
 
-string = '{"picks":[{"element":597,"position":1,"selling_price":48,"multiplier":1,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":29,"position":2,"selling_price":55,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":430,"position":3,"selling_price":67,"multiplier":1,"purchase_price":65,"is_captain":false,"is_vice_captain":false},{"element":321,"position":4,"selling_price":46,"multiplier":1,"purchase_price":46,"is_captain":false,"is_vice_captain":false},{"element":86,"position":5,"selling_price":54,"multiplier":1,"purchase_price":54,"is_captain":false,"is_vice_captain":false},{"element":630,"position":6,"selling_price":50,"multiplier":1,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":412,"position":7,"selling_price":58,"multiplier":1,"purchase_price":56,"is_captain":false,"is_vice_captain":false},{"element":353,"position":8,"selling_price":78,"multiplier":1,"purchase_price":75,"is_captain":false,"is_vice_captain":false},{"element":117,"position":9,"selling_price":82,"multiplier":1,"purchase_price":82,"is_captain":false,"is_vice_captain":false},{"element":60,"position":10,"selling_price":86,"multiplier":1,"purchase_price":83,"is_captain":false,"is_vice_captain":true},{"element":326,"position":11,"selling_price":51,"multiplier":2,"purchase_price":51,"is_captain":true,"is_vice_captain":false},{"element":524,"position":12,"selling_price":41,"multiplier":0,"purchase_price":40,"is_captain":false,"is_vice_captain":false},{"element":369,"position":13,"selling_price":54,"multiplier":0,"purchase_price":54,"is_captain":false,"is_vice_captain":false},{"element":396,"position":14,"selling_price":84,"multiplier":0,"purchase_price":84,"is_captain":false,"is_vice_captain":false},{"element":506,"position":15,"selling_price":56,"multiplier":0,"purchase_price":55,"is_captain":false,"is_vice_captain":false}],"chips":[{"status_for_entry":"available","played_by_entry":[],"name":"wildcard","number":1,"start_event":21,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team"},{"status_for_entry":"played","played_by_entry":[25],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team"}],"transfers":{"cost":4,"status":"cost","limit":1,"made":0,"bank":100,"value":927}}'
+string = '{"picks":[{"element":597,"position":1,"selling_price":48,"multiplier":1,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":29,"position":2,"selling_price":55,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":369,"position":3,"selling_price":54,"multiplier":1,"purchase_price":54,"is_captain":false,"is_vice_captain":false},{"element":321,"position":4,"selling_price":46,"multiplier":1,"purchase_price":46,"is_captain":false,"is_vice_captain":false},{"element":86,"position":5,"selling_price":54,"multiplier":1,"purchase_price":54,"is_captain":false,"is_vice_captain":true},{"element":630,"position":6,"selling_price":50,"multiplier":1,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":412,"position":7,"selling_price":58,"multiplier":1,"purchase_price":56,"is_captain":false,"is_vice_captain":false},{"element":353,"position":8,"selling_price":78,"multiplier":1,"purchase_price":75,"is_captain":false,"is_vice_captain":false},{"element":396,"position":9,"selling_price":84,"multiplier":1,"purchase_price":84,"is_captain":false,"is_vice_captain":false},{"element":60,"position":10,"selling_price":86,"multiplier":1,"purchase_price":83,"is_captain":false,"is_vice_captain":false},{"element":326,"position":11,"selling_price":51,"multiplier":2,"purchase_price":51,"is_captain":true,"is_vice_captain":false},{"element":524,"position":12,"selling_price":41,"multiplier":0,"purchase_price":40,"is_captain":false,"is_vice_captain":false},{"element":117,"position":13,"selling_price":82,"multiplier":0,"purchase_price":82,"is_captain":false,"is_vice_captain":false},{"element":430,"position":14,"selling_price":67,"multiplier":0,"purchase_price":65,"is_captain":false,"is_vice_captain":false},{"element":506,"position":15,"selling_price":56,"multiplier":0,"purchase_price":55,"is_captain":false,"is_vice_captain":false}],"chips":[{"status_for_entry":"available","played_by_entry":[],"name":"wildcard","number":1,"start_event":21,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team"},{"status_for_entry":"played","played_by_entry":[25],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team"}],"transfers":{"cost":4,"status":"cost","limit":1,"made":0,"bank":100,"value":928}}'
 
 #set to non-zero to override substitute price
 substitute_override = 0
@@ -779,6 +779,8 @@ checked_points = []
 
 counts = np.ones((len(no_transfers), len(probabilities[0])))
 
+num_unique_iterations = 0
+
 while True:
     print('Start')
 
@@ -788,7 +790,7 @@ while True:
     selected = np.isnan(prob)
     prob[selected] = 0
     
-    parallel_results = Parallel(n_jobs=-1)(delayed(check_transfers)(i) for i in range(len(checked_transfers), len(checked_transfers)+5))
+    parallel_results = Parallel(n_jobs=-1)(delayed(check_transfers)(i) for i in range(len(checked_transfers), len(checked_transfers)+6))
 
     #store data for later
     #organize_output
@@ -802,13 +804,16 @@ while True:
      
     a= np.array(iteration_teams)
     b= np.unique(a, axis=0)
+    
+    num_unique_iterations += b.shape[0]
         
-    print('This round: ', len(iteration_teams), b.shape[0])
     a= np.array(checked_transfers)
     b= np.unique(a, axis=0)
     
+    print('Checked teams: ', len(iteration_teams), len(checked_transfers), b.shape[0], num_unique_iterations)
     
-    print('Checked teams: ', len(iteration_teams), len(checked_transfers), b.shape[0])
+    if not num_unique_iterations == b.shape[0]:
+        break
     
     #print results
     best_ind = np.nanargmax(checked_points)
