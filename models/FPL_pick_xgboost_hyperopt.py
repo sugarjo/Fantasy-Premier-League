@@ -19,7 +19,7 @@ do_not_exclude_players = []
 rounds_to_reset = 99999
 rounds_to_value = 2
 #free_transfers = rounds_to_value + 1
-free_transfers = 1
+free_transfers = 0
 
 continue_optimize = False
 
@@ -648,62 +648,66 @@ for i in range(rounds_to_value+1):
     transfers.append([np.nan, np.nan])
     
 
-def objective(transfers):      
+def objective(transfers, free_transfers):      
         
     team = slim_elements_df['picked'].values.copy()
     
     # print(params)
     
     #loop through the transfers and check if they are possible
-    
-    #identify which gw each transfer belongs to
-    gws = []
-    for key, transfer in transfers.items():
-        gws.append(int(key[0]))
-        
-    #loop the gameweeks        
-    for gw in np.unique(gws):
-        
-        for key, transfer in transfers.items():        
-            if int(key[0]) == gw and not np.isnan(transfer[0]):
-                team[transfer[0]] = False
-                team[transfer[1]] = True
-            
-        #if too expensive or too many players from club
-        total_price =  sum(slim_elements_df.loc[team, 'now_cost'])
-    
-        #count_clubs
-        num_team = np.zeros((20))
-        for team_ind in slim_elements_df.loc[team, 'team']:
-            num_team[team_ind-1] += 1
-            
-        if total_money < total_price or np.max(num_team) > 3 or sum(team) != 15: 
-            # if total_money < total_price:
-            #     print('money')
-            # if np.max(num_team) > 3:
-            #     print('team')
-            # if sum(team) != 15:               
-            #     print('overlap')
+    for gw in range(int(len(transfers)/2)):   
+        transfer1 = transfers[gw*2]
+        transfer2 = transfers[(gw*2)+1]
+        if not np.isnan(transfer1[0]):
+            team[transfer1[0]] = False
+            team[transfer1[1]] = True
+        if not np.isnan(transfer2[0]):
+            team[transfer2[0]] = False
+            team[transfer2[1]] = True
+                
+    #if too expensive or too many players from club
+    total_price =  sum(slim_elements_df.loc[team, 'now_cost'])
 
-            return np.nan
+    #count_clubs
+    num_team = np.zeros((20))
+    for team_ind in slim_elements_df.loc[team, 'team']:
+        num_team[team_ind-1] += 1
+        
+    if total_money < total_price or np.max(num_team) > 3 or sum(team) != 15: 
+        # if total_money < total_price:
+        #     print('money')
+        # if np.max(num_team) > 3:
+        #     print('team')
+        # if sum(team) != 15:               
+        #     print('overlap')
+
+        return np.nan
         
     team = slim_elements_df['picked'].values.copy()
     
     team_points = []
-    
-    for gw in np.unique(gws):
+
+    #loop through the transfers and count points
+    for gw in range(int(len(transfers)/2)): 
+        free_transfers +=1
         
-        #loop and do the transfers
-        for key, transfer in transfers.items():
+        transfer1 = transfers[gw*2]
+        transfer2 = transfers[(gw*2)+1]
+        if not np.isnan(transfer1[0]):
+            team[transfer1[0]] = False
+            team[transfer1[1]] = True
+            free_transfers -=1
+        if not np.isnan(transfer2[0]):
+            team[transfer2[0]] = False
+            team[transfer2[1]] = True
+            free_transfers -=1
             
-            if int(key[0]) == gw and not np.isnan(transfer[0]):
-                team[transfer[0]] = False
-                team[transfer[1]] = True
-                
-                #if hit
-                if int(key[1]) == 1:
-                    team_points.append(-4)
+        if free_transfers < 0:
+            team_points.append(-4)
+            free_transfers +=1
             
+        if free_transfers > 2:
+            free_transfers = 2            
         
         gw_prediction = predictions[team, gw]
         team_positions = slim_elements_df.loc[team, 'element_type'].values
@@ -711,40 +715,37 @@ def objective(transfers):
         team_points.append(find_team_points(team_positions, gw_prediction))
         
         #print(sum(team_points))
+    
         
     return sum(team_points)
 
 
 
-def check_transfers(i):
-    
+def check_transfers(i):    
     
     rng = np.random.default_rng(seed=i)
     
     evaluated_transfers = []
     points = []
     for j in range(batch_size):
-        choice0 = rng.choice(np.arange(len(transfers)), 1, p=prob[:, 0])[0]
-        choice1 = rng.choice(np.arange(len(transfers)), 1, p=prob[:, 1])[0]
-        choice2 = rng.choice(np.arange(len(transfers)), 1,  p=prob[:, 2])[0]
         
-        transfer_ind = [choice0, choice1, choice2]
+        transfer_ind = []
+        for i in range(len(point_diff)):
+            transfer_ind.append(rng.choice(np.arange(len(transfers)), 1, p=prob[:, i])[0])
+    
         
         if (not transfer_ind in checked_transfers) and (not transfer_ind in evaluated_transfers):
            
-           putative_transfers = {'00': transfers[transfer_ind[0]],
-                                 '01': transfers[transfer_ind[1]],
-                     '10': transfers[transfer_ind[2]]
-                }
+            putative_transfers = []
+            for i in range(len(point_diff)):
+                putative_transfers.append(transfers[transfer_ind[i]])
             
-           points.append(objective(putative_transfers))
-           evaluated_transfers.append(transfer_ind)
+            points.append(objective(putative_transfers, free_transfers))
+            evaluated_transfers.append(transfer_ind)
            
     #update probabilities
-    counts = np.zeros((len(no_transfers), len(probabilities[0])))
-    sum_points = np.zeros((len(no_transfers), len(probabilities[0])))
-    
-
+    counts = np.zeros((len(transfer_ind), len(probabilities[0])))
+    sum_points = np.zeros((len(transfer_ind), len(probabilities[0])))
     
     for point, eval_transfers in zip(points, evaluated_transfers):        
         for week, transfer in enumerate(eval_transfers):         
@@ -763,14 +764,13 @@ def check_transfers(i):
     return [points, evaluated_transfers, sum_points, counts]
 
 predictions = np.array(predictions)
-probabilities = np.array([point_diff[0].copy(), point_diff[1].copy(), point_diff[2].copy()])
+probabilities = np.array(point_diff.copy())
 #get baseline
-no_transfers = {'00': [np.nan, np.nan],
-                '01': [np.nan, np.nan],
-                '10': [np.nan, np.nan],
-    }
-
-baseline = objective(no_transfers)
+no_transfers = []
+for i in range(len(point_diff)):
+    no_transfers.append([np.nan, np.nan])
+    
+baseline = objective(no_transfers, free_transfers)
 
 batch_size = 1000
 
@@ -782,11 +782,11 @@ counts = np.ones((len(no_transfers), len(probabilities[0])))
 num_unique_iterations = 0
 
 while True:
-    print('Start')
+    print('Start', free_transfers)
 
     p = probabilities / counts    
     
-    prob = (p.T - np.nanmin(p, axis=1)) / np.nansum((p.T - np.nanmin(p, axis=1)), axis=0)
+    prob = (p.T - np.nanmin(p, axis=1) + 0.01) / np.nansum((p.T - np.nanmin(p, axis=1) + 0.01), axis=0)
     selected = np.isnan(prob)
     prob[selected] = 0
     
@@ -819,13 +819,13 @@ while True:
     best_ind = np.nanargmax(checked_points)
     best_transfer = checked_transfers[best_ind]
         
-    for gw, transfer_ind in zip(no_transfers.items(), best_transfer):
+    for gw_ind, transfer_ind in enumerate(best_transfer):
         
         transfer = transfers[transfer_ind]
         
         if not transfer == [np.nan, np.nan]:
     
-            print('GW', gw[0], slim_elements_df.loc[transfer[0], 'web_name'], 'for', slim_elements_df.loc[transfer[1], 'web_name'])
+            print('GW', int(gw_ind/2), slim_elements_df.loc[transfer[0], 'web_name'], 'for', slim_elements_df.loc[transfer[1], 'web_name'])
             print(predictions[transfer[0], :])
             print(predictions[transfer[1], :])
     
@@ -841,22 +841,23 @@ while True:
         best_p.append(max_ind)
         
         if not transfer == [np.nan, np.nan]:    
-            print('trans', transfer_ind, slim_elements_df.loc[transfer[0], 'web_name'], 'for', slim_elements_df.loc[transfer[1], 'web_name'],  p[transfer_ind, max_ind], counts[transfer_ind, max_ind])
+            print('GW', int(transfer_ind/2), slim_elements_df.loc[transfer[0], 'web_name'], 'for', slim_elements_df.loc[transfer[1], 'web_name'],  p[transfer_ind, max_ind], counts[transfer_ind, max_ind])
             print(predictions[transfer[0], :])
             print(predictions[transfer[1], :])
         else:
-            print('trans', 'no trans', p[transfer_ind, max_ind], counts[transfer_ind, max_ind])
+            print('GW', int(transfer_ind/2), 'no trans', p[transfer_ind, max_ind], counts[transfer_ind, max_ind])
     print('\n')
     
-    # if not best_p in checked_transfers:
+    if not best_p in checked_transfers:
        
-    #    putative_transfers = {'00': transfers[best_p[0]],
-    #                          '01': transfers[best_p[1]],
-    #              '10': transfers[best_p[2]]
-    #         }
+        putative_transfers = []
+        for i in range(len(point_diff)):
+            putative_transfers.append(transfers[best_p[i]])
         
-    #    checked_points.append(objective(putative_transfers))
-    #    checked_transfers.append(best_p)
+        checked_points.append(objective(putative_transfers, free_transfers))
+        checked_transfers.append(best_p)
+        
+        num_unique_iterations += 1
 
 
 #print original team
@@ -869,13 +870,13 @@ max_ind = np.where(checked_points == max_points)
 
 for ind in max_ind[0]:
     best_transfer =  checked_transfers[ind]
-    for gw, transfer_ind in zip(no_transfers.items(), best_transfer):
+    for gw_ind, transfer_ind in enumerate(best_transfer):
         
         transfer = transfers[transfer_ind]
         
         if not transfer == [np.nan, np.nan]:
     
-            print('GW', gw[0], slim_elements_df.loc[transfer[0], 'web_name'], 'for', slim_elements_df.loc[transfer[1], 'web_name'], 'yellow cards: ', slim_elements_df.loc[transfer[1], 'yellow_cards'])
+            print('GW', np.floor(gw_ind/2), slim_elements_df.loc[transfer[0], 'web_name'], 'for', slim_elements_df.loc[transfer[1], 'web_name'], 'yellow cards: ', slim_elements_df.loc[transfer[1], 'yellow_cards'])
             print(predictions[transfer[0], :])
             print(predictions[transfer[1], :])
     
