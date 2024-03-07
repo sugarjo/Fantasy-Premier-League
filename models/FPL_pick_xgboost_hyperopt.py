@@ -21,14 +21,14 @@ rounds_to_value = 2
 #free_transfers = rounds_to_value + 1
 free_transfers = 0
 
-continue_optimize = False
+continue_optimize = True
 
             
 num_transfers = int((free_transfers + rounds_to_value))
 
 skip_gw = []
 
-force_90 = []
+force_90 = ['Son']
 
 manual_pred = 1
 
@@ -36,7 +36,7 @@ manual_pred = 1
 #                  }
 manual_blanks = {}
 
-string = '{"picks":[{"element":597,"position":1,"selling_price":48,"multiplier":1,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":29,"position":2,"selling_price":55,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":369,"position":3,"selling_price":54,"multiplier":1,"purchase_price":54,"is_captain":false,"is_vice_captain":false},{"element":321,"position":4,"selling_price":46,"multiplier":1,"purchase_price":46,"is_captain":false,"is_vice_captain":false},{"element":86,"position":5,"selling_price":54,"multiplier":1,"purchase_price":54,"is_captain":false,"is_vice_captain":true},{"element":630,"position":6,"selling_price":50,"multiplier":1,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":412,"position":7,"selling_price":58,"multiplier":1,"purchase_price":56,"is_captain":false,"is_vice_captain":false},{"element":353,"position":8,"selling_price":78,"multiplier":1,"purchase_price":75,"is_captain":false,"is_vice_captain":false},{"element":396,"position":9,"selling_price":84,"multiplier":1,"purchase_price":84,"is_captain":false,"is_vice_captain":false},{"element":60,"position":10,"selling_price":86,"multiplier":1,"purchase_price":83,"is_captain":false,"is_vice_captain":false},{"element":326,"position":11,"selling_price":51,"multiplier":2,"purchase_price":51,"is_captain":true,"is_vice_captain":false},{"element":524,"position":12,"selling_price":41,"multiplier":0,"purchase_price":40,"is_captain":false,"is_vice_captain":false},{"element":117,"position":13,"selling_price":82,"multiplier":0,"purchase_price":82,"is_captain":false,"is_vice_captain":false},{"element":430,"position":14,"selling_price":67,"multiplier":0,"purchase_price":65,"is_captain":false,"is_vice_captain":false},{"element":506,"position":15,"selling_price":56,"multiplier":0,"purchase_price":55,"is_captain":false,"is_vice_captain":false}],"chips":[{"status_for_entry":"available","played_by_entry":[],"name":"wildcard","number":1,"start_event":21,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team"},{"status_for_entry":"played","played_by_entry":[25],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team"}],"transfers":{"cost":4,"status":"cost","limit":1,"made":0,"bank":100,"value":928}}'
+string = '{"picks":[{"element":597,"position":1,"selling_price":48,"multiplier":1,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":29,"position":2,"selling_price":55,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":369,"position":3,"selling_price":54,"multiplier":1,"purchase_price":54,"is_captain":false,"is_vice_captain":false},{"element":321,"position":4,"selling_price":46,"multiplier":1,"purchase_price":46,"is_captain":false,"is_vice_captain":false},{"element":86,"position":5,"selling_price":54,"multiplier":1,"purchase_price":54,"is_captain":false,"is_vice_captain":true},{"element":630,"position":6,"selling_price":50,"multiplier":1,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":412,"position":7,"selling_price":58,"multiplier":1,"purchase_price":56,"is_captain":false,"is_vice_captain":false},{"element":353,"position":8,"selling_price":78,"multiplier":1,"purchase_price":75,"is_captain":false,"is_vice_captain":false},{"element":396,"position":9,"selling_price":84,"multiplier":1,"purchase_price":84,"is_captain":false,"is_vice_captain":false},{"element":60,"position":10,"selling_price":86,"multiplier":1,"purchase_price":83,"is_captain":false,"is_vice_captain":false},{"element":326,"position":11,"selling_price":51,"multiplier":2,"purchase_price":51,"is_captain":true,"is_vice_captain":false},{"element":524,"position":12,"selling_price":41,"multiplier":0,"purchase_price":40,"is_captain":false,"is_vice_captain":false},{"element":117,"position":13,"selling_price":82,"multiplier":0,"purchase_price":82,"is_captain":false,"is_vice_captain":false},{"element":430,"position":14,"selling_price":66,"multiplier":0,"purchase_price":65,"is_captain":false,"is_vice_captain":false},{"element":506,"position":15,"selling_price":56,"multiplier":0,"purchase_price":55,"is_captain":false,"is_vice_captain":false}],"chips":[{"status_for_entry":"available","played_by_entry":[],"name":"wildcard","number":1,"start_event":21,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team"},{"status_for_entry":"played","played_by_entry":[25],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team"}],"transfers":{"cost":4,"status":"cost","limit":1,"made":0,"bank":100,"value":927}}'
 
 #set to non-zero to override substitute price
 substitute_override = 0
@@ -636,7 +636,7 @@ for i in range(rounds_to_value+1):
                     probability_main.append(preds[i])
                    
                     #remove no 4p increase
-                    if (i == rounds_to_value and preds[i] >= 4) or i < rounds_to_value and (preds[i] >= (preds[i+1] + 4)):                  
+                    if (i == rounds_to_value and preds[i] >= 4) or i < rounds_to_value and any(preds[i:] >= 4):                  
                         probability_hit.append(preds[i])
                     else:
                         probability_hit.append(np.nan)
@@ -664,24 +664,25 @@ def objective(transfers, free_transfers):
         if not np.isnan(transfer2[0]):
             team[transfer2[0]] = False
             team[transfer2[1]] = True
-                
-    #if too expensive or too many players from club
-    total_price =  sum(slim_elements_df.loc[team, 'now_cost'])
+                    
+        #if too expensive or too many players from club
+        total_price =  sum(slim_elements_df.loc[team, 'now_cost'])
+    
+        #count_clubs
+        num_team = np.zeros((20))
+        for team_ind in slim_elements_df.loc[team, 'team']:
+            num_team[team_ind-1] += 1
 
-    #count_clubs
-    num_team = np.zeros((20))
-    for team_ind in slim_elements_df.loc[team, 'team']:
-        num_team[team_ind-1] += 1
-        
-    if total_money < total_price or np.max(num_team) > 3 or sum(team) != 15: 
-        # if total_money < total_price:
-        #     print('money')
-        # if np.max(num_team) > 3:
-        #     print('team')
-        # if sum(team) != 15:               
-        #     print('overlap')
-
-        return np.nan
+            
+        if total_money < total_price or np.max(num_team) > 3 or sum(team) != 15: 
+            # if total_money < total_price:
+            #     print('money')
+            # if np.max(num_team) > 3:
+            #     print('team')
+            # if sum(team) != 15:               
+            #     print('overlap')
+    
+            return np.nan
         
     team = slim_elements_df['picked'].values.copy()
     
@@ -727,27 +728,25 @@ def check_transfers(i):
     
     evaluated_transfers = []
     points = []
+    
+
+    counts = np.zeros((len(transfer_ind), len(probabilities[0])))
+    sum_points = np.zeros((len(transfer_ind), len(probabilities[0])))
+    
     for j in range(batch_size):
         
         transfer_ind = []
         for i in range(len(point_diff)):
             transfer_ind.append(rng.choice(np.arange(len(transfers)), 1, p=prob[:, i])[0])
     
+        putative_transfers = []
+        for i in range(len(point_diff)):
+            putative_transfers.append(transfers[transfer_ind[i]])
         
-        if (not transfer_ind in checked_transfers) and (not transfer_ind in evaluated_transfers):
-           
-            putative_transfers = []
-            for i in range(len(point_diff)):
-                putative_transfers.append(transfers[transfer_ind[i]])
-            
-            points.append(objective(putative_transfers, free_transfers))
-            evaluated_transfers.append(transfer_ind)
-           
-    #update probabilities
-    counts = np.zeros((len(transfer_ind), len(probabilities[0])))
-    sum_points = np.zeros((len(transfer_ind), len(probabilities[0])))
-    
-    for point, eval_transfers in zip(points, evaluated_transfers):        
+        point = objective(putative_transfers, free_transfers)
+        points.append(point)
+        evaluated_transfers.append(transfer_ind)
+        
         for week, transfer in enumerate(eval_transfers):         
             if not np.isnan(point):                  
                 sum_points[week, transfer] = (sum_points[week, transfer]*counts[week, transfer] + (point-baseline)) / (counts[week, transfer] + 1)
@@ -755,11 +754,12 @@ def check_transfers(i):
             #punish also nan teams
             else:
                 if len(checked_points) > 0:
-                    sum_points[week, transfer] = (sum_points[week, transfer]*counts[week, transfer] + (np.nanmean(checked_points)-baseline)) / (counts[week, transfer] + 1)
+                    sum_points[week, transfer] = (sum_points[week, transfer]*counts[week, transfer] + (np.nanmin(checked_points)-baseline)) / (counts[week, transfer] + 1)
                 else:
-                    sum_points[week, transfer] = (sum_points[week, transfer]*counts[week, transfer] + (np.nanmean(points)-baseline)) / (counts[week, transfer] + 1)
+                    sum_points[week, transfer] = (sum_points[week, transfer]*counts[week, transfer] + (np.nanmin(points)-baseline)) / (counts[week, transfer] + 1)
       
                 counts[week, transfer] += 1
+
     
     return [points, evaluated_transfers, sum_points, counts]
 
@@ -774,15 +774,21 @@ baseline = objective(no_transfers, free_transfers)
 
 batch_size = 1000
 
-checked_transfers = []
-checked_points = []
+if continue_optimize:
+    with open(r'C:\Users\jorgels\Git\Fantasy-Premier-League\models\transfers.pkl', 'rb') as f:
+        savevar = pickle.load(f)
+        checked_points = savevar[0]
+        checked_transfers = savevar[1]
+else:
+    checked_transfers = []
+    checked_points = []
 
 counts = np.ones((len(no_transfers), len(probabilities[0])))
 
 num_unique_iterations = 0
 
 while True:
-    print('Start', free_transfers)
+    print('Start')
 
     p = probabilities / counts    
     
@@ -801,19 +807,15 @@ while True:
         probabilities += par[2]
         counts += par[3]
         iteration_teams = iteration_teams + par[1]
-     
-    a= np.array(iteration_teams)
-    b= np.unique(a, axis=0)
-    
-    num_unique_iterations += b.shape[0]
         
-    a= np.array(checked_transfers)
-    b= np.unique(a, axis=0)
+    # from operator import itemgetter
+    # from more_itertools import unique_everseen
     
-    print('Checked teams: ', len(iteration_teams), len(checked_transfers), b.shape[0], num_unique_iterations)
+    # abc = zip(checked_transfers, checked_points)
+    # abc_unique = unique_everseen(abc, key=itemgetter(0))
+    # a, b, c = zip(*abc_unique)
     
-    if not num_unique_iterations == b.shape[0]:
-        break
+    print('Checked teams: ', len(iteration_teams), len(checked_transfers))
     
     #print results
     best_ind = np.nanargmax(checked_points)
@@ -858,6 +860,10 @@ while True:
         checked_transfers.append(best_p)
         
         num_unique_iterations += 1
+        
+    savevar = [checked_points, checked_transfers]
+    filename = r'C:\Users\jorgels\Git\Fantasy-Premier-League\models\transfers.pkl'
+    pickle.dump(savevar, open(filename, 'wb'))
 
 
 #print original team
