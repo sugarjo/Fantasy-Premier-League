@@ -67,6 +67,8 @@ from hyperopt.fmin import generate_trials_to_calculate
 import random
 from numpy.random import choice
 import time
+from operator import itemgetter
+from more_itertools import unique_everseen
 
 
 #insert string for team
@@ -730,37 +732,36 @@ def check_transfers(i):
     points = []
     
 
-    counts = np.zeros((len(transfer_ind), len(probabilities[0])))
-    sum_points = np.zeros((len(transfer_ind), len(probabilities[0])))
+    counts = np.zeros((len(point_diff), len(probabilities[0])), dtype='uint32')
+    sum_points = np.zeros((len(point_diff), len(probabilities[0])))
     
     for j in range(batch_size):
         
         transfer_ind = []
-        for i in range(len(point_diff)):
-            transfer_ind.append(rng.choice(np.arange(len(transfers)), 1, p=prob[:, i])[0])
-    
         putative_transfers = []
         for i in range(len(point_diff)):
+            transfer_ind.append(rng.choice(np.arange(len(transfers)), 1, p=prob[:, i])[0])
             putative_transfers.append(transfers[transfer_ind[i]])
+            
+        # if (transfer_ind not in checked_transfers) and (transfer_ind not in evaluated_transfers):
         
         point = objective(putative_transfers, free_transfers)
         points.append(point)
         evaluated_transfers.append(transfer_ind)
-        
-        for week, transfer in enumerate(eval_transfers):         
+            
+        for week, transfer in enumerate(transfer_ind):         
             if not np.isnan(point):                  
                 sum_points[week, transfer] = (sum_points[week, transfer]*counts[week, transfer] + (point-baseline)) / (counts[week, transfer] + 1)
                 counts[week, transfer] += 1
             #punish also nan teams
             else:
-                if len(checked_points) > 0:
-                    sum_points[week, transfer] = (sum_points[week, transfer]*counts[week, transfer] + (np.nanmin(checked_points)-baseline)) / (counts[week, transfer] + 1)
-                else:
-                    sum_points[week, transfer] = (sum_points[week, transfer]*counts[week, transfer] + (np.nanmin(points)-baseline)) / (counts[week, transfer] + 1)
-      
                 counts[week, transfer] += 1
+                    
+        # else:
+            
+        #     for week, transfer in enumerate(transfer_ind):         
+        #         counts[week, transfer] += 1
 
-    
     return [points, evaluated_transfers, sum_points, counts]
 
 predictions = np.array(predictions)
@@ -783,9 +784,7 @@ else:
     checked_transfers = []
     checked_points = []
 
-counts = np.ones((len(no_transfers), len(probabilities[0])))
-
-num_unique_iterations = 0
+counts = np.ones((len(no_transfers), len(probabilities[0])), dtype='uint32')
 
 while True:
     print('Start')
@@ -796,8 +795,12 @@ while True:
     selected = np.isnan(prob)
     prob[selected] = 0
     
+    # selected = np.sum(prob, axis=0) == 0
+    # prob[-1, selected] = 1
+    # probabilities[-1, selected] = 1
+    print('Getting  teams')
     parallel_results = Parallel(n_jobs=-1)(delayed(check_transfers)(i) for i in range(len(checked_transfers), len(checked_transfers)+6))
-
+    print('Interpreting results')
     #store data for later
     #organize_output
     iteration_teams = []
@@ -807,13 +810,6 @@ while True:
         probabilities += par[2]
         counts += par[3]
         iteration_teams = iteration_teams + par[1]
-        
-    # from operator import itemgetter
-    # from more_itertools import unique_everseen
-    
-    # abc = zip(checked_transfers, checked_points)
-    # abc_unique = unique_everseen(abc, key=itemgetter(0))
-    # a, b, c = zip(*abc_unique)
     
     print('Checked teams: ', len(iteration_teams), len(checked_transfers))
     
@@ -850,16 +846,14 @@ while True:
             print('GW', int(transfer_ind/2), 'no trans', p[transfer_ind, max_ind], counts[transfer_ind, max_ind])
     print('\n')
     
-    if not best_p in checked_transfers:
        
-        putative_transfers = []
-        for i in range(len(point_diff)):
-            putative_transfers.append(transfers[best_p[i]])
+    putative_transfers = []
+    for i in range(len(point_diff)):
+        putative_transfers.append(transfers[best_p[i]])
+    
+    checked_points.append(objective(putative_transfers, free_transfers))
+    checked_transfers.append(best_p)
         
-        checked_points.append(objective(putative_transfers, free_transfers))
-        checked_transfers.append(best_p)
-        
-        num_unique_iterations += 1
         
     savevar = [checked_points, checked_transfers]
     filename = r'C:\Users\jorgels\Git\Fantasy-Premier-League\models\transfers.pkl'
