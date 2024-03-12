@@ -564,16 +564,13 @@ value = slim_elements_df['prediction'].apply(sum) / now_cost
 slim_elements_df['value'] = value
 
 #find points for each match or a series of matches (depends on len of prediction)
-def find_team_points(team_positions, gw_prediction, team_teams):
+def find_team_points(team_positions, gw_prediction):
     
     pred_points = []
             
     order = np.argsort(gw_prediction)
     ordered_points = np.sort(gw_prediction)
     ordered_positions = team_positions[order]
-    ordered_teams = team_teams[order]
-    
-    estimated_teams = []
     
     #pick the 11 best players of the team
     for i in range(11):   
@@ -600,15 +597,12 @@ def find_team_points(team_positions, gw_prediction, team_teams):
 
         ordered_points = np.delete(ordered_points, selected_index)
         ordered_positions =  np.delete(ordered_positions, selected_index)
-        
-        estimated_teams.append(ordered_teams[selected_index])
-        ordered_teams =  np.delete(ordered_teams, selected_index)
     
     captain_ind = np.argmax(pred_points)
     
     pred_points[captain_ind] = pred_points[captain_ind]*2
     
-    return sum(pred_points), estimated_teams
+    return sum(pred_points)
 
 if unlimited_transfers:
     transfer_cost = 0
@@ -708,13 +702,7 @@ def objective(transfers, free_transfers):
     if unlimited_transfers:
         gw_iteration = 1
     else:
-        gw_iteration = int(len(transfers)/2)
-        
-    if free_hit:
-        max_team = 7
-    else:
-        max_team = 3
-        
+        gw_iteration = int(len(transfers)/2)        
     
     #loop through the transfers and check if they are possible
     for gw in range(gw_iteration):   
@@ -742,7 +730,7 @@ def objective(transfers, free_transfers):
             num_team[team_ind-1] += 1
 
             
-        if total_money < total_price or np.max(num_team) > max_team or sum(team) != 15: 
+        if total_money < total_price or np.max(num_team) > 3 or sum(team) != 15: 
             # if total_money < total_price:
             #     print('money')
             # if np.max(num_team) > 3:
@@ -786,13 +774,7 @@ def objective(transfers, free_transfers):
         gw_prediction = predictions[team, gw]
         team_positions = slim_elements_df.loc[team, 'element_type'].values
         
-        team_teams = slim_elements_df.loc[team, 'team'].values
-        
-        estimated_points, estimated_teams = find_team_points(team_positions, gw_prediction, team_teams)
-        
-        _, team_counts = np.unique(estimated_teams, return_counts=True)
-        if any(team_counts > 3):
-            return np.nan
+        estimated_points = find_team_points(team_positions, gw_prediction)
         
         team_points.append(estimated_points)
         
@@ -860,8 +842,9 @@ def check_guided_transfers(i, best_transfer):
             
     
     #exhange one of the transfers
-    for j in best_transfer:
+    for j in range(len(transfers)):
         if prob[j, i] > 0:
+            
             transfer_ind[i] = j
             putative_transfers[i] = transfers[transfer_ind[i]]
                 
@@ -869,7 +852,7 @@ def check_guided_transfers(i, best_transfer):
             
             point = objective(putative_transfers, free_transfers)
             points.append(point)
-            evaluated_transfers.append(transfer_ind)                
+            evaluated_transfers.append(transfer_ind.copy())                
                    
             if not np.isnan(point):                  
                 sum_points[i, transfer_ind[i]] = (sum_points[i, transfer_ind[i]]*counts[i, transfer_ind[i]] + (point-best_points)) / (counts[i, transfer_ind[i]] + 1)
