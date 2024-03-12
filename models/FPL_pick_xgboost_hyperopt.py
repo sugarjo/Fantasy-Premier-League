@@ -9,7 +9,7 @@ points_per_game_treshold = -1
 exclude_team = []
 
 #exclude player
-exclude_players = ['Richarlison', 'McGinn']
+exclude_players = ['Richarlison', 'McGinn', 'Maupay']
 exclude_players_out = []
 include_players = []
 
@@ -21,7 +21,8 @@ rounds_to_value = 0
 continue_optimize = False
 
             
-wildcard = True
+wildcard = False
+free_hit = True
 
 skip_gw = []
 
@@ -33,7 +34,7 @@ manual_pred = 1
 #                  }
 manual_blanks = {}
 
-string = '{"picks":[{"element":524,"position":1,"selling_price":41,"multiplier":1,"purchase_price":40,"is_captain":false,"is_vice_captain":false},{"element":29,"position":2,"selling_price":55,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":369,"position":3,"selling_price":54,"multiplier":1,"purchase_price":54,"is_captain":false,"is_vice_captain":false},{"element":321,"position":4,"selling_price":46,"multiplier":1,"purchase_price":46,"is_captain":false,"is_vice_captain":false},{"element":506,"position":5,"selling_price":56,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":86,"position":6,"selling_price":54,"multiplier":1,"purchase_price":54,"is_captain":false,"is_vice_captain":false},{"element":630,"position":7,"selling_price":50,"multiplier":1,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":516,"position":8,"selling_price":98,"multiplier":2,"purchase_price":98,"is_captain":true,"is_vice_captain":false},{"element":117,"position":9,"selling_price":81,"multiplier":1,"purchase_price":82,"is_captain":false,"is_vice_captain":false},{"element":60,"position":10,"selling_price":86,"multiplier":1,"purchase_price":83,"is_captain":false,"is_vice_captain":false},{"element":326,"position":11,"selling_price":51,"multiplier":1,"purchase_price":51,"is_captain":false,"is_vice_captain":true},{"element":597,"position":12,"selling_price":48,"multiplier":0,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":353,"position":13,"selling_price":78,"multiplier":0,"purchase_price":75,"is_captain":false,"is_vice_captain":false},{"element":412,"position":14,"selling_price":58,"multiplier":0,"purchase_price":56,"is_captain":false,"is_vice_captain":false},{"element":430,"position":15,"selling_price":66,"multiplier":0,"purchase_price":65,"is_captain":false,"is_vice_captain":false}],"chips":[{"status_for_entry":"available","played_by_entry":[],"name":"wildcard","number":1,"start_event":21,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team"},{"status_for_entry":"played","played_by_entry":[25],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team"}],"transfers":{"cost":4,"status":"cost","limit":1,"made":0,"bank":86,"value":942}}'
+string = '{"picks":[{"element":524,"position":1,"selling_price":41,"multiplier":1,"purchase_price":40,"is_captain":false,"is_vice_captain":false},{"element":29,"position":2,"selling_price":55,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":369,"position":3,"selling_price":54,"multiplier":1,"purchase_price":54,"is_captain":false,"is_vice_captain":false},{"element":321,"position":4,"selling_price":46,"multiplier":1,"purchase_price":46,"is_captain":false,"is_vice_captain":false},{"element":506,"position":5,"selling_price":56,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":504,"position":6,"selling_price":79,"multiplier":1,"purchase_price":79,"is_captain":false,"is_vice_captain":false},{"element":630,"position":7,"selling_price":50,"multiplier":1,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":516,"position":8,"selling_price":98,"multiplier":2,"purchase_price":98,"is_captain":true,"is_vice_captain":false},{"element":117,"position":9,"selling_price":81,"multiplier":1,"purchase_price":82,"is_captain":false,"is_vice_captain":false},{"element":60,"position":10,"selling_price":86,"multiplier":1,"purchase_price":83,"is_captain":false,"is_vice_captain":false},{"element":326,"position":11,"selling_price":51,"multiplier":1,"purchase_price":51,"is_captain":false,"is_vice_captain":true},{"element":597,"position":12,"selling_price":48,"multiplier":0,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":353,"position":13,"selling_price":78,"multiplier":0,"purchase_price":75,"is_captain":false,"is_vice_captain":false},{"element":412,"position":14,"selling_price":58,"multiplier":0,"purchase_price":56,"is_captain":false,"is_vice_captain":false},{"element":430,"position":15,"selling_price":66,"multiplier":0,"purchase_price":65,"is_captain":false,"is_vice_captain":false}],"chips":[{"status_for_entry":"available","played_by_entry":[],"name":"wildcard","number":1,"start_event":21,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team"},{"status_for_entry":"played","played_by_entry":[25],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team"}],"transfers":{"cost":4,"status":"cost","limit":1,"made":1,"bank":61,"value":967}}'
 #set to non-zero to override substitute price
 substitute_override = 0
 
@@ -43,6 +44,9 @@ jump_rounds = 0
 num_substitutes = 0
 
 min_val = -8
+
+if free_hit or wildcard:
+    unlimited_transfers = True
 
 
 season = '2023-24'
@@ -463,6 +467,10 @@ for df_name in slim_elements_df.iterrows():
 
             #estimated = 10**result.predict(df_predict) + min_val  
             estimated = result.predict(df_predict)           
+            
+            if df_name[1]['web_name'] in include_players:
+                estimated = 10
+            
             #remove if unlikely to play
             if gw_idx==0 and game_idx+jump_rounds == 0 and df_name[1]['chance_of_playing_next_round'] < 75:
                 estimated = 0
@@ -476,6 +484,8 @@ for df_name in slim_elements_df.iterrows():
             if gw in manual_blanks.keys():
                 if df_name[1]['web_name'] in manual_blanks[gw]:
                     estimated = 0
+                    
+            
                                
             pred_score[gw_idx] = pred_score[gw_idx] + estimated
             total_matches = total_matches + 1
@@ -554,13 +564,16 @@ value = slim_elements_df['prediction'].apply(sum) / now_cost
 slim_elements_df['value'] = value
 
 #find points for each match or a series of matches (depends on len of prediction)
-def find_team_points(team_positions, gw_prediction):
+def find_team_points(team_positions, gw_prediction, team_teams):
     
     pred_points = []
-        
+            
     order = np.argsort(gw_prediction)
     ordered_points = np.sort(gw_prediction)
     ordered_positions = team_positions[order]
+    ordered_teams = team_teams[order]
+    
+    estimated_teams = []
     
     #pick the 11 best players of the team
     for i in range(11):   
@@ -587,14 +600,17 @@ def find_team_points(team_positions, gw_prediction):
 
         ordered_points = np.delete(ordered_points, selected_index)
         ordered_positions =  np.delete(ordered_positions, selected_index)
+        
+        estimated_teams.append(ordered_teams[selected_index])
+        ordered_teams =  np.delete(ordered_teams, selected_index)
     
     captain_ind = np.argmax(pred_points)
     
     pred_points[captain_ind] = pred_points[captain_ind]*2
     
-    return sum(pred_points)
+    return sum(pred_points), estimated_teams
 
-if wildcard:
+if unlimited_transfers:
     transfer_cost = 0
     gw_iteration = 1
     player_iteration = 15
@@ -626,7 +642,7 @@ for j in range(player_iteration):
                         
                         transfers.append([player_out[0], player_in[0]])
                         
-                        if wildcard and j is not ind_next:
+                        if unlimited_transfers and j is not ind_next:
                             probability_hit.append(np.nan)
                             probability_main_ifhit.append(np.nan)
                             probability_main_ifnohit.append(np.nan)
@@ -671,12 +687,12 @@ for j in range(player_iteration):
         probability_main_ifhit.append(4)
         probability_main_ifnohit.append(4)
         
-        if all(elem is np.nan for elem in probability_hit) and not wildcard:
+        if all(elem is np.nan for elem in probability_hit) and not unlimited_transfers:
             point_diff.append(probability_main_ifnohit) 
         else:
             point_diff.append(probability_main_ifhit) 
         
-        if not wildcard:
+        if not unlimited_transfers:
             probability_hit.append(4)
             point_diff.append(probability_hit)
         
@@ -689,14 +705,20 @@ def objective(transfers, free_transfers):
     
     # print(params)
     
-    if wildcard:
+    if unlimited_transfers:
         gw_iteration = 1
     else:
         gw_iteration = int(len(transfers)/2)
+        
+    if free_hit:
+        max_team = 7
+    else:
+        max_team = 3
+        
     
     #loop through the transfers and check if they are possible
     for gw in range(gw_iteration):   
-        if not wildcard:        
+        if not unlimited_transfers:        
             transfer1 = transfers[gw*2]
             transfer2 = transfers[(gw*2)+1]
             if not np.isnan(transfer1[0]):
@@ -720,7 +742,7 @@ def objective(transfers, free_transfers):
             num_team[team_ind-1] += 1
 
             
-        if total_money < total_price or np.max(num_team) > 3 or sum(team) != 15: 
+        if total_money < total_price or np.max(num_team) > max_team or sum(team) != 15: 
             # if total_money < total_price:
             #     print('money')
             # if np.max(num_team) > 3:
@@ -737,7 +759,7 @@ def objective(transfers, free_transfers):
     #loop through the transfers and count points
     for gw in range(gw_iteration):
         free_transfers +=1
-        if not wildcard:        
+        if not unlimited_transfers:        
             transfer1 = transfers[gw*2]
             transfer2 = transfers[(gw*2)+1]
             if not np.isnan(transfer1[0]):
@@ -764,7 +786,15 @@ def objective(transfers, free_transfers):
         gw_prediction = predictions[team, gw]
         team_positions = slim_elements_df.loc[team, 'element_type'].values
         
-        team_points.append(find_team_points(team_positions, gw_prediction))
+        team_teams = slim_elements_df.loc[team, 'team'].values
+        
+        estimated_points, estimated_teams = find_team_points(team_positions, gw_prediction, team_teams)
+        
+        _, team_counts = np.unique(estimated_teams, return_counts=True)
+        if any(team_counts > 3):
+            return np.nan
+        
+        team_points.append(estimated_points)
         
         #print(sum(team_points))
     
@@ -773,19 +803,19 @@ def objective(transfers, free_transfers):
 
 
 
-def check_transfers(i):    
+def check_random_transfers(i):    
     
     rng = np.random.default_rng(seed=i)
     
     evaluated_transfers = []
     points = []
     
-
     counts = np.zeros((len(point_diff), len(probabilities[0])), dtype='uint32')
     sum_points = np.zeros((len(point_diff), len(probabilities[0])))
     
     for j in range(batch_size):
         
+        #loop to get a transfer combination
         transfer_ind = []
         putative_transfers = []
         for i in range(len(point_diff)):
@@ -813,6 +843,50 @@ def check_transfers(i):
 
     return [points, evaluated_transfers, sum_points, counts]
 
+def check_guided_transfers(i, best_transfer):    
+   
+    evaluated_transfers = []
+    points = []
+    
+    counts = np.zeros((len(point_diff), len(probabilities[0])), dtype='uint32')
+    sum_points = np.zeros((len(point_diff), len(probabilities[0])))
+    
+    #loop to get the transfer combination
+    transfer_ind = []
+    putative_transfers = []
+    for j in best_transfer:
+        transfer_ind.append(j)
+        putative_transfers.append(transfers[j])
+            
+    
+    #exhange one of the transfers
+    for j in best_transfer:
+        if prob[j, i] > 0:
+            transfer_ind[i] = j
+            putative_transfers[i] = transfers[transfer_ind[i]]
+                
+            # if (transfer_ind not in checked_transfers) and (transfer_ind not in evaluated_transfers):
+            
+            point = objective(putative_transfers, free_transfers)
+            points.append(point)
+            evaluated_transfers.append(transfer_ind)                
+                   
+            if not np.isnan(point):                  
+                sum_points[i, transfer_ind[i]] = (sum_points[i, transfer_ind[i]]*counts[i, transfer_ind[i]] + (point-best_points)) / (counts[i, transfer_ind[i]] + 1)
+                counts[i, transfer_ind[i]] += 1
+            #punish also nan teams
+            else:
+                counts[i, transfer_ind[i]] += 1
+                        
+            # else:
+                
+            #     for week, transfer in enumerate(transfer_ind):         
+            #         counts[week, transfer] += 1
+
+    return [points, evaluated_transfers, sum_points, counts]
+
+
+
 predictions = np.array(predictions)
 probabilities = np.array(point_diff.copy())
 #get baseline
@@ -824,52 +898,72 @@ baseline = objective(no_transfers, free_transfers)
 
 batch_size = 1000
 
-if continue_optimize:
-    with open(r'C:\Users\jorgels\Git\Fantasy-Premier-League\models\transfers.pkl', 'rb') as f:
-        savevar = pickle.load(f)
-        checked_points = savevar[0]
-        checked_transfers = savevar[1]
-else:
-    checked_transfers = []
-    checked_points = []
+
+best_transfers = []
+best_points = 0
 
 counts = np.ones((len(no_transfers), len(probabilities[0])), dtype='uint32')
 
+counter = 0
+identified_teams = 0
+
 while True:
     print('Start')
-
-  
     
-    p = (probabilities.T - np.nanmin(probabilities, axis=1)).T / counts
-    prob = (p.T + 0.01) / np.nansum((p.T + 0.01), axis=0)
+    p = ((probabilities.T - np.nanmin(probabilities, axis=1)).T / counts)**2
+    prob = (p.T) / np.nansum((p.T), axis=0)
     selected = np.isnan(prob)
     prob[selected] = 0
     
-    # selected = np.sum(prob, axis=0) == 0
-    # prob[-1, selected] = 1
-    # probabilities[-1, selected] = 1
+    #guessing part. try random combination
     print('Getting  teams')
-    parallel_results = Parallel(n_jobs=-1)(delayed(check_transfers)(i) for i in range(len(checked_transfers), len(checked_transfers)+6))
+    parallel_results = Parallel(n_jobs=-1)(delayed(check_random_transfers)(i) for i in range(counter, counter+6))
     print('Interpreting results')
     #store data for later
     #organize_output
-    iteration_teams = []
     for par in parallel_results:
-        checked_points = checked_points + par[0]
-        checked_transfers = checked_transfers + par[1]
+        if np.nanmax(par[0]) > best_points:
+            best_points =  np.nanmax(par[0])
+            best_transfer = par[1][np.nanargmax(par[0])]
+            check_guided = True
+            
         probabilities += par[2]
         counts += par[3]
-        iteration_teams = iteration_teams + par[1]
+        
+        counter += len(par[0])
+        identified_teams += sum(~np.isnan(par[0]))
     
-    print('Checked teams: ', len(iteration_teams), len(checked_transfers))
+    if check_guided:
+        
+        check_guided = False
+        
+        #guided part. exhange one transfer
+        print('Getting  teams')
+        parallel_results = Parallel(n_jobs=-1)(delayed(check_guided_transfers)(i, best_transfer) for i in range(prob.shape[1]))
+        print('Interpreting results')
+        #store data for later
+        #organize_output
+        for par in parallel_results:
+            if np.nanmax(par[0]) > best_points:
+                best_points =  np.nanmax(par[0])
+                best_transfer = par[1][np.nanargmax(par[0])]
+                check_guided = True                
+                
+            probabilities += par[2]
+            counts += par[3]
+            
+            counter += len(par[0])
+            identified_teams += sum(~np.isnan(par[0]))
+        
+        print('Checked teams: ', counter, 'non_nan teams: ', identified_teams)
     
-    if np.isnan(checked_points).all():
+    
+    
+    if len(best_transfer) == 0:
         print('No acceptable teams')
         continue
     
     #print results
-    best_ind = np.nanargmax(checked_points)
-    best_transfer = checked_transfers[best_ind]
     price = []
         
     for gw_ind, transfer_ind in enumerate(best_transfer):
@@ -877,26 +971,25 @@ while True:
         transfer = transfers[transfer_ind]
         
         if not transfer == [np.nan, np.nan]:
-            price.append(slim_elements_df.loc[transfer[0], 'now_cost'])
+            price.append(slim_elements_df.loc[transfer[1], 'now_cost'])
             
-            if not wildcard:
+            if not unlimited_transfers:
                 print('GW', int(gw_ind/2), slim_elements_df.loc[transfer[0], 'web_name'], 'for', slim_elements_df.loc[transfer[1], 'web_name'])
                 print(predictions[transfer[0], :])
                 print(predictions[transfer[1], :])
             else:
-                print(int(gw_ind), slim_elements_df.loc[transfer[1], 'web_name'])
+                print(int(gw_ind), slim_elements_df.loc[transfer[1], 'web_name'], predictions[transfer[1], :][0],  prob[transfer_ind, gw_ind])
                
                 
         else:
-            if wildcard:
+            if unlimited_transfers:
                 max_ind = np.nanargmax(p[gw_ind, :-1])
                 transfer = transfers[max_ind]                    
-                print(int(gw_ind), slim_elements_df.loc[transfer[0], 'web_name'])
+                print(int(gw_ind), slim_elements_df.loc[transfer[0], 'web_name'], predictions[transfer[0], :][0], prob[transfer_ind, gw_ind])
                 price.append(slim_elements_df.loc[transfer[0], 'now_cost'])
-                
             
     
-    print('points: ', checked_points[best_ind]-baseline, 'price: ', price)
+    print('points: ', best_points-baseline, 'price: ', sum(price))
     print('\n')
     
     best_p = []
@@ -906,7 +999,7 @@ while True:
         transfer = transfers[max_ind]
         
         best_p.append(max_ind)
-        if not wildcard:
+        if not unlimited_transfers:
             if not transfer == [np.nan, np.nan]:    
                 print('GW', int(transfer_ind/2), slim_elements_df.loc[transfer[0], 'web_name'], 'for', slim_elements_df.loc[transfer[1], 'web_name'],  prob[max_ind, transfer_ind], counts[transfer_ind, max_ind])
                 print(predictions[transfer[0], :])
@@ -915,12 +1008,12 @@ while True:
                 print('GW', int(transfer_ind/2), 'no trans', prob[max_ind, transfer_ind], counts[transfer_ind, max_ind])
     print('\n')
         
-    putative_transfers = []
-    for i in range(len(point_diff)):
-        putative_transfers.append(transfers[best_p[i]])
+    # putative_transfers = []
+    # for i in range(len(point_diff)):
+    #     putative_transfers.append(transfers[best_p[i]])
     
-    checked_points.append(objective(putative_transfers, free_transfers))
-    checked_transfers.append(best_p)
+    # checked_points.append(objective(putative_transfers, free_transfers))
+    # checked_transfers.append(best_p)
         
         
     # savevar = [checked_points, checked_transfers]
