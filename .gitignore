@@ -5,3 +5,5 @@ models/transfers.pkl
 models/transfers.pkl
 models/transfers.pkl
 *.pkl
+*.sav
+*.pkl
