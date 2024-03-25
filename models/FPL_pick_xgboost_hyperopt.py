@@ -9,14 +9,14 @@ points_per_game_treshold = -1
 exclude_team = []
 
 #exclude player
-exclude_players = []
+exclude_players = ['McBurnie', 'Baleba', 'Ramsdale', 'Boly', 'Verbruggen', 'Yates', 'Darwin', 'S.Bueno', 'Jorginho', 'Ansu Fati', 'Ortega Moreno', 'Cresswell', 'Rogers', 'Muric', 'Wood', 'Sangaré', 'Lukić', 'T.Davies', 'Cucurella', 'Quansah', 'Fraser', 'Arblaster']
 exclude_players_out = []
 include_players = []
 
 include_minutes = []
 do_not_exclude_players = []
 
-rounds_to_value = 4
+rounds_to_value = 5
 
 continue_optimize = False
 
@@ -24,7 +24,8 @@ continue_optimize = False
 wildcard = True
 free_hit = False
 
-skip_gw = []
+skip_gw = [37]
+benchboost_gw = 34
 
 force_90 = ['Salah', 'Pedro Porro']
 
@@ -34,7 +35,8 @@ manual_pred = 1
 #                  }
 manual_blanks = {}
 
-string = '{"picks":[{"element":524,"position":1,"selling_price":41,"multiplier":1,"purchase_price":40,"is_captain":false,"is_vice_captain":false},{"element":29,"position":2,"selling_price":56,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":369,"position":3,"selling_price":54,"multiplier":1,"purchase_price":54,"is_captain":false,"is_vice_captain":false},{"element":321,"position":4,"selling_price":46,"multiplier":1,"purchase_price":46,"is_captain":false,"is_vice_captain":false},{"element":506,"position":5,"selling_price":56,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":504,"position":6,"selling_price":79,"multiplier":1,"purchase_price":79,"is_captain":false,"is_vice_captain":false},{"element":630,"position":7,"selling_price":50,"multiplier":1,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":516,"position":8,"selling_price":99,"multiplier":2,"purchase_price":98,"is_captain":true,"is_vice_captain":false},{"element":117,"position":9,"selling_price":82,"multiplier":1,"purchase_price":82,"is_captain":false,"is_vice_captain":false},{"element":60,"position":10,"selling_price":86,"multiplier":1,"purchase_price":83,"is_captain":false,"is_vice_captain":false},{"element":326,"position":11,"selling_price":51,"multiplier":1,"purchase_price":51,"is_captain":false,"is_vice_captain":true},{"element":597,"position":12,"selling_price":48,"multiplier":0,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":353,"position":13,"selling_price":78,"multiplier":0,"purchase_price":75,"is_captain":false,"is_vice_captain":false},{"element":412,"position":14,"selling_price":58,"multiplier":0,"purchase_price":56,"is_captain":false,"is_vice_captain":false},{"element":430,"position":15,"selling_price":66,"multiplier":0,"purchase_price":65,"is_captain":false,"is_vice_captain":false}],"chips":[{"status_for_entry":"available","played_by_entry":[],"name":"wildcard","number":1,"start_event":21,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team"},{"status_for_entry":"played","played_by_entry":[25],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team"}],"transfers":{"cost":4,"status":"cost","limit":1,"made":0,"bank":61,"value":971}}'
+string = '{"picks":[{"element":524,"position":1,"selling_price":41,"multiplier":1,"purchase_price":40,"is_captain":false,"is_vice_captain":false},{"element":29,"position":2,"selling_price":56,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":283,"position":3,"selling_price":45,"multiplier":1,"purchase_price":45,"is_captain":false,"is_vice_captain":false},{"element":321,"position":4,"selling_price":46,"multiplier":1,"purchase_price":46,"is_captain":false,"is_vice_captain":false},{"element":506,"position":5,"selling_price":56,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":504,"position":6,"selling_price":79,"multiplier":1,"purchase_price":79,"is_captain":false,"is_vice_captain":false},{"element":362,"position":7,"selling_price":57,"multiplier":1,"purchase_price":57,"is_captain":false,"is_vice_captain":false},{"element":516,"position":8,"selling_price":99,"multiplier":2,"purchase_price":98,"is_captain":true,"is_vice_captain":false},{"element":415,"position":9,"selling_price":75,"multiplier":1,"purchase_price":75,"is_captain":false,"is_vice_captain":false},{"element":60,"position":10,"selling_price":86,"multiplier":1,"purchase_price":83,"is_captain":false,"is_vice_captain":false},{"element":326,"position":11,"selling_price":51,"multiplier":1,"purchase_price":51,"is_captain":false,"is_vice_captain":true},{"element":687,"position":12,"selling_price":45,"multiplier":0,"purchase_price":45,"is_captain":false,"is_vice_captain":false},{"element":353,"position":13,"selling_price":78,"multiplier":0,"purchase_price":75,"is_captain":false,"is_vice_captain":false},{"element":412,"position":14,"selling_price":58,"multiplier":0,"purchase_price":56,"is_captain":false,"is_vice_captain":false},{"element":430,"position":15,"selling_price":66,"multiplier":0,"purchase_price":65,"is_captain":false,"is_vice_captain":false}],"chips":[{"status_for_entry":"active","played_by_entry":[30],"name":"wildcard","number":1,"start_event":21,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"unavailable","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"unavailable","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team"},{"status_for_entry":"played","played_by_entry":[25],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team"}],"transfers":{"cost":4,"status":"cost","limit":1,"made":0,"bank":73,"value":959}}'
+
 #set to non-zero to override substitute price
 substitute_override = 0
 
@@ -105,7 +107,11 @@ js = json.loads(a)
 transfers = js["transfers"]
 bank = transfers['bank']
 free_transfers = transfers["limit"]
-print('Free transfers: ', free_transfers)
+
+if unlimited_transfers:
+    print('Free transfers: ', 15)
+else:        
+    print('Free transfers: ', free_transfers)
 
 
 #get statistics of all players
@@ -174,36 +180,53 @@ for player in df_gw['element'].unique():
     slim_ind = slim_elements_df['id'] == player
     name = slim_elements_df.loc[slim_ind, 'web_name'].values[0]
     
-    if name in force_90:
-        selected_ind = (df_gw['element'] == player) & (df_gw['minutes'] > 0)
-    else:    
-        selected_ind = df_gw['element'] == player
+    # if name in force_90:
+    #     selected_ind = (df_gw['element'] == player) & (df_gw['minutes'] > 0)
+    # else:    
+    #     selected_ind = df_gw['element'] == player
+        
+    selected_ind = (df_gw['element'] == player) & (df_gw['minutes'] > 0)
+    
+    if sum(selected_ind) == 0:
+        continue
         
     player_df = df_gw[selected_ind]
     player_df.set_index('kickoff_time', inplace=True)
     
-    if name in force_90:
-        minutes = player_df['minutes'].rolling('30D').mean().values
-        adjust = 90/minutes
-    else:    
-        minutes = player_df['minutes'].rolling('30D').mean().values
-        adjust = 1  
-    
-    
-    form = player_df['total_points'].rolling('30D').mean()*adjust
-    xG = player_df['expected_goals'].rolling('30D').mean()*adjust
-    xA = player_df['expected_assists'].rolling('30D').mean()*adjust
-    xGI = player_df['expected_goal_involvements'].rolling('30D').mean()*adjust
-    xGC = player_df['expected_goals_conceded'].rolling('30D').mean()*adjust
-    xP = player_df['xP'].rolling('30D').mean()*adjust
-    points_per_game =  player_df['total_points'].cumsum()/ (player_df['round'])*adjust
-    ict = player_df['ict_index'].rolling('30D').mean()*adjust
-    influence = player_df['influence'].rolling('30D').mean()*adjust
-    threat = player_df['threat'].rolling('30D').mean()*adjust
-    creativity = player_df['creativity'].rolling('30D').mean()*adjust
+    form = player_df['total_points'].rolling('30D').mean()
+    xG = player_df['expected_goals'].rolling('30D').mean()
+    xA = player_df['expected_assists'].rolling('30D').mean()
+    xGI = player_df['expected_goal_involvements'].rolling('30D').mean()
+    xGC = player_df['expected_goals_conceded'].rolling('30D').mean()
+    xP = player_df['xP'].rolling('30D').mean()
+    points_per_game =  player_df['total_points'].cumsum()/ (player_df['round'])
+    ict = player_df['ict_index'].rolling('30D').mean()
+    influence = player_df['influence'].rolling('30D').mean()
+    threat = player_df['threat'].rolling('30D').mean()
+    creativity = player_df['creativity'].rolling('30D').mean()
     bps = player_df['bps'].rolling('30D').mean()
+    minutes = player_df['minutes'].rolling('30D').mean().values
     
-    
+    if name in force_90:
+        #average across season (non zero matches)
+        minutes[-1] = np.mean(player_df['minutes'])        
+        form[-1] = np.mean(player_df['total_points'])
+        xG[-1] = np.mean(player_df['expected_goals'])
+        xA[-1] = np.mean(player_df['expected_assists'])
+        xGI[-1] = np.mean(player_df['expected_goal_involvements'])
+        xGC[-1] = np.mean(player_df['expected_goals_conceded'])
+        xP[-1] = np.mean(player_df['xP'])
+        #points_per_game[-1] =  np.mean(player_df['total_points'].cumsum()/ (player_df['round'])
+        ict[-1] = np.mean(player_df['ict_index'])
+        influence[-1] = np.mean(player_df['influence'])
+        threat[-1] = np.mean(player_df['threat'])
+        creativity[-1] = np.mean(player_df['creativity'])
+        bps[-1] = np.mean(player_df['bps'])
+        
+    #if two last matches are not played then set to zero
+    elif sum(player_df['minutes'][-2:]) < 90:
+        minutes[-1] = 0
+        
     name_ind = np.where(slim_elements_df['id'] == player)[0][-1]
         
     #points per played game
@@ -262,10 +285,17 @@ for this_gw in range(1, current_gameweek):
 print('future')
 #get statistics for the x next gameweeks
 df_future_games = pd.DataFrame(columns=['gameweek', 'team_h', 'team_a', 'difficulty_diff'])
-for i in range(jump_rounds, rounds_to_value+1+jump_rounds):
+benchboost = []
+for i in range(jump_rounds, rounds_to_value+jump_rounds):
     this_gw = i + current_gameweek
     
+    if benchboost_gw == this_gw:
+        benchboost.append(True)
+    else:
+        benchboost.append(False)
+    
     if any(np.array(skip_gw) == this_gw):
+        print('check benchboost')
         continue
     
     print(this_gw)
@@ -285,7 +315,7 @@ slim_elements_df['form'] = slim_elements_df['form'].astype(float)
 total_money = bank
 
 points_per_game = slim_elements_df['points_per_game'].astype(float)
-predicted_values = np.zeros((slim_elements_df.shape[0], rounds_to_value+1))
+predicted_values = np.zeros((slim_elements_df.shape[0], rounds_to_value))
 predicted_values_1st_gw = np.zeros((slim_elements_df.shape[0], 1))
 
 #calculate value and add to database
@@ -327,7 +357,7 @@ for df_name in slim_elements_df.iterrows():
     # if df_name[1].second_name == 'Gordon':
     #     print(df_name)
         
-    # df_name = [564, slim_elements_df.iloc[564]]
+    #df_name = (107, slim_elements_df.iloc[107])
 
     if not selected_players[df_name[0]]:
         team = int(df_name[1].team)
@@ -352,14 +382,13 @@ for df_name in slim_elements_df.iterrows():
         fixtures = fixtures.sort_values(by='kickoff_time')        
         player_games.set_index('kickoff_time', inplace=True)
         
-        
+        #check if player exist in slim
         if sum(df_gw.element == player_id) == 0:
+            selected_ind = np.where(elements_df.id == player_id)[0][-1]
             
             print('Estimate values for ', elements_df.iloc[selected_ind].web_name)
 
             xP = np.nan
-            
-            selected_ind = np.where(elements_df.id == player_id)[0][-1]
             xG = float(elements_df.iloc[selected_ind].expected_goals)
             xA = float(elements_df.iloc[selected_ind].expected_assists)
             xGI = float(elements_df.iloc[selected_ind].expected_goal_involvements)
@@ -375,8 +404,10 @@ for df_name in slim_elements_df.iterrows():
             points_per_game = float(elements_df.iloc[selected_ind].points_per_game)
             
         else:
-                
-            selected_ind = np.where(df_gw.element == player_id)[0][-1]
+            
+            id_ind  = df_gw.element == player_id
+            #min_ind = ~np.isnan(df_gw.running_minutes)
+            selected_ind = np.where(id_ind)[0][-1]
             
             xG = df_gw.loc[selected_ind]['running_xG']
             xA = df_gw.loc[selected_ind]['running_xA']
@@ -423,7 +454,7 @@ for df_name in slim_elements_df.iterrows():
         away_difficulty = np.array(df_future_games.difficulty_away[selected_matches])
             
         #correct for fixtures
-        pred_score = np.zeros(rounds_to_value+1)
+        pred_score = np.zeros(rounds_to_value)
         total_matches = 0
         
         gws = gws.reset_index()
@@ -468,7 +499,10 @@ for df_name in slim_elements_df.iterrows():
             df_predict['string_opp_team'] = df_predict['string_opp_team'].astype('category')
 
             #estimated = 10**result.predict(df_predict) + min_val  
-            estimated = result.predict(df_predict)           
+            estimated = result.predict(df_predict)         
+            
+            if minutes < 10 or np.isnan(minutes):
+                estimated = 0
             
             if df_name[1]['web_name'] in include_players:
                 estimated = 10
@@ -502,7 +536,7 @@ for df_name in slim_elements_df.iterrows():
         predictions.append(pred_score)
         
     else:
-        predictions.append(np.zeros(rounds_to_value+1).astype(float))
+        predictions.append(np.zeros(rounds_to_value).astype(float))
 
 
 slim_elements_df['points_1st_gw'] = predicted_values_1st_gw
@@ -518,13 +552,13 @@ original_prediction = np.copy(predictions)
 selected = slim_elements_df['form'] < form_treshold
 prediction[selected] = 0
 for ind in np.where(selected)[0]:
-    predictions[ind]=np.zeros(rounds_to_value+1).astype(float)
+    predictions[ind]=np.zeros(rounds_to_value).astype(float)
 
 # for player in include_players:
 #     selected = slim_elements_df['web_name'] == player
 #     prediction[selected] = manual_pred
 #     for ind in np.where(selected)[0]:
-#         predictions[ind]=np.zeros(rounds_to_value+1).astype(float) + manual_pred
+#         predictions[ind]=np.zeros(rounds_to_value).astype(float) + manual_pred
 
 
 slim_elements_df['prediction'] = predictions
@@ -566,45 +600,50 @@ value = slim_elements_df['prediction'].apply(sum) / now_cost
 slim_elements_df['value'] = value
 
 #find points for each match or a series of matches (depends on len of prediction)
-def find_team_points(team_positions, gw_prediction):
+def find_team_points(team_positions, gw_prediction, benchboost):
     
-    pred_points = []
-            
-    order = np.argsort(gw_prediction)
-    ordered_points = np.sort(gw_prediction)
-    ordered_positions = team_positions[order]
+    if benchboost:
+        return sum(gw_prediction)
     
-    #pick the 11 best players of the team
-    for i in range(11):   
+    else:
+
+        pred_points = []
                 
-        #force pick from some positions
-        if i == 0:
-            selected = ordered_positions == 1
-
-        elif i == 1 or i == 2 or i == 3:
-            selected = ordered_positions == 2
-
-        elif i == 4 or i == 5:
-            selected = ordered_positions == 3
-
-        elif i == 6:
-            selected = ordered_positions == 4
-        #do not repick a keeper
-        else:
-            selected = ordered_positions > 1
-            
-        selected_index = np.where(selected)[0][-1]
-            
-        pred_points.append(ordered_points[selected_index])
-
-        ordered_points = np.delete(ordered_points, selected_index)
-        ordered_positions =  np.delete(ordered_positions, selected_index)
+        order = np.argsort(gw_prediction)
+        ordered_points = np.sort(gw_prediction)
+        ordered_positions = team_positions[order]
+        
+        #pick the 11 best players of the team
+        for i in range(11):   
+                    
+            #force pick from some positions
+            if i == 0:
+                selected = ordered_positions == 1
     
-    captain_ind = np.argmax(pred_points)
+            elif i == 1 or i == 2 or i == 3:
+                selected = ordered_positions == 2
     
-    pred_points[captain_ind] = pred_points[captain_ind]*2
+            elif i == 4 or i == 5:
+                selected = ordered_positions == 3
     
-    return sum(pred_points)
+            elif i == 6:
+                selected = ordered_positions == 4
+            #do not repick a keeper
+            else:
+                selected = ordered_positions > 1
+                
+            selected_index = np.where(selected)[0][-1]
+                
+            pred_points.append(ordered_points[selected_index])
+    
+            ordered_points = np.delete(ordered_points, selected_index)
+            ordered_positions =  np.delete(ordered_positions, selected_index)
+        
+        captain_ind = np.argmax(pred_points)
+        
+        pred_points[captain_ind] = pred_points[captain_ind]*2
+        
+        return sum(pred_points)
 
 if unlimited_transfers:
     transfer_cost = 0
@@ -612,7 +651,7 @@ if unlimited_transfers:
     player_iteration = 15
 else:
     transfer_cost = 4
-    gw_iteration = rounds_to_value+1
+    gw_iteration = rounds_to_value
     player_iteration = 1
 
 point_diff = []
@@ -661,19 +700,19 @@ for j in range(player_iteration):
                         preds = np.cumsum((predictions[player_in[0]] - predictions[player_out[0]])[::-1])[::-1]   
                         
                         #for main an hit we can not accept lower score and higher price
-                        if ((i == rounds_to_value and preds[i] <= 0) or (i < rounds_to_value and (preds[i] <= preds[i+1]))) and (player_in[1].now_cost > player_out[1].now_cost):
+                        if ((i == rounds_to_value-1 and preds[i] <= 0) or (i < rounds_to_value-1 and (preds[i] <= preds[i+1]))) and (player_in[1].now_cost > player_out[1].now_cost):
                             probability_main_ifhit.append(np.nan)
                         else:
                             probability_main_ifhit.append(preds[i])
                             
                         #for main an no hit we can not accept lower score
-                        if ((i == rounds_to_value and preds[i] <= 0) or (i < rounds_to_value and (preds[i] <= preds[i+1]))):
+                        if ((i == rounds_to_value-1 and preds[i] <= 0) or (i < rounds_to_value-1 and (preds[i] <= preds[i+1]))):
                             probability_main_ifnohit.append(np.nan)
                         else:
                             probability_main_ifnohit.append(preds[i])
                             
                         #for hits we need at least 4 points increase
-                        if (i == rounds_to_value and preds[i] >= transfer_cost) or i < rounds_to_value and any(preds[i:] >= transfer_cost):                  
+                        if (i == rounds_to_value-1 and preds[i] >= transfer_cost) or i < rounds_to_value-1 and any(preds[i:] >= transfer_cost):                  
                             probability_hit.append(preds[i])
                         else:
                             probability_hit.append(np.nan)
@@ -785,7 +824,7 @@ def objective(check_transfers, free_transfers):
                 gw_prediction = predictions[team, gws]
                 team_positions = slim_elements_df.loc[team, 'element_type'].values
                 
-                estimated_points = find_team_points(team_positions, gw_prediction)
+                estimated_points = find_team_points(team_positions, gw_prediction, benchboost[gws])
                 
                 team_points.append(estimated_points)
 
@@ -819,6 +858,8 @@ def check_random_transfers(i):
         # if (transfer_ind not in checked_transfers) and (transfer_ind not in evaluated_transfers):
         
         point = objective(putative_transfers, free_transfers)
+        if not np.isnan(point):
+            print(j)
         points.append(point)
         evaluated_transfers.append(transfer_ind)
             
@@ -872,9 +913,13 @@ def check_guided_transfers(i, best_transfer, best_point):
         transfer_ind.append(j)
         putative_transfers.append(transfers[j])
             
+    random_ordered_transfers = list(range(len(transfers)))
+    random.shuffle(random_ordered_transfers)
+    
+    original_transfer =  transfer_ind[i].copy()
     
     #exhange one of the transfers
-    for j in range(len(transfers)):
+    for j in random_ordered_transfers:
         if prob[j, i] > 0:
             
             transfer_ind[i] = j
@@ -887,8 +932,11 @@ def check_guided_transfers(i, best_transfer, best_point):
             evaluated_transfers.append(transfer_ind.copy())                
                    
             if not np.isnan(point):                  
-                sum_points[i, transfer_ind[i]] = sum_points[i, transfer_ind[i]] + (point-best_point)
+                sum_points[i, transfer_ind[i]] = sum_points[i, transfer_ind[i]] + (point-baseline)
                 counts[i, transfer_ind[i]] += 1
+                
+                sum_points[i, original_transfer] = sum_points[i, original_transfer] - (point-baseline)
+                counts[i, original_transfer] += 1
             #punish also nan teams
             else:
                 counts[i, transfer_ind[i]] += 1
