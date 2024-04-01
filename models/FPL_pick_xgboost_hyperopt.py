@@ -112,6 +112,9 @@ if unlimited_transfers:
     print('Free transfers: ', 15)
 else:        
     print('Free transfers: ', free_transfers)
+ 
+#subtract 1 since we add one for each gw later
+free_transfers -= 1
 
 
 #get statistics of all players
@@ -730,16 +733,20 @@ for j in range(player_iteration):
         probability_main_ifhit.append(4)
         probability_main_ifnohit.append(4)
         
-        #if all ar nan and not wild cars
+        #if all are nan and not wild cars
         if all(elem is np.nan for elem in probability_hit) and not unlimited_transfers:
+            point_diff.append(probability_main_ifnohit) 
+            point_diff.append(probability_main_ifnohit) 
             point_diff.append(probability_main_ifnohit) 
         else:
             point_diff.append(probability_main_ifhit) 
+            point_diff.append(probability_main_ifhit) 
+            point_diff.append(probability_main_ifhit) 
         
-        if not unlimited_transfers:
-            probability_hit.append(4)
-            point_diff.append(probability_hit)
-            point_diff.append(probability_hit)
+        # if not unlimited_transfers:
+        #     probability_hit.append(4)
+        #     point_diff.append(probability_hit)
+        #     point_diff.append(probability_hit)
         
         transfers.append([np.nan, np.nan])
     
@@ -834,12 +841,12 @@ def objective(check_transfers, free_transfers):
                 team[transfer3[1]] = True
                 free_transfers -=1
                 
-                if free_transfers < 0:
-                    team_points.append(transfer_cost)
-                    free_transfers +=1
-                    
-                if free_transfers > 2:
-                    free_transfers = 2  
+            if free_transfers < 0:
+                team_points.append(transfer_cost*free_transfers)
+                free_transfers = 0
+                
+            if free_transfers > 2:
+                free_transfers = 2  
                     
             gw_prediction = predictions[team, gw]
             team_positions = slim_elements_df.loc[team, 'element_type'].values
@@ -965,7 +972,7 @@ def check_guided_transfers(i, best_transfer, best_point):
     random_ordered_transfers = list(range(len(transfers)))
     random.shuffle(random_ordered_transfers)
     
-    original_transfer =  transfer_ind[i]
+    original_transfer = transfer_ind[i]
     
     #exhange one of the transfers
     for j in random_ordered_transfers:
