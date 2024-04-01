@@ -323,7 +323,7 @@ def objective(space):
       
 grow_policy = ['depthwise', 'lossguide']
 
-space={'max_depth': hp.quniform("max_depth", 1, 15, 1), #try to decrease from 45 to 15?
+space={'max_depth': hp.quniform("max_depth", 1, 45, 1), #try to decrease from 45 to 10?
         'min_split_loss': hp.uniform('min_split_loss', 0, 15),
         'reg_lambda' : hp.uniform('reg_lambda', 0, 15),
         'reg_alpha': hp.loguniform('reg_alpha', -3, np.log(10000)),
@@ -471,7 +471,7 @@ trials_df["loss"] = [t["result"]["loss"] for t in trials]
 
 trials_list = np.argsort(trials_df["loss"])
 
-eval_hyperparams = trials.trials[trials_list[2]]["misc"]["vals"]
+eval_hyperparams = trials.trials[trials_list[0]]["misc"]["vals"]
 
 test_hyperparams = {}
 for field, val in eval_hyperparams.items():
