@@ -9,14 +9,14 @@ points_per_game_treshold = -1
 exclude_team = []
 
 #exclude player
-exclude_players = ['Ramsdale', 'Darwin', 'Johnstone']
+exclude_players = ['Ramsdale', 'Johnstone', 'C.Richards']
 exclude_players_out = []
 include_players = []
 
 include_minutes = []
 do_not_exclude_players = []
 
-rounds_to_value = 5
+rounds_to_value = 6
            
 wildcard = False
 
@@ -24,7 +24,7 @@ skip_gw = [37]
 benchboost_gw = 34
 jump_rounds = 0
 
-force_90 = ['Salah', 'Pedro Porro', 'Henderson']
+force_90 = []
 
 manual_pred = 1
 
@@ -32,8 +32,7 @@ manual_pred = 1
 #                  }
 manual_blanks = {}
 
-string = '{"picks":[{"element":301,"position":1,"selling_price":38,"multiplier":1,"purchase_price":38,"is_captain":false,"is_vice_captain":false},{"element":29,"position":2,"selling_price":56,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":238,"position":3,"selling_price":39,"multiplier":1,"purchase_price":39,"is_captain":false,"is_vice_captain":false},{"element":407,"position":4,"selling_price":44,"multiplier":1,"purchase_price":44,"is_captain":false,"is_vice_captain":false},{"element":19,"position":5,"selling_price":90,"multiplier":1,"purchase_price":90,"is_captain":false,"is_vice_captain":true},{"element":353,"position":6,"selling_price":78,"multiplier":1,"purchase_price":75,"is_captain":false,"is_vice_captain":false},{"element":6,"position":7,"selling_price":72,"multiplier":1,"purchase_price":72,"is_captain":false,"is_vice_captain":false},{"element":308,"position":8,"selling_price":132,"multiplier":2,"purchase_price":131,"is_captain":true,"is_vice_captain":false},{"element":85,"position":9,"selling_price":72,"multiplier":1,"purchase_price":72,"is_captain":false,"is_vice_captain":false},{"element":279,"position":10,"selling_price":46,"multiplier":1,"purchase_price":46,"is_captain":false,"is_vice_captain":false},{"element":355,"position":11,"selling_price":143,"multiplier":1,"purchase_price":143,"is_captain":false,"is_vice_captain":false},{"element":569,"position":12,"selling_price":50,"multiplier":0,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":249,"position":13,"selling_price":55,"multiplier":0,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":220,"position":14,"selling_price":47,"multiplier":0,"purchase_price":47,"is_captain":false,"is_vice_captain":false},{"element":573,"position":15,"selling_price":44,"multiplier":0,"purchase_price":44,"is_captain":false,"is_vice_captain":false}],"chips":[{"status_for_entry":"played","played_by_entry":[30],"name":"wildcard","number":1,"start_event":21,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team"},{"status_for_entry":"played","played_by_entry":[25],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team"}],"transfers":{"cost":4,"status":"cost","limit":1,"made":0,"bank":6,"value":1015}}'
-
+string = '{"picks":[{"element":301,"position":1,"selling_price":38,"multiplier":1,"purchase_price":38,"is_captain":false,"is_vice_captain":false},{"element":29,"position":2,"selling_price":57,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":573,"position":3,"selling_price":44,"multiplier":1,"purchase_price":44,"is_captain":false,"is_vice_captain":false},{"element":407,"position":4,"selling_price":44,"multiplier":1,"purchase_price":44,"is_captain":false,"is_vice_captain":false},{"element":19,"position":5,"selling_price":89,"multiplier":1,"purchase_price":90,"is_captain":false,"is_vice_captain":false},{"element":353,"position":6,"selling_price":79,"multiplier":1,"purchase_price":75,"is_captain":false,"is_vice_captain":false},{"element":6,"position":7,"selling_price":72,"multiplier":1,"purchase_price":72,"is_captain":false,"is_vice_captain":false},{"element":308,"position":8,"selling_price":132,"multiplier":2,"purchase_price":131,"is_captain":true,"is_vice_captain":false},{"element":85,"position":9,"selling_price":72,"multiplier":1,"purchase_price":72,"is_captain":false,"is_vice_captain":false},{"element":279,"position":10,"selling_price":46,"multiplier":1,"purchase_price":46,"is_captain":false,"is_vice_captain":false},{"element":355,"position":11,"selling_price":143,"multiplier":1,"purchase_price":143,"is_captain":false,"is_vice_captain":true},{"element":569,"position":12,"selling_price":50,"multiplier":0,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":249,"position":13,"selling_price":55,"multiplier":0,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":220,"position":14,"selling_price":47,"multiplier":0,"purchase_price":47,"is_captain":false,"is_vice_captain":false},{"element":238,"position":15,"selling_price":39,"multiplier":0,"purchase_price":39,"is_captain":false,"is_vice_captain":false}],"chips":[{"status_for_entry":"played","played_by_entry":[30],"name":"wildcard","number":1,"start_event":21,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team"},{"status_for_entry":"played","played_by_entry":[25],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team"}],"transfers":{"cost":4,"status":"cost","limit":2,"made":0,"bank":6,"value":1020}}'
 season = '2023-24'
 
 import requests
@@ -228,21 +227,24 @@ for player in df_gw['element'].unique():
         
         if last_games > 0:
             result[i+1] = last_point/last_games
+            
+    #redefine to isnert in all matches
+    selected_ind = df_gw['element'] == player
     
-    df_gw.loc[selected_ind, 'running_ict'] = ict.values
-    df_gw.loc[selected_ind, 'running_influence'] = influence.values
-    df_gw.loc[selected_ind, 'running_threat'] = threat.values
-    df_gw.loc[selected_ind, 'running_creativity'] = creativity.values
-    df_gw.loc[selected_ind, 'running_bps'] = bps.values
-    df_gw.loc[selected_ind, 'form'] = form.values
-    df_gw.loc[selected_ind, 'running_xG'] = xG.values
-    df_gw.loc[selected_ind, 'running_xA'] = xA.values
-    df_gw.loc[selected_ind, 'running_xGI'] = xGI.values
-    df_gw.loc[selected_ind, 'running_xGC'] = xGC.values    
-    df_gw.loc[selected_ind, 'running_xP'] = xP.values   
-    df_gw.loc[selected_ind, 'points_per_game'] = points_per_game.values
-    df_gw.loc[selected_ind, 'points_per_played_game'] = result[:-1]
-    df_gw.loc[selected_ind, 'running_minutes'] = minutes
+    df_gw.loc[selected_ind, 'running_ict'] = ict.values[-1]
+    df_gw.loc[selected_ind, 'running_influence'] = influence.values[-1]
+    df_gw.loc[selected_ind, 'running_threat'] = threat.values[-1]
+    df_gw.loc[selected_ind, 'running_creativity'] = creativity.values[-1]
+    df_gw.loc[selected_ind, 'running_bps'] = bps.values[-1]
+    df_gw.loc[selected_ind, 'form'] = form.values[-1]
+    df_gw.loc[selected_ind, 'running_xG'] = xG.values[-1]
+    df_gw.loc[selected_ind, 'running_xA'] = xA.values[-1]
+    df_gw.loc[selected_ind, 'running_xGI'] = xGI.values[-1]
+    df_gw.loc[selected_ind, 'running_xGC'] = xGC.values[-1] 
+    df_gw.loc[selected_ind, 'running_xP'] = xP.values[-1] 
+    df_gw.loc[selected_ind, 'points_per_game'] = points_per_game.values[-1]
+    df_gw.loc[selected_ind, 'points_per_played_game'] = result[:-1][-1]
+    df_gw.loc[selected_ind, 'running_minutes'] = minutes[-1]
     
 
 
@@ -712,7 +714,8 @@ for j in range(player_iteration):
                             probability_hit.append(np.nan)
                             
                 ind_next += 1
-    
+        
+        
         probability_main_ifhit.append(4)
         probability_main_ifnohit.append(4)
         
