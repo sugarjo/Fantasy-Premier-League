@@ -1,6 +1,5 @@
 minutes_thisyear_treshold = 1
 form_treshold = -1
-similiarity_treshold = 0.85
 points_per_game_treshold = -1
 
 
@@ -8,23 +7,23 @@ points_per_game_treshold = -1
 #brentford: 4, west ham: 19
 exclude_team = []
 
-#exclude player
-exclude_players = ['Ramsdale', 'Johnstone', 'C.Richards']
+#exclude player 'Hee Chan', 'Alexander-Arnold', 
+exclude_players = ['Shaw', 'Pedro Lomba Neto', 'Dawson', 'Botman', 'B.Badiashile', 'Livramento', 'Karius', 'Steele', 'Robertson', 'R.Varane', 'Ramsdale', 'Johnstone', 'Bradley', 'Kelleher', 'C.Richards', 'Coleman', 'Chalobah', 'Matip']
 exclude_players_out = []
 include_players = []
 
 include_minutes = []
 do_not_exclude_players = []
 
-rounds_to_value = 6
+rounds_to_value = 1
            
-wildcard = False
+wildcard = True
 
-skip_gw = [37]
-benchboost_gw = 34
-jump_rounds = 0
+skip_gw = []
+benchboost_gw = 35
+jump_rounds = 3
 
-force_90 = []
+force_90 = ['A.Becker', 'Hee Chan']
 
 manual_pred = 1
 
@@ -32,7 +31,7 @@ manual_pred = 1
 #                  }
 manual_blanks = {}
 
-string = '{"picks":[{"element":301,"position":1,"selling_price":38,"multiplier":1,"purchase_price":38,"is_captain":false,"is_vice_captain":false},{"element":29,"position":2,"selling_price":57,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":573,"position":3,"selling_price":44,"multiplier":1,"purchase_price":44,"is_captain":false,"is_vice_captain":false},{"element":407,"position":4,"selling_price":44,"multiplier":1,"purchase_price":44,"is_captain":false,"is_vice_captain":false},{"element":19,"position":5,"selling_price":89,"multiplier":1,"purchase_price":90,"is_captain":false,"is_vice_captain":false},{"element":353,"position":6,"selling_price":79,"multiplier":1,"purchase_price":75,"is_captain":false,"is_vice_captain":false},{"element":6,"position":7,"selling_price":72,"multiplier":1,"purchase_price":72,"is_captain":false,"is_vice_captain":false},{"element":308,"position":8,"selling_price":132,"multiplier":2,"purchase_price":131,"is_captain":true,"is_vice_captain":false},{"element":85,"position":9,"selling_price":72,"multiplier":1,"purchase_price":72,"is_captain":false,"is_vice_captain":false},{"element":279,"position":10,"selling_price":46,"multiplier":1,"purchase_price":46,"is_captain":false,"is_vice_captain":false},{"element":355,"position":11,"selling_price":143,"multiplier":1,"purchase_price":143,"is_captain":false,"is_vice_captain":true},{"element":569,"position":12,"selling_price":50,"multiplier":0,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":249,"position":13,"selling_price":55,"multiplier":0,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":220,"position":14,"selling_price":47,"multiplier":0,"purchase_price":47,"is_captain":false,"is_vice_captain":false},{"element":238,"position":15,"selling_price":39,"multiplier":0,"purchase_price":39,"is_captain":false,"is_vice_captain":false}],"chips":[{"status_for_entry":"played","played_by_entry":[30],"name":"wildcard","number":1,"start_event":21,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team"},{"status_for_entry":"played","played_by_entry":[25],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team"}],"transfers":{"cost":4,"status":"cost","limit":2,"made":0,"bank":6,"value":1020}}'
+string = '{"picks":[{"element":301,"position":1,"selling_price":38,"multiplier":1,"purchase_price":38,"is_captain":false,"is_vice_captain":false},{"element":29,"position":2,"selling_price":57,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":573,"position":3,"selling_price":44,"multiplier":1,"purchase_price":44,"is_captain":false,"is_vice_captain":false},{"element":407,"position":4,"selling_price":44,"multiplier":1,"purchase_price":44,"is_captain":false,"is_vice_captain":false},{"element":19,"position":5,"selling_price":90,"multiplier":1,"purchase_price":90,"is_captain":false,"is_vice_captain":false},{"element":362,"position":6,"selling_price":61,"multiplier":1,"purchase_price":61,"is_captain":false,"is_vice_captain":true},{"element":6,"position":7,"selling_price":73,"multiplier":1,"purchase_price":72,"is_captain":false,"is_vice_captain":false},{"element":308,"position":8,"selling_price":133,"multiplier":2,"purchase_price":131,"is_captain":true,"is_vice_captain":false},{"element":85,"position":9,"selling_price":72,"multiplier":1,"purchase_price":72,"is_captain":false,"is_vice_captain":false},{"element":279,"position":10,"selling_price":46,"multiplier":1,"purchase_price":46,"is_captain":false,"is_vice_captain":false},{"element":355,"position":11,"selling_price":143,"multiplier":1,"purchase_price":143,"is_captain":false,"is_vice_captain":false},{"element":569,"position":12,"selling_price":50,"multiplier":0,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":249,"position":13,"selling_price":55,"multiplier":0,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":220,"position":14,"selling_price":47,"multiplier":0,"purchase_price":47,"is_captain":false,"is_vice_captain":false},{"element":238,"position":15,"selling_price":39,"multiplier":0,"purchase_price":39,"is_captain":false,"is_vice_captain":false}],"chips":[{"status_for_entry":"played","played_by_entry":[30],"name":"wildcard","number":1,"start_event":21,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team"},{"status_for_entry":"played","played_by_entry":[25],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team"}],"transfers":{"cost":4,"status":"cost","limit":2,"made":0,"bank":24,"value":1001}}'
 season = '2023-24'
 
 import requests
@@ -61,8 +60,6 @@ team_path = directory + "/teams.csv"
     
 df_teams = pd.read_csv(team_path)
 string_names = df_teams['short_name'].values
-
-
 
 #log in
 session = requests.session()
@@ -329,8 +326,12 @@ for name in do_not_exclude_players:
 # points_per_game[selected_players] = 0
 
 with open(r'C:\Users\jorgels\Git\Fantasy-Premier-League\models\model.sav', 'rb') as f:
-    result = pickle.load(f)
-    
+    summary = pickle.load(f)
+
+result = summary["model"]
+
+train_X = summary["features"]
+
 predictions = []
 
 
@@ -342,10 +343,10 @@ keep_features = ['running_minutes', 'transfer_in', 'transfer_out', 'running_ict'
 #predict future points
 for df_name in slim_elements_df.iterrows():
     
-    # if df_name[1].second_name == 'Gordon':
+    # if df_name[1].second_name == 'C.Richards':
     #     print(df_name)
         
-    #df_name = (107, slim_elements_df.iloc[107])
+    #df_name = (326, slim_elements_df.iloc[326])
 
     if not selected_players[df_name[0]]:
         team = int(df_name[1].team)
@@ -467,27 +468,30 @@ for df_name in slim_elements_df.iterrows():
                 home = 0
             
                 
-            df_predict = pd.DataFrame(columns=keep_features)
+            df_game = pd.DataFrame(columns=keep_features)
             
             if gw_idx == 0:
-                df_predict.loc[0] = [minutes, transfer_in, transfer_out, ict, influence, threat, creativity, bps, string_opp_team, string_team, name,
+                df_game.loc[0] = [minutes, transfer_in, transfer_out, ict, influence, threat, creativity, bps, string_opp_team, string_team, name,
                                                    position, home, xP, xG*xG_multiplier, xA*3, xGI, xGC*xGC_multiplier, form,
                                                    points_per_game, points_per_played_game, other_difficulty, own_difficulty]
             else:
-                df_predict.loc[0] = [minutes, np.nan, np.nan, ict, influence, threat, creativity, bps, string_opp_team, string_team, name,
+                df_game.loc[0] = [minutes, np.nan, np.nan, ict, influence, threat, creativity, bps, string_opp_team, string_team, name,
                                                    position, home, xP, xG*xG_multiplier, xA*3, xGI, xGC*xGC_multiplier, form,
                                                    points_per_game, points_per_played_game, other_difficulty, own_difficulty]
       
-                     
+            df_predict = pd.concat([df_game, train_X])
+            
             df_predict['element_type'] = df_predict['element_type'].astype('category')
             df_predict['names'] = df_predict['names'].astype('category')
             df_predict['other_difficulty'] = df_predict['other_difficulty'].astype('category')
             df_predict['own_difficulty'] = df_predict['own_difficulty'].astype('category')
             df_predict['string_team'] = df_predict['string_team'].astype('category')
             df_predict['string_opp_team'] = df_predict['string_opp_team'].astype('category')
+            
+
 
             #estimated = 10**result.predict(df_predict) 
-            estimated = result.predict(df_predict)         
+            estimated = result.predict(df_predict.iloc[0:1])[0]     
             
             if minutes < 10 or np.isnan(minutes):
                 estimated = 0
@@ -506,8 +510,8 @@ for df_name in slim_elements_df.iterrows():
             if df_name[1]['web_name'] in exclude_players:
                 estimated = 0
             
-            for name in exclude_players:
-                if df_name[1]['first_name'] in name and df_name[1]['second_name'] in name:
+            for exclude_name in exclude_players:
+                if df_name[1]['first_name'] in exclude_name and df_name[1]['second_name'] in exclude_name:
                     estimated = 0
                 
             if string_team in exclude_team:
@@ -517,8 +521,10 @@ for df_name in slim_elements_df.iterrows():
                 if df_name[1]['web_name'] in manual_blanks[gw]:
                     estimated = 0
                     
+            if sum(train_X.names == df_game.names[0]) == 0 and game[0]==0:
+                print(df_game.names[0] + ' does not exist in training data')
+                estimated = 0                   
             
-                               
             pred_score[gw_idx] = pred_score[gw_idx] + estimated
             total_matches = total_matches + 1
 
@@ -599,6 +605,10 @@ slim_elements_df['value'] = value
 def find_team_points(team_positions, gw_prediction, benchboost):
     
     if benchboost:
+        captain_ind = np.argmax(gw_prediction)
+        
+        gw_prediction[captain_ind] = gw_prediction[captain_ind]*2
+        
         return sum(gw_prediction)
     
     else:
@@ -677,7 +687,7 @@ for j in range(player_iteration):
                             probability_hit.append(np.nan)
                             probability_main_ifhit.append(np.nan)
                             probability_main_ifnohit.append(np.nan)
-                            continue                        
+                            continue  
                         
                         #if less expensive or more gain
                         if player_in[1].prediction[i] < player_out[1].prediction[i] and (player_in[1].now_cost > player_out[1].now_cost):
@@ -692,14 +702,16 @@ for j in range(player_iteration):
                             probability_main_ifhit.append(np.nan)
                             probability_main_ifnohit.append(np.nan)
                             continue
+        
                             
                         preds = np.cumsum((predictions[player_in[0]] - predictions[player_out[0]])[::-1])[::-1]   
                         
-                        #for main an hit we can not accept lower score and higher price
+                        #for main and hit we can not accept lower score and higher price
                         if ((i == rounds_to_value-1 and preds[i] <= 0) or (i < rounds_to_value-1 and (preds[i] <= preds[i+1]))) and (player_in[1].now_cost > player_out[1].now_cost):
                             probability_main_ifhit.append(np.nan)
                         else:
                             probability_main_ifhit.append(preds[i])
+                            
                             
                         #for main an no hit we can not accept lower score
                         if ((i == rounds_to_value-1 and preds[i] <= 0) or (i < rounds_to_value-1 and (preds[i] <= preds[i+1]))):
@@ -719,11 +731,13 @@ for j in range(player_iteration):
         probability_main_ifhit.append(4)
         probability_main_ifnohit.append(4)
         
-        #if all are nan and not wild cars
+        #if all are nan for hits (no hots possible) and not wild card
         if all(elem is np.nan for elem in probability_hit) and not unlimited_transfers:
             point_diff.append(probability_main_ifnohit) 
             point_diff.append(probability_main_ifnohit) 
             point_diff.append(probability_main_ifnohit) 
+        elif unlimited_transfers:
+            point_diff.append(probability_main_ifhit)
         else:
             point_diff.append(probability_main_ifhit) 
             point_diff.append(probability_main_ifhit) 
@@ -809,36 +823,43 @@ def objective(check_transfers, free_transfers):
 
     #loop through the transfers and count points
     for gw in range(gw_iteration):
-        free_transfers +=1
+        
         if not unlimited_transfers:        
-            transfer1 = check_transfers[gw*3]
-            transfer2 = check_transfers[(gw*3)+1]
-            transfer3 = check_transfers[(gw*3)+2]
-            if not np.isnan(transfer1[0]):
-                team[transfer1[0]] = False
-                team[transfer1[1]] = True
-                free_transfers -=1
-            if not np.isnan(transfer2[0]):
-                team[transfer2[0]] = False
-                team[transfer2[1]] = True
-                free_transfers -=1
-            if not np.isnan(transfer3[0]):
-                team[transfer3[0]] = False
-                team[transfer3[1]] = True
-                free_transfers -=1
-                
-            if free_transfers < 0:
-                team_points.append(transfer_cost*free_transfers)
-                free_transfers = 0
-                
-            if free_transfers > 2:
-                free_transfers = 2  
+            
+            #if all pred is zero skip week (=free hit)
+            if sum(predictions[:, gw]) == 0:
+                estimated_points = 0
+            else:                
+                free_transfers +=1
+            
+                transfer1 = check_transfers[gw*3]
+                transfer2 = check_transfers[(gw*3)+1]
+                transfer3 = check_transfers[(gw*3)+2]
+                if not np.isnan(transfer1[0]):
+                    team[transfer1[0]] = False
+                    team[transfer1[1]] = True
+                    free_transfers -=1
+                if not np.isnan(transfer2[0]):
+                    team[transfer2[0]] = False
+                    team[transfer2[1]] = True
+                    free_transfers -=1
+                if not np.isnan(transfer3[0]):
+                    team[transfer3[0]] = False
+                    team[transfer3[1]] = True
+                    free_transfers -=1
                     
-            gw_prediction = predictions[team, gw]
-            team_positions = slim_elements_df.loc[team, 'element_type'].values
+                if free_transfers < 0:
+                    team_points.append(transfer_cost*free_transfers)
+                    free_transfers = 0
+                    
+                if free_transfers > 2:
+                    free_transfers = 2  
+                        
+                gw_prediction = predictions[team, gw]
+                team_positions = slim_elements_df.loc[team, 'element_type'].values
             
-            estimated_points = find_team_points(team_positions, gw_prediction, benchboost[gw])
-            
+                estimated_points = find_team_points(team_positions, gw_prediction, benchboost[gw])
+        
             team_points.append(estimated_points)
         
         else:

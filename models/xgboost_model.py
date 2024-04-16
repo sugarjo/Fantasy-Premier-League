@@ -226,19 +226,26 @@ season_df['names'] = season_df['first_name'] + season_df['second_name']
 
 #MATCH NAMES
 name_list = season_df['names'].unique()
+
+#not that dangerous to merge previous players, but avoid to merge into current player
+#loop through the most recent players first
 for name_ind, name in reversed(list(enumerate(name_list))):
-    matched_names = difflib.get_close_matches(name, name_list[0:name_ind+1], cutoff=0.775)
+    matched_names = difflib.get_close_matches(name, name_list[0:name_ind+1], cutoff=0.84)
     
+    #if any matched
     if len(matched_names) > 1:
         
         original_player_ind = season_df['names'] == matched_names[0]
         original_position = season_df['element_type'][original_player_ind].unique()
         
+        #if same position
         for position in original_position:
             for change_name_ind in range(1,len(matched_names)):
+                #find the other player
                 change_player_ind = np.logical_and(season_df['names'] == matched_names[change_name_ind], season_df['element_type'] == position)
                 
                 if any(change_player_ind): 
+                    #make the other player into current player
                     season_df.loc[change_player_ind, 'names'] = matched_names[0]
                     print(matched_names[change_name_ind] + ' changed with ' + matched_names[0])
 
@@ -314,6 +321,7 @@ def objective(space):
     
     val_pred = model.predict(val_X[selected])
     val_error = mean_squared_error(val_y[selected], val_pred)
+    
         
     return {'loss': val_error, 'status': STATUS_OK }
       
@@ -324,7 +332,7 @@ space={'max_depth': hp.quniform("max_depth", 1, 45, 1), #try to decrease from 45
         'min_split_loss': hp.uniform('min_split_loss', 0, 15),
         'reg_lambda' : hp.uniform('reg_lambda', 0, 15),
         'reg_alpha': hp.loguniform('reg_alpha', -3, np.log(10000)),
-        'min_child_weight' : hp.quniform('min_child_weight', 0, 35, 1),
+        'min_child_weight' : hp.uniform('min_child_weight', 0, 35),
         'learning_rate': hp.uniform('learning_rate', 0, 0.5),
         'subsample': hp.uniform('subsample', 0.5, 1),
         'colsample_bytree': hp.uniform('colsample_bytree', 0.5, 1),
@@ -376,16 +384,16 @@ max_evals = 500000
 with open(r'C:\Users\jorgels\Git\Fantasy-Premier-League\models\hyperparams.pkl', 'rb') as f:
     old_trials = pickle.load(f)
     
-if not continue_optimize:
-    trials = generate_trials_to_calculate([test_hyperparams])
-else:
-    trials = old_trials
-
 old_hyperparams = old_trials.best_trial['misc']['vals']
 #reformat the lists
 test_hyperparams = {}
 for field, val in old_hyperparams.items():
     test_hyperparams[field] = val[0]
+    
+if not continue_optimize:
+    trials = generate_trials_to_calculate([test_hyperparams])
+else:
+    trials = old_trials
 
 # Define the number of quantiles/bins
 num_bins = 100
@@ -450,78 +458,91 @@ if optimize:
             model = xgb.XGBRegressor(**best_hyperparams, tree_method="hist", enable_categorical=True)
             model.fit(fit_X, fit_y, verbose=False,
                 eval_set=[(fit_X, fit_y), (eval_X, eval_y)], sample_weight=fit_sample_weights) 
-                
+            
+            summary = {'model': model, 'features': train_X}
+            
             filename = r'C:\Users\jorgels\Git\Fantasy-Premier-League\models\model.sav'
-            pickle.dump(model, open(filename, 'wb'))
+            pickle.dump(summary, open(filename, 'wb'))
     
+if optimize = True   
+    #train and test the best models
+    
+    losses = []
+    for i in range(len(trials.trials)):
+        losses.append(trials.trials[i]['result']['loss'])
         
-#train and test the best models
-
-losses = []
-for i in range(len(trials.trials)):
-    losses.append(trials.trials[i]['result']['loss'])
+    sorted_losses = np.argsort(losses)
     
-sorted_losses = np.argsort(losses)
-
-best_loss = np.inf
-
-ind = 0
-k = 0
-
-cv_losses = []
-k_list = []
-#trian with cv until 5 models haven't made any better loss.
-while k < 100:
+    best_loss = np.inf
     
-    hyperparams = trials.trials[sorted_losses[ind]]['misc']['vals']
+    ind = 0
+    k = 0
     
-    test_hyperparams = {}
-    for field, val in hyperparams.items():
-        test_hyperparams[field] = val[0]
-
-    test_hyperparams['grow_policy'] = grow_policy[test_hyperparams['grow_policy']]
-    test_hyperparams['max_depth'] = int(test_hyperparams['max_depth'])
-    test_hyperparams['min_child_weight'] = int(test_hyperparams['min_child_weight'])
-    test_hyperparams['early_stopping_rounds'] = int(test_hyperparams['early_stopping_rounds'])
-    test_hyperparams['n_estimators'] = int(test_hyperparams['n_estimators'])
-    test_hyperparams['max_leaves'] = int(test_hyperparams['max_leaves'])
+    cv_losses = []
+    k_list = []
     
-    ind_losses = []
-    
-    for t in range(5):
+    from joblib import Parallel, delayed
+    def parallell_train(t):
         #get an validation set for fitting
         cv_X, val_X, cv_y, val_y, cv_sample_weights, _, cv_stratify, _ = train_test_split(train_X, train_y, sample_weights, stratify, test_size=0.25, stratify=stratify, random_state=t)
-        
         opt_out = objective(test_hyperparams)
-        ind_losses.append(opt_out['loss'])
+        return opt_out['loss']
+    
+    #trian with cv until 5 models haven't made any better loss.
+    while k < 100:
         
-    score = np.mean(ind_losses) + np.var(ind_losses)
+        hyperparams = trials.trials[sorted_losses[ind]]['misc']['vals']
         
-    if score < best_loss:
-        best_loss = score
-        k=0
-        best_trial = ind
+        test_hyperparams = {}
+        for field, val in hyperparams.items():
+            test_hyperparams[field] = val[0]
+    
+        test_hyperparams['grow_policy'] = grow_policy[test_hyperparams['grow_policy']]
+        test_hyperparams['max_depth'] = int(test_hyperparams['max_depth'])
+        test_hyperparams['min_child_weight'] = int(test_hyperparams['min_child_weight'])
+        test_hyperparams['early_stopping_rounds'] = int(test_hyperparams['early_stopping_rounds'])
+        test_hyperparams['n_estimators'] = int(test_hyperparams['n_estimators'])
+        test_hyperparams['max_leaves'] = int(test_hyperparams['max_leaves'])
         
-    cv_losses.append(ind_losses)
-    k_list.append(k)
+        ind_losses = []
         
-    k += 1
-    ind += 1
-    print(score)
+        #ind_losses = Parallel(n_jobs=-1)(delayed(parallell_train)(t) for t in range(6))
+     
         
-        
-mean_loss = np.mean(cv_losses, axis=1)
-var_loss =  np.std(cv_losses, ddof=1, axis=1)
+        for t in range(5):
+            #get an validation set for fitting
+            cv_X, val_X, cv_y, val_y, cv_sample_weights, _, cv_stratify, _ = train_test_split(train_X, train_y, sample_weights, stratify, test_size=0.25, stratify=stratify, random_state=t)
+            opt_out = objective(test_hyperparams)
+            ind_losses.append(opt_out['loss'])
+    
+            
+        score = np.mean(ind_losses) + np.var(ind_losses, ddof=1)
+            
+        if score < best_loss:
+            best_loss = score
+            k=0
+            best_trial = ind
+            
+        cv_losses.append(ind_losses)
+        k_list.append(k)
+            
+        k += 1
+        ind += 1
+        print(score)
+            
+            
+    mean_loss = np.mean(cv_losses, axis=1)
+    var_loss =  np.std(cv_losses, ddof=1, axis=1)
+    
+    best_best_ind = np.argmin(mean_loss + var_loss)
+    #best_best_ind = np.argmin(np.max(cv_losses, axis=1))
+else:
+    best_best_ind = 84
 
-best_best_ind = np.argmin(mean_loss + var_loss)
-#best_best_ind = np.argmin(np.max(cv_losses, axis=1))
-
-#23 is best
-best_best_ind=23
-
+#train with all data
 best_cv_trial =  sorted_losses[best_best_ind]
  
-hyperparams = trials.trials[sorted_losses[best_cv_trial]]['misc']['vals']
+hyperparams = trials.trials[best_cv_trial]['misc']['vals']
 
 test_hyperparams = {}
 for field, val in hyperparams.items():
@@ -543,10 +564,12 @@ fit_X, eval_X, fit_y, eval_y, fit_sample_weights, _ =  train_test_split(train_X,
 #max bin sets the resolution of the output
 model = xgb.XGBRegressor(**test_hyperparams, tree_method="hist", enable_categorical=True)
 model.fit(fit_X, fit_y, verbose=False,
-    eval_set=[(fit_X, fit_y), (eval_X, eval_y)], sample_weight=fit_sample_weights) 
+    eval_set=[(fit_X, fit_y), (eval_X, eval_y)], sample_weight=fit_sample_weights)
+    
+summary = {'model': model, 'features': train_X}
     
 filename = r'C:\Users\jorgels\Git\Fantasy-Premier-League\models\model.sav'
-pickle.dump(model, open(filename, 'wb'))
+pickle.dump(summary, open(filename, 'wb'))
     
 xgb.plot_importance(model)
     
