@@ -8,7 +8,7 @@ points_per_game_treshold = -1
 exclude_team = []
 
 #exclude player 'Hee Chan', 'Alexander-Arnold', 
-exclude_players = ['Udogie', 'Martial', 'Thomas', 'Drăgușin', 'Ugochukwu', 'Trippier', 'Botman', 'Shaw', 'Steele', 'Lamptey', 'Beto']
+exclude_players = ['Ramsdale', 'E.Royal', 'Madueke', 'Ortega Moreno', 'Kelleher', 'Matip', 'Aké', 'McTominay', 'Pope', 'Dubravka', 'Chalobah', 'Karius', 'Udogie', 'Martial', 'Thomas', 'Drăgușin', 'Ugochukwu', 'Trippier', 'Botman', 'Shaw', 'Steele', 'Lamptey', 'Beto']
 exclude_players_out = []
 include_players = []
 
