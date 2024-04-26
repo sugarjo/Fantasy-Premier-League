@@ -328,22 +328,22 @@ def objective(space):
       
 grow_policy = ['depthwise', 'lossguide']
 
-space={'max_depth': hp.quniform("max_depth", 1, 45, 1), #try to decrease from 45 to 10?
+space={'max_depth': hp.quniform("max_depth", 1, 55, 1), #try to decrease from 45 to 10?
         'min_split_loss': hp.uniform('min_split_loss', 0, 15),
-        'reg_lambda' : hp.uniform('reg_lambda', 0, 15),
-        'reg_alpha': hp.loguniform('reg_alpha', -3, np.log(10000)),
-        'min_child_weight' : hp.uniform('min_child_weight', 0, 35),
+        'reg_lambda' : hp.uniform('reg_lambda', 0, 20),
+        'reg_alpha': hp.loguniform('reg_alpha', -3, np.log(1000)),
+        'min_child_weight' : hp.uniform('min_child_weight', 0, 45),
         'learning_rate': hp.uniform('learning_rate', 0, 0.5),
         'subsample': hp.uniform('subsample', 0.5, 1),
         'colsample_bytree': hp.uniform('colsample_bytree', 0.5, 1),
         'colsample_bylevel': hp.uniform('colsample_bylevel', 0.5, 1),
         'colsample_bynode': hp.uniform('colsample_bynode', 0.5, 1),
-        'early_stopping_rounds': hp.quniform("early_stopping_rounds", 5, 50, 1), #try to decrease to 35?
+        'early_stopping_rounds': hp.quniform("early_stopping_rounds", 5, 60, 1), #try to decrease to 35?
         'eval_fraction': hp.uniform('eval_fraction', 0.01, 0.4),
-        'n_estimators': hp.qloguniform('n_estimators', np.log(2), np.log(1000), 1),
+        'n_estimators': hp.qloguniform('n_estimators', np.log(2), np.log(1100), 1),
         'max_delta_step': hp.uniform('max_delta_step', 0, 20),
         'grow_policy': hp.choice('grow_policy', grow_policy),
-        'max_leaves': hp.quniform('max_leaves', 0, 100, 1),
+        'max_leaves': hp.quniform('max_leaves', 0, 150, 1),
     }
 
 season_df['element_type'] = season_df['element_type'].astype('category')
@@ -464,14 +464,16 @@ if optimize:
             filename = r'C:\Users\jorgels\Git\Fantasy-Premier-League\models\model.sav'
             pickle.dump(summary, open(filename, 'wb'))
     
-if optimize = True   
+    
+losses = []
+for i in range(len(trials.trials)):
+    losses.append(trials.trials[i]['result']['loss'])
+    
+sorted_losses = np.argsort(losses)
+    
+if optimize:
     #train and test the best models
     
-    losses = []
-    for i in range(len(trials.trials)):
-        losses.append(trials.trials[i]['result']['loss'])
-        
-    sorted_losses = np.argsort(losses)
     
     best_loss = np.inf
     
