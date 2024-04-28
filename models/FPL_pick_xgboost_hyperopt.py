@@ -8,7 +8,7 @@ points_per_game_treshold = -1
 exclude_team = []
 
 #exclude player 'Hee Chan', 'Alexander-Arnold', 
-exclude_players = ['Ramsdale', 'E.Royal', 'Madueke', 'Ortega Moreno', 'Kelleher', 'Matip', 'Aké', 'McTominay', 'Pope', 'Dubravka', 'Chalobah', 'Karius', 'Udogie', 'Martial', 'Thomas', 'Drăgușin', 'Ugochukwu', 'Trippier', 'Botman', 'Shaw', 'Steele', 'Lamptey', 'Beto']
+exclude_players = ['B.Badiashile', 'Quansah', 'Wilson', 'Chilwell', 'J.Alvarez', 'Kambwala', 'Guéhi', 'Zinchenko', 'Johnstone', 'Kiwior', 'Strakosha', 'Ramsdale', 'E.Royal', 'Madueke', 'Ortega Moreno', 'Kelleher', 'Matip', 'Aké', 'McTominay', 'Pope', 'Dubravka', 'Chalobah', 'Karius', 'Udogie', 'Martial', 'Thomas', 'Drăgușin', 'Ugochukwu', 'Trippier', 'Botman', 'Shaw', 'Steele', 'Lamptey', 'Beto']
 exclude_players_out = []
 include_players = []
 
@@ -19,8 +19,8 @@ rounds_to_value = 4
            
 wildcard = False
 
-skip_gw = [35]
-benchboost_gw = 36
+skip_gw = [37]
+benchboost_gw = 38
 jump_rounds = 0
 
 force_90 = ['A.Becker', 'Hee Chan', 'Ederson M.']
@@ -31,7 +31,7 @@ manual_pred = 1
 #                  }
 manual_blanks = {}
 
-string = '{"picks":[{"element":569,"position":1,"selling_price":50,"multiplier":1,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":29,"position":2,"selling_price":57,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":573,"position":3,"selling_price":44,"multiplier":1,"purchase_price":44,"is_captain":false,"is_vice_captain":false},{"element":220,"position":4,"selling_price":47,"multiplier":1,"purchase_price":47,"is_captain":false,"is_vice_captain":false},{"element":362,"position":5,"selling_price":61,"multiplier":1,"purchase_price":61,"is_captain":false,"is_vice_captain":false},{"element":19,"position":6,"selling_price":90,"multiplier":1,"purchase_price":90,"is_captain":false,"is_vice_captain":false},{"element":6,"position":7,"selling_price":73,"multiplier":1,"purchase_price":72,"is_captain":false,"is_vice_captain":false},{"element":308,"position":8,"selling_price":133,"multiplier":2,"purchase_price":131,"is_captain":true,"is_vice_captain":false},{"element":226,"position":9,"selling_price":61,"multiplier":1,"purchase_price":61,"is_captain":false,"is_vice_captain":true},{"element":85,"position":10,"selling_price":72,"multiplier":1,"purchase_price":72,"is_captain":false,"is_vice_captain":false},{"element":355,"position":11,"selling_price":141,"multiplier":1,"purchase_price":143,"is_captain":false,"is_vice_captain":false},{"element":301,"position":12,"selling_price":38,"multiplier":0,"purchase_price":38,"is_captain":false,"is_vice_captain":false},{"element":238,"position":13,"selling_price":39,"multiplier":0,"purchase_price":39,"is_captain":false,"is_vice_captain":false},{"element":279,"position":14,"selling_price":46,"multiplier":0,"purchase_price":46,"is_captain":false,"is_vice_captain":false},{"element":407,"position":15,"selling_price":44,"multiplier":0,"purchase_price":44,"is_captain":false,"is_vice_captain":false}],"chips":[{"status_for_entry":"played","played_by_entry":[30],"name":"wildcard","number":1,"start_event":21,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team"},{"status_for_entry":"played","played_by_entry":[25],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team"}],"transfers":{"cost":4,"status":"cost","limit":2,"made":0,"bank":18,"value":1007}}'
+string = '{"picks":[{"element":687,"position":1,"selling_price":46,"multiplier":1,"purchase_price":46,"is_captain":false,"is_vice_captain":false},{"element":407,"position":2,"selling_price":44,"multiplier":1,"purchase_price":44,"is_captain":false,"is_vice_captain":false},{"element":238,"position":3,"selling_price":39,"multiplier":1,"purchase_price":39,"is_captain":false,"is_vice_captain":false},{"element":220,"position":4,"selling_price":47,"multiplier":1,"purchase_price":47,"is_captain":false,"is_vice_captain":false},{"element":362,"position":5,"selling_price":61,"multiplier":2,"purchase_price":61,"is_captain":true,"is_vice_captain":false},{"element":516,"position":6,"selling_price":98,"multiplier":1,"purchase_price":98,"is_captain":false,"is_vice_captain":true},{"element":308,"position":7,"selling_price":133,"multiplier":1,"purchase_price":131,"is_captain":false,"is_vice_captain":false},{"element":504,"position":8,"selling_price":78,"multiplier":1,"purchase_price":78,"is_captain":false,"is_vice_captain":false},{"element":226,"position":9,"selling_price":61,"multiplier":1,"purchase_price":61,"is_captain":false,"is_vice_captain":false},{"element":776,"position":10,"selling_price":63,"multiplier":1,"purchase_price":63,"is_captain":false,"is_vice_captain":false},{"element":355,"position":11,"selling_price":141,"multiplier":1,"purchase_price":143,"is_captain":false,"is_vice_captain":false},{"element":569,"position":12,"selling_price":50,"multiplier":0,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":279,"position":13,"selling_price":45,"multiplier":0,"purchase_price":46,"is_captain":false,"is_vice_captain":false},{"element":573,"position":14,"selling_price":44,"multiplier":0,"purchase_price":44,"is_captain":false,"is_vice_captain":false},{"element":29,"position":15,"selling_price":57,"multiplier":0,"purchase_price":55,"is_captain":false,"is_vice_captain":false}],"chips":[{"status_for_entry":"played","played_by_entry":[30],"name":"wildcard","number":1,"start_event":21,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team"},{"status_for_entry":"played","played_by_entry":[25],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team"}],"transfers":{"cost":4,"status":"cost","limit":2,"made":4,"bank":6,"value":1016}}'
 season = '2023-24'
 
 import requests
@@ -40,7 +40,7 @@ import numpy as np
 import json
 import pickle
 import difflib
-from datetime import datetime
+from datetime import datetime, timedelta
 from joblib import Parallel, delayed
 import os
 from hyperopt.pyll import scope
@@ -92,9 +92,13 @@ if wildcard:
 else:
     unlimited_transfers = False
     print('Free transfers: ', free_transfers)
+    
+if free_transfers < 0:
+    free_transfers = 0
       
 #subtract 1 since we add one for each gw later
 free_transfers -= 1
+    
 
 #get statistics of all players
 url = 'https://fantasy.premierleague.com/api/bootstrap-static/'
@@ -248,7 +252,7 @@ for player in df_gw['element'].unique():
 i=0
 
  
-while pd.to_datetime(events_df.deadline_time[i], format='%Y-%m-%dT%H:%M:%SZ') < datetime.now():
+while pd.to_datetime(events_df.deadline_time[i], format='%Y-%m-%dT%H:%M:%SZ') < datetime.now() - timedelta(hours=2):
     i = i + 1
 
 current_gameweek = i + 1
@@ -1089,34 +1093,6 @@ while True:
     print('points: ', best_points-baseline, 'price: ', sum(price))
     print('\n')
     
-    # best_p = []
-    # for transfer_ind in range(len(best_transfer)):
-        
-    #     max_ind = np.nanargmax(p[transfer_ind, :])
-    #     transfer = transfers[max_ind]
-        
-    #     best_p.append(max_ind)
-    #     if not unlimited_transfers:
-    #         if not transfer == [np.nan, np.nan]:    
-    #             print('GW', int(transfer_ind/2), slim_elements_df.loc[transfer[0], 'web_name'], 'for', slim_elements_df.loc[transfer[1], 'web_name'],  prob[max_ind, transfer_ind], counts[transfer_ind, max_ind])
-    #             print(predictions[transfer[0], :])
-    #             print(predictions[transfer[1], :])
-    #         else:
-    #             print('GW', int(transfer_ind/2), 'no trans', prob[max_ind, transfer_ind], counts[transfer_ind, max_ind])
-    # print('\n')
-        
-    # putative_transfers = []
-    # for i in range(len(point_diff)):
-    #     putative_transfers.append(transfers[best_p[i]])
-    
-    # checked_points.append(objective(putative_transfers, free_transfers))
-    # checked_transfers.append(best_p)
-        
-        
-    # savevar = [checked_points, checked_transfers]
-    # filename = r'C:\Users\jorgels\Git\Fantasy-Premier-League\models\transfers.pkl'
-    # pickle.dump(savevar, open(filename, 'wb'))
-
 
 #print original team
 sort_list = np.argsort(my_players_df['points_1st_gw'])
