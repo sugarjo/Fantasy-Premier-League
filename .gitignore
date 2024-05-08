@@ -7,3 +7,4 @@ models/transfers.pkl
 *.pkl
 *.sav
 *.pkl
+models/model.sav

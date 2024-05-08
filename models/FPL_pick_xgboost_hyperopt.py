@@ -8,14 +8,14 @@ points_per_game_treshold = -1
 exclude_team = []
 
 #exclude player 'Hee Chan', 'Alexander-Arnold', 
-exclude_players = ['B.Badiashile', 'Quansah', 'Wilson', 'Chilwell', 'J.Alvarez', 'Kambwala', 'Guéhi', 'Zinchenko', 'Johnstone', 'Kiwior', 'Strakosha', 'Ramsdale', 'E.Royal', 'Madueke', 'Ortega Moreno', 'Kelleher', 'Matip', 'Aké', 'McTominay', 'Pope', 'Dubravka', 'Chalobah', 'Karius', 'Udogie', 'Martial', 'Thomas', 'Drăgușin', 'Ugochukwu', 'Trippier', 'Botman', 'Shaw', 'Steele', 'Lamptey', 'Beto']
+exclude_players = ['Aké', 'J.Alvarez', 'Alexander-Arnold', 'Bradley', 'Werner']
 exclude_players_out = []
 include_players = []
 
 include_minutes = []
 do_not_exclude_players = []
 
-rounds_to_value = 4
+rounds_to_value = 3
            
 wildcard = False
 
@@ -23,7 +23,7 @@ skip_gw = [37]
 benchboost_gw = 38
 jump_rounds = 0
 
-force_90 = ['A.Becker', 'Hee Chan', 'Ederson M.']
+force_90 = []
 
 manual_pred = 1
 
@@ -31,7 +31,7 @@ manual_pred = 1
 #                  }
 manual_blanks = {}
 
-string = '{"picks":[{"element":687,"position":1,"selling_price":46,"multiplier":1,"purchase_price":46,"is_captain":false,"is_vice_captain":false},{"element":407,"position":2,"selling_price":44,"multiplier":1,"purchase_price":44,"is_captain":false,"is_vice_captain":false},{"element":238,"position":3,"selling_price":39,"multiplier":1,"purchase_price":39,"is_captain":false,"is_vice_captain":false},{"element":220,"position":4,"selling_price":47,"multiplier":1,"purchase_price":47,"is_captain":false,"is_vice_captain":false},{"element":362,"position":5,"selling_price":61,"multiplier":2,"purchase_price":61,"is_captain":true,"is_vice_captain":false},{"element":516,"position":6,"selling_price":98,"multiplier":1,"purchase_price":98,"is_captain":false,"is_vice_captain":true},{"element":308,"position":7,"selling_price":133,"multiplier":1,"purchase_price":131,"is_captain":false,"is_vice_captain":false},{"element":504,"position":8,"selling_price":78,"multiplier":1,"purchase_price":78,"is_captain":false,"is_vice_captain":false},{"element":226,"position":9,"selling_price":61,"multiplier":1,"purchase_price":61,"is_captain":false,"is_vice_captain":false},{"element":776,"position":10,"selling_price":63,"multiplier":1,"purchase_price":63,"is_captain":false,"is_vice_captain":false},{"element":355,"position":11,"selling_price":141,"multiplier":1,"purchase_price":143,"is_captain":false,"is_vice_captain":false},{"element":569,"position":12,"selling_price":50,"multiplier":0,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":279,"position":13,"selling_price":45,"multiplier":0,"purchase_price":46,"is_captain":false,"is_vice_captain":false},{"element":573,"position":14,"selling_price":44,"multiplier":0,"purchase_price":44,"is_captain":false,"is_vice_captain":false},{"element":29,"position":15,"selling_price":57,"multiplier":0,"purchase_price":55,"is_captain":false,"is_vice_captain":false}],"chips":[{"status_for_entry":"played","played_by_entry":[30],"name":"wildcard","number":1,"start_event":21,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team"},{"status_for_entry":"played","played_by_entry":[25],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team"}],"transfers":{"cost":4,"status":"cost","limit":2,"made":4,"bank":6,"value":1016}}'
+string = '{"picks":[{"element":687,"position":1,"selling_price":46,"multiplier":1,"purchase_price":46,"is_captain":false,"is_vice_captain":false},{"element":407,"position":2,"selling_price":45,"multiplier":1,"purchase_price":44,"is_captain":false,"is_vice_captain":false},{"element":238,"position":3,"selling_price":39,"multiplier":1,"purchase_price":39,"is_captain":false,"is_vice_captain":false},{"element":29,"position":4,"selling_price":58,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":362,"position":5,"selling_price":61,"multiplier":2,"purchase_price":61,"is_captain":true,"is_vice_captain":false},{"element":516,"position":6,"selling_price":98,"multiplier":1,"purchase_price":98,"is_captain":false,"is_vice_captain":true},{"element":308,"position":7,"selling_price":133,"multiplier":1,"purchase_price":131,"is_captain":false,"is_vice_captain":false},{"element":504,"position":8,"selling_price":78,"multiplier":1,"purchase_price":78,"is_captain":false,"is_vice_captain":false},{"element":279,"position":9,"selling_price":45,"multiplier":1,"purchase_price":46,"is_captain":false,"is_vice_captain":false},{"element":776,"position":10,"selling_price":63,"multiplier":1,"purchase_price":63,"is_captain":false,"is_vice_captain":false},{"element":355,"position":11,"selling_price":141,"multiplier":1,"purchase_price":143,"is_captain":false,"is_vice_captain":false},{"element":569,"position":12,"selling_price":50,"multiplier":0,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":226,"position":13,"selling_price":61,"multiplier":0,"purchase_price":61,"is_captain":false,"is_vice_captain":false},{"element":220,"position":14,"selling_price":47,"multiplier":0,"purchase_price":47,"is_captain":false,"is_vice_captain":false},{"element":573,"position":15,"selling_price":44,"multiplier":0,"purchase_price":44,"is_captain":false,"is_vice_captain":false}],"chips":[{"status_for_entry":"played","played_by_entry":[30],"name":"wildcard","number":1,"start_event":21,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team"},{"status_for_entry":"played","played_by_entry":[25],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team"}],"transfers":{"cost":4,"status":"cost","limit":1,"made":0,"bank":6,"value":1017}}'
 season = '2023-24'
 
 import requests
