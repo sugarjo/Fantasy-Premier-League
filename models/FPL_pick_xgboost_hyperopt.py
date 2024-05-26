@@ -7,10 +7,11 @@ points_per_game_treshold = -1
 #brentford: 4, west ham: 19
 exclude_team = []
 
-#exclude player 'Hee Chan', 'Alexander-Arnold', 
+
 exclude_players = ['Robertson']
 exclude_players_out = []
-include_players = ['Maddison']
+include_players = []
+
 do_not_exclude_players = []
 
 rounds_to_value = 1
