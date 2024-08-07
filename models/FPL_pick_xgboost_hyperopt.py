@@ -2,21 +2,18 @@ minutes_thisyear_treshold = 1
 form_treshold = -1
 points_per_game_treshold = -1
 
-
-
-#brentford: 4, west ham: 19
 exclude_team = []
 
 
-exclude_players = ['Robertson']
+exclude_players = []
 exclude_players_out = []
 include_players = []
 
 do_not_exclude_players = []
 
-rounds_to_value = 1
+rounds_to_value = 5
            
-wildcard = False
+wildcard = True
 
 skip_gw = []
 benchboost_gw = 38
@@ -30,9 +27,9 @@ manual_pred = 1
 #                  }
 manual_blanks = {}
 
-string = '{"picks":[{"element":687,"position":1,"selling_price":46,"multiplier":1,"purchase_price":46,"is_captain":false,"is_vice_captain":false},{"element":407,"position":2,"selling_price":45,"multiplier":1,"purchase_price":44,"is_captain":false,"is_vice_captain":false},{"element":29,"position":3,"selling_price":58,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":220,"position":4,"selling_price":47,"multiplier":1,"purchase_price":47,"is_captain":false,"is_vice_captain":false},{"element":504,"position":5,"selling_price":78,"multiplier":1,"purchase_price":78,"is_captain":false,"is_vice_captain":false},{"element":362,"position":6,"selling_price":62,"multiplier":2,"purchase_price":61,"is_captain":true,"is_vice_captain":false},{"element":516,"position":7,"selling_price":99,"multiplier":1,"purchase_price":98,"is_captain":false,"is_vice_captain":false},{"element":349,"position":8,"selling_price":105,"multiplier":1,"purchase_price":105,"is_captain":false,"is_vice_captain":false},{"element":279,"position":9,"selling_price":43,"multiplier":1,"purchase_price":46,"is_captain":false,"is_vice_captain":false},{"element":60,"position":10,"selling_price":89,"multiplier":1,"purchase_price":90,"is_captain":false,"is_vice_captain":false},{"element":355,"position":11,"selling_price":143,"multiplier":1,"purchase_price":143,"is_captain":false,"is_vice_captain":true},{"element":569,"position":12,"selling_price":50,"multiplier":0,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":226,"position":13,"selling_price":60,"multiplier":0,"purchase_price":61,"is_captain":false,"is_vice_captain":false},{"element":238,"position":14,"selling_price":39,"multiplier":0,"purchase_price":39,"is_captain":false,"is_vice_captain":false},{"element":573,"position":15,"selling_price":44,"multiplier":0,"purchase_price":44,"is_captain":false,"is_vice_captain":false}],"chips":[{"status_for_entry":"played","played_by_entry":[30],"name":"wildcard","number":1,"start_event":21,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"played","played_by_entry":[37],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer"},{"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team"},{"status_for_entry":"played","played_by_entry":[25],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team"}],"transfers":{"cost":4,"status":"cost","limit":1,"made":0,"bank":7,"value":1017}}'
+string = '{"picks":[{"element":47,"position":1,"selling_price":50,"multiplier":1,"purchase_price":50,"is_captain":false,"is_vice_captain":true},{"element":390,"position":2,"selling_price":40,"multiplier":1,"purchase_price":40,"is_captain":false,"is_vice_captain":false},{"element":270,"position":3,"selling_price":40,"multiplier":1,"purchase_price":40,"is_captain":false,"is_vice_captain":false},{"element":408,"position":4,"selling_price":40,"multiplier":1,"purchase_price":40,"is_captain":false,"is_vice_captain":false},{"element":404,"position":5,"selling_price":45,"multiplier":1,"purchase_price":45,"is_captain":false,"is_vice_captain":false},{"element":188,"position":6,"selling_price":45,"multiplier":1,"purchase_price":45,"is_captain":false,"is_vice_captain":false},{"element":182,"position":7,"selling_price":105,"multiplier":1,"purchase_price":105,"is_captain":false,"is_vice_captain":false},{"element":274,"position":8,"selling_price":55,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":317,"position":9,"selling_price":75,"multiplier":1,"purchase_price":75,"is_captain":false,"is_vice_captain":false},{"element":237,"position":10,"selling_price":50,"multiplier":2,"purchase_price":50,"is_captain":true,"is_vice_captain":false},{"element":389,"position":11,"selling_price":70,"multiplier":1,"purchase_price":70,"is_captain":false,"is_vice_captain":false},{"element":383,"position":12,"selling_price":50,"multiplier":0,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":350,"position":13,"selling_price":60,"multiplier":0,"purchase_price":60,"is_captain":false,"is_vice_captain":false},{"element":17,"position":14,"selling_price":100,"multiplier":0,"purchase_price":100,"is_captain":false,"is_vice_captain":false},{"element":58,"position":15,"selling_price":90,"multiplier":0,"purchase_price":90,"is_captain":false,"is_vice_captain":false}],"chips":[{"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"status_for_entry":"available","played_by_entry":[],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false}],"transfers":{"cost":4,"status":"unlimited","limit":null,"made":0,"bank":85,"value":915}}'
 
-season = '2023-24'
+season = '2024-25'
 
 import requests
 import pandas as pd
@@ -655,8 +652,13 @@ else:
 
 point_diff = []
 
+#initiate probabilities based on predictions.
+#start out by putting some to nan and other to it's predicition
+
+#loop players
 for j in range(player_iteration): 
     
+    #loop gws
     for i in range(gw_iteration):
         transfers = []
         probability_hit = []
@@ -665,6 +667,7 @@ for j in range(player_iteration):
         
         ind_next = 0      
 
+        #loop transfers
         for player_out in slim_elements_df.iterrows():
             #check if picked
             if player_out[1]['picked']:
@@ -724,26 +727,25 @@ for j in range(player_iteration):
         probability_main_ifhit.append(4)
         probability_main_ifnohit.append(4)
         
+        transfers.append([np.nan, np.nan])
+        
+        #for each player-gw: add the probability into the initating variables. 3 transfers per round.
+        
+        
+        if unlimited_transfers:
+            point_diff.append(probability_main_ifhit)            
         #if all are nan for hits (no hots possible) and not wild card
-        if all(elem is np.nan for elem in probability_hit) and not unlimited_transfers:
+        elif all(elem is np.nan for elem in probability_hit):
             point_diff.append(probability_main_ifnohit) 
             point_diff.append(probability_main_ifnohit) 
             point_diff.append(probability_main_ifnohit) 
-        elif unlimited_transfers:
-            point_diff.append(probability_main_ifhit)
         else:
             point_diff.append(probability_main_ifhit) 
             point_diff.append(probability_main_ifhit) 
             point_diff.append(probability_main_ifhit) 
-        
-        # if not unlimited_transfers:
-        #     probability_hit.append(4)
-        #     point_diff.append(probability_hit)
-        #     point_diff.append(probability_hit)
-        
-        transfers.append([np.nan, np.nan])
-    
 
+
+#calculate points for a given set of transfers
 def objective(check_transfers, free_transfers):      
         
     team = slim_elements_df['picked'].values.copy()
@@ -845,8 +847,8 @@ def objective(check_transfers, free_transfers):
                     team_points.append(transfer_cost*free_transfers)
                     free_transfers = 0
                     
-                if free_transfers > 2:
-                    free_transfers = 2  
+                if free_transfers > 5:
+                    free_transfers = 5  
                         
                 gw_prediction = predictions[team, gw]
                 team_positions = slim_elements_df.loc[team, 'element_type'].values
