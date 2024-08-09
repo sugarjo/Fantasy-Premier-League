@@ -1,12 +1,14 @@
-minutes_thisyear_treshold = 1
+minutes_thisyear_treshold = -1
 form_treshold = -1
 points_per_game_treshold = -1
 
 exclude_team = []
 
 
-exclude_players = []
+exclude_players = ['Ramsdale', 'Botman', 'Tomiyasu', 'Dúbravka', 'Turner', 'Chilwell', 'Odysseas', 'Bajcetic', 'Johnstone'] #check bajcetic
+
 exclude_players_out = []
+
 include_players = []
 
 do_not_exclude_players = []
@@ -27,9 +29,10 @@ manual_pred = 1
 #                  }
 manual_blanks = {}
 
-string = '{"picks":[{"element":47,"position":1,"selling_price":50,"multiplier":1,"purchase_price":50,"is_captain":false,"is_vice_captain":true},{"element":390,"position":2,"selling_price":40,"multiplier":1,"purchase_price":40,"is_captain":false,"is_vice_captain":false},{"element":270,"position":3,"selling_price":40,"multiplier":1,"purchase_price":40,"is_captain":false,"is_vice_captain":false},{"element":408,"position":4,"selling_price":40,"multiplier":1,"purchase_price":40,"is_captain":false,"is_vice_captain":false},{"element":404,"position":5,"selling_price":45,"multiplier":1,"purchase_price":45,"is_captain":false,"is_vice_captain":false},{"element":188,"position":6,"selling_price":45,"multiplier":1,"purchase_price":45,"is_captain":false,"is_vice_captain":false},{"element":182,"position":7,"selling_price":105,"multiplier":1,"purchase_price":105,"is_captain":false,"is_vice_captain":false},{"element":274,"position":8,"selling_price":55,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":317,"position":9,"selling_price":75,"multiplier":1,"purchase_price":75,"is_captain":false,"is_vice_captain":false},{"element":237,"position":10,"selling_price":50,"multiplier":2,"purchase_price":50,"is_captain":true,"is_vice_captain":false},{"element":389,"position":11,"selling_price":70,"multiplier":1,"purchase_price":70,"is_captain":false,"is_vice_captain":false},{"element":383,"position":12,"selling_price":50,"multiplier":0,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":350,"position":13,"selling_price":60,"multiplier":0,"purchase_price":60,"is_captain":false,"is_vice_captain":false},{"element":17,"position":14,"selling_price":100,"multiplier":0,"purchase_price":100,"is_captain":false,"is_vice_captain":false},{"element":58,"position":15,"selling_price":90,"multiplier":0,"purchase_price":90,"is_captain":false,"is_vice_captain":false}],"chips":[{"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"status_for_entry":"available","played_by_entry":[],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false}],"transfers":{"cost":4,"status":"unlimited","limit":null,"made":0,"bank":85,"value":915}}'
+string = '{"picks":[{"element":310,"position":1,"selling_price":55,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":311,"position":2,"selling_price":70,"multiplier":1,"purchase_price":70,"is_captain":false,"is_vice_captain":false},{"element":24,"position":3,"selling_price":65,"multiplier":1,"purchase_price":65,"is_captain":false,"is_vice_captain":false},{"element":404,"position":4,"selling_price":45,"multiplier":1,"purchase_price":45,"is_captain":false,"is_vice_captain":false},{"element":199,"position":5,"selling_price":70,"multiplier":1,"purchase_price":70,"is_captain":false,"is_vice_captain":true},{"element":182,"position":6,"selling_price":105,"multiplier":1,"purchase_price":105,"is_captain":false,"is_vice_captain":false},{"element":17,"position":7,"selling_price":100,"multiplier":1,"purchase_price":100,"is_captain":false,"is_vice_captain":false},{"element":317,"position":8,"selling_price":75,"multiplier":1,"purchase_price":75,"is_captain":false,"is_vice_captain":false},{"element":401,"position":9,"selling_price":85,"multiplier":2,"purchase_price":85,"is_captain":true,"is_vice_captain":false},{"element":207,"position":10,"selling_price":75,"multiplier":1,"purchase_price":75,"is_captain":false,"is_vice_captain":false},{"element":447,"position":11,"selling_price":60,"multiplier":1,"purchase_price":60,"is_captain":false,"is_vice_captain":false},{"element":413,"position":12,"selling_price":50,"multiplier":0,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":584,"position":13,"selling_price":55,"multiplier":0,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":44,"position":14,"selling_price":45,"multiplier":0,"purchase_price":45,"is_captain":false,"is_vice_captain":false},{"element":241,"position":15,"selling_price":45,"multiplier":0,"purchase_price":45,"is_captain":false,"is_vice_captain":false}],"chips":[{"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"status_for_entry":"available","played_by_entry":[],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false}],"transfers":{"cost":4,"status":"unlimited","limit":null,"made":0,"bank":0,"value":1000}}'
 
 season = '2024-25'
+previous_season = '2023-24'
 
 import requests
 import pandas as pd
@@ -49,10 +52,12 @@ from numpy.random import choice
 import time
 from operator import itemgetter
 from more_itertools import unique_everseen
+import Levenshtein
 
 
 #insert string for team
 directory = r'C:\Users\jorgels\Git\Fantasy-Premier-League\data' + '/' + season
+prev_season_directory = r'C:\Users\jorgels\Git\Fantasy-Premier-League\data' + '/' + previous_season
 team_path = directory + "/teams.csv"
     
 df_teams = pd.read_csv(team_path)
@@ -70,7 +75,7 @@ payload = {
 session.post(url, data=payload)
 
 #get my team and money in the bank
-r = session.get('https://fantasy.premierleague.com/api/my-team/1454932/')
+r = session.get('https://fantasy.premierleague.com/api/my-team/2088464/')
 js = r.json()
 
 js = json.loads(string)
@@ -80,14 +85,14 @@ a = json.dumps(js)
 js = json.loads(a)
 transfers = js["transfers"]
 bank = transfers['bank']
-free_transfers = transfers["limit"] - transfers["made"]
 
-
-if wildcard:
+if wildcard or transfers['status'] == 'unlimited':
+    free_transfers = 15
     unlimited_transfers = True
     print('Free transfers: ', 15)
 else:
     unlimited_transfers = False
+    free_transfers = transfers["limit"] - transfers["made"]
     print('Free transfers: ', free_transfers)
     
 if free_transfers < 0:
@@ -121,11 +126,20 @@ events_df = pd.DataFrame(js['events'])
 
 dfs_gw = []
 
+#check if directory exist if not use the one from previous years
+if os.path.exists(directory + '/gws'):
+    gw_dir = directory + '/gws'
+    season_data = True
+else:
+    gw_dir = prev_season_directory + '/gws'
+    print('Directory for current season not found')
+    season_data = False   
+    
 #open each gw and get data for players
-for gw_csv in os.listdir(directory + '/gws'):
+for gw_csv in os.listdir(gw_dir):
     if gw_csv[0] == 'g':
         
-        gw_path = directory + '/gws' + '/' + gw_csv
+        gw_path = gw_dir + '/' + gw_csv
                 
         dfs_gw.append(pd.read_csv(gw_path))
 
@@ -153,24 +167,55 @@ df_gw['transfer_in'] = np.nan
 df_gw['transfer_out'] = np.nan
 df_gw['string_opp_team'] = np.nan
 df_gw['running_minutes'] = np.nan
+df_gw['new_year_element'] = np.nan
 
 #add column if they don't exist
+
+from difflib import SequenceMatcher
+
+def sequence_matcher_similarity(s1, s2):
+    return SequenceMatcher(None, ' '.join(sorted(s1.split())), ' '.join(sorted(s2.split()))).ratio()
     
-# Calculate rolling values not including the observaiton
+# Calculate rolling values not including the observaiton. 
 for player in df_gw['element'].unique():
     
-    slim_ind = slim_elements_df['id'] == player
-    name = slim_elements_df.loc[slim_ind, 'web_name'].values[0]
+    #match by element ID
+    if season_data:
+        slim_ind = slim_elements_df['id'] == player
+        selected_ind = (df_gw['element'] == player) & (df_gw['minutes'] > 0)
+    #match by name if no gws are available
+    else:
+        selected = df_gw['element'] == player
+        df_name = df_gw['name'][selected].iloc[0]
+        slim_names = slim_elements_df['first_name'] + ' ' + slim_elements_df['second_name']
+        
+        similarity = slim_names.apply(lambda x: sequence_matcher_similarity(x, df_name))
+
+        slim_ind = np.argmax(similarity)
+        
+        slim_name = slim_names[slim_ind]
+        
+        if max(similarity) < 0.8 and not (df_name in slim_name or slim_name in df_name):
+            #print(df_name + ': does not exist in database')
+            continue
+        
+        selected_ind = (df_gw['name'] == df_name)
+        df_gw.loc[selected_ind, 'new_year_element'] = slim_elements_df.iloc[slim_ind]['id']
+        
+        selected_ind = (df_gw['name'] == df_name) & (df_gw['minutes'] > 0)
+        
+    
     
     # if name in force_90:
     #     selected_ind = (df_gw['element'] == player) & (df_gw['minutes'] > 0)
     # else:    
     #     selected_ind = df_gw['element'] == player
         
-    selected_ind = (df_gw['element'] == player) & (df_gw['minutes'] > 0)
     
     if sum(selected_ind) == 0:
         continue
+    
+    name = slim_elements_df.loc[slim_ind, 'web_name']
         
     player_df = df_gw[selected_ind]
     player_df.set_index('kickoff_time', inplace=True)
@@ -209,8 +254,6 @@ for player in df_gw['element'].unique():
     elif sum(player_df['minutes'][-2:]) < 90:
         minutes[-1] = 0
         
-    name_ind = np.where(slim_elements_df['id'] == player)[0][-1]
-        
     #points per played game
     result = np.zeros(len(player_df['total_points'])+1)  # initialize result array
     last_games = 0  # initialize last_vplayer_df['total_points']alue to 0
@@ -226,7 +269,10 @@ for player in df_gw['element'].unique():
             result[i+1] = last_point/last_games
             
     #redefine to isnert in all matches
-    selected_ind = df_gw['element'] == player
+    if season_data:
+        selected_ind = df_gw['element'] == player
+    else:
+        selected_ind = (df_gw['name'] == df_name)
     
     df_gw.loc[selected_ind, 'running_ict'] = ict.values[-1]
     df_gw.loc[selected_ind, 'running_influence'] = influence.values[-1]
@@ -243,7 +289,8 @@ for player in df_gw['element'].unique():
     df_gw.loc[selected_ind, 'points_per_played_game'] = result[:-1][-1]
     df_gw.loc[selected_ind, 'running_minutes'] = minutes[-1]
     
-
+if not season_data:
+    df_gw.element = df_gw.new_year_element
 
 i=0
 
@@ -341,15 +388,15 @@ for df_name in slim_elements_df.iterrows():
     
     # if df_name[1].second_name == 'C.Richards':
     #     print(df_name)
-        
-    #df_name = (752, slim_elements_df.iloc[752])
+    # ind=576
+    # df_name = (ind, slim_elements_df.iloc[ind])
 
     if not selected_players[df_name[0]]:
         team = int(df_name[1].team)
         position = int(df_name[1].element_type)     
         first_name = df_name[1].first_name
         second_name = df_name[1].second_name
-        name = first_name + second_name
+        name = first_name + ' ' + second_name
         form = df_name[1].form
         player_id =  df_name[1].id
         
@@ -357,37 +404,60 @@ for df_name in slim_elements_df.iterrows():
         r = requests.get(url)
         player = r.json()
         
-        player_games = pd.DataFrame(player['history'])
+        # player_games = pd.DataFrame(player['history'])
         
-        player_games['kickoff_time'] =  pd.to_datetime(player_games['kickoff_time'], format='%Y-%m-%dT%H:%M:%SZ')
-        player_games = player_games.sort_values(by='kickoff_time')
+        # player_games['kickoff_time'] =  pd.to_datetime(player_games['kickoff_time'], format='%Y-%m-%dT%H:%M:%SZ')
+        # player_games = player_games.sort_values(by='kickoff_time')
+        # player_games.set_index('kickoff_time', inplace=True)
         
         fixtures = pd.DataFrame(player['fixtures'])
         fixtures['kickoff_time'] =  pd.to_datetime(fixtures['kickoff_time'], format='%Y-%m-%dT%H:%M:%SZ')
         fixtures = fixtures.sort_values(by='kickoff_time')        
-        player_games.set_index('kickoff_time', inplace=True)
         
-        #check if player exist in slim
+        should_have_trainingdata = True
+        should_have_database = False
+        past_history  = player["history_past"]
+        if past_history == []:
+            should_have_trainingdata = False
+        
+        else:
+            last_history = past_history[-1]['season_name']
+            
+            if last_history[:4] == previous_season[:4]:
+                should_have_database = True
+        
+        #check if player does not exist in df_gw database. use data from slim
         if sum(df_gw.element == player_id) == 0:
             selected_ind = np.where(elements_df.id == player_id)[0][-1]
             
-            print('Estimate values for ', elements_df.iloc[selected_ind].web_name)
-
+            if (not season_data and should_have_database) or season_data:
+                print(elements_df.iloc[selected_ind].web_name, ': estimate values. Does not exist in game database.')
+            
+            #at beginnig of season data contains season sums
+            if season_data:
+                played_games = 1
+                form = float(elements_df.iloc[selected_ind].form)
+                points_per_game = float(elements_df.iloc[selected_ind].points_per_game)
+            else:
+                played_games = np.round((elements_df.iloc[selected_ind].total_points / (float(elements_df.iloc[selected_ind].points_per_game)+1e-6))) + 1e-6
+                form = np.nan
+                
+                
             xP = np.nan
-            xG = float(elements_df.iloc[selected_ind].expected_goals)
-            xA = float(elements_df.iloc[selected_ind].expected_assists)
-            xGI = float(elements_df.iloc[selected_ind].expected_goal_involvements)
-            xGC = float(elements_df.iloc[selected_ind].expected_goals_conceded)
-            ict = float(elements_df.iloc[selected_ind].ict_index)
-            influence = float(elements_df.iloc[selected_ind].influence)
-            threat = float(elements_df.iloc[selected_ind].threat)
-            creativity = float(elements_df.iloc[selected_ind].creativity)
-            bps = float(elements_df.iloc[selected_ind].bps)
+            xG = float(elements_df.iloc[selected_ind].expected_goals) / played_games
+            xA = float(elements_df.iloc[selected_ind].expected_assists) / played_games
+            xGI = float(elements_df.iloc[selected_ind].expected_goal_involvements) / played_games
+            xGC = float(elements_df.iloc[selected_ind].expected_goals_conceded) / played_games
+            ict = float(elements_df.iloc[selected_ind].ict_index) / played_games
+            influence = float(elements_df.iloc[selected_ind].influence) / played_games
+            threat = float(elements_df.iloc[selected_ind].threat) / played_games
+            creativity = float(elements_df.iloc[selected_ind].creativity) / played_games
+            bps = float(elements_df.iloc[selected_ind].bps) / played_games
             points_per_played_game = float(elements_df.iloc[selected_ind].points_per_game)            
-            minutes = np.min([float(elements_df.iloc[selected_ind].minutes), 90])
-            form = float(elements_df.iloc[selected_ind].form)
+            minutes = np.min([float(elements_df.iloc[selected_ind].minutes) / played_games, 90]) 
             points_per_game = float(elements_df.iloc[selected_ind].points_per_game)
             
+        #if they exist use data from df_gw
         else:
             
             id_ind  = df_gw.element == player_id
@@ -474,7 +544,8 @@ for df_name in slim_elements_df.iterrows():
                 df_game.loc[0] = [minutes, np.nan, np.nan, ict, influence, threat, creativity, bps, string_opp_team, string_team, name,
                                                    position, home, xP, xG*xG_multiplier, xA*3, xGI, xGC*xGC_multiplier, form,
                                                    points_per_game, points_per_played_game, other_difficulty, own_difficulty]
-      
+            
+            #merge with train X to maintain category labeling
             df_predict = pd.concat([df_game, train_X])
             
             df_predict['element_type'] = df_predict['element_type'].astype('category')
@@ -504,7 +575,8 @@ for df_name in slim_elements_df.iterrows():
                     estimated = 0
                     
             if sum(train_X.names == df_game.names[0]) == 0 and game[0]==0:
-                print(df_game.names[0] + ' does not exist in training data')
+                if should_have_trainingdata:
+                    print(df_game.names[0] + ': does not exist in training data.')
                 estimated = 0    
                 
             if df_name[1]['web_name'] in include_players:
@@ -747,6 +819,8 @@ for j in range(player_iteration):
 
 #calculate points for a given set of transfers
 def objective(check_transfers, free_transfers):      
+    
+    #print(check_transfers)
         
     team = slim_elements_df['picked'].values.copy()
     
@@ -767,14 +841,14 @@ def objective(check_transfers, free_transfers):
             if not np.isnan(transfer1[0]):
                 #check if players are already transfered
                 if team[transfer1[0]] == False or team[transfer1[1]] == True:
-                    return np.nan
+                    return np.nan, np.nan
                 
                 team[transfer1[0]] = False
                 team[transfer1[1]] = True
             if not np.isnan(transfer2[0]):
                 #check if players are already transfered
                 if team[transfer2[0]] == False or team[transfer2[1]] == True:
-                    return np.nan
+                    return np.nan, np.nan
                 
                 team[transfer2[0]] = False
                 team[transfer2[1]] = True
@@ -782,7 +856,7 @@ def objective(check_transfers, free_transfers):
             if not np.isnan(transfer3[0]):
                 #check if players are already transfered
                 if team[transfer3[0]] == False or team[transfer3[1]] == True:
-                    return np.nan
+                    return np.nan, np.nan
                 
                 team[transfer3[0]] = False
                 team[transfer3[1]] = True
@@ -810,7 +884,7 @@ def objective(check_transfers, free_transfers):
             # if sum(team) != 15:               
             #     print('overlap')
     
-            return np.nan
+            return np.nan, np.nan
         
     team = slim_elements_df['picked'].values.copy()
     
@@ -876,7 +950,7 @@ def objective(check_transfers, free_transfers):
         #print(sum(team_points))
     
         
-    return sum(team_points)
+    return sum(team_points), total_price
 
 
 
@@ -886,6 +960,7 @@ def check_random_transfers(i):
     
     evaluated_transfers = []
     points = []
+    prices = []
     
     counts = np.zeros((len(point_diff), len(probabilities[0])), dtype='uint32')
     sum_points = np.zeros((len(point_diff), len(probabilities[0])))
@@ -920,8 +995,11 @@ def check_random_transfers(i):
         
         # if (transfer_ind not in checked_transfers) and (transfer_ind not in evaluated_transfers):
         
-        point = objective(putative_transfers, free_transfers)
+        point, price = objective(putative_transfers, free_transfers)
+        if point > 1000:
+            print(putative_transfers)
         points.append(point)
+        prices.append(price)
         evaluated_transfers.append(transfer_ind)
             
         for week, transfer in enumerate(transfer_ind):         
@@ -935,8 +1013,14 @@ def check_random_transfers(i):
     
     
     if not np.isnan(points).all():
-        best_ind = np.nanargmax(points)
+        max_value = np.nanmax(points)
+        
+        indices_with_max_value = [i for i, value in enumerate(points) if value == max_value]
+        min_value_other_list = min(prices[i] for i in indices_with_max_value)
+        best_ind = next(i for i in indices_with_max_value if prices[i] == min_value_other_list)
+
         best_point = points[best_ind]
+        best_price = prices[best_ind]
         best_transfer = evaluated_transfers[best_ind]
             
             
@@ -946,25 +1030,36 @@ def check_random_transfers(i):
             
             #guided part. exhange one transfer
             for k in range(prob.shape[1]):                
-                guided_points, guided_evaluated_transfers, guided_sum_points, guided_counts = check_guided_transfers(k, best_transfer, best_point)
+                guided_points, guided_prices, guided_evaluated_transfers, guided_sum_points, guided_counts = check_guided_transfers(k, best_transfer)
                 
                 points = points + guided_points
+                prices = prices + guided_prices
                 evaluated_transfers = evaluated_transfers + guided_evaluated_transfers
                 sum_points += guided_sum_points
                 counts += guided_counts
                 
-                if np.nanmax(points) > best_point:
+                max_value = np.nanmax(points)
+                
+                indices_with_max_value = [i for i, value in enumerate(points) if value == max_value]
+                min_value_other_list = min(prices[i] for i in indices_with_max_value)
+                best_ind = next(i for i in indices_with_max_value if prices[i] == min_value_other_list)
+                
+                guided_best_price = prices[best_ind]
+                
+                
+                if np.nanmax(points) > best_point or (np.nanmax(points) == best_point and guided_best_price < best_price):
                     check_guided = True                    
                     best_ind = np.nanargmax(points)
                     best_point = points[best_ind]
-                    best_transfer = evaluated_transfers[best_ind]
+                    best_transfer = evaluated_transfers[best_ind]                
 
     return [points, evaluated_transfers, sum_points, counts]
 
-def check_guided_transfers(i, best_transfer, best_point):    
+def check_guided_transfers(i, best_transfer):    
    
     evaluated_transfers = []
     points = []
+    prices = []
     
     counts = np.zeros((len(point_diff), len(probabilities[0])), dtype='uint32')
     sum_points = np.zeros((len(point_diff), len(probabilities[0])))
@@ -990,8 +1085,9 @@ def check_guided_transfers(i, best_transfer, best_point):
                 
             # if (transfer_ind not in checked_transfers) and (transfer_ind not in evaluated_transfers):
             
-            point = objective(putative_transfers, free_transfers)
+            point, price = objective(putative_transfers, free_transfers)
             points.append(point)
+            prices.append(price)
             evaluated_transfers.append(transfer_ind.copy())                
                    
             if not np.isnan(point):          
@@ -1004,7 +1100,7 @@ def check_guided_transfers(i, best_transfer, best_point):
             else:
                 counts[i, transfer_ind[i]] += 1
 
-    return points, evaluated_transfers, sum_points, counts
+    return points, prices, evaluated_transfers, sum_points, counts
 
 
 
@@ -1015,7 +1111,7 @@ no_transfers = []
 for i in range(len(point_diff)):
     no_transfers.append([np.nan, np.nan])
     
-baseline = objective(no_transfers, free_transfers)
+baseline, _ = objective(no_transfers, free_transfers)
 
 batch_size = 1000
 
@@ -1036,7 +1132,7 @@ while True:
     selected = np.isnan(prob)
     prob[selected] = 0
     
-    #guessing part. try random combination
+    #guessing part. try random combination followed up by a targeted selection
     print('Getting  teams')
     parallel_results = Parallel(n_jobs=-1)(delayed(check_random_transfers)(i) for i in range(counter, counter+6))
     print('Interpreting results')
@@ -1074,14 +1170,14 @@ while True:
                 print(predictions[transfer[0], :])
                 print(predictions[transfer[1], :])
             else:
-                print(int(gw_ind), slim_elements_df.loc[transfer[1], 'web_name'], np.round(np.sum(predictions[transfer[1], :]), 1),  np.round(prob[transfer_ind, gw_ind], 3))
+                print(int(gw_ind), slim_elements_df.loc[transfer[1], 'web_name'], np.round(predictions[transfer[1], :], 1),  np.round(prob[transfer_ind, gw_ind], 3))
                
                 
         else:
             if unlimited_transfers:
                 max_ind = np.nanargmax(p[gw_ind, :-1])
                 transfer = transfers[max_ind]                    
-                print(int(gw_ind), slim_elements_df.loc[transfer[0], 'web_name'], np.round(np.sum(predictions[transfer[0], :]), 1), np.round(prob[transfer_ind, gw_ind], 3))
+                print(int(gw_ind), slim_elements_df.loc[transfer[0], 'web_name'], np.round(predictions[transfer[0], :], 1), np.round(prob[transfer_ind, gw_ind], 3))
                 price.append(slim_elements_df.loc[transfer[0], 'now_cost'])
             
     

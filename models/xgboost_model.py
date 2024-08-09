@@ -3,28 +3,23 @@ import pandas as pd
 import pickle
 import statsmodels.api as sm
 import numpy as np
-import difflib
-from sklearn.model_selection import train_test_split, KFold, ShuffleSplit, train_test_split
-from datetime import timedelta, datetime
+from datetime import timedelta
 import multiprocessing
-
-import os
-import numpy as np
-from sklearn.svm import SVC
+from sklearn.model_selection import train_test_split
+import requests
 from sklearn.metrics import mean_squared_error
 import xgboost as xgb
 from matplotlib import pyplot as plt
-from hyperopt.pyll import scope
 from hyperopt import STATUS_OK, Trials, fmin, hp, tpe
 from hyperopt.early_stop import no_progress_loss
 from hyperopt.fmin import generate_trials_to_calculate
 
 directories = r'C:\Users\jorgels\Git\Fantasy-Premier-League\data'
 
-optimize = True
+optimize = False
 continue_optimize = False
 
-method = 'linear_reg' #xgboost
+method = 'xgboost'
 
 season_dfs = []
 
@@ -217,42 +212,227 @@ season_df['points_per_game'] = season_df['points_per_game'].astype(float)
 
 season_df = season_df.reset_index()
 
-min_val = np.min(season_df['total_points'])-1
-
-#season_df['total_points'] = np.log10(season_df['total_points'].astype(float)-min_val)
-
-season_df['names'] = season_df['first_name'] + season_df['second_name']
+season_df['names'] = season_df['first_name'] + ' ' + season_df['second_name']
 
 #MATCH NAMES
-name_list = season_df['names'].unique()
+name_position_list = season_df[['names', 'element_type']].drop_duplicates(keep='first')
+
+#get current names
+#get statistics of all players
+url = 'https://fantasy.premierleague.com/api/bootstrap-static/'
+r = requests.get(url)
+js = r.json()
+
+elements_df = pd.DataFrame(js['elements'])
+current_names = (elements_df['first_name'] + ' ' + elements_df['second_name']).unique()
+current_positions = elements_df['element_type']
+
+names = np.concatenate((current_names, name_position_list['names'][::-1]))
+positions =  np.concatenate((current_positions, name_position_list['element_type'][::-1]))
+
+
+_, indices = np.unique(names, return_index=True)
+sorted_indices = np.sort(indices)
+all_names = names[sorted_indices]
+all_positions = positions[sorted_indices]
+
+from difflib import SequenceMatcher
+
+def sequence_matcher_similarity(s1, s2):
+    similarity = SequenceMatcher(None, ' '.join(sorted(s1.split())), ' '.join(sorted(s2.split()))).ratio()
+    first_name_similarity = SequenceMatcher(None, s1.split()[0], s2.split()[0]).ratio()
+    second_name_similarity = SequenceMatcher(None, s1.split()[1], s2.split()[1]).ratio()
+    
+    return similarity, first_name_similarity, second_name_similarity
+
+#make list that keep tracks of the changed names
+new_names = all_names.copy()
 
 #not that dangerous to merge previous players, but avoid to merge into current player
 #loop through the most recent players first
-for name_ind, name in reversed(list(enumerate(name_list))):
-    matched_names = difflib.get_close_matches(name, name_list[0:name_ind+1], cutoff=0.84)
+for name_ind, name in enumerate(all_names[:-1]):
     
-    #if any matched
-    if len(matched_names) > 1:
-        
-        original_player_ind = season_df['names'] == matched_names[0]
-        original_position = season_df['element_type'][original_player_ind].unique()
-        
-        #if same position
-        for position in original_position:
-            for change_name_ind in range(1,len(matched_names)):
-                #find the other player
-                change_player_ind = np.logical_and(season_df['names'] == matched_names[change_name_ind], season_df['element_type'] == position)
-                
-                if any(change_player_ind): 
-                    #make the other player into current player
-                    season_df.loc[change_player_ind, 'names'] = matched_names[0]
-                    print(matched_names[change_name_ind] + ' changed with ' + matched_names[0])
+    #where in list to check to avoid merges in the same season
+    check_ind = np.max([len(current_names), name_ind+1])
+    
+    previous_names = all_names[check_ind:]
+    
+    results = [sequence_matcher_similarity(prev_name, name) for prev_name in previous_names]
+    
+    # Now unpack the results list into separate variables
+    similarity_scores = []
+    first_name_similarities = []
+    second_name_similarities = []
+    
+    for result in results:
+        similarity_score, first_name_similarity, second_name_similarity = result
+        similarity_scores.append(similarity_score)
+        first_name_similarities.append(first_name_similarity)        
+        second_name_similarities.append(second_name_similarity)
+    
+    max_match = np.argmax(similarity_scores)
+    matched_name = previous_names[max_match]
 
+        
+    match_ind = -1
+    
+    first_name_criteria = (np.array(similarity_scores) > 0.71) & (np.array(first_name_similarities) > 0.47)
+    second_name_criteria = (np.array(similarity_scores) > 0.70) & (np.array(second_name_similarities) > 0.6)
+    all_criteria = (np.array(similarity_scores) > 0.56) & (np.array(first_name_similarities) > 0.55) & (np.array(second_name_similarities) > 0.67)
+    test_criteria = max(similarity_scores) > 1
+    
+    print_test = False
+    
+    if (matched_name in name or name in matched_name) or max(similarity_scores) > 0.7:
+        match_ind = np.argmax(similarity_scores)
+    elif any(first_name_criteria):
+        match_ind = np.where(first_name_criteria)[0][0]
+    elif any(second_name_criteria):
+        match_ind = np.where(second_name_criteria)[0][0]
+    elif any(all_criteria):
+        match_ind = np.where(all_criteria)[0][0]
+    elif test_criteria:
+        match_ind = np.argmax(similarity_scores)
+        print_test = True
+    
+    if match_ind > -1:
+        
+        matched_name = previous_names[match_ind]
+        
+        change_names = season_df['names'] == matched_name
+        
+        matched_position = season_df.loc[change_names, 'element_type'].unique()
+        
+        root_position = all_positions[name_ind]
+        
+        if any(matched_position == root_position):
+            new_name = new_names[name_ind]
+            
+            do_not_match_names = [['David Martin', 'David Raya Martin'],
+                                  ['Caleb Taylor', 'Charlie Taylor'],
+                                  ['Solomon March', 'Manor Solomon'],
+                                  ['Michael Olise', 'Michael Olakigbe'],
+                                  ['Ryan Bennett', 'Rhys Bennett'],
+                                  ['Joe Powell', 'Joe Rothwell'],
+                                  ['Ashley Williams', 'Ashley Phillips'],
+                                  ['Aaron Ramsey', 'Jacob Ramsey'],
+                                  ['Lewis Richards', 'Chris Richards'],
+                                  ['Ashley Williams', 'Rhys Williams'],
+                                  ['Killian Phillips', 'Kalvin Phillips'],
+                                  ['Josh Murphy', 'Jacob Murphy'],
+                                  ['Matthew Longstaff', 'Sean Longstaff'],
+                                  ['Charlie Cresswell', 'Aaron Cresswell'],
+                                  ['Dale Taylor', 'Joe Taylor'],
+                                  ['Jackson Smith', 'Jordan Smith'],
+                                  ['Kayne Ramsay', 'Calvin Ramsay'],
+                                  ['Haydon Roberts', 'Connor Roberts'],
+                                  ['Mason Greenwood', 'Sam Greenwood'],
+                                  ['Joe Bryan', 'Kean Bryan'],
+                                  ['Lewis Gibson', 'Liam Gibson'],
+                                  ['Daniel Sturridge', 'Sam Surridge'],
+                                  ['Alexis Sánchez', 'Carlos Sánchez'],
+                                  ['Danny Simpson', 'Jack Simpson'],
+                                  ['Bakary Sako', 'Bukayo Saka'],
+                                  ['James Tomkins', 'Jake Vokins'],
+                                  ['Lewis Brunt', 'Lewis Dunk'],
+                                  ['James Tomkins', 'James Tarkowski'],
+                                  ['Ben Jackson', 'Ben Johnson'],
+                                  ['Tyler Roberts', 'Tyler Morton'],
+                                  ['James McArthur', 'James McAtee'],
+                                  ['Josh Brownhill', 'Josh Bowler'],
+                                  ['Andy King', 'Andy Irving'],
+                                  ['Joshua Sims', 'Joshua King'],
+                                  ['James Storer', 'James Shea'],
+                                  ['Owen Beck', 'Owen Bevan'],
+                                  ['Joseph Hungbo' , 'Joe Hodge'],
+                                  ['Jonathan Leko', 'Jonathan Rowe'],
+                                  [' Christian Fuchs', 'Christian Marques'],
+                                  ['Anthony Martial', 'Anthony Mancini'],
+                                  ['Jack Simpson', 'Jack Robinson'],
+                                  ['Jack Cork', 'Jack Colback'],
+                                  ['Simon Mignolet', 'Simon Moore'],
+                                  ['Aaron Ramsey', 'Aaron Rowe'],
+                                  ['Antonio Valencia', 'Antonio Barreca'],
+                                  ['Callum Paterson', 'Callum Slattery'],
+                                  ['Ben Wilmot', 'Benjamin White'],
+                                  ['Scott Dann', 'Scott Malone'],
+                                  ['Sergio Romero', 'Sergio Rico'],
+                                  ['James Daly', 'Jamie Donley'],
+                                  ['Jason Puncheon', 'Jadon Sancho'],
+                                  ['Killian Phillips', 'Philip Billing'],
+                                  ['Christian Saydee', 'Christian Nørgaard'],
+                                  ['James Sweet', 'Reece James'],
+                                  ['Ollie Harrison', 'Harrison Reed'],
+                                  ['Richard Nartey', 'Omar Richards'],
+                                  ['Charles Sagoe', 'Shea Charles'],
+                                  ['Benjamin Mendy', 'Benjamin Fredrick'],
+                                  ['Scott Dann', 'Dan Potts'],
+                                  ['Ashley Williams', 'Neco Williams'],
+                                  ['Matty James', 'James McCarthy'],
+                                  ['Ashley Williams', 'William Fish'],
+                                  ['Christian Fuchs', 'Christian Marques'],
+                                  ['Charlie Savage', 'Charles Sagoe'],
+                                  ['Andrew Surman', 'Andrew Moran'],
+                                  ['Niels Nkounkou', 'Nicolas Nkoulou']
+                                  ]
+            
+            continue_marker = False
+            for avoid_match in do_not_match_names:
+                if matched_name in avoid_match and new_name in avoid_match:
+                    continue_marker = True
+            
+            if continue_marker:
+                continue
+            
+            
+            season_df.loc[change_names, 'names'] = new_name
+            
+            matched_index = all_names == matched_name
+            new_names[matched_index] = new_name
+            
+            print(name_ind, matched_name + ' changed to ' + new_name)
+    
+            if print_test:
+                print(name_ind, matched_name + ' changed to ' + new_name, similarity_scores[match_ind], first_name_similarities[match_ind], second_name_similarities[match_ind])
+        
+        
+        # #check if position is same        
+        # matched_player_ind = season_df['names'] == matched_name
+        # matched_position = season_df['element_type'][matched_player_ind].unique()
+        
+        # root_player_ind = season_df['names'] == new_name
+        # merged_position = season_df['element_type'][original_player_ind].unique()        
+        
+        # #if same position
+        # for position in original_position:
+        #     for change_name_ind in range(1,len(matched_names)):
+        #         #find the other player
+        #         change_player_ind = np.logical_and(season_df['names'] == matched_names[change_name_ind], season_df['element_type'] == position)
+                
+        #         if any(change_player_ind): 
+        #             #make the other player into current player
+        #             season_df.loc[change_player_ind, 'names'] = matched_names[0]
+        #             print(matched_names[change_name_ind] + ' changed with ' + matched_names[0])
+
+print('Done matching')
 original_season_df = season_df
+
 
 #remove players that don't play
 selected = season_df["minutes"] > 0
 season_df = season_df.loc[selected]
+
+# #remove players with few matches
+unique_names, unique_counts = np.unique(season_df.names, return_counts=True)
+
+n_tresh = 3
+
+for unique_ind, unique_n in enumerate(unique_counts):
+    if unique_n < n_tresh:
+        name = unique_names[unique_ind]
+        selected = (season_df.names == name)
+        season_df.loc[selected, 'names'] = 'undersampled'  
+        
 
 #different events have different impacts on different player types
 selected = np.logical_or(season_df['element_type'] == 1, season_df['element_type'] == 2)
@@ -376,23 +556,13 @@ def objective_linear_svr(space):
     return {'loss': val_error, 'status': STATUS_OK }
       
       
-
-#remove players with few matches
-unique_names, unique_counts = np.unique(season_df.names, return_counts=True)
-
-for unique_ind, unique_n in enumerate(unique_counts):
-    if unique_n < 3:
-        name = unique_names[unique_ind]
-        selected = (season_df.names == name)
-        season_df.names.loc[selected] = 'unknown'        
-
 season_df['element_type'] = season_df['element_type'].astype('category')
 season_df['names'] = season_df['names'].astype('category')
 season_df['difficulty'] = season_df['difficulty'].astype('category')
 season_df['own_difficulty'] = season_df['own_difficulty'].astype('category')
 season_df['other_difficulty'] = season_df['other_difficulty'].astype('category')
 season_df['string_team'] = season_df['string_team'].astype('category')
-season_df['string_opp_team'] = season_df['string_opp_team'].astype('category')
+season_df['string_opp_team'] = season_df['string_opp_team'].astype('category')  
 
 keep_features = ['running_minutes', 'transfer_in', 'transfer_out', 'running_ict', 'running_influence', 'running_threat', 'running_creativity', 'running_bps', 'string_opp_team', 'string_team', 'names', 'element_type', 'was_home', 'running_xP', 'running_xG', 'running_xA', 'running_xGI', 'running_xGC', 'form',
                  'points_per_game', 'points_per_played_game', 'other_difficulty', 'own_difficulty', 'total_points']
@@ -731,21 +901,21 @@ elif method == 'xgboost':
     grow_policy = ['depthwise', 'lossguide']
 
     space={'max_depth': hp.quniform("max_depth", 1, 55, 1), #try to decrease from 45 to 10?
-            'min_split_loss': hp.uniform('min_split_loss', 0, 15),
+            'min_split_loss': hp.uniform('min_split_loss', 0, 20),
             'reg_lambda' : hp.uniform('reg_lambda', 0, 20),
             'reg_alpha': hp.loguniform('reg_alpha', -3, np.log(1000)),
-            'min_child_weight' : hp.uniform('min_child_weight', 0, 45),
+            'min_child_weight' : hp.uniform('min_child_weight', 0, 50),
             'learning_rate': hp.uniform('learning_rate', 0, 0.5),
             'subsample': hp.uniform('subsample', 0.5, 1),
             'colsample_bytree': hp.uniform('colsample_bytree', 0.5, 1),
             'colsample_bylevel': hp.uniform('colsample_bylevel', 0.5, 1),
             'colsample_bynode': hp.uniform('colsample_bynode', 0.5, 1),
-            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 5, 60, 1), #try to decrease to 35?
+            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 5, 90, 1), #try to decrease to 35?
             'eval_fraction': hp.uniform('eval_fraction', 0.01, 0.4),
-            'n_estimators': hp.qloguniform('n_estimators', np.log(2), np.log(1100), 1),
+            'n_estimators': hp.qloguniform('n_estimators', np.log(2), np.log(1750), 1),
             'max_delta_step': hp.uniform('max_delta_step', 0, 20),
             'grow_policy': hp.choice('grow_policy', grow_policy),
-            'max_leaves': hp.quniform('max_leaves', 0, 150, 1),
+            'max_leaves': hp.quniform('max_leaves', 0, 175, 1),
         }
     
     #get an validation set for fitting
@@ -764,7 +934,8 @@ elif method == 'xgboost':
     for field, val in old_hyperparams.items():
         test_hyperparams[field] = val[0]
         
-    if not continue_optimize:
+    #test the best hyperparams from last training
+    if not continue_optimize and optimize:
         trials = generate_trials_to_calculate([test_hyperparams])
     else:
         trials = old_trials
@@ -834,7 +1005,7 @@ elif method == 'xgboost':
         
     sorted_losses = np.argsort(losses)
         
-    if optimize:
+    if True:
         #train and test the best models
         
         
@@ -878,9 +1049,12 @@ elif method == 'xgboost':
                 #get an validation set for fitting
                 cv_X, val_X, cv_y, val_y, cv_sample_weights, _, cv_stratify, _ = train_test_split(train_X, train_y, sample_weights, stratify, test_size=0.25, stratify=stratify, random_state=t)
                 opt_out = objective_xgboost(test_hyperparams)
-                ind_losses.append(opt_out['loss'])
+                losst = opt_out['loss']
+                #print(losst)
+                ind_losses.append(losst)
         
-                
+            
+            print(ind_losses)
             score = np.mean(ind_losses) + np.std(ind_losses, ddof=1)
                 
             if score < best_loss:
@@ -902,12 +1076,14 @@ elif method == 'xgboost':
         best_best_ind = np.argmin(mean_loss + var_loss)
         #best_best_ind = np.argmin(np.max(cv_losses, axis=1))
     else:
-        best_best_ind = 1
+        best_best_ind = 6
     
     #train with all data
     best_cv_trial =  sorted_losses[best_best_ind]
+    print(losses[best_cv_trial])
      
     hyperparams = trials.trials[best_cv_trial]['misc']['vals']
+    print(hyperparams)
     
     test_hyperparams = {}
     for field, val in hyperparams.items():
