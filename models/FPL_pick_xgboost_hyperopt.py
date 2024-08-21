@@ -5,11 +5,11 @@ points_per_game_treshold = -1
 exclude_team = []
 
 
-exclude_players = ['Ramsdale', 'Botman', 'Tomiyasu', 'Dúbravka', 'Turner', 'Chilwell', 'Odysseas', 'Bajcetic', 'Johnstone'] #check bajcetic
+exclude_players = ['Henderson', 'Bobb', 'Watkins', 'Wilson', 'Mings', 'Elliott', 'De Bruyne', 'Willock', 'Ramsdale', 'Botman', 'Tomiyasu', 'Foden', 'Dúbravka', 'Turner', 'Chilwell', 'Odysseas', 'Bajcetic', 'Johnstone']
 
 exclude_players_out = []
 
-include_players = []
+include_players = ['Haaland']
 
 do_not_exclude_players = []
 
@@ -48,11 +48,6 @@ from hyperopt import STATUS_OK, STATUS_FAIL, space_eval, Trials, fmin, hp, tpe, 
 from hyperopt.early_stop import no_progress_loss
 from hyperopt.fmin import generate_trials_to_calculate
 import random
-from numpy.random import choice
-import time
-from operator import itemgetter
-from more_itertools import unique_everseen
-import Levenshtein
 
 
 #insert string for team
@@ -130,10 +125,12 @@ dfs_gw = []
 if os.path.exists(directory + '/gws'):
     gw_dir = directory + '/gws'
     season_data = True
+    days_avg = days_avg
 else:
     gw_dir = prev_season_directory + '/gws'
     print('Directory for current season not found')
     season_data = False   
+    days_avg = '90D'
     
 #open each gw and get data for players
 for gw_csv in os.listdir(gw_dir):
@@ -220,19 +217,19 @@ for player in df_gw['element'].unique():
     player_df = df_gw[selected_ind]
     player_df.set_index('kickoff_time', inplace=True)
     
-    form = player_df['total_points'].rolling('30D').mean()
-    xG = player_df['expected_goals'].rolling('30D').mean()
-    xA = player_df['expected_assists'].rolling('30D').mean()
-    xGI = player_df['expected_goal_involvements'].rolling('30D').mean()
-    xGC = player_df['expected_goals_conceded'].rolling('30D').mean()
-    xP = player_df['xP'].rolling('30D').mean()
+    form = player_df['total_points'].rolling(days_avg).mean()
+    xG = player_df['expected_goals'].rolling(days_avg).mean()
+    xA = player_df['expected_assists'].rolling(days_avg).mean()
+    xGI = player_df['expected_goal_involvements'].rolling(days_avg).mean()
+    xGC = player_df['expected_goals_conceded'].rolling(days_avg).mean()
+    xP = player_df['xP'].rolling(days_avg).mean()
     points_per_game =  player_df['total_points'].cumsum()/ (player_df['round'])
-    ict = player_df['ict_index'].rolling('30D').mean()
-    influence = player_df['influence'].rolling('30D').mean()
-    threat = player_df['threat'].rolling('30D').mean()
-    creativity = player_df['creativity'].rolling('30D').mean()
-    bps = player_df['bps'].rolling('30D').mean()
-    minutes = player_df['minutes'].rolling('30D').mean().values
+    ict = player_df['ict_index'].rolling(days_avg).mean()
+    influence = player_df['influence'].rolling(days_avg).mean()
+    threat = player_df['threat'].rolling(days_avg).mean()
+    creativity = player_df['creativity'].rolling(days_avg).mean()
+    bps = player_df['bps'].rolling(days_avg).mean()
+    minutes = player_df['minutes'].rolling(days_avg).mean().values
     
     if name in force_90:
         #average across season (non zero matches)
@@ -251,7 +248,7 @@ for player in df_gw['element'].unique():
         bps[-1] = np.mean(player_df['bps'])
         
     #if two last matches are not played then set to zero
-    elif sum(player_df['minutes'][-2:]) < 90:
+    elif sum(player_df['minutes'][-2:]) < 90 and season_data:
         minutes[-1] = 0
         
     #points per played game
@@ -481,8 +478,14 @@ for df_name in slim_elements_df.iterrows():
             form = df_gw.loc[selected_ind]['form']
             
         selected_ind = np.where(elements_df.id == player_id)[0][-1]
-        transfer_in = elements_df.iloc[selected_ind].transfers_in_event
-        transfer_out = elements_df.iloc[selected_ind].transfers_out_event
+        
+        sum_transfers = sum(elements_df.transfers_in_event)
+        if sum_transfers == 0 or not season_data:
+            transfer_in = np.nan
+            transfer_out = np.nan
+        else:
+            transfer_in = elements_df.iloc[selected_ind].transfers_in_event/sum_transfers
+            transfer_out = elements_df.iloc[selected_ind].transfers_out_event/sum_transfers
                 
         if position == 4:
             xG_multiplier = 4
@@ -561,23 +564,23 @@ for df_name in slim_elements_df.iterrows():
             estimated = result.predict(df_predict.iloc[0:1])[0]     
             
             if minutes < 10 or np.isnan(minutes):
-                estimated = 0
+                estimated = 0.1
             
             #remove if unlikely to play: game_idx for game. gw_idx for gw
             if gw_idx==0 and gw_idx+jump_rounds == 0 and df_name[1]['chance_of_playing_next_round'] < 75:
-                estimated = 0
+                estimated = 0.1
                 
             if string_team in exclude_team:
-                estimated = 0
+                estimated = 0.1
                 
             if gw in manual_blanks.keys():
                 if df_name[1]['web_name'] in manual_blanks[gw]:
-                    estimated = 0
+                    estimated = 0.1
                     
             if sum(train_X.names == df_game.names[0]) == 0 and game[0]==0:
                 if should_have_trainingdata:
                     print(df_game.names[0] + ': does not exist in training data.')
-                estimated = 0    
+                estimated = 0.1 
                 
             if df_name[1]['web_name'] in include_players:
                 estimated = 100
@@ -587,11 +590,11 @@ for df_name in slim_elements_df.iterrows():
                     estimated = 100
                 
             if df_name[1]['web_name'] in exclude_players:
-                estimated = 0
+                estimated = 0.1
             
             for exclude_name in exclude_players:
                 if df_name[1]['first_name'] in exclude_name and df_name[1]['second_name'] in exclude_name:
-                    estimated = 0
+                    estimated = 0.1
             
             pred_score[gw_idx] = pred_score[gw_idx] + estimated
             total_matches = total_matches + 1
@@ -620,7 +623,7 @@ original_prediction = np.copy(predictions)
     
 # remove (=set to zero) low form
 selected = slim_elements_df['form'] < form_treshold
-prediction[selected] = 0
+prediction[selected] = 0.1
 for ind in np.where(selected)[0]:
     predictions[ind]=np.zeros(rounds_to_value).astype(float)
 
@@ -996,8 +999,7 @@ def check_random_transfers(i):
         # if (transfer_ind not in checked_transfers) and (transfer_ind not in evaluated_transfers):
         
         point, price = objective(putative_transfers, free_transfers)
-        if point > 1000:
-            print(putative_transfers)
+
         points.append(point)
         prices.append(price)
         evaluated_transfers.append(transfer_ind)
@@ -1029,7 +1031,8 @@ def check_random_transfers(i):
             check_guided = False
             
             #guided part. exhange one transfer
-            for k in range(prob.shape[1]):                
+            for k in range(prob.shape[1]):           
+                
                 guided_points, guided_prices, guided_evaluated_transfers, guided_sum_points, guided_counts = check_guided_transfers(k, best_transfer)
                 
                 points = points + guided_points
@@ -1047,10 +1050,11 @@ def check_random_transfers(i):
                 guided_best_price = prices[best_ind]
                 
                 
-                if np.nanmax(points) > best_point or (np.nanmax(points) == best_point and guided_best_price < best_price):
-                    check_guided = True                    
-                    best_ind = np.nanargmax(points)
+                if max_value > best_point or (max_value == best_point and guided_best_price < best_price):
+                    print(k)
+                    check_guided = True
                     best_point = points[best_ind]
+                    best_price = guided_best_price
                     best_transfer = evaluated_transfers[best_ind]                
 
     return [points, evaluated_transfers, sum_points, counts]
@@ -1181,7 +1185,7 @@ while True:
                 price.append(slim_elements_df.loc[transfer[0], 'now_cost'])
             
     
-    print('points: ', best_points-baseline, 'price: ', sum(price))
+    print('points: ', best_points, '. diff: ', best_points-baseline, '. price: ', sum(price))
     print('\n')
     
 

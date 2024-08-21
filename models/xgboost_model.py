@@ -17,13 +17,20 @@ from hyperopt.fmin import generate_trials_to_calculate
 directories = r'C:\Users\jorgels\Git\Fantasy-Premier-League\data'
 
 optimize = False
-continue_optimize = False
+continue_optimize = True
+
+season_start = True
 
 method = 'xgboost'
 
 season_dfs = []
 
 season_count = 0
+
+if season_start:
+    days_avg = '90D'
+else:
+    days_avg = '30D'
 
 
 #get each season
@@ -63,9 +70,19 @@ for folder in os.listdir(directories):
                     print(gw_csv)
                     
                     if folder == '2018-19' or folder == '2016-17':
-                        dfs_gw.append(pd.read_csv(gw_path, encoding='latin1'))
+                        
+                        gw = pd.read_csv(gw_path, encoding='latin1')
                     else:
-                        dfs_gw.append(pd.read_csv(gw_path))
+                        gw = pd.read_csv(gw_path)
+    
+                    sum_transfers = sum(gw.transfers_in)
+                    
+                    if sum_transfers == 0 or season_start:
+                        gw[['transfers_in', 'transfers_out']] = np.nan
+                    else:
+                        gw[['transfers_in', 'transfers_out']] = gw[['transfers_in', 'transfers_out']]/sum_transfers
+                    
+                    dfs_gw.append(gw)
 
             df_gw = pd.concat(dfs_gw)
             
@@ -120,7 +137,7 @@ for folder in os.listdir(directories):
                     xG = np.empty((len(player_df)))
                     xG[:] = np.nan
                     
-                    xP = player_df['xP'].shift(1).rolling('30D').mean().values
+                    xP = player_df['xP'].shift(1).rolling(days_avg).mean().values
                     
                     xA = np.empty((len(player_df)))
                     xA[:] = np.nan
@@ -132,23 +149,23 @@ for folder in os.listdir(directories):
                     xGC[:] = np.nan
                     
                 else:  
-                    xG = player_df['expected_goals'].shift(1).rolling('30D').mean().values
-                    xP = player_df['xP'].shift(1).rolling('30D').mean().values
-                    xA = player_df['expected_assists'].shift(1).rolling('30D').mean().values
-                    xGI = player_df['expected_goal_involvements'].shift(1).rolling('30D').mean().values
-                    xGC = player_df['expected_goals_conceded'].shift(1).rolling('30D').mean().values
+                    xG = player_df['expected_goals'].shift(1).rolling(days_avg).mean().values
+                    xP = player_df['xP'].shift(1).rolling(days_avg).mean().values
+                    xA = player_df['expected_assists'].shift(1).rolling(days_avg).mean().values
+                    xGI = player_df['expected_goal_involvements'].shift(1).rolling(days_avg).mean().values
+                    xGC = player_df['expected_goals_conceded'].shift(1).rolling(days_avg).mean().values
 
 
-                form = player_df['total_points'].shift(1).rolling('30D').mean()
+                form = player_df['total_points'].shift(1).rolling(days_avg).mean()
                 points_per_game =  player_df['total_points'].cumsum().shift(1) / (player_df['round']).shift(1)
-                ict = player_df['ict_index'].shift(1).rolling('30D').mean()
-                influence = player_df['influence'].shift(1).rolling('30D').mean()
-                threat = player_df['threat'].shift(1).rolling('30D').mean()
-                creativity = player_df['creativity'].shift(1).rolling('30D').mean()
-                bps = player_df['bps'].shift(1).rolling('30D').mean()
+                ict = player_df['ict_index'].shift(1).rolling(days_avg).mean()
+                influence = player_df['influence'].shift(1).rolling(days_avg).mean()
+                threat = player_df['threat'].shift(1).rolling(days_avg).mean()
+                creativity = player_df['creativity'].shift(1).rolling(days_avg).mean()
+                bps = player_df['bps'].shift(1).rolling(days_avg).mean()
                 transfer_in = player_df['transfers_in'].values
                 transfer_out = player_df['transfers_out'].values
-                minutes = player_df['minutes'].shift(1).rolling('30D').mean()
+                minutes = player_df['minutes'].shift(1).rolling(days_avg).mean()
                 
                 #points per played game
                 result = np.zeros(len(player_df['total_points'])+1)  # initialize result array
@@ -380,17 +397,17 @@ for name_ind, name in enumerate(all_names[:-1]):
             for avoid_match in do_not_match_names:
                 if matched_name in avoid_match and new_name in avoid_match:
                     continue_marker = True
-            
+                    
             if continue_marker:
                 continue
-            
             
             season_df.loc[change_names, 'names'] = new_name
             
             matched_index = all_names == matched_name
             new_names[matched_index] = new_name
             
-            print(name_ind, matched_name + ' changed to ' + new_name)
+            if new_name in current_names:
+                print(name_ind, matched_name + ' changed to ' + new_name)
     
             if print_test:
                 print(name_ind, matched_name + ' changed to ' + new_name, similarity_scores[match_ind], first_name_similarities[match_ind], second_name_similarities[match_ind])
@@ -414,6 +431,12 @@ for name_ind, name in enumerate(all_names[:-1]):
         #             season_df.loc[change_player_ind, 'names'] = matched_names[0]
         #             print(matched_names[change_name_ind] + ' changed with ' + matched_names[0])
 
+
+for name in season_df.names.unique():
+    if not name in current_names:
+        selected = season_df.names == name
+        season_df.loc[selected, 'names'] = np.nan
+    
 print('Done matching')
 original_season_df = season_df
 
@@ -423,15 +446,15 @@ selected = season_df["minutes"] > 0
 season_df = season_df.loc[selected]
 
 # #remove players with few matches
-unique_names, unique_counts = np.unique(season_df.names, return_counts=True)
+unique_names = season_df.names.unique()
 
 n_tresh = 3
 
-for unique_ind, unique_n in enumerate(unique_counts):
-    if unique_n < n_tresh:
-        name = unique_names[unique_ind]
-        selected = (season_df.names == name)
-        season_df.loc[selected, 'names'] = 'undersampled'  
+for unique_ind, name in enumerate(unique_names):
+    selected = (season_df.names == name)
+
+    if sum(selected) < n_tresh:
+        season_df.loc[selected, 'names'] = np.nan
         
 
 #different events have different impacts on different player types
@@ -904,18 +927,18 @@ elif method == 'xgboost':
             'min_split_loss': hp.uniform('min_split_loss', 0, 20),
             'reg_lambda' : hp.uniform('reg_lambda', 0, 20),
             'reg_alpha': hp.loguniform('reg_alpha', -3, np.log(1000)),
-            'min_child_weight' : hp.uniform('min_child_weight', 0, 50),
+            'min_child_weight' : hp.uniform('min_child_weight', 0, 60),
             'learning_rate': hp.uniform('learning_rate', 0, 0.5),
             'subsample': hp.uniform('subsample', 0.5, 1),
             'colsample_bytree': hp.uniform('colsample_bytree', 0.5, 1),
             'colsample_bylevel': hp.uniform('colsample_bylevel', 0.5, 1),
             'colsample_bynode': hp.uniform('colsample_bynode', 0.5, 1),
-            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 5, 90, 1), #try to decrease to 35?
+            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 5, 120, 1), #try to decrease to 35?
             'eval_fraction': hp.uniform('eval_fraction', 0.01, 0.4),
-            'n_estimators': hp.qloguniform('n_estimators', np.log(2), np.log(1750), 1),
-            'max_delta_step': hp.uniform('max_delta_step', 0, 20),
+            'n_estimators': hp.qloguniform('n_estimators', np.log(2), np.log(2250), 1),
+            'max_delta_step': hp.uniform('max_delta_step', 0, 25),
             'grow_policy': hp.choice('grow_policy', grow_policy),
-            'max_leaves': hp.quniform('max_leaves', 0, 175, 1),
+            'max_leaves': hp.quniform('max_leaves', 0, 250, 1),
         }
     
     #get an validation set for fitting
@@ -1005,7 +1028,7 @@ elif method == 'xgboost':
         
     sorted_losses = np.argsort(losses)
         
-    if True:
+    if continue_optimize:
         #train and test the best models
         
         
@@ -1067,16 +1090,17 @@ elif method == 'xgboost':
                 
             k += 1
             ind += 1
-            print(score)
+            print(score, np.mean(ind_losses), k, ind)
                 
                 
         mean_loss = np.mean(cv_losses, axis=1)
         var_loss =  np.std(cv_losses, ddof=1, axis=1)
         
         best_best_ind = np.argmin(mean_loss + var_loss)
+        print('Best ind: ', best_best_ind)
         #best_best_ind = np.argmin(np.max(cv_losses, axis=1))
     else:
-        best_best_ind = 6
+        best_best_ind = 85
     
     #train with all data
     best_cv_trial =  sorted_losses[best_best_ind]
