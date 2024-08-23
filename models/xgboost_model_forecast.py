@@ -92,23 +92,22 @@ for folder in os.listdir(directories):
             
             df_gw.reset_index(inplace=True)
             
-            df_gw['form'] = np.nan
-            df_gw['running_xG'] = np.nan
-            df_gw['running_xA'] = np.nan
-            df_gw['running_xGI'] = np.nan
-            df_gw['running_xGC'] = np.nan
-            df_gw['running_xP'] = np.nan
+            df_gw['xG'] = np.nan
+            df_gw['xA'] = np.nan
+            df_gw['xGI'] = np.nan
+            df_gw['xGC'] = np.nan
+            df_gw['xP'] = np.nan
             df_gw['points_per_game'] = np.nan
             df_gw['points_per_played_game'] = np.nan
-            df_gw['running_ict'] = np.nan
-            df_gw['running_influence'] = np.nan
-            df_gw['running_threat'] = np.nan
-            df_gw['running_creativity'] = np.nan
-            df_gw['running_bps'] = np.nan
+            df_gw['ict'] = np.nan
+            df_gw['influence'] = np.nan
+            df_gw['threat'] = np.nan
+            df_gw['creativity'] = np.nan
+            df_gw['bps'] = np.nan
             df_gw['transfer_in'] = np.nan
             df_gw['transfer_out'] = np.nan
             df_gw['string_opp_team'] = np.nan
-            df_gw['running_minutes'] = np.nan
+            df_gw['minutes'] = np.nan
                 
             # Calculate rolling values not including the observaiton
             for player in df_gw['element'].unique():
@@ -138,7 +137,7 @@ for folder in os.listdir(directories):
                     xG = np.empty((len(player_df)))
                     xG[:] = np.nan
                     
-                    xP = player_df['xP'].shift(1).rolling(days_avg).mean().values
+                    xP = player_df['xP'].mean().values
                     
                     xA = np.empty((len(player_df)))
                     xA[:] = np.nan
@@ -150,23 +149,22 @@ for folder in os.listdir(directories):
                     xGC[:] = np.nan
                     
                 else:  
-                    xG = player_df['expected_goals'].shift(1).rolling(days_avg).mean().values
-                    xP = player_df['xP'].shift(1).rolling(days_avg).mean().values
-                    xA = player_df['expected_assists'].shift(1).rolling(days_avg).mean().values
-                    xGI = player_df['expected_goal_involvements'].shift(1).rolling(days_avg).mean().values
-                    xGC = player_df['expected_goals_conceded'].shift(1).rolling(days_avg).mean().values
+                    xG = player_df['expected_goals'].values
+                    xP = player_df['xP'].values
+                    xA = player_df['expected_assists'].values
+                    xGI = player_df['expected_goal_involvements'].values
+                    xGC = player_df['expected_goals_conceded'].values
 
 
-                form = player_df['total_points'].shift(1).rolling(days_avg).mean()
-                points_per_game =  player_df['total_points'].cumsum().shift(1) / (player_df['round']).shift(1)
-                ict = player_df['ict_index'].shift(1).rolling(days_avg).mean()
-                influence = player_df['influence'].shift(1).rolling(days_avg).mean()
-                threat = player_df['threat'].shift(1).rolling(days_avg).mean()
-                creativity = player_df['creativity'].shift(1).rolling(days_avg).mean()
-                bps = player_df['bps'].shift(1).rolling(days_avg).mean()
+                points_per_game =  player_df['total_points'].cumsum() / (player_df['round'])
+                ict = player_df['ict_index']
+                influence = player_df['influence']
+                threat = player_df['threat']
+                creativity = player_df['creativity']
+                bps = player_df['bps']
                 transfer_in = player_df['transfers_in'].values
                 transfer_out = player_df['transfers_out'].values
-                minutes = player_df['minutes'].shift(1).rolling(days_avg).mean()
+                minutes = player_df['minutes']
                 
                 #points per played game
                 result = np.zeros(len(player_df['total_points'])+1)  # initialize result array
@@ -182,22 +180,21 @@ for folder in os.listdir(directories):
                     if last_games > 0:
                         result[i+1] = last_point/last_games
                 
-                df_gw.loc[selected_ind, 'running_ict'] = ict.values
-                df_gw.loc[selected_ind, 'running_influence'] = influence.values
-                df_gw.loc[selected_ind, 'running_threat'] = threat.values
-                df_gw.loc[selected_ind, 'running_creativity'] = creativity.values
-                df_gw.loc[selected_ind, 'running_bps'] = bps.values
-                df_gw.loc[selected_ind, 'form'] = form.values
-                df_gw.loc[selected_ind, 'running_xG'] = xG
-                df_gw.loc[selected_ind, 'running_xA'] = xA
-                df_gw.loc[selected_ind, 'running_xGI'] = xGI
-                df_gw.loc[selected_ind, 'running_xGC'] = xGC   
-                df_gw.loc[selected_ind, 'running_xP'] = xP
+                df_gw.loc[selected_ind, 'ict'] = ict.values
+                df_gw.loc[selected_ind, 'influence'] = influence.values
+                df_gw.loc[selected_ind, 'threat'] = threat.values
+                df_gw.loc[selected_ind, 'creativity'] = creativity.values
+                df_gw.loc[selected_ind, 'bps'] = bps.values
+                df_gw.loc[selected_ind, 'xG'] = xG
+                df_gw.loc[selected_ind, 'xA'] = xA
+                df_gw.loc[selected_ind, 'xGI'] = xGI
+                df_gw.loc[selected_ind, 'xGC'] = xGC   
+                df_gw.loc[selected_ind, 'xP'] = xP
                 df_gw.loc[selected_ind, 'points_per_game'] = points_per_game.values
                 df_gw.loc[selected_ind, 'points_per_played_game'] = result[:-1]
                 df_gw.loc[selected_ind, 'transfer_in'] = transfer_in
                 df_gw.loc[selected_ind, 'transfer_out'] = transfer_out
-                df_gw.loc[selected_ind, 'running_minutes'] = minutes.values
+                df_gw.loc[selected_ind, 'minutes'] = minutes.values
                 
                 opp_team = []
                 for team in player_df['opponent_team'].astype(int).values-1:
@@ -205,7 +202,7 @@ for folder in os.listdir(directories):
                        
                 df_gw.loc[selected_ind, 'string_opp_team'] = opp_team
                 
-            season_df = df_gw[['running_minutes', 'string_opp_team', 'transfer_in', 'transfer_out', 'running_ict', 'running_influence', 'running_threat', 'running_creativity', 'running_bps', 'element', 'fixture', 'minutes', 'total_points', 'round', 'was_home', 'kickoff_time', 'running_xP', 'running_xG', 'running_xA', 'running_xGI', 'running_xGC', 'form', 'points_per_game', 'points_per_played_game']]
+            season_df = df_gw[['minutes', 'string_opp_team', 'transfer_in', 'transfer_out', 'ict', 'influence', 'threat', 'creativity', 'bps', 'element', 'fixture', 'minutes', 'total_points', 'round', 'was_home', 'kickoff_time', 'xP', 'xG', 'xA', 'xGI', 'xGC', 'points_per_game', 'points_per_played_game']]
             
             #get fixture difficulty difference for each datapoint
             #open fixtures data
@@ -433,12 +430,21 @@ for name_ind, name in enumerate(all_names[:-1]):
         #             print(matched_names[change_name_ind] + ' changed with ' + matched_names[0])
 
 
+
+
+
+
+
 for name in season_df.names.unique():
     if not name in current_names:
         selected = season_df.names == name
         season_df.loc[selected, 'names'] = np.nan
     
 print('Done matching')
+
+
+
+
 original_season_df = season_df
 
 
@@ -460,17 +466,17 @@ for unique_ind, name in enumerate(unique_names):
 
 #different events have different impacts on different player types
 selected = np.logical_or(season_df['element_type'] == 1, season_df['element_type'] == 2)
-season_df.loc[selected, 'running_xG'] = season_df.loc[selected, 'running_xG']*6
-season_df.loc[selected, 'running_xGC'] = season_df.loc[selected, 'running_xGC']*4
+season_df.loc[selected, 'xG'] = season_df.loc[selected, 'xG']*6
+season_df.loc[selected, 'xGC'] = season_df.loc[selected, 'xGC']*4
 
 selected = season_df['element_type'] == 3
-season_df.loc[selected, 'running_xG'] = season_df.loc[selected, 'running_xG']*5
+season_df.loc[selected, 'xG'] = season_df.loc[selected, 'xG']*5
 
 selected = season_df['element_type'] == 4
-season_df.loc[selected, 'running_xG'] = season_df.loc[selected, 'running_xG']*4
-season_df.loc[selected, 'running_xGC'] = 0
+season_df.loc[selected, 'xG'] = season_df.loc[selected, 'xG']*4
+season_df.loc[selected, 'xGC'] = 0
 
-season_df.loc[:, 'running_xA'] = season_df.loc[:, 'running_xA']*3
+season_df.loc[:, 'xA'] = season_df.loc[:, 'xA']*3
             
 home_diff = season_df["team_h_difficulty"].copy()
 away_diff = season_df["team_a_difficulty"].copy()
