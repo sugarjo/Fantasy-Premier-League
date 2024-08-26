@@ -1,32 +1,26 @@
 import os
-import re
-import pickle
-import requests
-
 import pandas as pd
+import pickle
+import statsmodels.api as sm
 import numpy as np
 from datetime import timedelta
-
 from sklearn.model_selection import train_test_split
 from sklearn.utils.class_weight import compute_class_weight
 from sklearn.metrics import mean_squared_error
-
-from matplotlib import pyplot as plt
-
 import xgboost as xgb
-import statsmodels.api as sm
-
+from matplotlib import pyplot as plt
 from hyperopt import STATUS_OK, Trials, fmin, hp, tpe
 from hyperopt.early_stop import no_progress_loss
 from hyperopt.fmin import generate_trials_to_calculate
-
+import requests
+import re
 
 directories = r'C:\Users\jorgels\Git\Fantasy-Premier-League\data'
 
 optimize = True
 continue_optimize = False
 
-temporal_window = 11
+temporal_window = 10
 
 season_start = False
 
@@ -381,19 +375,10 @@ for name_ind, name in enumerate(all_names[:-1]):
 print('Done matching')
 
 #different events have different impacts on different player types
-selected = season_df['element_type'] == 1
-season_df.loc[selected, 'expected_goals'] = season_df.loc[selected, 'expected_goals']*10
-
-selected = (season_df['element_type'] == 1) & ( (season_df['season'] == '2016-17') | (season_df['season'] == '2017-18') | (season_df['season'] == '2018-19') | (season_df['season'] == '2019-20') | (season_df['season'] == '2020-21') | (season_df['season'] == '2021-22') | (season_df['season'] == '2022-23') | (season_df['season'] == '2023-24'))
-season_df.loc[selected, 'expected_goals'] = season_df.loc[selected, 'expected_goals']*6/10
-
-selected = season_df['element_type'] == 1
-season_df.loc[selected, 'expected_goals'] = season_df.loc[selected, 'expected_goals']*6
-
 selected = np.logical_or(season_df['element_type'] == 1, season_df['element_type'] == 2)
+season_df.loc[selected, 'expected_goals'] = season_df.loc[selected, 'expected_goals']*6
 season_df.loc[selected, 'expected_goals_conceded'] = season_df.loc[selected, 'expected_goals_conceded']*4
 
-#midfielder loose one pont for goals conceded. so no change
 selected = season_df['element_type'] == 3
 season_df.loc[selected, 'expected_goals'] = season_df.loc[selected, 'expected_goals']*5
 
@@ -503,15 +488,16 @@ for unique_ind, name in enumerate(unique_names):
 def custom_metric(pred_y, dtrain):
     
     global fit_minutes
-    
-    # Targets
-    y = dtrain.get_label()
+    global eval_minutes
     
     # Binary mask for observations where the feature value exceeds the threshold
     if dtrain.num_row() == fit_minutes.shape[0]:
         mask = fit_minutes > 60
-    else:
-        mask = np.full(dtrain.num_row(), True)
+    elif dtrain.num_row() == eval_minutes.shape[0]:
+        mask = eval_minutes > 60
+
+    # Targets
+    y = dtrain.get_label()
     
     # Compute gradients and hessians only for observations that exceed the threshold
     mse = mean_squared_error(y[mask], pred_y[mask])
@@ -521,16 +507,17 @@ def custom_metric(pred_y, dtrain):
 def custom_objective(pred_y, dtrain):
     
     global fit_minutes
+    global eval_minutes
     
-    # Targets
-    y = dtrain.get_label()   
-
     # Binary mask for observations where the feature value exceeds the threshold
     if dtrain.num_row() == fit_minutes.shape[0]:
         mask = fit_minutes > 60
-    else:
-        mask = np.full(dtrain.num_row(), True)
+    elif dtrain.num_row() == eval_minutes.shape[0]:
+        mask = eval_minutes > 60
 
+    # Targets
+    y = dtrain.get_label()
+    
     # Initialize gradient and hessian arrays
     grad = np.zeros_like(pred_y)
     hess = np.zeros_like(pred_y)
@@ -543,7 +530,6 @@ def custom_objective(pred_y, dtrain):
 
     return grad, hess
 
-
 # Define a function to check if the column name meets the criteria
 def should_keep_column(column_name, threshold):
     # Extract all numbers from the column name
@@ -555,10 +541,11 @@ def should_keep_column(column_name, threshold):
         else:
             return False
     return True
-    
+
 #optimize hyperparameters
 def objective_xgboost(space):
     
+
     pars = {
         'max_depth': int(space['max_depth']), 
         'min_split_loss': space['min_split_loss'],
@@ -578,28 +565,18 @@ def objective_xgboost(space):
         'max_bin':  int(space['max_bin']),
         'disable_default_eval_metric': 1
         }        
-    
-    #remove weaks that we don't need.
-    # Define the threshold
-    threshold = int(space['temporal_window'])
-    
-    # Filter the columns based on the defined function
-    columns_to_keep = [col for col in cv_X.columns if should_keep_column(col, threshold)]
-    objective_X = cv_X[columns_to_keep]
-
-    selected60 = cv_X.minutes >= 60
-    fit_X, eval_X, fit_y, eval_y, fit_sample_weights, eval_sample_weights = train_test_split(objective_X.loc[selected60], cv_y.loc[selected60], cv_sample_weights[selected60], test_size=space['eval_fraction'], stratify=cv_stratify[selected60], random_state=42)
-    
-    #merge with those that are not 60 min
-    fit_X = pd.concat([fit_X, objective_X.loc[~selected60]])
-    fit_y = pd.concat([fit_y, cv_y.loc[~selected60]])
-    fit_sample_weights = np.concatenate((fit_sample_weights, cv_sample_weights[~selected60]))
+        
+    #get som data for evaluation       
+    fit_X, eval_X, fit_y, eval_y, fit_sample_weights, eval_sample_weights =  train_test_split(cv_X, cv_y, cv_sample_weights, test_size=space['eval_fraction'], stratify=cv_stratify, random_state=42)
     
     global fit_minutes
-
+    global eval_minutes
+    
     fit_minutes = fit_X['minutes']
+    eval_minutes = eval_X['minutes']
     fit_X = fit_X.drop(['minutes'], axis=1) 
     eval_X = eval_X.drop(['minutes'], axis=1)
+    
     
     dfit = xgb.DMatrix(data=fit_X, label=fit_y, enable_categorical=True, weight=fit_sample_weights)
     deval = xgb.DMatrix(data=eval_X, label=eval_y, enable_categorical=True, weight=eval_sample_weights)
@@ -617,12 +594,40 @@ def objective_xgboost(space):
     verbose_eval=False  # Set to True if you want to see detailed logging
         )
     
-    objective_val_X = val_X[columns_to_keep]
-    objective_val_X  = objective_val_X.drop(["minutes"], axis=1)
-    dval_objective = xgb.DMatrix(data= objective_val_X, label=val_y, enable_categorical=True, weight=val_sample_weights)
-    
-    val_pred = model.predict(dval_objective)
+    val_pred = model.predict(dval)
     val_error = mean_squared_error(val_y, val_pred)
+    
+    # pars = {
+    # 'max_depth': int(space['max_depth']), 
+    # 'min_split_loss': space['min_split_loss'],
+    # 'reg_lambda': space['reg_lambda'],                   
+    # 'reg_alpha': space['reg_alpha'], 
+    # 'min_child_weight': int(space['min_child_weight']),
+    # 'learning_rate': space['learning_rate'],
+    # 'subsample': space['subsample'],
+    # 'colsample_bytree': space['colsample_bytree'],
+    # 'colsample_bylevel': space['colsample_bylevel'],
+    # 'colsample_bynode': space['colsample_bynode'],
+    # 'early_stopping_rounds': int(space['early_stopping_rounds']),
+    # 'n_estimators': int(space['n_estimators']),
+    # 'max_delta_step': space['max_delta_step'],
+    # 'grow_policy': space['grow_policy'],
+    # 'max_leaves': int(space['max_leaves']),
+    # }        
+    
+    # #get som data for evaluation       
+    # fit_X, eval_X, fit_y, eval_y, fit_sample_weights, _ =  train_test_split(cv_X, cv_y, cv_sample_weights, test_size=space['eval_fraction'], stratify=cv_stratify, random_state=42)
+    
+    # model = xgb.XGBRegressor(**pars, tree_method="hist", enable_categorical=True, max_bin=int(space['max_bin'])
+    # model.fit(fit_X, fit_y, verbose=False,
+    #     eval_set=[(fit_X, fit_y), (eval_X, eval_y)], sample_weight=fit_sample_weights) 
+    
+    # #selected = val_sample_weights >= 1
+    # selected = val_X['running_minutes'] > 60
+    
+    # val_pred = model.predict(val_X[selected])
+    # val_error = mean_squared_error(val_y[selected], val_pred)
+    
         
     return {'loss': val_error, 'status': STATUS_OK }
 
@@ -1010,27 +1015,27 @@ elif method == 'xgboost':
     
     grow_policy = ['depthwise', 'lossguide']
 
-    space={'max_depth': hp.quniform("max_depth", 1, 100, 1), #try to decrease from 45 to 10?
+    space={'max_depth': hp.quniform("max_depth", 1, 50, 1), #try to decrease from 45 to 10?
             'min_split_loss': hp.uniform('min_split_loss', 0, 30),
             'reg_lambda' : hp.uniform('reg_lambda', 0, 30),
-            'reg_alpha': hp.loguniform('reg_alpha', -3, np.log(150)),
-            'min_child_weight' : hp.uniform('min_child_weight', 0, 250),
+            'reg_alpha': hp.loguniform('reg_alpha', -3, np.log(100)),
+            'min_child_weight' : hp.uniform('min_child_weight', 0, 120),
             'learning_rate': hp.uniform('learning_rate', 0, 0.1),
             'subsample': hp.uniform('subsample', 0.5, 1),
             'colsample_bytree': hp.uniform('colsample_bytree', 0.5, 1),
             'colsample_bylevel': hp.uniform('colsample_bylevel', 0.5, 1),
             'colsample_bynode': hp.uniform('colsample_bynode', 0.5, 1),
-            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 5, 300, 1),
+            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 5, 150, 1),
             'eval_fraction': hp.uniform('eval_fraction', 0.001, 0.1),
             'n_estimators': hp.qloguniform('n_estimators', np.log(2), np.log(2500), 1),
             'max_delta_step': hp.uniform('max_delta_step', 0, 20),
-            'grow_policy': hp.choice('grow_policy', grow_policy), #111
-            'max_leaves': hp.quniform('max_leaves', 0, 600, 1),
+            'grow_policy': hp.choice('grow_policy', grow_policy), #11
+            'max_leaves': hp.quniform('max_leaves', 0, 450, 1),
             'max_bin':  hp.quniform('max_bin', 2, 40, 1),
-            'temporal_window': hp.quniform('temporal_window', 0, temporal_window+1, 1),
         }
     
     #get an validation set for fitting
+    selected60 = train_X.minutes >= 60
     cv_X, val_X, cv_y, val_y, cv_sample_weights, val_sample_weights, cv_stratify, _= train_test_split(train_X.loc[selected60], train_y.loc[selected60], sample_weights[selected60], stratify[selected60], test_size=0.20, stratify=stratify[selected60], random_state=42)
     
     #merge with those that are not 60 min
@@ -1039,9 +1044,9 @@ elif method == 'xgboost':
     cv_sample_weights = np.concatenate((cv_sample_weights, sample_weights[~selected60]))
     cv_stratify = pd.concat([cv_stratify, stratify[~selected60]])
     
-    #val_X = val_X.drop(["minutes"], axis=1)
+    val_X = val_X.drop(["minutes"], axis=1)
     
-    #dval = xgb.DMatrix(data=val_X, label=val_y, enable_categorical=True, weight=val_sample_weights)
+    dval = xgb.DMatrix(data=val_X, label=val_y, enable_categorical=True, weight=val_sample_weights)
     
     #optimize and iteratively get hyperparamaters
     batch_size = 100
@@ -1076,11 +1081,51 @@ elif method == 'xgboost':
                             max_evals = i, 
                             trials = trials)
             
-            print(best_hyperparams)
-            
             filename = r'C:\Users\jorgels\Git\Fantasy-Premier-League\models\hyperparams.pkl'
             pickle.dump(trials, open(filename, "wb"))
             
+            # best_hyperparams['max_depth'] = int(best_hyperparams['max_depth'])
+            # best_hyperparams['min_child_weight'] = int(best_hyperparams['min_child_weight'])
+            # best_hyperparams['early_stopping_rounds'] = int(best_hyperparams['early_stopping_rounds'])
+            # best_hyperparams['n_estimators'] = int(best_hyperparams['n_estimators'])
+            # best_hyperparams['max_leaves'] = int(best_hyperparams['max_leaves'])
+            # best_hyperparams['max_bin'] = int(best_hyperparams['max_bin'])
+            # best_hyperparams['grow_policy'] = grow_policy[best_hyperparams['grow_policy']]
+        
+                
+            # if i == batch_size:    
+            #     print(best_hyperparams)
+                
+            #     selected = train_X['running_minutes'] > 60
+            #     random_y = np.ones(sum(selected))*np.mean(train_y[selected])
+            #     val_error = mean_squared_error(train_y[selected], random_y)
+                
+            #     print('Random error: ', val_error)
+                
+            #     eval_fraction = best_hyperparams['eval_fraction']
+            #     del best_hyperparams['eval_fraction']
+                
+            #     #best_hyperparams['grow_policy'] = grow_policy[best_hyperparams['grow_policy']]
+                
+            #     best_hyperparams['max_depth'] = int(best_hyperparams['max_depth'])
+            #     best_hyperparams['min_child_weight'] = int(best_hyperparams['min_child_weight'])
+            #     best_hyperparams['early_stopping_rounds'] = int(best_hyperparams['early_stopping_rounds'])
+            #     best_hyperparams['n_estimators'] = int(best_hyperparams['n_estimators'])
+            #     best_hyperparams['max_leaves'] = int(best_hyperparams['max_leaves'])
+                
+            #     #get som data for evaluation
+            #     fit_X, eval_X, fit_y, eval_y, fit_sample_weights, _ =  train_test_split(train_X, train_y, sample_weights, test_size=eval_fraction, stratify=stratify)    
+                
+            #     #max bin sets the resolution of the output
+            #     model = xgb.XGBRegressor(**best_hyperparams, tree_method="hist", enable_categorical=True)
+            #     model.fit(fit_X, fit_y, verbose=False,
+            #         eval_set=[(fit_X, fit_y), (eval_X, eval_y)], sample_weight=fit_sample_weights) 
+                
+            #     summary = {'model': model, 'features': train_X}
+                
+            #     filename = r'C:\Users\jorgels\Git\Fantasy-Premier-League\models\model.sav'
+            #     pickle.dump(summary, open(filename, 'wb'))
+        
         
     losses = []
     for i in range(len(trials.trials)):
@@ -1129,23 +1174,9 @@ elif method == 'xgboost':
          
             
             for t in range(5):
-                
                 #get an validation set for fitting
-                selected60 = train_X.minutes >= 60
-                cv_X, val_X, cv_y, val_y, cv_sample_weights, val_sample_weights, cv_stratify, _= train_test_split(train_X.loc[selected60], train_y.loc[selected60], sample_weights[selected60], stratify[selected60], test_size=0.20, stratify=stratify[selected60], random_state=t)
-                
-                #merge with those that are not 60 min
-                cv_X = pd.concat([cv_X, train_X.loc[~selected60]])
-                cv_y = pd.concat([cv_y, train_y.loc[~selected60]])
-                cv_sample_weights = np.concatenate((cv_sample_weights, sample_weights[~selected60]))
-                cv_stratify = pd.concat([cv_stratify, stratify[~selected60]])
-                
-                dval = xgb.DMatrix(data=val_X, label=val_y, enable_categorical=True, weight=val_sample_weights)
-                
+                cv_X, val_X, cv_y, val_y, cv_sample_weights, _, cv_stratify, _ = train_test_split(train_X, train_y, sample_weights, stratify, test_size=0.25, stratify=stratify, random_state=t)
                 opt_out = objective_xgboost(test_hyperparams)
-                
-                #get an validation set for fitting
-
                 losst = opt_out['loss']
                 #print(losst)
                 ind_losses.append(losst)
@@ -1183,68 +1214,27 @@ elif method == 'xgboost':
     hyperparams = trials.trials[best_cv_trial]['misc']['vals']
     print(hyperparams)
     
-    space = {}
+    test_hyperparams = {}
     for field, val in hyperparams.items():
-        space[field] = val[0]
+        test_hyperparams[field] = val[0]
     
-    pars = {
-        'max_depth': int(space['max_depth']), 
-        'min_split_loss': space['min_split_loss'],
-        'reg_lambda': space['reg_lambda'],                   
-        'reg_alpha': space['reg_alpha'], 
-        'min_child_weight': int(space['min_child_weight']),
-        'learning_rate': space['learning_rate'],
-        'subsample': space['subsample'],
-        'colsample_bytree': space['colsample_bytree'],
-        'colsample_bylevel': space['colsample_bylevel'],
-        'colsample_bynode': space['colsample_bynode'],
-        'max_delta_step': space['max_delta_step'],
-        'grow_policy': grow_policy[space['grow_policy']],
-        'max_leaves': int(space['max_leaves']),
-        'objective': 'reg:squarederror',
-        'tree_method': 'hist',
-        'max_bin':  int(space['max_bin']),
-        'disable_default_eval_metric': 1
-        } 
+    test_hyperparams['grow_policy'] = grow_policy[test_hyperparams['grow_policy']]
+    test_hyperparams['max_depth'] = int(test_hyperparams['max_depth'])
+    test_hyperparams['min_child_weight'] = int(test_hyperparams['min_child_weight'])
+    test_hyperparams['early_stopping_rounds'] = int(test_hyperparams['early_stopping_rounds'])
+    test_hyperparams['n_estimators'] = int(test_hyperparams['n_estimators'])
+    test_hyperparams['max_leaves'] = int(test_hyperparams['max_leaves'])
+    
+    eval_fraction = test_hyperparams['eval_fraction']
+    del test_hyperparams['eval_fraction']
             
-    #remove weeks that we don't need.
-    # Define the threshold
-    threshold = space['temporal_window']
-
+    #get som data for evaluation
+    fit_X, eval_X, fit_y, eval_y, fit_sample_weights, _ =  train_test_split(train_X, train_y, sample_weights, test_size=eval_fraction, stratify=stratify)    
     
-    # Filter the columns based on the defined function
-    columns_to_keep = [col for col in train_X.columns if should_keep_column(col, threshold)]
-    objective_X = train_X[columns_to_keep]
-
-    selected60 = train_X.minutes >= 60
-    fit_X, eval_X, fit_y, eval_y, fit_sample_weights, eval_sample_weights = train_test_split(objective_X.loc[selected60], train_y.loc[selected60], sample_weights[selected60], test_size=space['eval_fraction'], stratify=stratify[selected60], random_state=42)
-    
-    #merge with those that are not 60 min
-    fit_X = pd.concat([fit_X, train_X.loc[~selected60]])
-    fit_y = pd.concat([fit_y, train_y.loc[~selected60]])
-    fit_sample_weights = np.concatenate((fit_sample_weights, sample_weights[~selected60]))
-    
-    global fit_minutes
-
-    fit_minutes = fit_X['minutes']
-    fit_X = fit_X.drop(['minutes'], axis=1) 
-    eval_X = eval_X.drop(['minutes'], axis=1)
-    
-    dfit = xgb.DMatrix(data=fit_X, label=fit_y, enable_categorical=True, weight=fit_sample_weights)
-    deval = xgb.DMatrix(data=eval_X, label=eval_y, enable_categorical=True, weight=eval_sample_weights)
-    
-    evals = [(dfit, 'train'), (deval, 'eval')]
-    
-    model = xgb.train(
-    params=pars,
-    num_boost_round=int(space['n_estimators']),
-    early_stopping_rounds= int(space['early_stopping_rounds']),
-    dtrain=dfit,
-    evals=evals,
-    custom_metric=custom_metric,
-    obj=custom_objective,
-    verbose_eval=False  # Set to True if you want to see detailed logging
-        )
+    #max bin sets the resolution of the output
+    model = xgb.XGBRegressor(**test_hyperparams, tree_method="hist", enable_categorical=True)
+    model.fit(fit_X, fit_y, verbose=False,
+        eval_set=[(fit_X, fit_y), (eval_X, eval_y)], sample_weight=fit_sample_weights)
         
     summary = {'model': model, 'features': train_X}
         
