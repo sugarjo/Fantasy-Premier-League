@@ -23,10 +23,10 @@ from hyperopt.fmin import generate_trials_to_calculate
 
 directories = r'C:\Users\jorgels\Git\Fantasy-Premier-League\data'
 
-optimize = True
+optimize = False
 continue_optimize = False
 
-temporal_window = 11
+temporal_window = 12
 
 season_start = False
 
@@ -479,11 +479,14 @@ for k in range(temporal_window):
     dynamic_cat_names = [str(k) + s for s in dynamic_categorical_variables]
     train[dynamic_cat_names] = train[dynamic_cat_names].astype('category')
     
+    
 #exchange old names with nan
 for name in train.names.unique():  
     if not name in current_names:
         selected = train.names == name
         train.loc[selected, 'names'] = np.nan
+
+original_df = season_df.copy()
 
 #remove players that didn't play
 selected = season_df["minutes"] > 0
@@ -495,7 +498,7 @@ unique_names = season_df.names.unique()
 n_tresh = 3
 
 for unique_ind, name in enumerate(unique_names):
-    selected = (season_df.names == name)
+    selected = (season_df.names == name) and  season_df["minutes"] > 0
 
     if sum(selected) < n_tresh:
         season_df.loc[selected, 'names'] = np.nan
@@ -573,7 +576,6 @@ def objective_xgboost(space):
         'max_delta_step': space['max_delta_step'],
         'grow_policy': space['grow_policy'],
         'max_leaves': int(space['max_leaves']),
-        'objective': 'reg:squarederror',
         'tree_method': 'hist',
         'max_bin':  int(space['max_bin']),
         'disable_default_eval_metric': 1
@@ -688,9 +690,16 @@ season_df = season_df.drop(['kickoff_time'], axis=1)
 
 #season_df.replace(to_replace=[None], value=np.nan, inplace=True)
 
-#train final model
+#train model. no changes of catgeories in train_X after this point!
 train_X = season_df.drop(['total_points'], axis=1)
 train_y = season_df['total_points'].astype(int)
+
+# Identify categorical columns
+categorical_columns = train_X.select_dtypes(['category']).columns
+
+# Reset categories for each categorical column
+for column in categorical_columns:
+    train_X[column] = train_X[column].cat.remove_unused_categories()
 
 # Define the number of quantiles/bins
 num_bins = 100
@@ -1020,7 +1029,7 @@ elif method == 'xgboost':
             'colsample_bytree': hp.uniform('colsample_bytree', 0.5, 1),
             'colsample_bylevel': hp.uniform('colsample_bylevel', 0.5, 1),
             'colsample_bynode': hp.uniform('colsample_bynode', 0.5, 1),
-            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 5, 300, 1),
+            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 5, 350, 1),
             'eval_fraction': hp.uniform('eval_fraction', 0.001, 0.1),
             'n_estimators': hp.qloguniform('n_estimators', np.log(2), np.log(2500), 1),
             'max_delta_step': hp.uniform('max_delta_step', 0, 20),
@@ -1031,6 +1040,7 @@ elif method == 'xgboost':
         }
     
     #get an validation set for fitting
+    selected60 = train_X.minutes >= 60
     cv_X, val_X, cv_y, val_y, cv_sample_weights, val_sample_weights, cv_stratify, _= train_test_split(train_X.loc[selected60], train_y.loc[selected60], sample_weights[selected60], stratify[selected60], test_size=0.20, stratify=stratify[selected60], random_state=42)
     
     #merge with those that are not 60 min
@@ -1108,7 +1118,7 @@ elif method == 'xgboost':
             return opt_out['loss']
         
         #trian with cv until 5 models haven't made any better loss.
-        while k < 100:
+        while k < 1:
             
             hyperparams = trials.trials[sorted_losses[ind]]['misc']['vals']
             
@@ -1140,7 +1150,9 @@ elif method == 'xgboost':
                 cv_sample_weights = np.concatenate((cv_sample_weights, sample_weights[~selected60]))
                 cv_stratify = pd.concat([cv_stratify, stratify[~selected60]])
                 
-                dval = xgb.DMatrix(data=val_X, label=val_y, enable_categorical=True, weight=val_sample_weights)
+                #val_X = val_X.drop(["minutes"], axis=1)
+                
+                #dval = xgb.DMatrix(data=val_X, label=val_y, enable_categorical=True, weight=val_sample_weights)
                 
                 opt_out = objective_xgboost(test_hyperparams)
                 
@@ -1246,7 +1258,7 @@ elif method == 'xgboost':
     verbose_eval=False  # Set to True if you want to see detailed logging
         )
         
-    summary = {'model': model, 'features': train_X}
+    summary = {'model': model, 'train_features': train_X, 'hyperparameters': space, 'all_rows': original_df}
         
     filename = r'C:\Users\jorgels\Git\Fantasy-Premier-League\models\model.sav'
     pickle.dump(summary, open(filename, 'wb'))
