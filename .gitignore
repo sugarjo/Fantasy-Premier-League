@@ -10,3 +10,5 @@ models/transfers.pkl
 models/model.sav
 models/model.sav
 models/hyperparams.pkl
+*.sav
+*.pkl

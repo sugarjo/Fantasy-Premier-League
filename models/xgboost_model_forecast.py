@@ -20,13 +20,15 @@ from hyperopt import STATUS_OK, Trials, fmin, hp, tpe
 from hyperopt.early_stop import no_progress_loss
 from hyperopt.fmin import generate_trials_to_calculate
 
+from pandas.api.types import CategoricalDtype
+
 
 directories = r'C:\Users\jorgels\Git\Fantasy-Premier-League\data'
 
 optimize = False
-continue_optimize = False
+continue_optimize = True
 
-temporal_window = 12
+temporal_window = 14
 
 season_start = False
 
@@ -448,6 +450,8 @@ fixed_features = ['total_points', 'minutes', 'kickoff_time', 'element_type', 'st
 dynamic_features = ['string_opp_team', 'transfers_in', 'transfers_out',
        'was_home', 'own_difficulty', 'other_difficulty', 'difficulty']
 
+opponent_feat = ['string_opp_team']
+
 #initiate train dataframe
 # Reorder the DataFrame based on the 'date' column
 season_df = season_df.sort_values(by='kickoff_time')
@@ -467,6 +471,9 @@ for k in range(temporal_window):
     train[temporal_names] = np.nan
     train[dynamic_names] = np.nan
     
+
+    
+    
     for name in season_df.names.unique():
         selected_ind = season_df.names == name
     
@@ -475,10 +482,19 @@ for k in range(temporal_window):
         
         train.loc[selected_ind, temporal_names] = temporal_data.values            
         train.loc[selected_ind, dynamic_names] = dynamic_data.values
-        
+    
+
     dynamic_cat_names = [str(k) + s for s in dynamic_categorical_variables]
+    #set categories of opponents:
     train[dynamic_cat_names] = train[dynamic_cat_names].astype('category')
     
+    #get the possible opponents (#in case of new team in the dataset)
+    opponent_feature = str(k) + 'string_opp_team'
+    if k == 0:
+        possible_opponents = train[opponent_feature].cat.categories
+        opp_cats = CategoricalDtype(categories=possible_opponents, ordered=False)
+    else:
+        train[opponent_feature] = train[opponent_feature].astype(opp_cats)
     
 #exchange old names with nan
 for name in train.names.unique():  
@@ -498,7 +514,7 @@ unique_names = season_df.names.unique()
 n_tresh = 3
 
 for unique_ind, name in enumerate(unique_names):
-    selected = (season_df.names == name) and  season_df["minutes"] > 0
+    selected = (season_df.names == name) & (season_df["minutes"] > 0)
 
     if sum(selected) < n_tresh:
         season_df.loc[selected, 'names'] = np.nan
@@ -543,6 +559,10 @@ def custom_objective(pred_y, dtrain):
         errors = pred_y[mask] - y[mask]
         grad[mask] = 2 * errors
         hess[mask] = 2
+    
+    # errors = pred_y - y
+    # grad = 2 * errors
+    # hess = np.zeros_like(pred_y) + 2
 
     return grad, hess
 
@@ -1019,22 +1039,22 @@ elif method == 'xgboost':
     
     grow_policy = ['depthwise', 'lossguide']
 
-    space={'max_depth': hp.quniform("max_depth", 1, 100, 1), #try to decrease from 45 to 10?
-            'min_split_loss': hp.uniform('min_split_loss', 0, 30),
+    space={'max_depth': hp.quniform("max_depth", 1, 150, 1), #try to decrease from 45 to 10?
+            'min_split_loss': hp.uniform('min_split_loss', 0, 40),
             'reg_lambda' : hp.uniform('reg_lambda', 0, 30),
             'reg_alpha': hp.loguniform('reg_alpha', -3, np.log(150)),
-            'min_child_weight' : hp.uniform('min_child_weight', 0, 250),
+            'min_child_weight' : hp.uniform('min_child_weight', 0, 300),
             'learning_rate': hp.uniform('learning_rate', 0, 0.1),
             'subsample': hp.uniform('subsample', 0.5, 1),
-            'colsample_bytree': hp.uniform('colsample_bytree', 0.5, 1),
-            'colsample_bylevel': hp.uniform('colsample_bylevel', 0.5, 1),
-            'colsample_bynode': hp.uniform('colsample_bynode', 0.5, 1),
+            'colsample_bytree': hp.uniform('colsample_bytree', 0.1, 1),
+            'colsample_bylevel': hp.uniform('colsample_bylevel', 0.1, 1),
+            'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
             'early_stopping_rounds': hp.quniform("early_stopping_rounds", 5, 350, 1),
-            'eval_fraction': hp.uniform('eval_fraction', 0.001, 0.1),
+            'eval_fraction': hp.uniform('eval_fraction', 0.001, 0.2),
             'n_estimators': hp.qloguniform('n_estimators', np.log(2), np.log(2500), 1),
-            'max_delta_step': hp.uniform('max_delta_step', 0, 20),
+            'max_delta_step': hp.uniform('max_delta_step', 0, 30),
             'grow_policy': hp.choice('grow_policy', grow_policy), #111
-            'max_leaves': hp.quniform('max_leaves', 0, 600, 1),
+            'max_leaves': hp.quniform('max_leaves', 0, 900, 1),
             'max_bin':  hp.quniform('max_bin', 2, 40, 1),
             'temporal_window': hp.quniform('temporal_window', 0, temporal_window+1, 1),
         }
@@ -1118,9 +1138,9 @@ elif method == 'xgboost':
             return opt_out['loss']
         
         #trian with cv until 5 models haven't made any better loss.
-        while k < 1:
+        while k < 10:
             
-            hyperparams = trials.trials[sorted_losses[ind]]['misc']['vals']
+            hyperparams = trials.trials[sorted_losses[ind]]['misc']['vals']   
             
             test_hyperparams = {}
             for field, val in hyperparams.items():
@@ -1133,10 +1153,7 @@ elif method == 'xgboost':
             test_hyperparams['n_estimators'] = int(test_hyperparams['n_estimators'])
             test_hyperparams['max_leaves'] = int(test_hyperparams['max_leaves'])
             
-            ind_losses = []
-            
-            #ind_losses = Parallel(n_jobs=-1)(delayed(parallell_train)(t) for t in range(6))
-         
+            ind_losses =  []
             
             for t in range(5):
                 
@@ -1150,19 +1167,20 @@ elif method == 'xgboost':
                 cv_sample_weights = np.concatenate((cv_sample_weights, sample_weights[~selected60]))
                 cv_stratify = pd.concat([cv_stratify, stratify[~selected60]])
                 
-                #val_X = val_X.drop(["minutes"], axis=1)
-                
-                #dval = xgb.DMatrix(data=val_X, label=val_y, enable_categorical=True, weight=val_sample_weights)
+                # val_X = val_X.drop(["minutes"], axis=1)
+                # dval = xgb.DMatrix(data=val_X, label=val_y, enable_categorical=True, weight=val_sample_weights)
                 
                 opt_out = objective_xgboost(test_hyperparams)
                 
                 #get an validation set for fitting
 
                 losst = opt_out['loss']
+                
+                #print(losst)
                 #print(losst)
                 ind_losses.append(losst)
-        
-            
+                
+                       
             print(ind_losses)
             score = np.mean(ind_losses) + np.std(ind_losses, ddof=1)
                 
@@ -1186,7 +1204,7 @@ elif method == 'xgboost':
         print('Best ind: ', best_best_ind)
         #best_best_ind = np.argmin(np.max(cv_losses, axis=1))
     else:
-        best_best_ind = 85
+        best_best_ind = 0
     
     #train with all data
     best_cv_trial =  sorted_losses[best_best_ind]
@@ -1213,16 +1231,14 @@ elif method == 'xgboost':
         'max_delta_step': space['max_delta_step'],
         'grow_policy': grow_policy[space['grow_policy']],
         'max_leaves': int(space['max_leaves']),
-        'objective': 'reg:squarederror',
         'tree_method': 'hist',
         'max_bin':  int(space['max_bin']),
         'disable_default_eval_metric': 1
-        } 
-            
-    #remove weeks that we don't need.
+        }        
+    
+    #remove weaks that we don't need.
     # Define the threshold
-    threshold = space['temporal_window']
-
+    threshold = int(space['temporal_window'])
     
     # Filter the columns based on the defined function
     columns_to_keep = [col for col in train_X.columns if should_keep_column(col, threshold)]
@@ -1232,13 +1248,13 @@ elif method == 'xgboost':
     fit_X, eval_X, fit_y, eval_y, fit_sample_weights, eval_sample_weights = train_test_split(objective_X.loc[selected60], train_y.loc[selected60], sample_weights[selected60], test_size=space['eval_fraction'], stratify=stratify[selected60], random_state=42)
     
     #merge with those that are not 60 min
-    fit_X = pd.concat([fit_X, train_X.loc[~selected60]])
+    fit_X = pd.concat([fit_X, objective_X.loc[~selected60]])
     fit_y = pd.concat([fit_y, train_y.loc[~selected60]])
     fit_sample_weights = np.concatenate((fit_sample_weights, sample_weights[~selected60]))
     
-    global fit_minutes
+    # global fit_minutes
 
-    fit_minutes = fit_X['minutes']
+    # fit_minutes = fit_X['minutes']
     fit_X = fit_X.drop(['minutes'], axis=1) 
     eval_X = eval_X.drop(['minutes'], axis=1)
     
