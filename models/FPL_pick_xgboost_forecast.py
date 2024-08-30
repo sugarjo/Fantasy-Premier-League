@@ -5,10 +5,10 @@ points_per_game_treshold = -1
 exclude_team = []
 
 
-exclude_players = ['Trossard', 'Madueke', 'Lewis', 'Sávio', 'Doku', 'Kamada']
+exclude_players = ['Martinelli', 'Vardy', 'Trossard', 'Madueke', 'Lewis', 'Sávio', 'Doku', 'Kamada']
 exclude_players_out = []
 
-include_players = ['Haaland']
+include_players = []
 
 do_not_exclude_players = []
 
@@ -919,15 +919,18 @@ def check_random_transfers(i):
         best_price = prices[best_ind]
         best_transfer = evaluated_transfers[best_ind]
         
-        print(best_point, best_price)
+        #print(best_point, best_price)
             
             
         check_guided = True
         while check_guided:        
             check_guided = False
             
+            random_order = list(range(prob.shape[1]))
+            random.shuffle(random_order)
+            
             #guided part. exhange one transfer
-            for k in range(prob.shape[1]):           
+            for k in random_order:           
                 
                 guided_points, guided_prices, guided_evaluated_transfers, guided_sum_points, guided_counts = check_guided_transfers(k, best_transfer)
                 
@@ -945,7 +948,7 @@ def check_random_transfers(i):
                 
                 guided_best_price = prices[best_ind]
                 
-                print(k)
+                #print(k)
                 if max_value > best_point or (max_value == best_point and guided_best_price < best_price):
                     
                     check_guided = True

@@ -12,3 +12,4 @@ models/model.sav
 models/hyperparams.pkl
 *.sav
 *.pkl
+models/model.sav

@@ -1252,9 +1252,9 @@ elif method == 'xgboost':
     fit_y = pd.concat([fit_y, train_y.loc[~selected60]])
     fit_sample_weights = np.concatenate((fit_sample_weights, sample_weights[~selected60]))
     
-    # global fit_minutes
+    global fit_minutes
 
-    # fit_minutes = fit_X['minutes']
+    fit_minutes = fit_X['minutes']
     fit_X = fit_X.drop(['minutes'], axis=1) 
     eval_X = eval_X.drop(['minutes'], axis=1)
     
@@ -1278,6 +1278,7 @@ elif method == 'xgboost':
         
     filename = r'C:\Users\jorgels\Git\Fantasy-Premier-League\models\model.sav'
     pickle.dump(summary, open(filename, 'wb'))
-        
-    xgb.plot_importance(model)
+    
+    xgb.plot_importance(model, importance_type='gain',
+                    max_num_features=20, show_values=False)
         
