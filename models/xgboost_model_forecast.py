@@ -25,10 +25,10 @@ from pandas.api.types import CategoricalDtype
 
 directories = r'C:\Users\jorgels\Git\Fantasy-Premier-League\data'
 
-optimize = False
+optimize = True
 continue_optimize = True
 
-temporal_window = 14
+temporal_window = 16
 
 season_start = False
 
@@ -360,50 +360,30 @@ for name_ind, name in enumerate(all_names[:-1]):
             if print_test:
                 print(name_ind, matched_name + ' changed to ' + new_name, similarity_scores[match_ind], first_name_similarities[match_ind], second_name_similarities[match_ind])
         
-        
-        # #check if position is same        
-        # matched_player_ind = season_df['names'] == matched_name
-        # matched_position = season_df['element_type'][matched_player_ind].unique()
-        
-        # root_player_ind = season_df['names'] == new_name
-        # merged_position = season_df['element_type'][original_player_ind].unique()        
-        
-        # #if same position
-        # for position in original_position:
-        #     for change_name_ind in range(1,len(matched_names)):
-        #         #find the other player
-        #         change_player_ind = np.logical_and(season_df['names'] == matched_names[change_name_ind], season_df['element_type'] == position)
-                
-        #         if any(change_player_ind): 
-        #             #make the other player into current player
-        #             season_df.loc[change_player_ind, 'names'] = matched_names[0]
-        #             print(matched_names[change_name_ind] + ' changed with ' + matched_names[0])
-
-
 print('Done matching')
 
 #different events have different impacts on different player types
-selected = season_df['element_type'] == 1
-season_df.loc[selected, 'expected_goals'] = season_df.loc[selected, 'expected_goals']*10
+# selected = season_df['element_type'] == 1
+# season_df.loc[selected, 'expected_goals'] = season_df.loc[selected, 'expected_goals']*10
 
-selected = (season_df['element_type'] == 1) & ( (season_df['season'] == '2016-17') | (season_df['season'] == '2017-18') | (season_df['season'] == '2018-19') | (season_df['season'] == '2019-20') | (season_df['season'] == '2020-21') | (season_df['season'] == '2021-22') | (season_df['season'] == '2022-23') | (season_df['season'] == '2023-24'))
-season_df.loc[selected, 'expected_goals'] = season_df.loc[selected, 'expected_goals']*6/10
+# selected = (season_df['element_type'] == 1) & ( (season_df['season'] == '2016-17') | (season_df['season'] == '2017-18') | (season_df['season'] == '2018-19') | (season_df['season'] == '2019-20') | (season_df['season'] == '2020-21') | (season_df['season'] == '2021-22') | (season_df['season'] == '2022-23') | (season_df['season'] == '2023-24'))
+# season_df.loc[selected, 'expected_goals'] = season_df.loc[selected, 'expected_goals']*6/10
 
-selected = season_df['element_type'] == 1
-season_df.loc[selected, 'expected_goals'] = season_df.loc[selected, 'expected_goals']*6
+# selected = season_df['element_type'] == 1
+# season_df.loc[selected, 'expected_goals'] = season_df.loc[selected, 'expected_goals']*6
 
-selected = np.logical_or(season_df['element_type'] == 1, season_df['element_type'] == 2)
-season_df.loc[selected, 'expected_goals_conceded'] = season_df.loc[selected, 'expected_goals_conceded']*4
+# selected = np.logical_or(season_df['element_type'] == 1, season_df['element_type'] == 2)
+# season_df.loc[selected, 'expected_goals_conceded'] = season_df.loc[selected, 'expected_goals_conceded']*4
 
-#midfielder loose one pont for goals conceded. so no change
-selected = season_df['element_type'] == 3
-season_df.loc[selected, 'expected_goals'] = season_df.loc[selected, 'expected_goals']*5
+# #midfielder loose one pont for goals conceded. so no change
+# selected = season_df['element_type'] == 3
+# season_df.loc[selected, 'expected_goals'] = season_df.loc[selected, 'expected_goals']*5
 
-selected = season_df['element_type'] == 4
-season_df.loc[selected, 'expected_goals'] = season_df.loc[selected, 'expected_goals']*4
-season_df.loc[selected, 'expected_goals_conceded'] = 0
+# selected = season_df['element_type'] == 4
+# season_df.loc[selected, 'expected_goals'] = season_df.loc[selected, 'expected_goals']*4
+# season_df.loc[selected, 'expected_goals_conceded'] = 0
 
-season_df.loc[:, 'expected_assists'] = season_df.loc[:, 'expected_assists']*3
+# season_df.loc[:, 'expected_assists'] = season_df.loc[:, 'expected_assists']*3
 
 
 #calculate difficulties
@@ -428,8 +408,8 @@ categorical_variables = ['element_type', 'string_team', 'season', 'names']
 season_df[categorical_variables] = season_df[categorical_variables].astype('category')
 
 #add nan categories
-dynamic_categorical_variables = ['string_opp_team', 'difficulty', 'own_difficulty',
-       'other_difficulty']
+dynamic_categorical_variables = ['string_opp_team', 'own_difficulty',
+       'other_difficulty'] #'difficulty', 
 
 int_variables = ['minutes', 'total_points', 'was_home']
 season_df[int_variables] = season_df[int_variables].astype('int')
@@ -441,14 +421,17 @@ season_df[float_variables] = season_df[float_variables].astype('float')
 #features that I don't have access to in advance.
 temporal_features = ['minutes', 'ict_index', 'influence', 'threat', 'creativity', 'bps',
        'total_points', 'xP', 'expected_goals', 'expected_assists',
-       'expected_goal_involvements', 'expected_goals_conceded',
-       'points_per_game', 'points_per_played_game']
+       'expected_goal_involvements', 'expected_goals_conceded']
+       #'points_per_game', 'points_per_played_game']
+
+temporal_single_features = ['points_per_game', 'points_per_played_game']
+
 
 #total_points, minutes, kickoff time not for prediction
 fixed_features = ['total_points', 'minutes', 'kickoff_time', 'element_type', 'string_team', 'season', 'names']
 
 dynamic_features = ['string_opp_team', 'transfers_in', 'transfers_out',
-       'was_home', 'own_difficulty', 'other_difficulty', 'difficulty']
+       'was_home', 'own_difficulty', 'other_difficulty']#, 'difficulty']
 
 opponent_feat = ['string_opp_team']
 
@@ -468,11 +451,13 @@ for k in range(temporal_window):
     temporal_names = [str(k) + s for s in temporal_features]
     dynamic_names = [str(k) + s for s in dynamic_features]
     
+    
     train[temporal_names] = np.nan
     train[dynamic_names] = np.nan
     
-
-    
+    if k==0:
+        temporal_single_names = [str(k) + s for s in temporal_single_features]
+        train[temporal_single_names] = np.nan    
     
     for name in season_df.names.unique():
         selected_ind = season_df.names == name
@@ -482,6 +467,11 @@ for k in range(temporal_window):
         
         train.loc[selected_ind, temporal_names] = temporal_data.values            
         train.loc[selected_ind, dynamic_names] = dynamic_data.values
+        
+        if k==0:
+            temporal_single_data = season_df.loc[selected_ind, temporal_single_features].shift(k+1)
+            
+            train.loc[selected_ind, temporal_single_names] = temporal_single_data.values
     
 
     dynamic_cat_names = [str(k) + s for s in dynamic_categorical_variables]
@@ -504,9 +494,10 @@ for name in train.names.unique():
 
 original_df = season_df.copy()
 
-#remove players that didn't play
-selected = season_df["minutes"] > 0
+#remove players that didn't play 60min
+selected = season_df["minutes"] >= 60
 season_df = train.loc[selected]
+season_df = season_df.drop(['minutes'], axis=1)
 
 #remove players with few matches
 unique_names = season_df.names.unique()
@@ -514,55 +505,28 @@ unique_names = season_df.names.unique()
 n_tresh = 3
 
 for unique_ind, name in enumerate(unique_names):
-    selected = (season_df.names == name) & (season_df["minutes"] > 0)
+    selected = (season_df.names == name)
 
     if sum(selected) < n_tresh:
         season_df.loc[selected, 'names'] = np.nan
             
 def custom_metric(pred_y, dtrain):
-    
-    global fit_minutes
-    
+        
     # Targets
     y = dtrain.get_label()
-    
-    # Binary mask for observations where the feature value exceeds the threshold
-    if dtrain.num_row() == fit_minutes.shape[0]:
-        mask = fit_minutes > 60
-    else:
-        mask = np.full(dtrain.num_row(), True)
-    
-    # Compute gradients and hessians only for observations that exceed the threshold
-    mse = mean_squared_error(y[mask], pred_y[mask])
 
+    mse = mean_squared_error(y, pred_y)
+    
     return 'MSE60', mse
 
 def custom_objective(pred_y, dtrain):
     
-    global fit_minutes
-    
     # Targets
     y = dtrain.get_label()   
-
-    # Binary mask for observations where the feature value exceeds the threshold
-    if dtrain.num_row() == fit_minutes.shape[0]:
-        mask = fit_minutes > 60
-    else:
-        mask = np.full(dtrain.num_row(), True)
-
-    # Initialize gradient and hessian arrays
-    grad = np.zeros_like(pred_y)
-    hess = np.zeros_like(pred_y)
     
-    # Compute gradients and hessians only for observations that exceed the threshold
-    if np.any(mask):
-        errors = pred_y[mask] - y[mask]
-        grad[mask] = 2 * errors
-        hess[mask] = 2
-    
-    # errors = pred_y - y
-    # grad = 2 * errors
-    # hess = np.zeros_like(pred_y) + 2
+    errors = pred_y - y
+    grad = 2 * errors
+    hess = np.zeros_like(pred_y) + 2
 
     return grad, hess
 
@@ -609,19 +573,7 @@ def objective_xgboost(space):
     columns_to_keep = [col for col in cv_X.columns if should_keep_column(col, threshold)]
     objective_X = cv_X[columns_to_keep]
 
-    selected60 = cv_X.minutes >= 60
-    fit_X, eval_X, fit_y, eval_y, fit_sample_weights, eval_sample_weights = train_test_split(objective_X.loc[selected60], cv_y.loc[selected60], cv_sample_weights[selected60], test_size=space['eval_fraction'], stratify=cv_stratify[selected60], random_state=42)
-    
-    #merge with those that are not 60 min
-    fit_X = pd.concat([fit_X, objective_X.loc[~selected60]])
-    fit_y = pd.concat([fit_y, cv_y.loc[~selected60]])
-    fit_sample_weights = np.concatenate((fit_sample_weights, cv_sample_weights[~selected60]))
-    
-    global fit_minutes
-
-    fit_minutes = fit_X['minutes']
-    fit_X = fit_X.drop(['minutes'], axis=1) 
-    eval_X = eval_X.drop(['minutes'], axis=1)
+    fit_X, eval_X, fit_y, eval_y, fit_sample_weights, eval_sample_weights = train_test_split(objective_X, cv_y, cv_sample_weights, test_size=space['eval_fraction'], stratify=cv_stratify, random_state=42)
     
     dfit = xgb.DMatrix(data=fit_X, label=fit_y, enable_categorical=True, weight=fit_sample_weights)
     deval = xgb.DMatrix(data=eval_X, label=eval_y, enable_categorical=True, weight=eval_sample_weights)
@@ -640,7 +592,6 @@ def objective_xgboost(space):
         )
     
     objective_val_X = val_X[columns_to_keep]
-    objective_val_X  = objective_val_X.drop(["minutes"], axis=1)
     dval_objective = xgb.DMatrix(data= objective_val_X, label=val_y, enable_categorical=True, weight=val_sample_weights)
     
     val_pred = model.predict(dval_objective)
@@ -1041,7 +992,7 @@ elif method == 'xgboost':
 
     space={'max_depth': hp.quniform("max_depth", 1, 150, 1), #try to decrease from 45 to 10?
             'min_split_loss': hp.uniform('min_split_loss', 0, 40),
-            'reg_lambda' : hp.uniform('reg_lambda', 0, 30),
+            'reg_lambda' : hp.uniform('reg_lambda', 0, 35),
             'reg_alpha': hp.loguniform('reg_alpha', -3, np.log(150)),
             'min_child_weight' : hp.uniform('min_child_weight', 0, 300),
             'learning_rate': hp.uniform('learning_rate', 0, 0.1),
@@ -1049,9 +1000,9 @@ elif method == 'xgboost':
             'colsample_bytree': hp.uniform('colsample_bytree', 0.1, 1),
             'colsample_bylevel': hp.uniform('colsample_bylevel', 0.1, 1),
             'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
-            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 5, 350, 1),
+            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 5, 400, 1),
             'eval_fraction': hp.uniform('eval_fraction', 0.001, 0.2),
-            'n_estimators': hp.qloguniform('n_estimators', np.log(2), np.log(2500), 1),
+            'n_estimators': hp.qloguniform('n_estimators', np.log(2), np.log(3000), 1),
             'max_delta_step': hp.uniform('max_delta_step', 0, 30),
             'grow_policy': hp.choice('grow_policy', grow_policy), #111
             'max_leaves': hp.quniform('max_leaves', 0, 900, 1),
@@ -1060,18 +1011,7 @@ elif method == 'xgboost':
         }
     
     #get an validation set for fitting
-    selected60 = train_X.minutes >= 60
-    cv_X, val_X, cv_y, val_y, cv_sample_weights, val_sample_weights, cv_stratify, _= train_test_split(train_X.loc[selected60], train_y.loc[selected60], sample_weights[selected60], stratify[selected60], test_size=0.20, stratify=stratify[selected60], random_state=42)
-    
-    #merge with those that are not 60 min
-    cv_X = pd.concat([cv_X, train_X.loc[~selected60]])
-    cv_y = pd.concat([cv_y, train_y.loc[~selected60]])
-    cv_sample_weights = np.concatenate((cv_sample_weights, sample_weights[~selected60]))
-    cv_stratify = pd.concat([cv_stratify, stratify[~selected60]])
-    
-    #val_X = val_X.drop(["minutes"], axis=1)
-    
-    #dval = xgb.DMatrix(data=val_X, label=val_y, enable_categorical=True, weight=val_sample_weights)
+    cv_X, val_X, cv_y, val_y, cv_sample_weights, val_sample_weights, cv_stratify, _= train_test_split(train_X, train_y, sample_weights, stratify, test_size=0.20, stratify=stratify, random_state=42)
     
     #optimize and iteratively get hyperparamaters
     batch_size = 100
@@ -1158,26 +1098,12 @@ elif method == 'xgboost':
             for t in range(5):
                 
                 #get an validation set for fitting
-                selected60 = train_X.minutes >= 60
-                cv_X, val_X, cv_y, val_y, cv_sample_weights, val_sample_weights, cv_stratify, _= train_test_split(train_X.loc[selected60], train_y.loc[selected60], sample_weights[selected60], stratify[selected60], test_size=0.20, stratify=stratify[selected60], random_state=t)
-                
-                #merge with those that are not 60 min
-                cv_X = pd.concat([cv_X, train_X.loc[~selected60]])
-                cv_y = pd.concat([cv_y, train_y.loc[~selected60]])
-                cv_sample_weights = np.concatenate((cv_sample_weights, sample_weights[~selected60]))
-                cv_stratify = pd.concat([cv_stratify, stratify[~selected60]])
-                
-                # val_X = val_X.drop(["minutes"], axis=1)
-                # dval = xgb.DMatrix(data=val_X, label=val_y, enable_categorical=True, weight=val_sample_weights)
+                cv_X, val_X, cv_y, val_y, cv_sample_weights, val_sample_weights, cv_stratify, _= train_test_split(train_X, train_y, sample_weights, stratify, test_size=0.20, stratify=stratify, random_state=t)
                 
                 opt_out = objective_xgboost(test_hyperparams)
                 
-                #get an validation set for fitting
-
                 losst = opt_out['loss']
                 
-                #print(losst)
-                #print(losst)
                 ind_losses.append(losst)
                 
                        
@@ -1244,19 +1170,7 @@ elif method == 'xgboost':
     columns_to_keep = [col for col in train_X.columns if should_keep_column(col, threshold)]
     objective_X = train_X[columns_to_keep]
 
-    selected60 = train_X.minutes >= 60
-    fit_X, eval_X, fit_y, eval_y, fit_sample_weights, eval_sample_weights = train_test_split(objective_X.loc[selected60], train_y.loc[selected60], sample_weights[selected60], test_size=space['eval_fraction'], stratify=stratify[selected60], random_state=42)
-    
-    #merge with those that are not 60 min
-    fit_X = pd.concat([fit_X, objective_X.loc[~selected60]])
-    fit_y = pd.concat([fit_y, train_y.loc[~selected60]])
-    fit_sample_weights = np.concatenate((fit_sample_weights, sample_weights[~selected60]))
-    
-    global fit_minutes
-
-    fit_minutes = fit_X['minutes']
-    fit_X = fit_X.drop(['minutes'], axis=1) 
-    eval_X = eval_X.drop(['minutes'], axis=1)
+    fit_X, eval_X, fit_y, eval_y, fit_sample_weights, eval_sample_weights = train_test_split(objective_X, train_y, sample_weights, test_size=space['eval_fraction'], stratify=stratify, random_state=42)
     
     dfit = xgb.DMatrix(data=fit_X, label=fit_y, enable_categorical=True, weight=fit_sample_weights)
     deval = xgb.DMatrix(data=eval_X, label=eval_y, enable_categorical=True, weight=eval_sample_weights)
