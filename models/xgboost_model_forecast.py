@@ -25,7 +25,7 @@ from pandas.api.types import CategoricalDtype
 
 directories = r'C:\Users\jorgels\Git\Fantasy-Premier-League\data'
 
-optimize = True
+optimize = False
 continue_optimize = True
 
 temporal_window = 16

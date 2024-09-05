@@ -5,10 +5,10 @@ points_per_game_treshold = -1
 exclude_team = []
 
 
-exclude_players = ['Martinelli', 'Vardy', 'Trossard', 'Madueke', 'Lewis', 'Sávio', 'Doku', 'Kamada']
+exclude_players = ['Martinelli', 'Trossard', 'Lewis', 'Sávio', 'Doku', 'Kamada']
 exclude_players_out = []
 
-include_players = []
+include_players = ['Haaland', 'Palmer', 'Muniz']
 
 do_not_exclude_players = []
 
@@ -29,8 +29,7 @@ manual_pred = 1
 #                  }
 manual_blanks = {}
 
-string = '{"picks":[{"element":47,"position":1,"selling_price":50,"multiplier":1,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":311,"position":2,"selling_price":70,"multiplier":1,"purchase_price":70,"is_captain":false,"is_vice_captain":false},{"element":335,"position":3,"selling_price":60,"multiplier":1,"purchase_price":60,"is_captain":false,"is_vice_captain":false},{"element":495,"position":4,"selling_price":55,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":240,"position":5,"selling_price":55,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":342,"position":6,"selling_price":65,"multiplier":1,"purchase_price":65,"is_captain":false,"is_vice_captain":false},{"element":503,"position":7,"selling_price":100,"multiplier":1,"purchase_price":100,"is_captain":false,"is_vice_captain":false},{"element":434,"position":8,"selling_price":55,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":351,"position":9,"selling_price":150,"multiplier":2,"purchase_price":150,"is_captain":true,"is_vice_captain":false},{"element":401,"position":10,"selling_price":85,"multiplier":1,"purchase_price":85,"is_captain":false,"is_vice_captain":true},{"element":207,"position":11,"selling_price":75,"multiplier":1,"purchase_price":75,"is_captain":false,"is_vice_captain":false},{"element":445,"position":12,"selling_price":40,"multiplier":0,"purchase_price":40,"is_captain":false,"is_vice_captain":false},{"element":442,"position":13,"selling_price":45,"multiplier":0,"purchase_price":45,"is_captain":false,"is_vice_captain":false},{"element":211,"position":14,"selling_price":50,"multiplier":0,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":52,"position":15,"selling_price":45,"multiplier":0,"purchase_price":45,"is_captain":false,"is_vice_captain":false}],"picks_last_updated":"2024-08-24T09:27:22.483851Z","chips":[{"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"status_for_entry":"available","played_by_entry":[],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"status_for_entry":"available","played_by_entry":[],"name":"wildcard","number":1,"start_event":2,"stop_event":19,"chip_type":"transfer","is_pending":false},{"status_for_entry":"available","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer","is_pending":false}],"transfers":{"cost":4,"status":"cost","limit":2,"made":0,"bank":0,"value":1002}}'
-
+string = '{"picks":[{"element":47,"position":1,"selling_price":50,"multiplier":1,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":311,"position":2,"selling_price":70,"multiplier":1,"purchase_price":70,"is_captain":false,"is_vice_captain":false},{"element":335,"position":3,"selling_price":60,"multiplier":1,"purchase_price":60,"is_captain":false,"is_vice_captain":false},{"element":211,"position":4,"selling_price":50,"multiplier":1,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":495,"position":5,"selling_price":55,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":240,"position":6,"selling_price":55,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":342,"position":7,"selling_price":65,"multiplier":1,"purchase_price":65,"is_captain":false,"is_vice_captain":false},{"element":182,"position":8,"selling_price":105,"multiplier":1,"purchase_price":105,"is_captain":false,"is_vice_captain":true},{"element":351,"position":9,"selling_price":151,"multiplier":2,"purchase_price":150,"is_captain":true,"is_vice_captain":false},{"element":401,"position":10,"selling_price":85,"multiplier":1,"purchase_price":85,"is_captain":false,"is_vice_captain":false},{"element":251,"position":11,"selling_price":61,"multiplier":1,"purchase_price":61,"is_captain":false,"is_vice_captain":false},{"element":445,"position":12,"selling_price":40,"multiplier":0,"purchase_price":40,"is_captain":false,"is_vice_captain":false},{"element":52,"position":13,"selling_price":45,"multiplier":0,"purchase_price":45,"is_captain":false,"is_vice_captain":false},{"element":434,"position":14,"selling_price":55,"multiplier":0,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":442,"position":15,"selling_price":45,"multiplier":0,"purchase_price":45,"is_captain":false,"is_vice_captain":false}],"picks_last_updated":"2024-09-01T09:32:18.543748Z","chips":[{"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"status_for_entry":"available","played_by_entry":[],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"status_for_entry":"available","played_by_entry":[],"name":"wildcard","number":1,"start_event":2,"stop_event":19,"chip_type":"transfer","is_pending":false},{"status_for_entry":"available","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer","is_pending":false}],"transfers":{"cost":4,"status":"cost","limit":1,"made":0,"bank":9,"value":995}}'
 
 season = '2024-25'
 previous_season = '2023-24'
@@ -220,18 +219,20 @@ predictions = []
 #features that I don't have access to in advance.
 temporal_features = ['minutes', 'ict_index', 'influence', 'threat', 'creativity', 'bps',
        'total_points', 'xP', 'expected_goals', 'expected_assists',
-       'expected_goal_involvements', 'expected_goals_conceded',
-       'points_per_game', 'points_per_played_game']
+       'expected_goal_involvements', 'expected_goals_conceded']
+       #'points_per_game', 'points_per_played_game']
+
+temporal_single_features = ['points_per_game', 'points_per_played_game']
 
 #total_points, minutes, kickoff time not for prediction
 fixed_features = ['element_type', 'string_team', 'season', 'names']
 
 dynamic_features = ['string_opp_team', 'transfers_in', 'transfers_out',
-       'was_home', 'own_difficulty', 'other_difficulty', 'difficulty']
+       'was_home', 'own_difficulty', 'other_difficulty']#, 'difficulty']
 
 #add nan categories
-dynamic_categorical_variables = ['string_opp_team', 'difficulty', 'own_difficulty',
-       'other_difficulty']
+dynamic_categorical_variables = ['string_opp_team', 'own_difficulty',
+       'other_difficulty'] #'difficulty', 
 
 #add nan categories
 dynamic_float_variables = ['transfers_in', 'transfers_out', 'was_home']
@@ -377,6 +378,12 @@ for df_name in slim_elements_df.iterrows():
             predicting_df[temporal_names] = temporal_data.values            
             predicting_df[dynamic_names] = dynamic_data.values
             
+            if k==0:
+                temporal_single_names = [str(k) + s for s in temporal_single_features]                  
+                temporal_single_data = predicting_df[temporal_single_features].shift(k+1)                
+                predicting_df[temporal_single_names] = temporal_single_data.values  
+        
+            
             #wait for later to get all categories
             category_names.append([str(k) + s for s in dynamic_categorical_variables])
             #predicting_df[dynamic_cat_names] = predicting_df[dynamic_cat_names].astype('category')
@@ -412,7 +419,7 @@ for df_name in slim_elements_df.iterrows():
         
         predicting_df = predicting_df.reset_index(drop=True)
         
-        predicting_df = predicting_df.drop('minutes', axis=1)
+        #predicting_df = predicting_df.drop('minutes', axis=1)
         
         #object_cols = predicting_df.select_dtypes(include=['object']).columns
         #predicting_df = predicting_df.drop(object_cols, axis=1)
