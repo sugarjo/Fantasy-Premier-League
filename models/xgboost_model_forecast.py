@@ -26,7 +26,7 @@ from pandas.api.types import CategoricalDtype
 directories = r'C:\Users\jorgels\Git\Fantasy-Premier-League\data'
 
 optimize = False
-continue_optimize = True
+continue_optimize = False
 
 temporal_window = 16
 
@@ -990,9 +990,9 @@ elif method == 'xgboost':
     
     grow_policy = ['depthwise', 'lossguide']
 
-    space={'max_depth': hp.quniform("max_depth", 1, 150, 1), #try to decrease from 45 to 10?
+    space={'max_depth': hp.quniform("max_depth", 1, 175, 1), #try to decrease from 45 to 10?
             'min_split_loss': hp.uniform('min_split_loss', 0, 40),
-            'reg_lambda' : hp.uniform('reg_lambda', 0, 35),
+            'reg_lambda' : hp.uniform('reg_lambda', 0, 50),
             'reg_alpha': hp.loguniform('reg_alpha', -3, np.log(150)),
             'min_child_weight' : hp.uniform('min_child_weight', 0, 300),
             'learning_rate': hp.uniform('learning_rate', 0, 0.1),
@@ -1003,7 +1003,7 @@ elif method == 'xgboost':
             'early_stopping_rounds': hp.quniform("early_stopping_rounds", 5, 400, 1),
             'eval_fraction': hp.uniform('eval_fraction', 0.001, 0.2),
             'n_estimators': hp.qloguniform('n_estimators', np.log(2), np.log(3000), 1),
-            'max_delta_step': hp.uniform('max_delta_step', 0, 30),
+            'max_delta_step': hp.uniform('max_delta_step', 0, 35),
             'grow_policy': hp.choice('grow_policy', grow_policy), #111
             'max_leaves': hp.quniform('max_leaves', 0, 900, 1),
             'max_bin':  hp.quniform('max_bin', 2, 40, 1),
@@ -1078,7 +1078,7 @@ elif method == 'xgboost':
             return opt_out['loss']
         
         #trian with cv until 5 models haven't made any better loss.
-        while k < 10:
+        while k < 100:
             
             hyperparams = trials.trials[sorted_losses[ind]]['misc']['vals']   
             
@@ -1130,7 +1130,7 @@ elif method == 'xgboost':
         print('Best ind: ', best_best_ind)
         #best_best_ind = np.argmin(np.max(cv_losses, axis=1))
     else:
-        best_best_ind = 0
+        best_best_ind = 1
     
     #train with all data
     best_cv_trial =  sorted_losses[best_best_ind]
