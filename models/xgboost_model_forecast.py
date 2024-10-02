@@ -25,10 +25,10 @@ from pandas.api.types import CategoricalDtype
 
 directories = r'C:\Users\jorgels\Git\Fantasy-Premier-League\data'
 
-optimize = False
+optimize = True
 continue_optimize = False
 
-temporal_window = 16
+temporal_window = 17
 
 season_start = False
 
@@ -992,17 +992,17 @@ elif method == 'xgboost':
 
     space={'max_depth': hp.quniform("max_depth", 1, 175, 1), #try to decrease from 45 to 10?
             'min_split_loss': hp.uniform('min_split_loss', 0, 40),
-            'reg_lambda' : hp.uniform('reg_lambda', 0, 50),
+            'reg_lambda' : hp.uniform('reg_lambda', 0, 75),
             'reg_alpha': hp.loguniform('reg_alpha', -3, np.log(150)),
-            'min_child_weight' : hp.uniform('min_child_weight', 0, 300),
+            'min_child_weight' : hp.uniform('min_child_weight', 0, 350),
             'learning_rate': hp.uniform('learning_rate', 0, 0.1),
             'subsample': hp.uniform('subsample', 0.5, 1),
             'colsample_bytree': hp.uniform('colsample_bytree', 0.1, 1),
             'colsample_bylevel': hp.uniform('colsample_bylevel', 0.1, 1),
             'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
-            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 5, 400, 1),
+            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 5, 450, 1),
             'eval_fraction': hp.uniform('eval_fraction', 0.001, 0.2),
-            'n_estimators': hp.qloguniform('n_estimators', np.log(2), np.log(3000), 1),
+            'n_estimators': hp.qloguniform('n_estimators', np.log(2), np.log(3500), 1),
             'max_delta_step': hp.uniform('max_delta_step', 0, 35),
             'grow_policy': hp.choice('grow_policy', grow_policy), #111
             'max_leaves': hp.quniform('max_leaves', 0, 900, 1),
@@ -1054,7 +1054,11 @@ elif method == 'xgboost':
         
     losses = []
     for i in range(len(trials.trials)):
-        losses.append(trials.trials[i]['result']['loss'])
+        
+        if trials.trials[i]['result'] == {'status': 'new'}:
+            losses.append(9999) 
+        else:
+            losses.append(trials.trials[i]['result']['loss'])          
         
     sorted_losses = np.argsort(losses)
         
@@ -1130,7 +1134,7 @@ elif method == 'xgboost':
         print('Best ind: ', best_best_ind)
         #best_best_ind = np.argmin(np.max(cv_losses, axis=1))
     else:
-        best_best_ind = 1
+        best_best_ind = 0
     
     #train with all data
     best_cv_trial =  sorted_losses[best_best_ind]
