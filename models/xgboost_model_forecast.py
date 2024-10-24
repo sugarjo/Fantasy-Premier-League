@@ -28,7 +28,7 @@ directories = r'C:\Users\jorgels\Git\Fantasy-Premier-League\data'
 optimize = True
 continue_optimize = True
 
-temporal_window = 18
+temporal_window = 19
 
 season_start = False
 
@@ -1000,13 +1000,13 @@ elif method == 'xgboost':
             'colsample_bytree': hp.uniform('colsample_bytree', 0.1, 1),
             'colsample_bylevel': hp.uniform('colsample_bylevel', 0.1, 1),
             'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
-            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 5, 700, 1),
+            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 5, 800, 1),
             'eval_fraction': hp.uniform('eval_fraction', 0.001, 0.2),
             'n_estimators': hp.qloguniform('n_estimators', np.log(2), np.log(4000), 1),
             'max_delta_step': hp.uniform('max_delta_step', 0, 35),
             'grow_policy': hp.choice('grow_policy', grow_policy), #111
-            'max_leaves': hp.quniform('max_leaves', 0, 1250, 1),
-            'max_bin':  hp.quniform('max_bin', 2, 40, 1),
+            'max_leaves': hp.quniform('max_leaves', 0, 1350, 1),
+            'max_bin':  hp.quniform('max_bin', 2, 45, 1),
             'temporal_window': hp.quniform('temporal_window', 0, temporal_window+1, 1),
         }
     
@@ -1057,6 +1057,7 @@ elif method == 'xgboost':
         
         if trials.trials[i]['result'] == {'status': 'new'}:
             losses.append(9999) 
+            print('Miss result')
         else:
             losses.append(trials.trials[i]['result']['loss'])          
         
