@@ -28,7 +28,7 @@ directories = r'C:\Users\jorgels\Git\Fantasy-Premier-League\data'
 optimize = True
 continue_optimize = False
 
-temporal_window = 19
+temporal_window = 2
 
 season_start = False
 
@@ -551,7 +551,7 @@ def objective_xgboost(space):
         'min_split_loss': space['min_split_loss'],
         'reg_lambda': space['reg_lambda'],                   
         'reg_alpha': space['reg_alpha'], 
-        'min_child_weight': int(space['min_child_weight']),
+        'min_child_weight': space['min_child_weight'],
         'learning_rate': space['learning_rate'],
         'subsample': space['subsample'],
         'colsample_bytree': space['colsample_bytree'],
@@ -561,6 +561,7 @@ def objective_xgboost(space):
         'grow_policy': space['grow_policy'],
         'max_leaves': int(space['max_leaves']),
         'tree_method': 'hist',
+        'booster': 'dart',
         'max_bin':  int(space['max_bin']),
         'disable_default_eval_metric': 1
         }        
@@ -596,6 +597,10 @@ def objective_xgboost(space):
     
     val_pred = model.predict(dval_objective)
     val_error = mean_squared_error(val_y, val_pred)
+    
+    #training_accuracy
+    # train_pred = model.predict(dfit)
+    # train_error = mean_squared_error(fit_y, train_pred)
         
     return {'loss': val_error, 'status': STATUS_OK }
 
@@ -990,23 +995,23 @@ elif method == 'xgboost':
     
     grow_policy = ['depthwise', 'lossguide']
 
-    space={'max_depth': hp.quniform("max_depth", 1, 175, 1), #try to decrease from 45 to 10?
-            'min_split_loss': hp.uniform('min_split_loss', 0, 40),
-            'reg_lambda' : hp.uniform('reg_lambda', 0, 75),
-            'reg_alpha': hp.loguniform('reg_alpha', -2, np.log(75)),
-            'min_child_weight' : hp.uniform('min_child_weight', 0, 350),
-            'learning_rate': hp.uniform('learning_rate', 0, 0.05),
-            'subsample': hp.uniform('subsample', 0.1, 1),
-            'colsample_bytree': hp.uniform('colsample_bytree', 0.1, 1),
-            'colsample_bylevel': hp.uniform('colsample_bylevel', 0.1, 1),
-            'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
-            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 5, 800, 1),
+    space={'max_depth': hp.quniform("max_depth", 1, 5, 1), #try to decrease from 45 to 10?
+            'min_split_loss': hp.uniform('min_split_loss', 0, 5),
+            'reg_lambda' : hp.uniform('reg_lambda', 0, 10),
+            'reg_alpha': hp.loguniform('reg_alpha', -1, np.log(1)),
+            'min_child_weight' : hp.uniform('min_child_weight', 0, 5),
+            'learning_rate': hp.uniform('learning_rate', 0, 0.1),
+            'subsample': hp.uniform('subsample', 0.1, 0.9),
+            'colsample_bytree': hp.uniform('colsample_bytree', 0.1, 0.9),
+            'colsample_bylevel': hp.uniform('colsample_bylevel', 0.1, 0.9),
+            'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 0.9),
+            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 5, 50, 1),
             'eval_fraction': hp.uniform('eval_fraction', 0.001, 0.2),
-            'n_estimators': hp.qloguniform('n_estimators', np.log(2), np.log(4000), 1),
-            'max_delta_step': hp.uniform('max_delta_step', 0, 35),
+            'n_estimators': hp.qloguniform('n_estimators', np.log(2), np.log(10), 1),
+            'max_delta_step': hp.uniform('max_delta_step', 0, 5),
             'grow_policy': hp.choice('grow_policy', grow_policy), #111
-            'max_leaves': hp.quniform('max_leaves', 0, 1350, 1),
-            'max_bin':  hp.quniform('max_bin', 2, 45, 1),
+            'max_leaves': hp.quniform('max_leaves', 0, 5, 1),
+            'max_bin':  hp.quniform('max_bin', 2, 4, 1),
             'temporal_window': hp.quniform('temporal_window', 0, temporal_window+1, 1),
         }
     
@@ -1093,7 +1098,7 @@ elif method == 'xgboost':
         
             test_hyperparams['grow_policy'] = grow_policy[test_hyperparams['grow_policy']]
             test_hyperparams['max_depth'] = int(test_hyperparams['max_depth'])
-            test_hyperparams['min_child_weight'] = int(test_hyperparams['min_child_weight'])
+            #test_hyperparams['min_child_weight'] = int(test_hyperparams['min_child_weight'])
             test_hyperparams['early_stopping_rounds'] = int(test_hyperparams['early_stopping_rounds'])
             test_hyperparams['n_estimators'] = int(test_hyperparams['n_estimators'])
             test_hyperparams['max_leaves'] = int(test_hyperparams['max_leaves'])
@@ -1153,7 +1158,7 @@ elif method == 'xgboost':
         'min_split_loss': space['min_split_loss'],
         'reg_lambda': space['reg_lambda'],                   
         'reg_alpha': space['reg_alpha'], 
-        'min_child_weight': int(space['min_child_weight']),
+        'min_child_weight': space['min_child_weight'],
         'learning_rate': space['learning_rate'],
         'subsample': space['subsample'],
         'colsample_bytree': space['colsample_bytree'],
@@ -1163,6 +1168,7 @@ elif method == 'xgboost':
         'grow_policy': grow_policy[space['grow_policy']],
         'max_leaves': int(space['max_leaves']),
         'tree_method': 'hist',
+        'booster': 'dart',
         'max_bin':  int(space['max_bin']),
         'disable_default_eval_metric': 1
         }        
