@@ -23,7 +23,7 @@ from hyperopt.fmin import generate_trials_to_calculate
 from pandas.api.types import CategoricalDtype
 
 
-directories = r'C:\Users\jorgels\Git\Fantasy-Premier-League\data'
+directories = r'C:\Users\jorgels\Documents\GitHub\Fantasy-Premier-League\data'
 
 optimize = True
 continue_optimize = False
@@ -56,7 +56,7 @@ for folder in os.listdir(directories):
         #check that it is not a file
         if folder[-4] != '.':
 
-            print(folder)
+            print('\n', folder)
 
             #get id so it can be matched with position
             player_path = directory + '/players_raw.csv'
@@ -77,7 +77,7 @@ for folder in os.listdir(directories):
                 if gw_csv[0] == 'g':
                     
                     gw_path = directory + '/gws' + '/' + gw_csv
-                    print(gw_csv)
+                    
                     
                     if folder == '2018-19' or folder == '2016-17':
                         gw = pd.read_csv(gw_path, encoding='latin1')
@@ -91,7 +91,11 @@ for folder in os.listdir(directories):
                     else:
                         gw[['transfers_in', 'transfers_out']] = gw[['transfers_in', 'transfers_out']]/sum_transfers
                     
-                    dfs_gw.append(gw)
+                    if gw.shape[0] == 0:
+                        print(gw_csv, 'is empty')
+                    else:
+                        print(gw_csv)
+                        dfs_gw.append(gw)
 
             df_gw = pd.concat(dfs_gw)
             
@@ -116,7 +120,7 @@ for folder in os.listdir(directories):
             #variables I calculate myself
             df_gw['points_per_game'] = np.nan
             df_gw['points_per_played_game'] = np.nan
-            df_gw['string_opp_team'] = np.nan
+            df_gw['string_opp_team'] = None
                 
             # Calculate values on my own
             for player in df_gw['element'].unique():
@@ -134,8 +138,8 @@ for folder in os.listdir(directories):
                 
                 for i in range(len(player_df['total_points'])):
                     
-                    if player_df['minutes'][i] >= 60:
-                        last_point += player_df['total_points'][i]
+                    if player_df['minutes'].iloc[i] >= 60:
+                        last_point += player_df['total_points'].iloc[i]
                         last_games += 1
                     
                     if last_games > 0:
@@ -411,10 +415,10 @@ season_df[categorical_variables] = season_df[categorical_variables].astype('cate
 dynamic_categorical_variables = ['string_opp_team', 'own_difficulty',
        'other_difficulty'] #'difficulty', 
 
-int_variables = ['minutes', 'total_points', 'was_home']
+int_variables = ['minutes', 'total_points', 'was_home', 'bps']
 season_df[int_variables] = season_df[int_variables].astype('int')
 
-float_variables = ['transfers_in', 'transfers_out', 'bps', 'threat']
+float_variables = ['transfers_in', 'transfers_out', 'threat']
 season_df[float_variables] = season_df[float_variables].astype('float')
 
 
@@ -451,13 +455,15 @@ for k in range(temporal_window):
     temporal_names = [str(k) + s for s in temporal_features]
     dynamic_names = [str(k) + s for s in dynamic_features]
     
-    
-    train[temporal_names] = np.nan
-    train[dynamic_names] = np.nan
-    
+    # Create an empty DataFrame with the specified columns
     if k==0:
         temporal_single_names = [str(k) + s for s in temporal_single_features]
-        train[temporal_single_names] = np.nan    
+        col_names = temporal_names + dynamic_names + temporal_single_names
+
+    else:
+        col_names = temporal_names + dynamic_names
+        
+    temp_train = pd.DataFrame(index=train.index, columns=col_names)
     
     for name in season_df.names.unique():
         selected_ind = season_df.names == name
@@ -465,18 +471,35 @@ for k in range(temporal_window):
         temporal_data = season_df.loc[selected_ind, temporal_features].shift(k+1)
         dynamic_data = season_df.loc[selected_ind, dynamic_features].shift(k)
         
-        train.loc[selected_ind, temporal_names] = temporal_data.values            
-        train.loc[selected_ind, dynamic_names] = dynamic_data.values
+        temp_train.loc[selected_ind, temporal_names] = temporal_data.values            
+        temp_train.loc[selected_ind, dynamic_names] = dynamic_data.values
         
         if k==0:
             temporal_single_data = season_df.loc[selected_ind, temporal_single_features].shift(k+1)
             
-            train.loc[selected_ind, temporal_single_names] = temporal_single_data.values
+            temp_train.loc[selected_ind, temporal_single_names] = temporal_single_data.values
     
-
-    dynamic_cat_names = [str(k) + s for s in dynamic_categorical_variables]
-    #set categories of opponents:
-    train[dynamic_cat_names] = train[dynamic_cat_names].astype('category')
+    #set dtype
+    for col in temp_train.columns:
+        
+        col_stem = ''.join([char for char in col if not char.isdigit()])
+        
+        if col_stem in dynamic_categorical_variables:
+            temp_train[col] = temp_train[col].astype('category')
+        elif col_stem in int_variables:
+            temp_train[col] = temp_train[col].astype('Int64')
+        elif col_stem in temporal_features or col_stem in float_variables or col_stem in temporal_single_features:
+            temp_train[col] = temp_train[col].astype('float')
+        else:
+            print('CHECK', col)
+    
+    #concatenate
+    train = pd.concat([train, temp_train], axis=1)
+    
+    
+    # dynamic_cat_names = [str(k) + s for s in dynamic_categorical_variables]
+    # #set categories of opponents:
+    # train[dynamic_cat_names] = train[dynamic_cat_names].astype('category')
     
     #get the possible opponents (#in case of new team in the dataset)
     opponent_feature = str(k) + 'string_opp_team'
@@ -1017,7 +1040,7 @@ elif method == 'xgboost':
     batch_size = 100
     max_evals = 500000
     
-    with open(r'C:\Users\jorgels\Git\Fantasy-Premier-League\models\hyperparams.pkl', 'rb') as f:
+    with open(r'C:\Users\jorgels\Documents\GitHub\Fantasy-Premier-League\models\hyperparams.pkl', 'rb') as f:
         old_trials = pickle.load(f)
         
     old_hyperparams = old_trials.best_trial['misc']['vals']
