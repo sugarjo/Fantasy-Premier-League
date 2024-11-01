@@ -1000,7 +1000,7 @@ elif method == 'xgboost':
             'colsample_bytree': hp.uniform('colsample_bytree', 0.1, 1),
             'colsample_bylevel': hp.uniform('colsample_bylevel', 0.1, 1),
             'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
-            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 5, 800, 1),
+            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 400, 800, 1),
             'eval_fraction': hp.uniform('eval_fraction', 0.001, 0.2),
             'n_estimators': hp.qloguniform('n_estimators', np.log(2), np.log(4000), 1),
             'max_delta_step': hp.uniform('max_delta_step', 0, 35),
