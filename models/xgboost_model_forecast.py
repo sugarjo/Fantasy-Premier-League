@@ -23,7 +23,7 @@ from hyperopt.fmin import generate_trials_to_calculate
 from pandas.api.types import CategoricalDtype
 
 
-directories = r'C:\Users\jorgels\Git\Fantasy-Premier-League\data'
+directories = r'C:\Users\jorgels\Documents\GitHub\Fantasy-Premier-League\data'
 
 optimize = True
 continue_optimize = False
@@ -56,7 +56,7 @@ for folder in os.listdir(directories):
         #check that it is not a file
         if folder[-4] != '.':
 
-            print(folder)
+            print('\n', folder)
 
             #get id so it can be matched with position
             player_path = directory + '/players_raw.csv'
@@ -77,7 +77,7 @@ for folder in os.listdir(directories):
                 if gw_csv[0] == 'g':
                     
                     gw_path = directory + '/gws' + '/' + gw_csv
-                    print(gw_csv)
+                    
                     
                     if folder == '2018-19' or folder == '2016-17':
                         gw = pd.read_csv(gw_path, encoding='latin1')
@@ -91,7 +91,11 @@ for folder in os.listdir(directories):
                     else:
                         gw[['transfers_in', 'transfers_out']] = gw[['transfers_in', 'transfers_out']]/sum_transfers
                     
-                    dfs_gw.append(gw)
+                    if gw.shape[0] == 0:
+                        print(gw_csv, 'is empty')
+                    else:
+                        print(gw_csv)
+                        dfs_gw.append(gw)
 
             df_gw = pd.concat(dfs_gw)
             
@@ -116,7 +120,7 @@ for folder in os.listdir(directories):
             #variables I calculate myself
             df_gw['points_per_game'] = np.nan
             df_gw['points_per_played_game'] = np.nan
-            df_gw['string_opp_team'] = np.nan
+            df_gw['string_opp_team'] = None
                 
             # Calculate values on my own
             for player in df_gw['element'].unique():
@@ -134,8 +138,8 @@ for folder in os.listdir(directories):
                 
                 for i in range(len(player_df['total_points'])):
                     
-                    if player_df['minutes'][i] >= 60:
-                        last_point += player_df['total_points'][i]
+                    if player_df['minutes'].iloc[i] >= 60:
+                        last_point += player_df['total_points'].iloc[i]
                         last_games += 1
                     
                     if last_games > 0:
@@ -452,8 +456,8 @@ for k in range(temporal_window):
     dynamic_names = [str(k) + s for s in dynamic_features]
     
     
-    train[temporal_names] = np.nan
-    train[dynamic_names] = np.nan
+    train[temporal_names] = None
+    train[dynamic_names] = None
     
     if k==0:
         temporal_single_names = [str(k) + s for s in temporal_single_features]
