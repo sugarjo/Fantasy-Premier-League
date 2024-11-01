@@ -415,10 +415,10 @@ season_df[categorical_variables] = season_df[categorical_variables].astype('cate
 dynamic_categorical_variables = ['string_opp_team', 'own_difficulty',
        'other_difficulty'] #'difficulty', 
 
-int_variables = ['minutes', 'total_points', 'was_home']
+int_variables = ['minutes', 'total_points', 'was_home', 'bps']
 season_df[int_variables] = season_df[int_variables].astype('int')
 
-float_variables = ['transfers_in', 'transfers_out', 'bps', 'threat']
+float_variables = ['transfers_in', 'transfers_out', 'threat']
 season_df[float_variables] = season_df[float_variables].astype('float')
 
 
@@ -455,13 +455,15 @@ for k in range(temporal_window):
     temporal_names = [str(k) + s for s in temporal_features]
     dynamic_names = [str(k) + s for s in dynamic_features]
     
-    
-    train[temporal_names] = None
-    train[dynamic_names] = None
-    
+    # Create an empty DataFrame with the specified columns
     if k==0:
         temporal_single_names = [str(k) + s for s in temporal_single_features]
-        train[temporal_single_names] = np.nan    
+        col_names = temporal_names + dynamic_names + temporal_single_names
+
+    else:
+        col_names = temporal_names + dynamic_names
+        
+    temp_train = pd.DataFrame(index=train.index, columns=col_names)
     
     for name in season_df.names.unique():
         selected_ind = season_df.names == name
@@ -469,18 +471,35 @@ for k in range(temporal_window):
         temporal_data = season_df.loc[selected_ind, temporal_features].shift(k+1)
         dynamic_data = season_df.loc[selected_ind, dynamic_features].shift(k)
         
-        train.loc[selected_ind, temporal_names] = temporal_data.values            
-        train.loc[selected_ind, dynamic_names] = dynamic_data.values
+        temp_train.loc[selected_ind, temporal_names] = temporal_data.values            
+        temp_train.loc[selected_ind, dynamic_names] = dynamic_data.values
         
         if k==0:
             temporal_single_data = season_df.loc[selected_ind, temporal_single_features].shift(k+1)
             
-            train.loc[selected_ind, temporal_single_names] = temporal_single_data.values
+            temp_train.loc[selected_ind, temporal_single_names] = temporal_single_data.values
     
-
-    dynamic_cat_names = [str(k) + s for s in dynamic_categorical_variables]
-    #set categories of opponents:
-    train[dynamic_cat_names] = train[dynamic_cat_names].astype('category')
+    #set dtype
+    for col in temp_train.columns:
+        
+        col_stem = ''.join([char for char in col if not char.isdigit()])
+        
+        if col_stem in dynamic_categorical_variables:
+            temp_train[col] = temp_train[col].astype('category')
+        elif col_stem in int_variables:
+            temp_train[col] = temp_train[col].astype('Int64')
+        elif col_stem in temporal_features or col_stem in float_variables or col_stem in temporal_single_features:
+            temp_train[col] = temp_train[col].astype('float')
+        else:
+            print('CHECK', col)
+    
+    #concatenate
+    train = pd.concat([train, temp_train], axis=1)
+    
+    
+    # dynamic_cat_names = [str(k) + s for s in dynamic_categorical_variables]
+    # #set categories of opponents:
+    # train[dynamic_cat_names] = train[dynamic_cat_names].astype('category')
     
     #get the possible opponents (#in case of new team in the dataset)
     opponent_feature = str(k) + 'string_opp_team'
@@ -1021,7 +1040,7 @@ elif method == 'xgboost':
     batch_size = 100
     max_evals = 500000
     
-    with open(r'C:\Users\jorgels\Git\Fantasy-Premier-League\models\hyperparams.pkl', 'rb') as f:
+    with open(r'C:\Users\jorgels\Documents\GitHub\Fantasy-Premier-League\models\hyperparams.pkl', 'rb') as f:
         old_trials = pickle.load(f)
         
     old_hyperparams = old_trials.best_trial['misc']['vals']
