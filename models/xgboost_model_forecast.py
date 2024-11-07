@@ -24,10 +24,17 @@ from pandas.api.types import CategoricalDtype
 
 
 directories = r'C:\Users\jorgels\Documents\GitHub\Fantasy-Premier-League\data'
-model_path = r"\\platon.uio.no\med-imb-u1\jorgels\model.sav"
+try:
+    folders = os.listdir(directories)
+    model_path = r"\\platon.uio.no\med-imb-u1\jorgels\model.sav"
+except:
+    directories = r'C:\Users\jorgels\Git\Fantasy-Premier-League\data'
+    folders = os.listdir(directories)
+    model_path = r"M:\model.sav"
 
-optimize = False
-continue_optimize = False
+
+optimize = True
+continue_optimize = True
 
 temporal_window = 19
 
@@ -40,7 +47,7 @@ season_dfs = []
 season_count = 0
 
 #get each season
-for folder in os.listdir(directories):
+for folder in folders:
 
     directory = os.path.join(directories, folder)
     fixture_data = os.path.join(directory, 'fixtures.csv')
