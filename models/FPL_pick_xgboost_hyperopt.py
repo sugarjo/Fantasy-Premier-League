@@ -258,8 +258,8 @@ for player in df_gw['element'].unique():
     
     for i in range(len(player_df['total_points'])):
         
-        if player_df['minutes'][i] >= 60:
-            last_point += player_df['total_points'][i]
+        if player_df['minutes'].iloc[i] >= 60:
+            last_point += player_df['total_points'].iloc[i]
             last_games += 1
         
         if last_games > 0:

@@ -24,8 +24,9 @@ from pandas.api.types import CategoricalDtype
 
 
 directories = r'C:\Users\jorgels\Documents\GitHub\Fantasy-Premier-League\data'
+model_path = r"\\platon.uio.no\med-imb-u1\jorgels\model.sav"
 
-optimize = True
+optimize = False
 continue_optimize = False
 
 temporal_window = 19
@@ -1218,9 +1219,9 @@ elif method == 'xgboost':
         
     summary = {'model': model, 'train_features': train_X, 'hyperparameters': space, 'all_rows': original_df}
         
-    filename = r'M:\model.sav'
-    pickle.dump(summary, open(filename, 'wb'))
+    pickle.dump(summary, open(model_path, 'wb'))
     
     xgb.plot_importance(model, importance_type='gain',
                     max_num_features=20, show_values=False)
+    plt.show()
         

@@ -5,7 +5,7 @@ points_per_game_treshold = -1
 exclude_team = []
 
 
-exclude_players = ['Sinisterra', 'Tsimikas', 'Awoniyi', 'Trippier']
+exclude_players = ['Sarabia', 'Amad', 'Ricardo', 'Kelleher', 'Richarlison', 'A.Fatawu', 'Sinisterra', 'Trippier', 'Tsimikas', 'Awoniyi',  'Summerville', 'Szmodics', 'Barnes']
 exclude_players_out = []
 
 include_players = []
@@ -30,7 +30,7 @@ manual_pred = 1
 #                  }
 manual_blanks = {}
 
-string = '{"picks":[{"element":47,"position":1,"selling_price":50,"multiplier":1,"purchase_price":50,"is_captain":false,"is_vice_captain":false},{"element":311,"position":2,"selling_price":70,"multiplier":1,"purchase_price":70,"is_captain":false,"is_vice_captain":false},{"element":335,"position":3,"selling_price":60,"multiplier":1,"purchase_price":60,"is_captain":false,"is_vice_captain":false},{"element":350,"position":4,"selling_price":60,"multiplier":1,"purchase_price":59,"is_captain":false,"is_vice_captain":false},{"element":434,"position":5,"selling_price":54,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":328,"position":6,"selling_price":126,"multiplier":2,"purchase_price":127,"is_captain":true,"is_vice_captain":false},{"element":182,"position":7,"selling_price":108,"multiplier":1,"purchase_price":108,"is_captain":false,"is_vice_captain":true},{"element":240,"position":8,"selling_price":53,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":268,"position":9,"selling_price":56,"multiplier":1,"purchase_price":56,"is_captain":false,"is_vice_captain":false},{"element":306,"position":10,"selling_price":57,"multiplier":1,"purchase_price":57,"is_captain":false,"is_vice_captain":false},{"element":4,"position":11,"selling_price":81,"multiplier":1,"purchase_price":81,"is_captain":false,"is_vice_captain":false},{"element":445,"position":12,"selling_price":40,"multiplier":0,"purchase_price":40,"is_captain":false,"is_vice_captain":false},{"element":342,"position":13,"selling_price":65,"multiplier":0,"purchase_price":65,"is_captain":false,"is_vice_captain":false},{"element":355,"position":14,"selling_price":47,"multiplier":0,"purchase_price":47,"is_captain":false,"is_vice_captain":false},{"element":495,"position":15,"selling_price":55,"multiplier":0,"purchase_price":55,"is_captain":false,"is_vice_captain":false}],"picks_last_updated":"2024-10-26T20:27:26.667036Z","chips":[{"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"status_for_entry":"available","played_by_entry":[],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"status_for_entry":"available","played_by_entry":[],"name":"wildcard","number":1,"start_event":2,"stop_event":19,"chip_type":"transfer","is_pending":false},{"status_for_entry":"available","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer","is_pending":false}],"transfers":{"cost":4,"status":"cost","limit":1,"made":0,"bank":12,"value":988}}'
+string = '{"picks":[{"element":15,"position":1,"selling_price":56,"multiplier":1,"purchase_price":56,"is_captain":false,"is_vice_captain":false},{"element":311,"position":2,"selling_price":70,"multiplier":1,"purchase_price":70,"is_captain":false,"is_vice_captain":false},{"element":335,"position":3,"selling_price":59,"multiplier":1,"purchase_price":60,"is_captain":false,"is_vice_captain":false},{"element":350,"position":4,"selling_price":60,"multiplier":1,"purchase_price":59,"is_captain":false,"is_vice_captain":false},{"element":495,"position":5,"selling_price":55,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":240,"position":6,"selling_price":53,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":328,"position":7,"selling_price":127,"multiplier":2,"purchase_price":127,"is_captain":true,"is_vice_captain":false},{"element":182,"position":8,"selling_price":109,"multiplier":1,"purchase_price":108,"is_captain":false,"is_vice_captain":true},{"element":342,"position":9,"selling_price":65,"multiplier":1,"purchase_price":65,"is_captain":false,"is_vice_captain":false},{"element":306,"position":10,"selling_price":57,"multiplier":1,"purchase_price":57,"is_captain":false,"is_vice_captain":false},{"element":4,"position":11,"selling_price":81,"multiplier":1,"purchase_price":81,"is_captain":false,"is_vice_captain":false},{"element":445,"position":12,"selling_price":40,"multiplier":0,"purchase_price":40,"is_captain":false,"is_vice_captain":false},{"element":434,"position":13,"selling_price":54,"multiplier":0,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":268,"position":14,"selling_price":56,"multiplier":0,"purchase_price":56,"is_captain":false,"is_vice_captain":false},{"element":355,"position":15,"selling_price":48,"multiplier":0,"purchase_price":47,"is_captain":false,"is_vice_captain":false}],"picks_last_updated":"2024-11-05T17:43:11.624541Z","chips":[{"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"status_for_entry":"available","played_by_entry":[],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"status_for_entry":"available","played_by_entry":[],"name":"wildcard","number":1,"start_event":2,"stop_event":19,"chip_type":"transfer","is_pending":false},{"status_for_entry":"available","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer","is_pending":false}],"transfers":{"cost":4,"status":"cost","limit":1,"made":0,"bank":6,"value":996}}'
 
 
 season = '2024-25'
@@ -60,10 +60,22 @@ from pandas.api.types import CategoricalDtype
 directory = r'C:\Users\jorgels\Git\Fantasy-Premier-League\data' + '/' + season
 prev_season_directory = r'C:\Users\jorgels\Git\Fantasy-Premier-League\data' + '/' + previous_season
 team_path = directory + "/teams.csv"
-    
-df_teams = pd.read_csv(team_path)
-string_names = df_teams['short_name'].values
+model_path= r'M:\model.sav'
 
+try:    
+    df_teams = pd.read_csv(team_path)
+    
+except:
+    #insert string for team
+    directory = r'C:\Users\jorgels\Documents\GitHub\Fantasy-Premier-League\data' + '/' + season
+    prev_season_directory = r'C:\Users\jorgels\Documents\GitHub\Fantasy-Premier-League\data' + '/' + previous_season
+    team_path = directory + "/teams.csv"
+    model_path = r"\\platon.uio.no\med-imb-u1\jorgels\model.sav"
+    
+    df_teams = pd.read_csv(team_path)
+
+    
+string_names = df_teams['short_name'].values
 #log in
 session = requests.session()
 url = 'https://users.premierleague.com/accounts/login/'
@@ -206,7 +218,7 @@ for name in do_not_exclude_players:
 
 # points_per_game[selected_players] = 0
 
-with open(r'M:\model.sav', 'rb') as f:
+with open(model_path, 'rb') as f:
     summary = pickle.load(f)
 
 result = summary["model"]
@@ -218,6 +230,37 @@ all_rows = summary["all_rows"]
 predictions = []
 
 
+# #features that I don't have access to in advance.
+# temporal_features = ['minutes', 'ict_index', 'influence', 'threat', 'creativity', 'bps',
+#        'total_points', 'xP', 'expected_goals', 'expected_assists',
+#        'expected_goal_involvements', 'expected_goals_conceded']
+#        #'points_per_game', 'points_per_played_game']
+
+# temporal_single_features = ['points_per_game', 'points_per_played_game']
+
+# #total_points, minutes, kickoff time not for prediction
+# fixed_features = ['element_type', 'string_team', 'season', 'names']
+
+# dynamic_features = ['string_opp_team', 'transfers_in', 'transfers_out',
+#        'was_home', 'own_difficulty', 'other_difficulty']#, 'difficulty']
+
+# #add nan categories
+# dynamic_categorical_variables = ['string_opp_team', 'own_difficulty',
+#        'other_difficulty'] #'difficulty', 
+
+# #add nan categories
+# dynamic_float_variables = ['transfers_in', 'transfers_out', 'was_home']
+
+
+
+#add nan categories
+dynamic_categorical_variables = ['string_opp_team', 'own_difficulty',
+       'other_difficulty'] #'difficulty', 
+
+int_variables = ['minutes', 'total_points', 'was_home', 'bps']
+
+float_variables = ['transfers_in', 'transfers_out', 'threat']
+
 #features that I don't have access to in advance.
 temporal_features = ['minutes', 'ict_index', 'influence', 'threat', 'creativity', 'bps',
        'total_points', 'xP', 'expected_goals', 'expected_assists',
@@ -226,18 +269,14 @@ temporal_features = ['minutes', 'ict_index', 'influence', 'threat', 'creativity'
 
 temporal_single_features = ['points_per_game', 'points_per_played_game']
 
+
 #total_points, minutes, kickoff time not for prediction
 fixed_features = ['element_type', 'string_team', 'season', 'names']
 
 dynamic_features = ['string_opp_team', 'transfers_in', 'transfers_out',
        'was_home', 'own_difficulty', 'other_difficulty']#, 'difficulty']
 
-#add nan categories
-dynamic_categorical_variables = ['string_opp_team', 'own_difficulty',
-       'other_difficulty'] #'difficulty', 
 
-#add nan categories
-dynamic_float_variables = ['transfers_in', 'transfers_out', 'was_home']
 
 
 #predict future points
@@ -245,7 +284,7 @@ for df_name in slim_elements_df.iterrows():
     
     # if df_name[1].second_name == 'C.Richards':
     #     print(df_name)
-    # ind=122
+    # ind=418
     # df_name = (ind, slim_elements_df.iloc[ind])
 
     if not selected_players[df_name[0]]:
@@ -324,10 +363,10 @@ for df_name in slim_elements_df.iterrows():
         for game in gws.iterrows():
             
             #add empty row
-            new_row = pd.DataFrame([[np.nan] * len(predicting_df.columns)], columns=predicting_df.columns)
+            new_row = pd.DataFrame({col: pd.Series(dtype=dt) for col, dt in predicting_df.dtypes.items()})
             
             #add fixed
-            new_row[fixed_features] = predicting_df[fixed_features].iloc[-1]
+            new_row.loc[0, fixed_features] = predicting_df[fixed_features].iloc[-1]
             
             #add dynamic
                                     
@@ -362,7 +401,7 @@ for df_name in slim_elements_df.iterrows():
                 new_row['transfers_out'] = elements_df.iloc[df_name[0]].transfers_out_event/sum_transfers
 
             
-            predicting_df = pd.concat([predicting_df, new_row], ignore_index = True)
+            predicting_df = pd.concat([predicting_df, new_row], ignore_index = True, axis=0)
             
         #add temporal features
         #for each week iteration
@@ -373,28 +412,45 @@ for df_name in slim_elements_df.iterrows():
               
             temporal_names = [str(k) + s for s in temporal_features]
             dynamic_names = [str(k) + s for s in dynamic_features]
-        
-            temporal_data = predicting_df[temporal_features].shift(k+1)
-            dynamic_data = predicting_df[dynamic_features].shift(k)
             
-            predicting_df[temporal_names] = temporal_data.values            
-            predicting_df[dynamic_names] = dynamic_data.values
-            
+            # Create an empty DataFrame with the specified columns
             if k==0:
-                temporal_single_names = [str(k) + s for s in temporal_single_features]                  
+                temporal_single_names = [str(k) + s for s in temporal_single_features]
+                col_names = temporal_names + dynamic_names + temporal_single_names
+
+            else:
+                col_names = temporal_names + dynamic_names
+            
+            temp_train = pd.DataFrame(index=predicting_df.index, columns=col_names)
+                
+            temporal_data = predicting_df[temporal_features].shift(k+1)
+            dynamic_data = predicting_df[dynamic_features].shift(k) 
+            
+            temp_train[temporal_names] = temporal_data.values            
+            temp_train[dynamic_names] = dynamic_data.values
+            
+            if k==0:                 
                 temporal_single_data = predicting_df[temporal_single_features].shift(k+1)                
-                predicting_df[temporal_single_names] = temporal_single_data.values  
+                temp_train[temporal_single_names] = temporal_single_data.values  
         
             
-            #wait for later to get all categories
-            category_names.append([str(k) + s for s in dynamic_categorical_variables])
-            #predicting_df[dynamic_cat_names] = predicting_df[dynamic_cat_names].astype('category')
-        
-            dynamic_float_names = [str(k) + s for s in dynamic_float_variables]
-            predicting_df[dynamic_float_names] = predicting_df[dynamic_float_names].astype('float')
-        
-        
-        
+            #set dtype
+            for col in temp_train.columns:
+                
+                col_stem = ''.join([char for char in col if not char.isdigit()])
+                
+                if col_stem in dynamic_categorical_variables:
+                    temp_train[col] = temp_train[col].astype('category')
+                elif col_stem in int_variables:
+                    temp_train[col] = temp_train[col].astype('Int64')
+                elif col_stem in temporal_features or col_stem in float_variables or col_stem in temporal_single_features:
+                    temp_train[col] = temp_train[col].astype('float')
+                else:
+                    print('CHECK', col)
+                    
+            predicting_df = pd.concat([predicting_df, temp_train], axis=1)
+            
+\
         #include also train_X to maintain categories. use inner to not get too many columns
         #predicting_df = pd.concat([train_X, predicting_df], ignore_index = True, join='inner')
         common_columns = train_X.columns.intersection(predicting_df.columns)
@@ -410,8 +466,8 @@ for df_name in slim_elements_df.iterrows():
         
         #predicting_df[fixed_features] = predicting_df[fixed_features].astype('category')
         
-        for group in category_names:
-            for cat in group:
+        for cat in predicting_df.keys():            
+            if isinstance(train_X[cat].dtype, pd.CategoricalDtype): 
                 train_cats = train_X[cat].cat.categories
                 cats = CategoricalDtype(categories=train_cats, ordered=False)
                 predicting_df[cat] = predicting_df[cat].astype(cats)
@@ -420,13 +476,7 @@ for df_name in slim_elements_df.iterrows():
         #predicting_df = predicting_df.iloc[-keep_rows:]
         
         predicting_df = predicting_df.reset_index(drop=True)
-        
-        #predicting_df = predicting_df.drop('minutes', axis=1)
-        
-        #object_cols = predicting_df.select_dtypes(include=['object']).columns
-        #predicting_df = predicting_df.drop(object_cols, axis=1)
-        #predicting_df = predicting_df.drop('index', axis=1)
-        
+             
 
     
         
@@ -649,7 +699,7 @@ for j in range(player_iteration):
                 for player_in in slim_elements_df.iterrows():
                     
                     #check if not picked, not same the other player, any predictions >0 and same element
-                    if not player_in[1]['picked'] and sum(player_in[1].prediction) > 0 and (any(player_in[1].prediction > player_out[1].prediction) or player_in[1].now_cost < player_out[1].now_cost) and  player_in[1].element_type == player_out[1].element_type:
+                    if (not player_in[1]['picked']) and sum(player_in[1].prediction) > 0 and (any(player_in[1].prediction > player_out[1].prediction) or player_in[1].now_cost < player_out[1].now_cost) and  player_in[1].element_type == player_out[1].element_type:
                         
                         transfers.append([player_out[0], player_in[0]])
                         
@@ -741,8 +791,8 @@ def objective(check_transfers, free_transfers):
     for gw in range(gw_iteration):   
         if not unlimited_transfers:    
             
-
             k=0
+            
             for gw_trans in range(trans_per_week):
                 transfer = check_transfers[gw*trans_per_week + gw_trans]
                 k += 1
@@ -750,7 +800,7 @@ def objective(check_transfers, free_transfers):
                 if not np.isnan(transfer[0]):
                     #check if players are already transfered
                     if team[transfer[0]] == False or team[transfer[1]] == True:
-                        print('I think this never happens 1')
+                        print('I think this never happens 1', check_transfers)
                         return np.nan, np.nan, np.nan
                     
                     team[transfer[0]] = False
@@ -873,12 +923,14 @@ def check_random_transfers(i):
         #loop to get a transfer combination
         transfer_ind = []
         putative_transfers = []
+        #add one and one transfer
         for i in range(len(point_diff)):            
             trans_ind = rng.choice(np.arange(prob.shape[0]), 1, p=prob[:, i])[0]
             trans = transfers[trans_ind]
             
             #redo to nan if player is allready transfered in/out
-            if i > 0:            
+            if (not trans[0] == np.nan) and (i > 0):   
+                #loop thropugh the already recorded transfers
                 for t in putative_transfers:
                     if t[0] == trans[0] or t[1] == trans[1]:
                         #skip every third transfer
@@ -999,33 +1051,38 @@ def check_guided_transfers(i, best_transfer, reference_point):
     random_ordered_transfers = list(range(len(transfers)))
     random.shuffle(random_ordered_transfers)
     
-    original_transfer = transfer_ind[i]
+    original_transfer = np.array(putative_transfers).copy()
+    
+    original_team_ind = np.where(slim_elements_df['picked'].values)
     
     #exhange one of the transfers
     for j in random_ordered_transfers:
         if prob[j, i] > 0:
             
             transfer_ind[i] = j
+            incomming_transfer = transfers[transfer_ind[i]]
             
-            putative_transfers[i] = transfers[transfer_ind[i]]
-                
-            # if (transfer_ind not in checked_transfers) and (transfer_ind not in evaluated_transfers):
+            putative_transfers[i] = incomming_transfer
             
-            point, price, all_point = objective(putative_transfers, free_transfers)
-            points.append(point)
-            prices.append(price)
-            all_points.append(all_point)
-            evaluated_transfers.append(transfer_ind.copy())                
-                   
-            if not np.isnan(point):          
-                sum_points[i, transfer_ind[i]] += (point-reference_point)
-                counts[i, transfer_ind[i]] += 1
-                
-                # sum_points[i, original_transfer] = sum_points[i, original_transfer] - (point-baseline)
-                # counts[i, original_transfer] += 1
-            #punish also nan teams
-            else:
-                counts[i, transfer_ind[i]] += 1
+            #team = slim_elements_df['picked'].values.copy().values.copy()
+            
+            
+            #chack that only one of the incoming/outgoing players are in the team
+            if incomming_transfer[1] == np.nan or (sum(incomming_transfer[1] ==  np.array(putative_transfers)[:, 1]) == 1 and  sum(incomming_transfer[0] ==  np.array(putative_transfers)[:, 0]) == 1):
+                #check
+                point, price, all_point = objective(putative_transfers, free_transfers)
+                points.append(point)
+                prices.append(price)
+                all_points.append(all_point)
+                evaluated_transfers.append(transfer_ind.copy())                
+                       
+                if not np.isnan(point):          
+                    sum_points[i, transfer_ind[i]] += (point-reference_point)
+                    counts[i, transfer_ind[i]] += 1
+                    
+                #punish also nan teams
+                else:
+                    counts[i, transfer_ind[i]] += 1
 
     return points, prices, all_points, evaluated_transfers, sum_points, counts
 
