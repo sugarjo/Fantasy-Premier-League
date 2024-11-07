@@ -23,21 +23,22 @@ from hyperopt.fmin import generate_trials_to_calculate
 from pandas.api.types import CategoricalDtype
 
 
-directories = r'C:\Users\jorgels\Documents\GitHub\Fantasy-Premier-League\data'
+main_directory = r'C:\Users\jorgels\Git\Fantasy-Premier-League'
+
+
+#C:\Users\jorgels\Documents\GitHub\Fantasy-Premier-League'
+
+directories = main_directory + '\data'
+
 
 optimize = True
-continue_optimize = False
+continue_optimize = True
 
 temporal_window = 19
 
 season_start = False
 
 method = 'xgboost'
-
-if season_start:
-    days_avg = '90D'
-else:
-    days_avg = '30D'
 
 season_dfs = []
 
@@ -1040,7 +1041,8 @@ elif method == 'xgboost':
     batch_size = 100
     max_evals = 500000
     
-    with open(r'C:\Users\jorgels\Documents\GitHub\Fantasy-Premier-League\models\hyperparams.pkl', 'rb') as f:
+    hyperparam_path = main_directory + '\models\hyperparams.pkl'
+    with open(hyperparam_path, 'rb') as f:
         old_trials = pickle.load(f)
         
     old_hyperparams = old_trials.best_trial['misc']['vals']
@@ -1072,7 +1074,7 @@ elif method == 'xgboost':
             print(best_hyperparams)
             
             filename = r'C:\Users\jorgels\Git\Fantasy-Premier-League\models\hyperparams.pkl'
-            pickle.dump(trials, open(filename, "wb"))
+            #pickle.dump(trials, open(filename, "wb"))
             
         
     losses = []
