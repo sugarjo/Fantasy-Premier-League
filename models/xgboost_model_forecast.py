@@ -27,10 +27,12 @@ directories = r'C:\Users\jorgels\Documents\GitHub\Fantasy-Premier-League\data'
 try:
     folders = os.listdir(directories)
     model_path = r"\\platon.uio.no\med-imb-u1\jorgels\model.sav"
+    main_directory = r'C:\Users\jorgels\Documents\GitHub\Fantasy-Premier-League'
 except:
     directories = r'C:\Users\jorgels\Git\Fantasy-Premier-League\data'
     folders = os.listdir(directories)
     model_path = r"M:\model.sav"
+    main_directory = r'C:\Users\jorgels\Git\Fantasy-Premier-League'
 
 
 optimize = True
@@ -1076,7 +1078,7 @@ elif method == 'xgboost':
             print(best_hyperparams)
 
             filename = r'C:\Users\jorgels\Git\Fantasy-Premier-League\models\hyperparams.pkl'
-            #pickle.dump(trials, open(filename, "wb"))
+            pickle.dump(trials, open(filename, "wb"))
 
 
     losses = []
