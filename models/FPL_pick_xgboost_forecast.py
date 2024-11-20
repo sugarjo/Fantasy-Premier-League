@@ -4,7 +4,7 @@ points_per_game_treshold = -1
 
 exclude_team = []
 
-exclude_players = ['Richarlison', 'Diogo J.', 'Ricardo', 'Szmodics', 'Kelleher', 'Kiwior', 'A.Fatawu', 'Amad', 'Sinisterra', 'Tsimikas', 'Awoniyi', 'Trippier', 'Summerville']
+exclude_players = ['Luis Díaz', 'Amad', 'Kiwior', 'Richarlison', 'Tsimikas', 'Kelleher', 'Awoniyi']
 
 exclude_players_out = []
 
@@ -30,8 +30,7 @@ manual_pred = 1
 #                  }
 manual_blanks = {}
 
-string = '{"picks":[{"element":15,"position":1,"selling_price":56,"multiplier":1,"purchase_price":56,"is_captain":false,"is_vice_captain":false},{"element":311,"position":2,"selling_price":70,"multiplier":1,"purchase_price":70,"is_captain":false,"is_vice_captain":false},{"element":335,"position":3,"selling_price":59,"multiplier":1,"purchase_price":60,"is_captain":false,"is_vice_captain":false},{"element":350,"position":4,"selling_price":61,"multiplier":1,"purchase_price":59,"is_captain":false,"is_vice_captain":false},{"element":495,"position":5,"selling_price":55,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":434,"position":6,"selling_price":54,"multiplier":1,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":328,"position":7,"selling_price":127,"multiplier":2,"purchase_price":127,"is_captain":true,"is_vice_captain":false},{"element":182,"position":8,"selling_price":109,"multiplier":1,"purchase_price":108,"is_captain":false,"is_vice_captain":true},{"element":342,"position":9,"selling_price":65,"multiplier":1,"purchase_price":65,"is_captain":false,"is_vice_captain":false},{"element":306,"position":10,"selling_price":57,"multiplier":1,"purchase_price":57,"is_captain":false,"is_vice_captain":false},{"element":4,"position":11,"selling_price":81,"multiplier":1,"purchase_price":81,"is_captain":false,"is_vice_captain":false},{"element":445,"position":12,"selling_price":40,"multiplier":0,"purchase_price":40,"is_captain":false,"is_vice_captain":false},{"element":268,"position":13,"selling_price":56,"multiplier":0,"purchase_price":56,"is_captain":false,"is_vice_captain":false},{"element":618,"position":14,"selling_price":56,"multiplier":0,"purchase_price":56,"is_captain":false,"is_vice_captain":false},{"element":355,"position":15,"selling_price":48,"multiplier":0,"purchase_price":47,"is_captain":false,"is_vice_captain":false}],"picks_last_updated":"2024-11-06T22:07:20.507591Z","chips":[{"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"status_for_entry":"available","played_by_entry":[],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"status_for_entry":"available","played_by_entry":[],"name":"wildcard","number":1,"start_event":2,"stop_event":19,"chip_type":"transfer","is_pending":false},{"status_for_entry":"available","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer","is_pending":false}],"transfers":{"cost":4,"status":"cost","limit":1,"made":1,"bank":3,"value":999}}'
-
+string = '{"picks":[{"element":15,"position":1,"selling_price":56,"multiplier":1,"purchase_price":56,"is_captain":false,"is_vice_captain":false},{"element":311,"position":2,"selling_price":70,"multiplier":1,"purchase_price":70,"is_captain":false,"is_vice_captain":false},{"element":335,"position":3,"selling_price":59,"multiplier":1,"purchase_price":60,"is_captain":false,"is_vice_captain":false},{"element":350,"position":4,"selling_price":61,"multiplier":1,"purchase_price":59,"is_captain":false,"is_vice_captain":false},{"element":328,"position":5,"selling_price":128,"multiplier":2,"purchase_price":127,"is_captain":true,"is_vice_captain":false},{"element":182,"position":6,"selling_price":108,"multiplier":1,"purchase_price":108,"is_captain":false,"is_vice_captain":false},{"element":342,"position":7,"selling_price":65,"multiplier":1,"purchase_price":65,"is_captain":false,"is_vice_captain":false},{"element":618,"position":8,"selling_price":56,"multiplier":1,"purchase_price":56,"is_captain":false,"is_vice_captain":false},{"element":306,"position":9,"selling_price":57,"multiplier":1,"purchase_price":57,"is_captain":false,"is_vice_captain":false},{"element":268,"position":10,"selling_price":56,"multiplier":1,"purchase_price":56,"is_captain":false,"is_vice_captain":false},{"element":401,"position":11,"selling_price":83,"multiplier":1,"purchase_price":83,"is_captain":false,"is_vice_captain":true},{"element":445,"position":12,"selling_price":40,"multiplier":0,"purchase_price":40,"is_captain":false,"is_vice_captain":false},{"element":495,"position":13,"selling_price":55,"multiplier":0,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":355,"position":14,"selling_price":48,"multiplier":0,"purchase_price":47,"is_captain":false,"is_vice_captain":false},{"element":434,"position":15,"selling_price":54,"multiplier":0,"purchase_price":55,"is_captain":false,"is_vice_captain":false}],"picks_last_updated":"2024-11-10T22:45:49.022097Z","chips":[{"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"status_for_entry":"available","played_by_entry":[],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"status_for_entry":"available","played_by_entry":[],"name":"wildcard","number":1,"start_event":2,"stop_event":19,"chip_type":"transfer","is_pending":false},{"status_for_entry":"available","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer","is_pending":false}],"transfers":{"cost":4,"status":"cost","limit":1,"made":0,"bank":1,"value":1002}}'
 
 
 season = '2024-25'
@@ -811,7 +810,7 @@ def objective(check_transfers, free_transfers):
             #check all transfers before moving on
             for transfer in check_transfers:
                 if not np.isnan(transfer[0]):
-                    print('I think this never happens 2')
+                    #print('I think this never happens 2')
                     team[transfer[0]] = False
                     team[transfer[1]] = True
 
@@ -907,7 +906,7 @@ def objective(check_transfers, free_transfers):
 
 
 def check_random_transfers(i):
-
+    print('Go for it!', i)
     rng = np.random.default_rng(seed=i)
 
     evaluated_transfers = []

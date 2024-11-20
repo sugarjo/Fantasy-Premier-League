@@ -38,7 +38,8 @@ except:
 optimize = True
 continue_optimize = True
 
-temporal_window = 19
+#add 2. one because threshold is bounded upwards. and one because last week is only partly encoded (dynamic features)
+temporal_window = 20
 
 season_start = False
 
@@ -416,6 +417,10 @@ season_df.loc[home, 'other_difficulty'] = season_df.loc[home, "team_a_difficulty
 categorical_variables = ['element_type', 'string_team', 'season', 'names']
 season_df[categorical_variables] = season_df[categorical_variables].astype('category')
 
+dynamic_features = ['string_opp_team', 'transfers_in', 'transfers_out',
+       'was_home', 'own_difficulty', 'other_difficulty']#, 'difficulty']
+
+
 #add nan categories
 dynamic_categorical_variables = ['string_opp_team', 'own_difficulty',
        'other_difficulty'] #'difficulty',
@@ -439,8 +444,6 @@ temporal_single_features = ['points_per_game', 'points_per_played_game']
 #total_points, minutes, kickoff time not for prediction
 fixed_features = ['total_points', 'minutes', 'kickoff_time', 'element_type', 'string_team', 'season', 'names']
 
-dynamic_features = ['string_opp_team', 'transfers_in', 'transfers_out',
-       'was_home', 'own_difficulty', 'other_difficulty']#, 'difficulty']
 
 opponent_feat = ['string_opp_team']
 
@@ -458,31 +461,36 @@ for k in range(temporal_window):
     print('Window', k)
 
     temporal_names = [str(k) + s for s in temporal_features]
-    dynamic_names = [str(k) + s for s in dynamic_features]
 
     # Create an empty DataFrame with the specified columns
     if k==0:
-        temporal_single_names = [str(k) + s for s in temporal_single_features]
-        col_names = temporal_names + dynamic_names + temporal_single_names
+        
+        dynamic_names = [s for s in dynamic_features]
+        
+        temporal_single_names = [s for s in temporal_single_features]
+        col_names = temporal_single_names + dynamic_names + temporal_names 
 
     else:
-        col_names = temporal_names + dynamic_names
+        dynamic_names = [str(k-1) + s for s in dynamic_features]
+        
+        col_names = dynamic_names + temporal_names
 
     temp_train = pd.DataFrame(index=train.index, columns=col_names)
 
     for name in season_df.names.unique():
+        
         selected_ind = season_df.names == name
-
-        temporal_data = season_df.loc[selected_ind, temporal_features].shift(k+1)
-        dynamic_data = season_df.loc[selected_ind, dynamic_features].shift(k)
-
-        temp_train.loc[selected_ind, temporal_names] = temporal_data.values
-        temp_train.loc[selected_ind, dynamic_names] = dynamic_data.values
-
+        
         if k==0:
             temporal_single_data = season_df.loc[selected_ind, temporal_single_features].shift(k+1)
 
             temp_train.loc[selected_ind, temporal_single_names] = temporal_single_data.values
+
+        temporal_data = season_df.loc[selected_ind, temporal_features].shift(k+1)
+        dynamic_data = season_df.loc[selected_ind, dynamic_features].shift(k)
+        
+        temp_train.loc[selected_ind, dynamic_names] = dynamic_data.values
+        temp_train.loc[selected_ind, temporal_names] = temporal_data.values
 
     #set dtype
     for col in temp_train.columns:
@@ -506,12 +514,13 @@ for k in range(temporal_window):
     # #set categories of opponents:
     # train[dynamic_cat_names] = train[dynamic_cat_names].astype('category')
 
-    #get the possible opponents (#in case of new team in the dataset)
-    opponent_feature = str(k) + 'string_opp_team'
+    #get the possible opponents (#in case of new team in the dataset)    
     if k == 0:
+        opponent_feature = 'string_opp_team'
         possible_opponents = train[opponent_feature].cat.categories
         opp_cats = CategoricalDtype(categories=possible_opponents, ordered=False)
     else:
+        opponent_feature = str(k-1) + 'string_opp_team'
         train[opponent_feature] = train[opponent_feature].astype(opp_cats)
 
 #exchange old names with nan
@@ -599,7 +608,10 @@ def objective_xgboost(space):
 
     # Filter the columns based on the defined function
     columns_to_keep = [col for col in cv_X.columns if should_keep_column(col, threshold)]
-    objective_X = cv_X[columns_to_keep]
+    objective_X = cv_X[columns_to_keep]   
+    
+    # interaction_constraints = get_interaction_constraints(objective_X.columns)
+    # pars['interaction_constraints'] = str(interaction_constraints)
 
     fit_X, eval_X, fit_y, eval_y, fit_sample_weights, eval_sample_weights = train_test_split(objective_X, cv_y, cv_sample_weights, test_size=space['eval_fraction'], stratify=cv_stratify, random_state=42)
 
@@ -626,6 +638,65 @@ def objective_xgboost(space):
     val_error = mean_squared_error(val_y, val_pred)
 
     return {'loss': val_error, 'status': STATUS_OK }
+
+def get_interaction_constraints(features):
+    #set up interaction_constraints
+    interaction_constraints = []
+    
+    global_features = ['element_type', 'string_team', 'season', 'names', 'points_per_game', 'points_per_played_game']
+    #current_features = ['string_opp_team', 'transfers_in', 'transfers_out', 'was_home', 'own_difficulty', 'other_difficulty']    
+    
+    global_group = []
+    current_group = []
+    
+    week_group = []
+    type_group = []
+    
+    week = 0
+    
+    for feat_ind, feat in enumerate(features):
+        digits = ''.join(re.findall(r'\d', feat))
+        letters = ''.join(re.findall(r'[A-Za-z_]', feat))
+        
+        if digits == '':
+            
+            if letters in global_features:
+                global_group.append(feat_ind)
+            else:
+                current_group.append(feat_ind)
+            
+        else:
+            if not int(digits) == week:
+                week = int(digits)
+                interaction_constraints.append(global_group + week_group.copy())
+                week_group = []
+            
+            week_group.append(feat_ind)
+            
+            # #set up feature type interactions: one category for each feature independent of week
+            # if int(digits) == 0:
+            #     type_group.append(global_group+[feat_ind])
+            # else:
+            #     type_group[len(week_group)-1].append(feat_ind)
+                
+    # #add last week
+    # interaction_constraints.append(global_group + week_group.copy())
+    # interaction_constraints.append(global_group + current_group)
+        #interaction_constraints = interaction_constraints + type_group
+                
+        
+            #all except the dynamic features go into a group.
+            if not letters in current_features:
+                type_group.append(feat_ind)
+        
+    
+    #add last week
+    interaction_constraints.append(global_group + week_group.copy())
+    interaction_constraints.append(global_group + current_group)
+    interaction_constraints = interaction_constraints + [global_group + current_group + type_group]
+    
+    return interaction_constraints
+                
 
 
 def objective_linear_reg(space):
@@ -1039,8 +1110,8 @@ elif method == 'xgboost':
         }
 
     #get an validation set for fitting
-    cv_X, val_X, cv_y, val_y, cv_sample_weights, val_sample_weights, cv_stratify, _= train_test_split(train_X, train_y, sample_weights, stratify, test_size=0.20, stratify=stratify, random_state=42)
-
+    cv_X, val_X, cv_y, val_y, cv_sample_weights, val_sample_weights, cv_stratify, _= train_test_split(train_X, train_y, sample_weights, stratify, test_size=0.20, stratify=stratify, random_state=42)    
+    
     #optimize and iteratively get hyperparamaters
     batch_size = 100
     max_evals = 500000
