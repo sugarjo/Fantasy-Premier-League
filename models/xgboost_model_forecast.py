@@ -39,7 +39,7 @@ optimize = True
 continue_optimize = True
 
 #add 2. one because threshold is bounded upwards. and one because last week is only partly encoded (dynamic features)
-temporal_window = 20
+temporal_window = 22
 
 season_start = False
 
@@ -1089,22 +1089,22 @@ elif method == 'xgboost':
 
     grow_policy = ['depthwise', 'lossguide']
 
-    space={'max_depth': hp.quniform("max_depth", 1, 175, 1), #try to decrease from 45 to 10?
+    space={'max_depth': hp.quniform("max_depth", 1, 200, 1), #try to decrease from 45 to 10?
             'min_split_loss': hp.uniform('min_split_loss', 0, 40),
             'reg_lambda' : hp.uniform('reg_lambda', 0, 75),
-            'reg_alpha': hp.loguniform('reg_alpha', -2, np.log(75)),
+            'reg_alpha': hp.loguniform('reg_alpha', -2, np.log(100)),
             'min_child_weight' : hp.uniform('min_child_weight', 0, 350),
             'learning_rate': hp.uniform('learning_rate', 0, 0.05),
             'subsample': hp.uniform('subsample', 0.1, 1),
             'colsample_bytree': hp.uniform('colsample_bytree', 0.1, 1),
             'colsample_bylevel': hp.uniform('colsample_bylevel', 0.1, 1),
             'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
-            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 400, 800, 1),
+            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 300, 800, 1),
             'eval_fraction': hp.uniform('eval_fraction', 0.001, 0.2),
-            'n_estimators': hp.qloguniform('n_estimators', np.log(2), np.log(4000), 1),
-            'max_delta_step': hp.uniform('max_delta_step', 0, 35),
+            'n_estimators': hp.qloguniform('n_estimators', np.log(2), np.log(4500), 1),
+            'max_delta_step': hp.uniform('max_delta_step', 0, 40),
             'grow_policy': hp.choice('grow_policy', grow_policy), #111
-            'max_leaves': hp.quniform('max_leaves', 0, 1350, 1),
+            'max_leaves': hp.quniform('max_leaves', 0, 1750, 1),
             'max_bin':  hp.quniform('max_bin', 2, 45, 1),
             'temporal_window': hp.quniform('temporal_window', 0, temporal_window+1, 1),
         }
@@ -1114,24 +1114,15 @@ elif method == 'xgboost':
     
     #optimize and iteratively get hyperparamaters
     batch_size = 100
-    max_evals = 500000
-
-    hyperparam_path = main_directory + '\models\hyperparams.pkl'
-    with open(hyperparam_path, 'rb') as f:
-        old_trials = pickle.load(f)
-
-    old_hyperparams = old_trials.best_trial['misc']['vals']
-    #reformat the lists
-    test_hyperparams = {}
-    for field, val in old_hyperparams.items():
-        test_hyperparams[field] = val[0]
-
-    #test the best hyperparams from last training
-    if not continue_optimize and optimize:
-        trials = generate_trials_to_calculate([test_hyperparams])
+    if optimize:
+        max_evals = 500000
+    
+    if continue_optimize:
+        hyperparam_path = main_directory + '\models\hyperparams_temp.pkl'
+        with open(hyperparam_path, 'rb') as f:
+            trials = pickle.load(f)
     else:
-        trials = old_trials
-
+        trials = Trials()
 
     if optimize:
 
@@ -1147,156 +1138,136 @@ elif method == 'xgboost':
                             trials = trials)
 
             print(best_hyperparams)
+            
+            hyperparam_path = main_directory + '\models\hyperparams_temp.pkl'
+            pickle.dump(trials, open(hyperparam_path, "wb"))
+            
+    else:      
+        hyperparam_path = main_directory + '\models\hyperparams.pkl'
+        with open(hyperparam_path, 'rb') as f:
+            old_trials = pickle.load(f)
 
-            filename = r'C:\Users\jorgels\Git\Fantasy-Premier-League\models\hyperparams.pkl'
-            pickle.dump(trials, open(filename, "wb"))
+        hyperparams = old_trials.best_trial['misc']['vals']
+        #reformat the lists
+        old_hyperparams = {}
+        for field, val in hyperparams.items():
+            old_hyperparams[field] = val[0]
+            
+        old_trials = generate_trials_to_calculate([old_hyperparams])
 
+        old_hyperparams = fmin(fn = objective_xgboost,
+                        space = space,
+                        algo = tpe.suggest,
+                        max_evals = 1,
+                        trials = old_trials)    
+            
+        old_loss = old_trials.best_trial["result"]["loss"]
+        
+        hyperparam_path = main_directory + '\models\hyperparams_temp.pkl'
+        with open(hyperparam_path, 'rb') as f:
+            new_trials = pickle.load(f)
+            
+        hyperparams = new_trials.best_trial['misc']['vals']
+        #reformat the lists
+        new_hyperparams = {}
+        for field, val in hyperparams.items():
+            new_hyperparams[field] = val[0]
+            
+        new_trials = generate_trials_to_calculate([new_hyperparams])
 
-    losses = []
-    for i in range(len(trials.trials)):
+        new_hyperparams = fmin(fn = objective_xgboost,
+                        space = space,
+                        algo = tpe.suggest,
+                        max_evals = 1,
+                        trials = new_trials)    
 
-        if trials.trials[i]['result'] == {'status': 'new'}:
-            losses.append(9999)
-            print('Miss result')
+        new_loss =  new_trials.best_trial["result"]["loss"]
+        
+        print('Old loss: ', old_loss)
+        print('New loss: ', new_loss)
+        
+        if new_loss < old_loss:
+            print('Overwriting old loss')
+            hyperparam_path = main_directory + '\models\hyperparams.pkl'
+            pickle.dump(new_trials, open(hyperparam_path, "wb"))
+            trials = new_trials
         else:
-            losses.append(trials.trials[i]['result']['loss'])
-
-    sorted_losses = np.argsort(losses)
-
-    if continue_optimize:
-        #train and test the best models
-
-
-        best_loss = np.inf
-
-        ind = 0
-        k = 0
-
-        cv_losses = []
-        k_list = []
-
-        from joblib import Parallel, delayed
-        def parallell_train(t):
-            #get an validation set for fitting
-            cv_X, val_X, cv_y, val_y, cv_sample_weights, _, cv_stratify, _ = train_test_split(train_X, train_y, sample_weights, stratify, test_size=0.25, stratify=stratify, random_state=t)
-            opt_out = objective(test_hyperparams)
-            return opt_out['loss']
-
-        #trian with cv until 5 models haven't made any better loss.
-        while k < 100:
-
-            hyperparams = trials.trials[sorted_losses[ind]]['misc']['vals']
-
-            test_hyperparams = {}
-            for field, val in hyperparams.items():
-                test_hyperparams[field] = val[0]
-
-            test_hyperparams['grow_policy'] = grow_policy[test_hyperparams['grow_policy']]
-            test_hyperparams['max_depth'] = int(test_hyperparams['max_depth'])
-            test_hyperparams['min_child_weight'] = int(test_hyperparams['min_child_weight'])
-            test_hyperparams['early_stopping_rounds'] = int(test_hyperparams['early_stopping_rounds'])
-            test_hyperparams['n_estimators'] = int(test_hyperparams['n_estimators'])
-            test_hyperparams['max_leaves'] = int(test_hyperparams['max_leaves'])
-
-            ind_losses =  []
-
-            for t in range(5):
-
-                #get an validation set for fitting
-                cv_X, val_X, cv_y, val_y, cv_sample_weights, val_sample_weights, cv_stratify, _= train_test_split(train_X, train_y, sample_weights, stratify, test_size=0.20, stratify=stratify, random_state=t)
-
-                opt_out = objective_xgboost(test_hyperparams)
-
-                losst = opt_out['loss']
-
-                ind_losses.append(losst)
-
-
-            print(ind_losses)
-            score = np.mean(ind_losses) + np.std(ind_losses, ddof=1)
-
-            if score < best_loss:
-                best_loss = score
-                k=0
-                best_trial = ind
-
-            cv_losses.append(ind_losses)
-            k_list.append(k)
-
-            k += 1
-            ind += 1
-            print(score, np.mean(ind_losses), k, ind)
-
-
-        mean_loss = np.mean(cv_losses, axis=1)
-        var_loss =  np.std(cv_losses, ddof=1, axis=1)
-
-        best_best_ind = np.argmin(mean_loss + var_loss)
-        print('Best ind: ', best_best_ind)
-        #best_best_ind = np.argmin(np.max(cv_losses, axis=1))
-    else:
+            trials = old_trials
+        
+        losses = []
+        for i in range(len(trials.trials)):
+    
+            if trials.trials[i]['result'] == {'status': 'new'}:
+                losses.append(9999)
+                print('Miss result')
+            else:
+                losses.append(trials.trials[i]['result']['loss'])
+    
+        sorted_losses = np.argsort(losses)
+    
+        
         best_best_ind = 0
-
-    #train with all data
-    best_cv_trial =  sorted_losses[best_best_ind]
-    print(losses[best_cv_trial])
-
-    hyperparams = trials.trials[best_cv_trial]['misc']['vals']
-    print(hyperparams)
-
-    space = {}
-    for field, val in hyperparams.items():
-        space[field] = val[0]
-
-    pars = {
-        'max_depth': int(space['max_depth']),
-        'min_split_loss': space['min_split_loss'],
-        'reg_lambda': space['reg_lambda'],
-        'reg_alpha': space['reg_alpha'],
-        'min_child_weight': int(space['min_child_weight']),
-        'learning_rate': space['learning_rate'],
-        'subsample': space['subsample'],
-        'colsample_bytree': space['colsample_bytree'],
-        'colsample_bylevel': space['colsample_bylevel'],
-        'colsample_bynode': space['colsample_bynode'],
-        'max_delta_step': space['max_delta_step'],
-        'grow_policy': grow_policy[space['grow_policy']],
-        'max_leaves': int(space['max_leaves']),
-        'tree_method': 'hist',
-        'max_bin':  int(space['max_bin']),
-        'disable_default_eval_metric': 1
-        }
-
-    #remove weaks that we don't need.
-    # Define the threshold
-    threshold = int(space['temporal_window'])
-
-    # Filter the columns based on the defined function
-    columns_to_keep = [col for col in train_X.columns if should_keep_column(col, threshold)]
-    objective_X = train_X[columns_to_keep]
-
-    fit_X, eval_X, fit_y, eval_y, fit_sample_weights, eval_sample_weights = train_test_split(objective_X, train_y, sample_weights, test_size=space['eval_fraction'], stratify=stratify, random_state=42)
-
-    dfit = xgb.DMatrix(data=fit_X, label=fit_y, enable_categorical=True, weight=fit_sample_weights)
-    deval = xgb.DMatrix(data=eval_X, label=eval_y, enable_categorical=True, weight=eval_sample_weights)
-
-    evals = [(dfit, 'train'), (deval, 'eval')]
-
-    model = xgb.train(
-    params=pars,
-    num_boost_round=int(space['n_estimators']),
-    early_stopping_rounds= int(space['early_stopping_rounds']),
-    dtrain=dfit,
-    evals=evals,
-    custom_metric=custom_metric,
-    obj=custom_objective,
-    verbose_eval=False  # Set to True if you want to see detailed logging
-        )
-
-    summary = {'model': model, 'train_features': train_X, 'hyperparameters': space, 'all_rows': original_df}
-
-    pickle.dump(summary, open(model_path, 'wb'))
-
-    xgb.plot_importance(model, importance_type='gain',
-                    max_num_features=20, show_values=False)
-    plt.show()
+    
+        #train with all data
+        best_cv_trial =  sorted_losses[best_best_ind]
+        print(losses[best_cv_trial])
+    
+        hyperparams = trials.trials[best_cv_trial]['misc']['vals']
+        print(hyperparams)
+    
+        space = {}
+        for field, val in hyperparams.items():
+            space[field] = val[0]
+    
+        pars = {
+            'max_depth': int(space['max_depth']),
+            'min_split_loss': space['min_split_loss'],
+            'reg_lambda': space['reg_lambda'],
+            'reg_alpha': space['reg_alpha'],
+            'min_child_weight': int(space['min_child_weight']),
+            'learning_rate': space['learning_rate'],
+            'subsample': space['subsample'],
+            'colsample_bytree': space['colsample_bytree'],
+            'colsample_bylevel': space['colsample_bylevel'],
+            'colsample_bynode': space['colsample_bynode'],
+            'max_delta_step': space['max_delta_step'],
+            'grow_policy': grow_policy[space['grow_policy']],
+            'max_leaves': int(space['max_leaves']),
+            'tree_method': 'hist',
+            'max_bin':  int(space['max_bin']),
+            'disable_default_eval_metric': 1
+            }
+    
+        #remove weaks that we don't need.
+        # Define the threshold
+        threshold = int(space['temporal_window'])
+    
+        # Filter the columns based on the defined function
+        columns_to_keep = [col for col in train_X.columns if should_keep_column(col, threshold)]
+        objective_X = train_X[columns_to_keep]
+    
+        fit_X, eval_X, fit_y, eval_y, fit_sample_weights, eval_sample_weights = train_test_split(objective_X, train_y, sample_weights, test_size=space['eval_fraction'], stratify=stratify, random_state=42)
+    
+        dfit = xgb.DMatrix(data=fit_X, label=fit_y, enable_categorical=True, weight=fit_sample_weights)
+        deval = xgb.DMatrix(data=eval_X, label=eval_y, enable_categorical=True, weight=eval_sample_weights)
+    
+        evals = [(dfit, 'train'), (deval, 'eval')]
+    
+        model = xgb.train(
+        params=pars,
+        num_boost_round=int(space['n_estimators']),
+        early_stopping_rounds= int(space['early_stopping_rounds']),
+        dtrain=dfit,
+        evals=evals,
+        custom_metric=custom_metric,
+        obj=custom_objective,
+        verbose_eval=False  # Set to True if you want to see detailed logging
+            )
+    
+        summary = {'model': model, 'train_features': train_X, 'hyperparameters': space, 'all_rows': original_df}
+    
+        pickle.dump(summary, open(model_path, 'wb'))
+    
+        xgb.plot_importance(model, importance_type='gain',
+                        max_num_features=20, show_values=False)
+        plt.show()
