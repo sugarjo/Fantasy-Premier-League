@@ -691,7 +691,7 @@ for j in range(player_iteration):
         for player_out in slim_elements_df.iterrows():
             #check if picked
             if player_out[1]['picked']:
-                
+
                 if player_out[1]['web_name'] in do_not_transfer_out:
                     continue
 
