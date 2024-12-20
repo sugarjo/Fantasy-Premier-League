@@ -4,23 +4,29 @@ points_per_game_treshold = -1
 
 exclude_team = []
 
-exclude_players = ['Ings', 'Welbeck', 'Antonio', 'Gomez', 'Bentancur', 'Trossard', 'Martinelli', 'Sávio', 'Adama', 'Muniz', 'Lavia', 'A.Fatawu', 'Travers', 'Archer', 'Zinchenko', 'Ricardo', 'Bradley', 'Szmodics', 'Simpson-Pusey', 'Summerville', 'Luis Díaz', 'Kiwior', 'Richarlison', 'Tsimikas', 'Kelleher', 'Awoniyi']
+exclude_players = ['Jørgensen', 'Matheus N.', 'Nkunku', 'Aké', 'Quansah', 'Disasi', 'Madueke', 'Tosin', 'Barnes', 'Ings', 'Welbeck', 'Antonio', 'Trossard', 'Martinelli', 'Sávio', 'Adama', 'Muniz', 'Lavia', 'A.Fatawu', 'Travers', 'Archer', 'Zinchenko', 'Ricardo', 'Bradley', 'Szmodics', 'Simpson-Pusey', 'Summerville', 'Luis Díaz', 'Richarlison', 'Tsimikas', 'Kelleher', 'Awoniyi']
 
 include_players = []
 
 do_not_exclude_players = []
 
-do_not_transfer_out = ['Palmer', 'Saka']
+do_not_transfer_out = []
 
-rounds_to_value = 4
+rounds_to_value = 2
 trans_per_week = 4
 save_a_transfer_for_later = False
 
 wildcard = False
 
-skip_gw = []
-benchboost_gw = 38
+skip_gw = [34]
+benchboost_gw = 36
+tripple_captain_gw = 24
 jump_rounds = 0
+
+
+assistant_manager_gw = 31
+assistant_manager_team = 'LIV'
+assistant_manager_price = 0
 
 force_90 = []
 
@@ -30,7 +36,7 @@ manual_pred = 1
 #                  }
 manual_blanks = {}
 
-string = '{"picks":[{"element":15,"position":1,"selling_price":55,"multiplier":1,"purchase_price":56,"is_captain":false,"is_vice_captain":false},{"element":335,"position":2,"selling_price":59,"multiplier":1,"purchase_price":60,"is_captain":false,"is_vice_captain":false},{"element":350,"position":3,"selling_price":60,"multiplier":1,"purchase_price":59,"is_captain":false,"is_vice_captain":false},{"element":355,"position":4,"selling_price":47,"multiplier":1,"purchase_price":47,"is_captain":false,"is_vice_captain":false},{"element":136,"position":5,"selling_price":64,"multiplier":1,"purchase_price":64,"is_captain":false,"is_vice_captain":false},{"element":328,"position":6,"selling_price":129,"multiplier":2,"purchase_price":127,"is_captain":true,"is_vice_captain":false},{"element":618,"position":7,"selling_price":56,"multiplier":1,"purchase_price":56,"is_captain":false,"is_vice_captain":false},{"element":17,"position":8,"selling_price":103,"multiplier":1,"purchase_price":103,"is_captain":false,"is_vice_captain":true},{"element":306,"position":9,"selling_price":55,"multiplier":1,"purchase_price":57,"is_captain":false,"is_vice_captain":false},{"element":268,"position":10,"selling_price":56,"multiplier":1,"purchase_price":56,"is_captain":false,"is_vice_captain":false},{"element":129,"position":11,"selling_price":58,"multiplier":1,"purchase_price":58,"is_captain":false,"is_vice_captain":false},{"element":445,"position":12,"selling_price":40,"multiplier":0,"purchase_price":40,"is_captain":false,"is_vice_captain":false},{"element":182,"position":13,"selling_price":109,"multiplier":0,"purchase_price":108,"is_captain":false,"is_vice_captain":false},{"element":495,"position":14,"selling_price":55,"multiplier":0,"purchase_price":55,"is_captain":false,"is_vice_captain":false},{"element":573,"position":15,"selling_price":45,"multiplier":0,"purchase_price":45,"is_captain":false,"is_vice_captain":false}],"picks_last_updated":"2024-12-04T22:16:18.999165Z","chips":[{"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"status_for_entry":"available","played_by_entry":[],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"status_for_entry":"available","played_by_entry":[],"name":"wildcard","number":1,"start_event":2,"stop_event":19,"chip_type":"transfer","is_pending":false},{"status_for_entry":"available","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer","is_pending":false}],"transfers":{"cost":4,"status":"cost","limit":1,"made":0,"bank":2,"value":1000}}'
+string = '{"picks":[{"element":15,"position":1,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":1,"selling_price":56,"purchase_price":56},{"element":355,"position":2,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":46,"purchase_price":47},{"element":350,"position":3,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":60,"purchase_price":59},{"element":573,"position":4,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":45,"purchase_price":45},{"element":328,"position":5,"multiplier":1,"is_captain":false,"is_vice_captain":true,"element_type":3,"selling_price":130,"purchase_price":127},{"element":168,"position":6,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":50,"purchase_price":50},{"element":17,"position":7,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":104,"purchase_price":103},{"element":182,"position":8,"multiplier":2,"is_captain":true,"is_vice_captain":false,"element_type":3,"selling_price":109,"purchase_price":108},{"element":180,"position":9,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":4,"selling_price":82,"purchase_price":82},{"element":306,"position":10,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":4,"selling_price":56,"purchase_price":57},{"element":129,"position":11,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":4,"selling_price":58,"purchase_price":58},{"element":445,"position":12,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":1,"selling_price":40,"purchase_price":40},{"element":618,"position":13,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":55,"purchase_price":56},{"element":36,"position":14,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":47,"purchase_price":47},{"element":495,"position":15,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":55,"purchase_price":55}],"picks_last_updated":"2024-12-14T14:31:25.769693Z","chips":[{"id":4,"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"id":5,"status_for_entry":"available","played_by_entry":[],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"id":1,"status_for_entry":"available","played_by_entry":[],"name":"wildcard","number":1,"start_event":2,"stop_event":19,"chip_type":"transfer","is_pending":false},{"id":3,"status_for_entry":"available","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer","is_pending":false}],"transfers":{"cost":4,"status":"cost","limit":1,"made":0,"bank":3,"value":1006}}'
 
 
 season = '2024-25'
@@ -76,6 +82,10 @@ except:
 
 
 string_names = df_teams['short_name'].values
+
+
+am_num_team = np.where(string_names == assistant_manager_team)[0][0]
+
 #log in
 session = requests.session()
 url = 'https://users.premierleague.com/accounts/login/'
@@ -136,6 +146,8 @@ slim_elements_df = elements_df[['transfers_in_event', 'transfers_out_event', 'ye
 slim_elements_df["string_team"] = string_names[slim_elements_df["team"]-1]
 slim_elements_df = slim_elements_df.reset_index()
 
+
+
 #find out which gameweek
 events_df = pd.DataFrame(js['events'])
 
@@ -169,6 +181,8 @@ print('predicting:')
 #get statistics for the x next gameweeks
 df_future_games = pd.DataFrame(columns=['gameweek', 'team_h', 'team_a', 'difficulty_diff'])
 benchboost = []
+tripple_captain = []
+assistant_manager = []
 for i in range(jump_rounds, rounds_to_value+jump_rounds):
     this_gw = i + current_gameweek
 
@@ -176,6 +190,16 @@ for i in range(jump_rounds, rounds_to_value+jump_rounds):
         benchboost.append(True)
     else:
         benchboost.append(False)
+        
+    if tripple_captain_gw == this_gw:
+        tripple_captain.append(True)
+    else:
+        tripple_captain.append(False)
+        
+    if assistant_manager_gw <= this_gw+2 and assistant_manager >= this_gw:
+        assistant_manager.append(True)
+    else:
+        assistant_manager.append(False)
 
     if any(np.array(skip_gw) == this_gw):
         continue
@@ -612,11 +636,17 @@ value = slim_elements_df['prediction'].apply(sum) / now_cost
 slim_elements_df['value'] = value
 
 #find points for each match or a series of matches (depends on len of prediction)
-def find_team_points(team_positions, gw_prediction, benchboost):
-
+def find_team_points(team_positions, gw_prediction, benchboost, tc):
+    
+    if tc:
+        captain_return = 3
+    else:
+        captain_return = 2
+    
     if benchboost:
         captain_ind = np.argmax(gw_prediction)
-
+        
+        #cannot play benchboost and tripple catpain in same round
         gw_prediction[captain_ind] = gw_prediction[captain_ind]*2
 
         return sum(gw_prediction)
@@ -657,7 +687,7 @@ def find_team_points(team_positions, gw_prediction, benchboost):
 
         captain_ind = np.argmax(pred_points)
 
-        pred_points[captain_ind] = pred_points[captain_ind]*2
+        pred_points[captain_ind] = pred_points[captain_ind]*captain_return
 
         return sum(pred_points)
 
@@ -788,6 +818,16 @@ def objective(check_transfers, free_transfers):
 
     #loop through the transfers and check if they are possible
     for gw in range(gw_iteration):
+        
+        num_team = np.zeros((20))
+        if assistant_manager[gw]:
+            am_price = assistant_manager_price
+            #do not add 1 since it is indexed earlier.
+            num_team[am_num_team] = 1
+            
+        else:
+            am_price = 0           
+        
         if not unlimited_transfers:
 
             k=0
@@ -820,11 +860,11 @@ def objective(check_transfers, free_transfers):
             max_price = total_price
 
         #count_clubs
-        num_team = np.zeros((20))
+
         for team_ind in slim_elements_df.loc[team, 'team']:
             num_team[team_ind-1] += 1
 
-        if total_money < total_price or np.max(num_team) > 3 or sum(team) != 15:
+        if (total_money-am_price) < total_price or np.max(num_team) > 3 or sum(team) != 15:
             # if total_money < total_price:
             #     print('money')
             # if np.max(num_team) > 3:
@@ -873,7 +913,7 @@ def objective(check_transfers, free_transfers):
                 gw_prediction = predictions[team, gw]
                 team_positions = slim_elements_df.loc[team, 'element_type'].values
 
-                estimated_points = find_team_points(team_positions, gw_prediction, benchboost[gw])
+                estimated_points = find_team_points(team_positions, gw_prediction, benchboost[gw], tripple_captain[gw])
 
                 all_points.append(np.sum(gw_prediction))
 
@@ -890,7 +930,7 @@ def objective(check_transfers, free_transfers):
                 gw_prediction = predictions[team, gws]
                 team_positions = slim_elements_df.loc[team, 'element_type'].values
 
-                estimated_points = find_team_points(team_positions, gw_prediction, benchboost[gws])
+                estimated_points = find_team_points(team_positions, gw_prediction, benchboost[gws], tripple_captain[gws])
 
                 team_points.append(estimated_points)
 
@@ -905,40 +945,40 @@ def objective(check_transfers, free_transfers):
 
 
 def check_random_transfers(i):
-    print('Go for it!', i)
+    
     rng = np.random.default_rng(seed=i)
 
-    evaluated_transfers = []
-    points = []
-    prices = []
+    random_evaluated_transfers = []
+    random_points = []
+    random_prices = []
 
-    all_points = []
+    random_all_points = []
 
-    counts = np.zeros((len(point_diff), len(probabilities[0])), dtype='uint32')
-    sum_points = np.zeros((len(point_diff), len(probabilities[0])))
+    random_counts = np.zeros((len(point_diff), len(probabilities[0])), dtype='uint32')
+    random_sum_points = np.zeros((len(point_diff), len(probabilities[0])))
 
     for j in range(batch_size):
 
         #loop to get a transfer combination
-        transfer_ind = []
-        putative_transfers = []
+        random_transfer_ind = []
+        random_putative_transfers = []
         #add one and one transfer
         for i in range(len(point_diff)):
-            trans_ind = rng.choice(np.arange(prob.shape[0]), 1, p=prob[:, i])[0]
-            trans = transfers[trans_ind]
+            random_trans_ind = rng.choice(np.arange(prob.shape[0]), 1, p=prob[:, i])[0]
+            random_trans = transfers[random_trans_ind]
 
             #redo to nan if player is allready transfered in/out
-            if (not trans[0] == np.nan) and (i > 0):
+            if (not random_trans[0] == np.nan) and (i > 0):
                 #loop thropugh the already recorded transfers
-                for t in putative_transfers:
-                    if t[0] == trans[0] or t[1] == trans[1]:
+                for t in random_putative_transfers:
+                    if t[0] == random_trans[0] or t[1] == random_trans[1]:
                         #skip every third transfer
-                        trans_ind = prob.shape[0]-1
+                        random_trans_ind = prob.shape[0]-1
                         break
 
-            transfer_ind.append(trans_ind)
-            trans = transfers[trans_ind]
-            putative_transfers.append(trans)
+            random_transfer_ind.append(random_trans_ind)
+            random_trans = transfers[random_trans_ind]
+            random_putative_transfers.append(random_trans)
 
         # putative_transfers = []
         # for i in [973, 983, 983]:
@@ -946,35 +986,35 @@ def check_random_transfers(i):
         #     putative_transfers.append(trans)
 
 
-        point, price, all_point = objective(putative_transfers, free_transfers)
+        random_point, random_price, random_all_point = objective(random_putative_transfers, free_transfers)
 
-        points.append(point)
-        prices.append(price)
-        all_points.append(all_point)
-        evaluated_transfers.append(transfer_ind)
+        random_points.append(random_point)
+        random_prices.append(random_price)
+        random_all_points.append(random_all_point)
+        random_evaluated_transfers.append(random_transfer_ind)
 
 
-        for week, transfer in enumerate(transfer_ind):
-            if not np.isnan(point):
-                sum_points[week, transfer] = sum_points[week, transfer] + (point-baseline)
-                counts[week, transfer] += 1
+        for week, transfer in enumerate(random_transfer_ind):
+            if not np.isnan(random_point):
+                random_sum_points[week, transfer] = random_sum_points[week, transfer] + (random_point-baseline)
+                random_counts[week, transfer] += 1
             #punish also nan teams
             else:
-                counts[week, transfer] += 1
+                random_counts[week, transfer] += 1
 
 
 
-    if not np.isnan(points).all():
-        max_value = np.nanmax(points)
+    if not np.isnan(random_points).all():
+        random_max_value = np.nanmax(random_points)
 
-        indices_with_max_value = [i for i, value in enumerate(points) if value == max_value]
-        min_value_other_list = min(prices[i] for i in indices_with_max_value)
-        best_ind = next(i for i in indices_with_max_value if prices[i] == min_value_other_list)
+        random_indices_with_max_value = [i for i, value in enumerate(random_points) if value == random_max_value]
+        random_min_value_other_list = min(random_prices[i] for i in random_indices_with_max_value)
+        random_best_ind = next(i for i in random_indices_with_max_value if random_prices[i] == random_min_value_other_list)
 
-        best_point = points[best_ind]
-        best_price = prices[best_ind]
-        best_all_point = all_points[best_ind]
-        best_transfer = evaluated_transfers[best_ind]
+        random_best_point = random_points[random_best_ind]
+        random_best_price = random_prices[random_best_ind]
+        random_best_all_point = random_all_points[random_best_ind]
+        random_best_transfer = random_evaluated_transfers[random_best_ind]
 
         #print(best_point, best_price)
 
@@ -989,101 +1029,99 @@ def check_random_transfers(i):
            #print('New')
             #guided part. exhange one transfer
             for k in random_order:
+                
+                guided_points, guided_prices, guided_all_points, guided_evaluated_transfers, guided_sum_points, guided_counts = check_guided_transfers(k, random_best_transfer, random_best_point)
 
-                guided_points, guided_prices, guided_all_points, guided_evaluated_transfers, guided_sum_points, guided_counts = check_guided_transfers(k, best_transfer, best_point)
-
-                points = points + guided_points
-                prices = prices + guided_prices
-                all_points = all_points + guided_all_points
-                evaluated_transfers = evaluated_transfers + guided_evaluated_transfers
-                sum_points += guided_sum_points
-                counts += guided_counts
+                random_points = random_points + guided_points
+                random_prices = random_prices + guided_prices
+                random_all_points = random_all_points + guided_all_points
+                random_evaluated_transfers = random_evaluated_transfers + guided_evaluated_transfers
+                random_sum_points += guided_sum_points
+                random_counts += guided_counts
 
                 #max points
-                max_value = np.nanmax(points)
-
+                guided_max_value = np.nanmax(random_points)
                 #lowest price
-                indices_with_max_value = [i for i, value in enumerate(points) if value == max_value]
-                min_value_other_list = min(prices[i] for i in indices_with_max_value)
-                best_ind = next(i for i in indices_with_max_value if prices[i] == min_value_other_list)
+                guided_indices_with_max_value = [i for i, value in enumerate(random_points) if value == guided_max_value]
+                guided_min_value_other_list = min(random_prices[i] for i in guided_indices_with_max_value)
+                guided_best_ind = next(i for i in guided_indices_with_max_value if random_prices[i] == guided_min_value_other_list)
 
-                guided_best_price = prices[best_ind]
+                guided_best_price = random_prices[guided_best_ind]
 
                 #highest total points
                 guided_best_point = 0
-                for i in range(len(all_points)):
-                    if points[i] == max_value and prices[i] == guided_best_price and all_points[i] > guided_best_point:
-                        guided_best_point = all_points[i]
-                        best_ind = i
+                for i in range(len(random_all_points)):
+                    if random_points[i] == guided_max_value and random_prices[i] == guided_best_price and random_all_points[i] > guided_best_point:
+                        guided_best_point = random_all_points[i]
+                        guided_best_ind = i
 
                 #print(k)
-                if max_value > best_point or (max_value == best_point and guided_best_price < best_price) or (max_value == best_point and guided_best_price == best_price and  guided_best_point > best_all_point):
-
+                if guided_max_value > random_best_point or (guided_max_value == random_best_point and guided_best_price < random_best_price) or (guided_max_value == random_best_point and guided_best_price == random_best_price and  guided_best_point > random_best_all_point):
+                    
                     check_guided = True
-                    best_point = points[best_ind]
-                    best_price = guided_best_price
-                    best_all_point = guided_best_point
-                    best_transfer = evaluated_transfers[best_ind]
-
+                    random_best_point = random_points[guided_best_ind].copy()
+                    random_best_price = guided_best_price
+                    random_best_all_point = guided_best_point.copy()
+                    random_best_transfer = random_evaluated_transfers[guided_best_ind].copy()
 
                     #print(best_point, best_price, best_all_point)
+                    
+    
+    return [random_points, random_prices, random_all_points, random_evaluated_transfers, random_sum_points, random_counts]
 
-    return [points, prices, all_points, evaluated_transfers, sum_points, counts]
+def check_guided_transfers(i, random_best_transfer, random_reference_point):
 
-def check_guided_transfers(i, best_transfer, reference_point):
+    guided_evaluated_transfers = []
+    guided_points = []
+    guided_prices = []
+    guided_all_points = []
 
-    evaluated_transfers = []
-    points = []
-    prices = []
-    all_points = []
-
-    counts = np.zeros((len(point_diff), len(probabilities[0])), dtype='uint32')
-    sum_points = np.zeros((len(point_diff), len(probabilities[0])))
+    guided_counts = np.zeros((len(point_diff), len(probabilities[0])), dtype='uint32')
+    guided_sum_points = np.zeros((len(point_diff), len(probabilities[0])))
 
     #loop to get the transfer combination
-    transfer_ind = []
-    putative_transfers = []
-    for j in best_transfer:
-        transfer_ind.append(j)
-        putative_transfers.append(transfers[j])
+    guided_transfer_ind = []
+    guided_putative_transfers = []
+    for j in random_best_transfer:
+        guided_transfer_ind.append(j)
+        guided_putative_transfers.append(transfers[j])
 
     random_ordered_transfers = list(range(len(transfers)))
     random.shuffle(random_ordered_transfers)
 
-    original_transfer = np.array(putative_transfers).copy()
+    # guided_original_transfer = np.array(guided_putative_transfers).copy()
 
-    original_team_ind = np.where(slim_elements_df['picked'].values)
+    # guided_original_team_ind = np.where(slim_elements_df['picked'].values)
 
     #exhange one of the transfers
     for j in random_ordered_transfers:
         if prob[j, i] > 0:
 
-            transfer_ind[i] = j
-            incomming_transfer = transfers[transfer_ind[i]]
+            guided_transfer_ind[i] = j
+            incomming_transfer = transfers[guided_transfer_ind[i]]
 
-            putative_transfers[i] = incomming_transfer
-
-            #team = slim_elements_df['picked'].values.copy().values.copy()
+            guided_putative_transfers[i] = incomming_transfer                   
 
 
             #chack that only one of the incoming/outgoing players are in the team
-            if incomming_transfer == [np.nan, np.nan] or (sum(incomming_transfer[1] ==  np.array(putative_transfers)[:, 1]) == 1 and  sum(incomming_transfer[0] ==  np.array(putative_transfers)[:, 0]) == 1):
+            if j == len(transfers)-1 or (sum(incomming_transfer[1] ==  np.array(guided_putative_transfers)[:, 1]) == 1 and  sum(incomming_transfer[0] ==  np.array(guided_putative_transfers)[:, 0]) == 1):
                 #check
-                point, price, all_point = objective(putative_transfers, free_transfers)
-                points.append(point)
-                prices.append(price)
-                all_points.append(all_point)
-                evaluated_transfers.append(transfer_ind.copy())
+                guided_point, guided_price, guided_all_point = objective(guided_putative_transfers, free_transfers)
+                guided_points.append(guided_point)
+                guided_prices.append(guided_price)
+                guided_all_points.append(guided_all_point)
+                guided_evaluated_transfers.append(guided_transfer_ind.copy())
 
-                if not np.isnan(point):
-                    sum_points[i, transfer_ind[i]] += (point-reference_point)
-                    counts[i, transfer_ind[i]] += 1
+                if not np.isnan(guided_point):
+                    guided_sum_points[i, guided_transfer_ind[i]] += (guided_point-random_reference_point)
+                    guided_counts[i, guided_transfer_ind[i]] += 1
 
                 #punish also nan teams
                 else:
-                    counts[i, transfer_ind[i]] += 1
+                    guided_counts[i, guided_transfer_ind[i]] += 1
+                    
 
-    return points, prices, all_points, evaluated_transfers, sum_points, counts
+    return guided_points, guided_prices, guided_all_points, guided_evaluated_transfers, guided_sum_points, guided_counts
 
 
 
@@ -1096,7 +1134,10 @@ for i in range(len(point_diff)):
 
 baseline, _, _ = objective(no_transfers, free_transfers)
 
-batch_size = 100000
+if rounds_to_value == 1:
+    batch_size = 1
+else:
+    batch_size = 100000
 
 best_points = 0
 

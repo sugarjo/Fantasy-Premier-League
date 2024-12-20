@@ -35,11 +35,11 @@ except:
     main_directory = r'C:\Users\jorgels\Git\Fantasy-Premier-League'
 
 
-optimize = False
-continue_optimize = False
+optimize = True
+continue_optimize = True
 
 #add 2. one because threshold is bounded upwards. and one because last week is only partly encoded (dynamic features)
-temporal_window = 22
+temporal_window = 1
 
 season_start = False
 
@@ -1089,29 +1089,58 @@ elif method == 'xgboost':
 
     grow_policy = ['depthwise', 'lossguide']
 
-    space={'max_depth': hp.quniform("max_depth", 1, 200, 1), #try to decrease from 45 to 10?
+    space={'max_depth': hp.quniform("max_depth", 1, 300, 1), #try to decrease from 45 to 10?
             'min_split_loss': hp.uniform('min_split_loss', 0, 40),
-            'reg_lambda' : hp.uniform('reg_lambda', 0, 75),
-            'reg_alpha': hp.loguniform('reg_alpha', -2, np.log(100)),
-            'min_child_weight' : hp.uniform('min_child_weight', 0, 350),
+            'reg_lambda' : hp.uniform('reg_lambda', 0, 90),
+            'reg_alpha': hp.uniform('reg_alpha', 0.01, 100),
+            'min_child_weight' : hp.uniform('min_child_weight', 0, 375),
             'learning_rate': hp.uniform('learning_rate', 0, 0.05),
             'subsample': hp.uniform('subsample', 0.1, 1),
             'colsample_bytree': hp.uniform('colsample_bytree', 0.1, 1),
             'colsample_bylevel': hp.uniform('colsample_bylevel', 0.1, 1),
             'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
-            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 300, 800, 1),
+            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 150, 800, 1),
             'eval_fraction': hp.uniform('eval_fraction', 0.001, 0.2),
-            'n_estimators': hp.qloguniform('n_estimators', np.log(2), np.log(4500), 1),
-            'max_delta_step': hp.uniform('max_delta_step', 0, 40),
+            'n_estimators': hp.quniform('n_estimators', 2, 6000, 1),
+            'max_delta_step': hp.uniform('max_delta_step', 0, 75),
             'grow_policy': hp.choice('grow_policy', grow_policy), #111
             'max_leaves': hp.quniform('max_leaves', 0, 1750, 1),
-            'max_bin':  hp.quniform('max_bin', 2, 45, 1),
+            'max_bin':  hp.quniform('max_bin', 2, 50, 1),
             'temporal_window': hp.quniform('temporal_window', 0, temporal_window+1, 1),
         }
 
     #get an validation set for fitting
     cv_X, val_X, cv_y, val_y, cv_sample_weights, val_sample_weights, cv_stratify, _= train_test_split(train_X, train_y, sample_weights, stratify, test_size=0.20, stratify=stratify, random_state=42)    
     
+    mean_cv = np.mean(cv_y)
+    train_error = np.mean(np.abs((cv_y - mean_cv)**2))
+    validation_error = np.mean(np.abs((val_y - mean_cv)**2))
+    
+    print('Train random error: ', train_error)
+    print('Validation random error: ', validation_error)   
+    
+    hyperparam_path = main_directory + '\models\hyperparams.pkl'
+    with open(hyperparam_path, 'rb') as f:
+        old_trials = pickle.load(f)
+
+    hyperparams = old_trials.best_trial['misc']['vals']
+    #reformat the lists
+    old_hyperparams = {}
+    for field, val in hyperparams.items():
+        old_hyperparams[field] = val[0]
+        
+    old_trials = generate_trials_to_calculate([old_hyperparams])
+
+    old_hyperparams = fmin(fn = objective_xgboost,
+                    space = space,
+                    algo = tpe.suggest,
+                    max_evals = 1,
+                    trials = old_trials)    
+        
+    old_loss = old_trials.best_trial["result"]["loss"]
+    
+    print('Old loss: ', old_loss)
+        
     #optimize and iteratively get hyperparamaters
     batch_size = 100
     if optimize:
@@ -1191,8 +1220,11 @@ elif method == 'xgboost':
             hyperparam_path = main_directory + '\models\hyperparams.pkl'
             pickle.dump(new_trials, open(hyperparam_path, "wb"))
             trials = new_trials
+            
+            print(new_hyperparams)
         else:
             trials = old_trials
+            print(old_hyperparams)
         
         losses = []
         for i in range(len(trials.trials)):
