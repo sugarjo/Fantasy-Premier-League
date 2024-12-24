@@ -39,7 +39,7 @@ optimize = True
 continue_optimize = True
 
 #add 2. one because threshold is bounded upwards. and one because last week is only partly encoded (dynamic features)
-temporal_window = 1
+temporal_window = 23
 
 season_start = False
 
@@ -556,15 +556,35 @@ def custom_metric(pred_y, dtrain):
 
     return 'MSE60', mse
 
-def custom_objective(pred_y, dtrain):
 
+
+def custom_objective(pred_y, dtrain):
+    #https://stackoverflow.com/questions/59683944/creating-a-custom-objective-function-in-for-xgboost-xgbregressor
+    
     # Targets
     y = dtrain.get_label()
 
     errors = pred_y - y
+    #grad = 0.5 * errors
     grad = 2 * errors
     hess = np.zeros_like(pred_y) + 2
+    #hess = np.ones_like(pred_y)
 
+    return grad, hess
+
+
+def quantile_objective(pred_y, dtrain):
+
+    y = dtrain.get_label()
+
+    q = 0.4
+    
+    errors = pred_y - y
+    
+    #multiply by two to make it comparable to the custom objective (gradients are ~half of those)
+    grad = 4 * (np.where(errors > 0, (1-q) * errors, q * errors))
+    hess = np.zeros_like(pred_y) + 2
+    
     return grad, hess
 
 
@@ -638,6 +658,65 @@ def objective_xgboost(space):
     val_error = mean_squared_error(val_y, val_pred)
 
     return {'loss': val_error, 'status': STATUS_OK }
+
+#optimize hyperparameters
+def val_xgboost(space):
+
+    pars = {
+        'max_depth': int(space['max_depth']),
+        'min_split_loss': space['min_split_loss'],
+        'reg_lambda': space['reg_lambda'],
+        'reg_alpha': space['reg_alpha'],
+        'min_child_weight': int(space['min_child_weight']),
+        'learning_rate': space['learning_rate'],
+        'subsample': space['subsample'],
+        'colsample_bytree': space['colsample_bytree'],
+        'colsample_bylevel': space['colsample_bylevel'],
+        'colsample_bynode': space['colsample_bynode'],
+        'max_delta_step': space['max_delta_step'],
+        'grow_policy': space['grow_policy'],
+        'max_leaves': int(space['max_leaves']),
+        'tree_method': 'hist',
+        'max_bin':  int(space['max_bin']),
+        'disable_default_eval_metric': 1
+        }
+
+    #remove weaks that we don't need.
+    # Define the threshold
+    threshold = int(space['temporal_window'])
+
+    # Filter the columns based on the defined function
+    columns_to_keep = [col for col in cv_X.columns if should_keep_column(col, threshold)]
+    objective_X = cv_X[columns_to_keep]   
+    
+    # interaction_constraints = get_interaction_constraints(objective_X.columns)
+    # pars['interaction_constraints'] = str(interaction_constraints)
+
+    fit_X, eval_X, fit_y, eval_y, fit_sample_weights, eval_sample_weights = train_test_split(objective_X, cv_y, cv_sample_weights, test_size=space['eval_fraction'], stratify=cv_stratify, random_state=42)
+
+    dfit = xgb.DMatrix(data=fit_X, label=fit_y, enable_categorical=True, weight=fit_sample_weights)
+    deval = xgb.DMatrix(data=eval_X, label=eval_y, enable_categorical=True, weight=eval_sample_weights)
+
+    evals = [(dfit, 'train'), (deval, 'eval')]
+
+    model = xgb.train(
+    params=pars,
+    num_boost_round=int(space['n_estimators']),
+    early_stopping_rounds= int(space['early_stopping_rounds']),
+    dtrain=dfit,
+    evals=evals,
+    custom_metric=custom_metric,
+    obj=custom_objective,
+    verbose_eval=False  # Set to True if you want to see detailed logging
+        )
+
+    objective_val_X = val_X[columns_to_keep]
+    dval_objective = xgb.DMatrix(data= objective_val_X, label=val_y, enable_categorical=True, weight=val_sample_weights)
+
+    val_pred = model.predict(dval_objective)
+    val_error = mean_squared_error(val_y, val_pred)
+
+    return val_error
 
 def get_interaction_constraints(features):
     #set up interaction_constraints
@@ -1099,12 +1178,12 @@ elif method == 'xgboost':
             'colsample_bytree': hp.uniform('colsample_bytree', 0.1, 1),
             'colsample_bylevel': hp.uniform('colsample_bylevel', 0.1, 1),
             'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
-            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 150, 800, 1),
+            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 100, 800, 1),
             'eval_fraction': hp.uniform('eval_fraction', 0.001, 0.2),
-            'n_estimators': hp.quniform('n_estimators', 2, 6000, 1),
-            'max_delta_step': hp.uniform('max_delta_step', 0, 75),
+            'n_estimators': hp.quniform('n_estimators', 2, 7000, 1),
+            'max_delta_step': hp.uniform('max_delta_step', 0, 90),
             'grow_policy': hp.choice('grow_policy', grow_policy), #111
-            'max_leaves': hp.quniform('max_leaves', 0, 1750, 1),
+            'max_leaves': hp.quniform('max_leaves', 0, 2000, 1),
             'max_bin':  hp.quniform('max_bin', 2, 50, 1),
             'temporal_window': hp.quniform('temporal_window', 0, temporal_window+1, 1),
         }
@@ -1129,15 +1208,19 @@ elif method == 'xgboost':
     for field, val in hyperparams.items():
         old_hyperparams[field] = val[0]
         
-    old_trials = generate_trials_to_calculate([old_hyperparams])
+    # old_trials = generate_trials_to_calculate([old_hyperparams])
 
-    old_hyperparams = fmin(fn = objective_xgboost,
-                    space = space,
-                    algo = tpe.suggest,
-                    max_evals = 1,
-                    trials = old_trials)    
+    # old_hyperparams = fmin(fn = objective_xgboost,
+    #                 space = space,
+    #                 algo = tpe.suggest,
+    #                 max_evals = 1,
+    #                 trials = old_trials)    
         
-    old_loss = old_trials.best_trial["result"]["loss"]
+    # old_loss = old_trials.best_trial["result"]["loss"]
+    
+    old_hyperparams["grow_policy"] = grow_policy[old_hyperparams["grow_policy"]]
+    
+    old_loss = val_xgboost(old_hyperparams)
     
     print('Old loss: ', old_loss)
         
@@ -1172,25 +1255,7 @@ elif method == 'xgboost':
             pickle.dump(trials, open(hyperparam_path, "wb"))
             
     else:      
-        hyperparam_path = main_directory + '\models\hyperparams.pkl'
-        with open(hyperparam_path, 'rb') as f:
-            old_trials = pickle.load(f)
 
-        hyperparams = old_trials.best_trial['misc']['vals']
-        #reformat the lists
-        old_hyperparams = {}
-        for field, val in hyperparams.items():
-            old_hyperparams[field] = val[0]
-            
-        old_trials = generate_trials_to_calculate([old_hyperparams])
-
-        old_hyperparams = fmin(fn = objective_xgboost,
-                        space = space,
-                        algo = tpe.suggest,
-                        max_evals = 1,
-                        trials = old_trials)    
-            
-        old_loss = old_trials.best_trial["result"]["loss"]
         
         hyperparam_path = main_directory + '\models\hyperparams_temp.pkl'
         with open(hyperparam_path, 'rb') as f:
@@ -1202,17 +1267,20 @@ elif method == 'xgboost':
         for field, val in hyperparams.items():
             new_hyperparams[field] = val[0]
             
-        new_trials = generate_trials_to_calculate([new_hyperparams])
+        new_hyperparams["grow_policy"] = grow_policy[new_hyperparams["grow_policy"]]
+            
+        # new_trials = generate_trials_to_calculate([new_hyperparams])
 
-        new_hyperparams = fmin(fn = objective_xgboost,
-                        space = space,
-                        algo = tpe.suggest,
-                        max_evals = 1,
-                        trials = new_trials)    
+        # new_hyperparams = fmin(fn = objective_xgboost,
+        #                 space = space,
+        #                 algo = tpe.suggest,
+        #                 max_evals = 1,
+        #                 trials = new_trials)    
 
-        new_loss =  new_trials.best_trial["result"]["loss"]
+        # new_loss =  new_trials.best_trial["result"]["loss"]
         
-        print('Old loss: ', old_loss)
+        new_loss = val_xgboost(new_hyperparams)
+        
         print('New loss: ', new_loss)
         
         if new_loss < old_loss:
@@ -1292,7 +1360,7 @@ elif method == 'xgboost':
         dtrain=dfit,
         evals=evals,
         custom_metric=custom_metric,
-        obj=custom_objective,
+        obj=quantile_objective,
         verbose_eval=False  # Set to True if you want to see detailed logging
             )
     
@@ -1303,3 +1371,4 @@ elif method == 'xgboost':
         xgb.plot_importance(model, importance_type='gain',
                         max_num_features=20, show_values=False)
         plt.show()
+
