@@ -35,8 +35,8 @@ except:
     main_directory = r'C:\Users\jorgels\Git\Fantasy-Premier-League'
 
 
-optimize = True
-continue_optimize = True
+optimize = False
+continue_optimize = False
 
 #add 2. one because threshold is bounded upwards. and one because last week is only partly encoded (dynamic features)
 temporal_window = 23
@@ -1180,10 +1180,10 @@ elif method == 'xgboost':
             'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
             'early_stopping_rounds': hp.quniform("early_stopping_rounds", 100, 800, 1),
             'eval_fraction': hp.uniform('eval_fraction', 0.001, 0.2),
-            'n_estimators': hp.quniform('n_estimators', 2, 7000, 1),
-            'max_delta_step': hp.uniform('max_delta_step', 0, 90),
+            'n_estimators': hp.quniform('n_estimators', 2, 7250, 1),
+            'max_delta_step': hp.uniform('max_delta_step', 0, 175),
             'grow_policy': hp.choice('grow_policy', grow_policy), #111
-            'max_leaves': hp.quniform('max_leaves', 0, 2000, 1),
+            'max_leaves': hp.quniform('max_leaves', 0, 2500, 1),
             'max_bin':  hp.quniform('max_bin', 2, 50, 1),
             'temporal_window': hp.quniform('temporal_window', 0, temporal_window+1, 1),
         }
