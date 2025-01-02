@@ -1,11 +1,11 @@
-minutes_thisyear_treshold = 83
+minutes_thisyear_treshold = -1
 form_treshold = -1
 points_per_game_treshold = -1
 
 exclude_team = []
 
-exclude_players = ['Barnes', 'Maddison', 'Cash', 'Quansah', 'Dúbravka', 'Watkins', 'Stones', 'Disasi', 'Madueke']
-include_players = []
+exclude_players = ['Trossard', 'Areola', 'Fabianski', 'Nedeljkovic', 'Barkley', 'Walker', 'Trippier', 'Wilson', 'Doku', 'Aké', 'Lamptey', 'Barnes', 'Maddison', 'Cash', 'Quansah', 'Dúbravka', 'Watkins', 'Stones', 'Disasi', 'Madueke']
+include_players = [] #'Areola', 'Fabianski'
 
 do_not_exclude_players = []
 
@@ -15,11 +15,11 @@ rounds_to_value = 5
 trans_per_week = 4
 save_a_transfer_for_later = False
 
-wildcard = True
+wildcard = False
 
 skip_gw = [34]
 benchboost_gw = 36
-tripple_captain_gw = 24
+tripple_captain_gw = 25
 jump_rounds = 0
 
 
@@ -35,8 +35,7 @@ manual_pred = 1
 #                  }
 manual_blanks = {}
 
-string = '{"picks":[{"element":443,"position":1,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":1,"selling_price":47,"purchase_price":47},{"element":422,"position":2,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":50,"purchase_price":50},{"element":415,"position":3,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":54,"purchase_price":54},{"element":580,"position":4,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":43,"purchase_price":43},{"element":328,"position":5,"multiplier":2,"is_captain":true,"is_vice_captain":false,"element_type":3,"selling_price":131,"purchase_price":127},{"element":168,"position":6,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":50,"purchase_price":50},{"element":348,"position":7,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":91,"purchase_price":91},{"element":182,"position":8,"multiplier":1,"is_captain":false,"is_vice_captain":true,"element_type":3,"selling_price":110,"purchase_price":108},{"element":473,"position":9,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":4,"selling_price":44,"purchase_price":44},{"element":180,"position":10,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":4,"selling_price":82,"purchase_price":82},{"element":401,"position":11,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":4,"selling_price":90,"purchase_price":90},{"element":201,"position":12,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":1,"selling_price":44,"purchase_price":44},{"element":398,"position":13,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":72,"purchase_price":72},{"element":573,"position":14,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":46,"purchase_price":45},{"element":561,"position":15,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":39,"purchase_price":39}],"picks_last_updated":"2024-12-27T23:08:43.207943Z","chips":[{"id":4,"status_for_entry":"unavailable","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"id":5,"status_for_entry":"unavailable","played_by_entry":[],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"id":1,"status_for_entry":"active","played_by_entry":[19],"name":"wildcard","number":1,"start_event":2,"stop_event":19,"chip_type":"transfer","is_pending":false},{"id":3,"status_for_entry":"unavailable","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer","is_pending":false}],"transfers":{"cost":4,"status":"cost","limit":1,"made":0,"bank":4,"value":1009}}'
-
+string = '{"picks":[{"element":185,"position":1,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":1,"selling_price":48,"purchase_price":48},{"element":355,"position":2,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":46,"purchase_price":46},{"element":311,"position":3,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":71,"purchase_price":71},{"element":335,"position":4,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":59,"purchase_price":59},{"element":328,"position":5,"multiplier":2,"is_captain":true,"is_vice_captain":false,"element_type":3,"selling_price":131,"purchase_price":127},{"element":348,"position":6,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":92,"purchase_price":92},{"element":503,"position":7,"multiplier":1,"is_captain":false,"is_vice_captain":true,"element_type":3,"selling_price":98,"purchase_price":98},{"element":402,"position":8,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":50,"purchase_price":50},{"element":82,"position":9,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":4,"selling_price":75,"purchase_price":75},{"element":252,"position":10,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":4,"selling_price":55,"purchase_price":55},{"element":401,"position":11,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":4,"selling_price":91,"purchase_price":90},{"element":488,"position":12,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":1,"selling_price":43,"purchase_price":43},{"element":187,"position":13,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":42,"purchase_price":42},{"element":36,"position":14,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":46,"purchase_price":46},{"element":233,"position":15,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":49,"purchase_price":49}],"picks_last_updated":"2024-12-29T09:48:34.929586Z","chips":[{"id":2,"status_for_entry":"available","played_by_entry":[],"name":"wildcard","number":1,"start_event":20,"stop_event":38,"chip_type":"transfer","is_pending":false},{"id":3,"status_for_entry":"available","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer","is_pending":false},{"id":4,"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"id":5,"status_for_entry":"available","played_by_entry":[],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false}],"transfers":{"cost":4,"status":"cost","limit":1,"made":0,"bank":3,"value":1005}}'
 
 season = '2024-25'
 previous_season = '2023-24'
@@ -47,14 +46,8 @@ import pandas as pd
 import numpy as np
 import json
 import pickle
-import difflib
 from datetime import datetime, timedelta
 from joblib import Parallel, delayed
-import os
-from hyperopt.pyll import scope
-from hyperopt import STATUS_OK, STATUS_FAIL, space_eval, Trials, fmin, hp, tpe, rand, SparkTrials
-from hyperopt.early_stop import no_progress_loss
-from hyperopt.fmin import generate_trials_to_calculate
 import random
 import xgboost as xgb
 
@@ -345,7 +338,7 @@ for df_name in slim_elements_df.iterrows():
 
             if last_history[:4] == previous_season[:4]:
                 should_have_database = True
-
+                
         #check if player does not exist in df_gw database. use data from slim
         if sum(all_rows.names == name) == 0:
 
@@ -353,12 +346,14 @@ for df_name in slim_elements_df.iterrows():
 
             #at beginnig of season data contains season sums
             played_games = np.round((elements_df.iloc[selected_ind].total_points / (float(elements_df.iloc[selected_ind].points_per_game)+1e-6))) + 1e-6
-            print(name, ': estimate values. Does not exist in game database. Have no historical data')
-
+            #print(name, ': estimate values. Does not exist in game database. Have no historical data')
+            print(name, ': seto to zero. Does not exist in game database. Have no historical data')
+            is_estimated = True
             #just take some random data to make the script work
             predicting_df = all_rows.iloc[-38:]
 
         else:
+            is_estimated = False
             selected = all_rows.names == name
             predicting_df = all_rows.loc[selected]
 
@@ -525,11 +520,11 @@ for df_name in slim_elements_df.iterrows():
             
             #keep a budget keeper
             if df_name[0] == keep_ind:
-                if estimated < 0.1:
-                    estimated = 0.1
+                #if estimated < 0.1:
+                estimated = 0.1
                     
                 if game_idx == 0:
-                    print('Including because of low price', df_name[1].web_name)
+                    print('Including because of low price:', df_name[1].web_name)
             else:        
                 if minutes < 10 or np.isnan(minutes):
                     estimated = 0
@@ -562,11 +557,11 @@ for df_name in slim_elements_df.iterrows():
                             print("ERROR CATEGORIES", df_name[0], column)
     
                 if df_name[1]['web_name'] in include_players:
-                    estimated = 100
+                    estimated = 100*random.random()
     
                 for name_inc in include_players:
                     if df_name[1]['first_name'] in name_inc and df_name[1]['second_name'] in name_inc:
-                        estimated = 100
+                        estimated = 100*random.random()
     
                 if df_name[1]['web_name'] in exclude_players:
                     estimated = 0
@@ -574,6 +569,9 @@ for df_name in slim_elements_df.iterrows():
                 for exclude_name in exclude_players:
                     if df_name[1]['first_name'] in exclude_name and df_name[1]['second_name'] in exclude_name:
                         estimated = 0
+                        
+                if is_estimated:
+                    estimated = 0
 
             pred_score[gw_idx] = pred_score[gw_idx] + estimated
             total_matches = total_matches + 1
