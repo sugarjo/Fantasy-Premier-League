@@ -5,7 +5,8 @@ import requests
 
 import pandas as pd
 import numpy as np
-from datetime import timedelta
+from datetime import datetime, timedelta
+import pytz
 
 from sklearn.model_selection import train_test_split
 from sklearn.utils.class_weight import compute_class_weight
@@ -35,8 +36,8 @@ except:
     main_directory = r'C:\Users\jorgels\Git\Fantasy-Premier-League'
 
 
-optimize = True
-continue_optimize = True
+optimize = False
+continue_optimize = False
 
 #add 2. one because threshold is bounded upwards. and one because last week is only partly encoded (dynamic features)
 temporal_window = 23
@@ -197,6 +198,110 @@ name_position_list = season_df[['names', 'element_type']].drop_duplicates(keep='
 url = 'https://fantasy.premierleague.com/api/bootstrap-static/'
 r = requests.get(url)
 js = r.json()
+
+current_season_names = season_df.season == season_df.season.iloc[-1]
+current_season = season_df.loc[current_season_names]
+
+downloaded = False
+
+for element in js["elements"]:
+    
+    if np.double(element["form"]) > 0:
+        matched = 0
+        
+        for name_xls in np.unique(current_season["web_name"]):
+           
+            #get last match from excel sheet
+            selected = current_season["web_name"] == element["web_name"]
+            
+            if sum(selected > 0):
+                last_xls_match = current_season.loc[selected].iloc[-1]
+            else: 
+                last_xls_match =  datetime.now() - timedelta(days=365)
+            
+            if element["web_name"] == name_xls:
+                
+                matched += 1
+                
+                player_id =  element["id"]
+                
+                url = 'https://fantasy.premierleague.com/api/element-summary/' + str(player_id)
+                r = requests.get(url)
+                player = r.json()
+                
+                if player["history"][-1]["minutes"] > 0:
+                    last_kick_off = player["history"][-1]["kickoff_time"]
+                    kickoff_timestamp = datetime.fromisoformat(last_kick_off.replace('Z', '+00:00')).astimezone(pytz.UTC) 
+                    kickoff_timestamp = kickoff_timestamp.replace(tzinfo=None)
+                    
+                    #check last match
+                    if kickoff_timestamp > pd.Timestamp(last_xls_match.kickoff_time).to_pydatetime():
+                        
+                        fixture = player["history"][-1]["fixture"]
+                        
+                        if not downloaded:
+                            url = 'https://fantasy.premierleague.com/api/fixtures' + '?event=' + str(player["history"][-1]["round"])
+                            r = requests.get(url)
+                            gw = r.json()
+                            downloaded = True
+                            
+                        for g in gw:
+                            if g["id"] == fixture:
+                                team_h_difficulty = g['team_h_difficulty']
+                                team_a_difficulty = g['team_a_difficulty']
+        
+                        #insert data
+                        string_opp_team = js["teams"][player["history"][-1]["opponent_team"]-1]["short_name"]
+                        string_team = js["teams"][element["team"]-1]["short_name"]
+                        
+                        new_row = {
+                                'index': [season_df.index[-1]+1],
+                                'minutes': player["history"][-1]["minutes"],          
+                                'string_opp_team': string_opp_team,
+                                'transfers_in': player["history"][-1]["transfers_in"],    # Replace with actual value
+                                'transfers_out': player["history"][-1]["transfers_out"],    # Replace with actual value
+                                'ict_index': player["history"][-1]["ict_index"],       # Replace with actual value
+                                'influence': player["history"][-1]["influence"],       # Replace with actual value
+                                'threat': player["history"][-1]["threat"],          # Replace with actual value
+                                'creativity': player["history"][-1]["creativity"],      # Replace with actual value
+                                'bps': player["history"][-1]["bps"],   
+                                'element': player["history"][-1]["element"],   
+                                'fixture': fixture,       
+                                'total_points': player["history"][-1]["total_points"],      
+                                'round': player["history"][-1]["round"], 
+                                'was_home': player["history"][-1]["was_home"], 
+                                'kickoff_time': pd.Timestamp(kickoff_timestamp),
+                                'xP': np.nan, 
+                                'expected_goals': player["history"][-1]["expected_goals"], 
+                                'expected_assists': player["history"][-1]["expected_assists"], 
+                                'expected_goal_involvements': player["history"][-1]["expected_goal_involvements"], 
+                                'expected_goals_conceded': player["history"][-1]["expected_goals_conceded"], 
+                                'points_per_game': np.float64(element["points_per_game"]), 
+                                'points_per_played_game': np.nan, 
+                                'team_a_difficulty': team_a_difficulty, 
+                                'team_h_difficulty': team_h_difficulty, 
+                                'element_type': element["element_type"],  
+                                'first_name': element["first_name"],  
+                                'second_name': element["second_name"],
+                                'web_name': element["web_name"],
+                                'string_team': string_team,
+                                'season': season_df.season.iloc[-1],
+                                'names': element["first_name"] + ' ' + element["second_name"]
+                            }
+                        
+                        season_df = pd.concat([season_df, pd.DataFrame(new_row)], ignore_index=True)
+                        
+                        
+                        
+        if matched > 1:
+            print('Matched too many', element["web_name"])
+        if matched == 0:
+            print('Matched too few', element["web_name"])
+        else:
+            print('Matched', element["web_name"])
+
+
+
 
 elements_df = pd.DataFrame(js['elements'])
 current_names = (elements_df['first_name'] + ' ' + elements_df['second_name']).unique()
@@ -455,6 +560,11 @@ season_df = season_df.sort_values(by='kickoff_time')
 # df_sorted = df.sort_values(by='date', ascending=False)
 
 train = pd.DataFrame(season_df[fixed_features])
+    
+    
+    
+    
+    
 
 #for each week iteration
 for k in range(temporal_window):
@@ -602,7 +712,6 @@ def should_keep_column(column_name, threshold):
 
 #optimize hyperparameters
 def objective_xgboost(space):
-
     pars = {
         'max_depth': int(space['max_depth']),
         'min_split_loss': space['min_split_loss'],
@@ -655,7 +764,8 @@ def objective_xgboost(space):
     dval_objective = xgb.DMatrix(data= objective_val_X, label=val_y, enable_categorical=True, weight=val_sample_weights)
 
     val_pred = model.predict(dval_objective)
-    val_error = mean_squared_error(val_y, val_pred)
+    
+    val_error = mean_squared_error((10**val_y) - 1 + min_y,  (10**val_pred) - 1 + min_y)
 
     return {'loss': val_error, 'status': STATUS_OK }
 
@@ -714,7 +824,7 @@ def val_xgboost(space):
     dval_objective = xgb.DMatrix(data= objective_val_X, label=val_y, enable_categorical=True, weight=val_sample_weights)
 
     val_pred = model.predict(dval_objective)
-    val_error = mean_squared_error(val_y, val_pred)
+    val_error = mean_squared_error((10**val_y) - 1 + min_y,  (10**val_pred) - 1 + min_y)
 
     return val_error
 
@@ -858,6 +968,9 @@ centiles = pd.qcut(train_y, q=100, duplicates="drop", retbins=True)[1]
 centiles[0] = -np.inf
 # Discretize the outcome variable using the quantile boundaries
 stratify = pd.cut(train_y, bins=centiles, labels=False)
+
+min_y = np.min(train_y)
+train_y = np.log10(train_y-min_y+1)
 
 cw = compute_class_weight('balanced', classes=np.unique(stratify), y=stratify)
 
@@ -1166,7 +1279,13 @@ elif method == 'mixedLM':
 
 elif method == 'xgboost':
 
+    
+    #get an validation set for fitting
+    cv_X, val_X, cv_y, val_y, cv_sample_weights, val_sample_weights, cv_stratify, _= train_test_split(train_X, train_y, sample_weights, stratify, test_size=0.20, stratify=stratify, random_state=42)    
+    
     grow_policy = ['depthwise', 'lossguide']
+    
+    min_eval_fraction = len(np.unique(cv_stratify))/cv_X.shape[0]
 
     space={'max_depth': hp.quniform("max_depth", 1, 300, 1), #try to decrease from 45 to 10?
             'min_split_loss': hp.uniform('min_split_loss', 0, 40),
@@ -1179,7 +1298,7 @@ elif method == 'xgboost':
             'colsample_bylevel': hp.uniform('colsample_bylevel', 0.1, 1),
             'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
             'early_stopping_rounds': hp.quniform("early_stopping_rounds", 100, 900, 1),
-            'eval_fraction': hp.uniform('eval_fraction', 0.0001, 0.2),
+            'eval_fraction': hp.uniform('eval_fraction', min_eval_fraction, 0.2),
             'n_estimators': hp.quniform('n_estimators', 2, 7500, 1),
             'max_delta_step': hp.uniform('max_delta_step', 0, 200),
             'grow_policy': hp.choice('grow_policy', grow_policy), #111
@@ -1188,9 +1307,7 @@ elif method == 'xgboost':
             'temporal_window': hp.quniform('temporal_window', 0, temporal_window+1, 1),
         }
 
-    #get an validation set for fitting
-    cv_X, val_X, cv_y, val_y, cv_sample_weights, val_sample_weights, cv_stratify, _= train_test_split(train_X, train_y, sample_weights, stratify, test_size=0.20, stratify=stratify, random_state=42)    
-    
+
     mean_cv = np.mean(cv_y)
     train_error = np.mean(np.abs((cv_y - mean_cv)**2))
     validation_error = np.mean(np.abs((val_y - mean_cv)**2))
