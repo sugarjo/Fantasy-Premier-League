@@ -19,7 +19,6 @@ import statsmodels.api as sm
 
 from hyperopt import STATUS_OK, Trials, fmin, hp, tpe
 from hyperopt.early_stop import no_progress_loss
-from hyperopt.fmin import generate_trials_to_calculate
 
 from pandas.api.types import CategoricalDtype
 
@@ -36,13 +35,13 @@ except:
     main_directory = r'C:\Users\jorgels\Git\Fantasy-Premier-League'
 
 
-optimize = True
-continue_optimize = True
+optimize = False
+continue_optimize = False
 
-check_last_data = False
+check_last_data = True
 
 #add 2. one because threshold is bounded upwards. and one because last week is only partly encoded (dynamic features)
-temporal_window = 24
+temporal_window = 25
 
 season_start = False
 
@@ -52,6 +51,8 @@ season_dfs = []
 
 season_count = 0
 
+print('HARD CODED short names for HULL, MIDlesborough, SUNDERLAND (2016-17). DOUBLE CHECK IF PROMOTED')
+
 #get each season
 for folder in folders:
 
@@ -60,7 +61,8 @@ for folder in folders:
     gws_data = os.path.join(directory, 'gws')
     team_path = os.path.join(directory, "teams.csv")
 
-    if os.path.isfile(fixture_data) and  os.path.isdir(gws_data):
+    #if os.path.isfile(fixture_data) and  os.path.isdir(gws_data):
+    if os.path.isdir(gws_data):
 
         #check that it is not a file
         if folder[-4] != '.':
@@ -76,7 +78,11 @@ for folder in folders:
 
             #insert string for team
             df_teams = pd.read_csv(team_path)
-            string_names = df_teams['short_name'].values
+            try:
+                string_names = df_teams["short_name"].values
+            except:
+                string_names = df_teams[" short_name"].values   
+                
             df_player["string_team"] = string_names[df_player["team"]-1]
 
             dfs_gw = []
@@ -88,7 +94,7 @@ for folder in folders:
                     gw_path = directory + '/gws' + '/' + gw_csv
 
 
-                    if folder == '2018-19' or folder == '2016-17':
+                    if folder == '2018-19' or folder == '2016-17' or folder == '2017-18':
                         gw = pd.read_csv(gw_path, encoding='latin1')
                     else:
                         gw = pd.read_csv(gw_path)
@@ -113,17 +119,11 @@ for folder in folders:
 
             df_gw.reset_index(inplace=True)
 
-            #add column if they don't exist
-            if folder == '2018-19' or folder == '2019-20' or folder == '2020-21' or folder == '2021-22':
-                df_gw['expected_goals'] = np.nan
-                df_gw['expected_assists'] = np.nan
-                df_gw['expected_goal_involvements'] = np.nan
-                df_gw['expected_goals'] = np.nan
-                df_gw['expected_goals_conceded'] = np.nan
-
-
-            if folder == '2018-19' or folder == '2019-20':
+            if  folder == '2016-17' or folder == '2017-18' or folder == '2018-19' or folder == '2019-20':
                 df_gw['xP'] = np.nan
+                
+            if  folder == '2016-17' or folder == '2017-18' or folder == '2018-19' or folder == '2019-20' or folder == '2020-21' or folder == '2021-22':
+                df_gw[['expected_goals', 'expected_assists', 'expected_goal_involvements', 'expected_goals_conceded']] = np.nan
 
 
             #variables I calculate myself
@@ -137,13 +137,24 @@ for folder in folders:
                 selected_ind = df_gw['element'] == player
                 player_df = df_gw[selected_ind]
                 player_df.set_index('kickoff_time', inplace=True)
+                
+                
+                opp_team = []
+                for team in player_df['opponent_team'].astype(int).values-1:
+                    opp_team.append(string_names[team])
 
+                df_gw.loc[selected_ind, 'string_opp_team'] = opp_team.copy()
+                
+                
                 points_per_game =  player_df['total_points'].cumsum() / (player_df['round'])
-
+                
                 #points per played game
                 result = np.zeros(len(player_df['total_points'])+1)  # initialize result array
                 last_games = 0  # initialize last_vplayer_df['total_points']alue to 0
                 last_point = 0
+                
+                own_team_points = []
+                opp_team_points = []
 
                 for i in range(len(player_df['total_points'])):
 
@@ -153,30 +164,37 @@ for folder in folders:
 
                     if last_games > 0:
                         result[i+1] = last_point/last_games
-
-                df_gw.loc[selected_ind, 'points_per_game'] = points_per_game.values
-                df_gw.loc[selected_ind, 'points_per_played_game'] = result[:-1]
-
-                opp_team = []
-                for team in player_df['opponent_team'].astype(int).values-1:
-                    opp_team.append(string_names[team])
-
-                df_gw.loc[selected_ind, 'string_opp_team'] = opp_team
-
-
-
-            season_df = df_gw[['minutes', 'string_opp_team', 'transfers_in', 'transfers_out', 'ict_index', 'influence', 'threat', 'creativity', 'bps', 'element', 'fixture', 'total_points', 'round', 'was_home', 'kickoff_time', 'xP', 'expected_goals', 'expected_assists', 'expected_goal_involvements', 'expected_goals_conceded', 'points_per_game', 'points_per_played_game']]
-
-            #get fixture difficulty difference for each datapoint
-            #open fixtures data
-            fixture_data_path = os.path.join(directory, "fixtures.csv")
-
-            fixture_df = pd.read_csv(fixture_data_path)
-
-            #rename befor merge
-            fixture_df = fixture_df.rename(columns={"id": "fixture"})
-            season_df = pd.merge(season_df, fixture_df[["team_a_difficulty", "team_h_difficulty", "fixture"]], on='fixture')
-
+                    
+                    fixture = player_df.iloc[i].fixture
+                    opp_team = player_df.iloc[i].opponent_team
+                    
+                    team_players = (df_gw.fixture == fixture) & (df_gw.opponent_team != opp_team)
+                    own_team_points.append(sum(df_gw.total_points[team_players]))
+                    
+                    opp_team_players = (df_gw.fixture == fixture) & (df_gw.opponent_team == opp_team)
+                    opp_team_points.append(sum(df_gw.total_points[opp_team_players]))
+                
+                
+                df_gw.loc[selected_ind, 'points_per_game'] = points_per_game.values.copy()
+                df_gw.loc[selected_ind, 'points_per_played_game'] = result[:-1].copy()
+                df_gw.loc[selected_ind, 'own_team_points'] = own_team_points.copy()
+                df_gw.loc[selected_ind, 'opp_team_points'] = opp_team_points.copy()
+    
+                
+                
+            season_df = df_gw[['minutes', 'string_opp_team', 'transfers_in', 'transfers_out', 'ict_index', 'influence', 'threat', 'creativity', 'bps', 'element', 'fixture', 'total_points', 'round', 'was_home', 'kickoff_time', 'xP', 'expected_goals', 'expected_assists', 'expected_goal_involvements', 'expected_goals_conceded', 'points_per_game', 'points_per_played_game', 'own_team_points', 'opp_team_points']]
+            
+            if  folder == '2016-17' or folder == '2017-18':
+                season_df[["team_a_difficulty", "team_h_difficulty", "fixture"]] = np.nan
+            else:
+                #get fixture difficulty difference for each datapoint
+                #open fixtures data
+                fixture_df = pd.read_csv(fixture_data)
+    
+                #rename befor merge
+                fixture_df = fixture_df.rename(columns={"id": "fixture"})
+                season_df = pd.merge(season_df, fixture_df[["team_a_difficulty", "team_h_difficulty", "fixture"]], on='fixture')
+    
             season_df = pd.merge(season_df, df_player[["element_type", "first_name", "second_name", "web_name", "string_team", "element"]], on="element")
 
             season_df["season"] = folder
@@ -295,7 +313,10 @@ if check_last_data:
                                     'web_name': element["web_name"],
                                     'string_team': string_team,
                                     'season': season_df.season.iloc[-1],
-                                    'names': element["first_name"] + ' ' + element["second_name"]
+                                    'names': element["first_name"] + ' ' + element["second_name"],
+                                    'own_team_points': np.nan,
+                                    'opp_team_points': np.nan
+                      
                                 }
                             
                             season_df = pd.concat([season_df, pd.DataFrame(new_row)], ignore_index=True)
@@ -306,6 +327,29 @@ if check_last_data:
                 print('Matched too many', element["web_name"])
             if matched == 0:
                 print('Matched too few', element["web_name"])
+                
+#calculate own and opp team points:
+# Calculate values on my own
+selected = np.isnan(season_df.own_team_points)
+
+for (ind, row) in season_df.loc[selected].iterrows():
+
+    selected_ind = row['element'] == player
+    player_df = season_df.loc[selected_ind]
+        
+    fixture = player_df.fixture
+    opp_team = player_df.opponent_team
+    kick_off = player_df.kickoff_time
+    
+    team_players = (season_df.fixture == fixture) & (season_df == kick_off) & (season_df.opponent_team != opp_team)
+    own_team_points.append(sum(season_df.total_points[team_players]))
+    
+    opp_team_players = (season_df.fixture == fixture) & (season_df == kick_off) & (season_df.opponent_team == opp_team)
+    opp_team_points.append(sum(season_df.total_points[opp_team_players]))
+    
+    season_df.loc[ind, 'own_team_points'] = own_team_points.copy()
+    season_df.loc[ind, 'opp_team_points'] = opp_team_points.copy()   
+
     
 elements_df = pd.DataFrame(js['elements'])
 current_names = (elements_df['first_name'] + ' ' + elements_df['second_name']).unique()
@@ -313,7 +357,6 @@ current_positions = elements_df['element_type']
 
 names = np.concatenate((current_names, name_position_list['names'][::-1]))
 positions =  np.concatenate((current_positions, name_position_list['element_type'][::-1]))
-
 
 _, indices = np.unique(names, return_index=True)
 sorted_indices = np.sort(indices)
@@ -532,7 +575,7 @@ dynamic_features = ['string_opp_team', 'transfers_in', 'transfers_out',
 
 #add nan categories
 dynamic_categorical_variables = ['string_opp_team', 'own_difficulty',
-       'other_difficulty'] #'difficulty',
+        'other_difficulty'] #'difficulty',
 
 int_variables = ['minutes', 'total_points', 'was_home', 'bps']
 season_df[int_variables] = season_df[int_variables].astype('int')
@@ -544,8 +587,7 @@ season_df[float_variables] = season_df[float_variables].astype('float')
 #features that I don't have access to in advance.
 temporal_features = ['minutes', 'ict_index', 'influence', 'threat', 'creativity', 'bps',
        'total_points', 'xP', 'expected_goals', 'expected_assists',
-       'expected_goal_involvements', 'expected_goals_conceded']
-       #'points_per_game', 'points_per_played_game']
+       'expected_goal_involvements', 'expected_goals_conceded', 'own_team_points']
 
 temporal_single_features = ['points_per_game', 'points_per_played_game']
 
@@ -553,8 +595,6 @@ temporal_single_features = ['points_per_game', 'points_per_played_game']
 #total_points, minutes, kickoff time not for prediction
 fixed_features = ['total_points', 'minutes', 'kickoff_time', 'element_type', 'string_team', 'season', 'names']
 
-
-opponent_feat = ['string_opp_team']
 
 #initiate train dataframe
 # Reorder the DataFrame based on the 'date' column
@@ -564,10 +604,6 @@ season_df = season_df.sort_values(by='kickoff_time')
 # df_sorted = df.sort_values(by='date', ascending=False)
 
 train = pd.DataFrame(season_df[fixed_features])
-    
-    
-    
-    
     
 
 #for each week iteration
@@ -579,17 +615,18 @@ for k in range(temporal_window):
     # Create an empty DataFrame with the specified columns
     if k==0:
         
-        dynamic_names = [s for s in dynamic_features]
-        
+        dynamic_names = [s for s in dynamic_features]        
         temporal_single_names = [s for s in temporal_single_features]
+        
         col_names = temporal_single_names + dynamic_names + temporal_names 
 
     else:
-        dynamic_names = [str(k-1) + s for s in dynamic_features]
+        dynamic_names = [str(k-1) + s for s in dynamic_features] 
         
         col_names = dynamic_names + temporal_names
 
     temp_train = pd.DataFrame(index=train.index, columns=col_names)
+    
 
     for name in season_df.names.unique():
         
@@ -599,13 +636,14 @@ for k in range(temporal_window):
             temporal_single_data = season_df.loc[selected_ind, temporal_single_features].shift(k+1)
 
             temp_train.loc[selected_ind, temporal_single_names] = temporal_single_data.values
+            
 
         temporal_data = season_df.loc[selected_ind, temporal_features].shift(k+1)
         dynamic_data = season_df.loc[selected_ind, dynamic_features].shift(k)
         
         temp_train.loc[selected_ind, dynamic_names] = dynamic_data.values
-        temp_train.loc[selected_ind, temporal_names] = temporal_data.values
-
+        temp_train.loc[selected_ind, temporal_names] = temporal_data.values       
+        
     #set dtype
     for col in temp_train.columns:
 
@@ -636,6 +674,40 @@ for k in range(temporal_window):
     else:
         opponent_feature = str(k-1) + 'string_opp_team'
         train[opponent_feature] = train[opponent_feature].astype(opp_cats)
+  
+    
+  
+#add in data about the opponent   
+opponent_names = [str(k) + 'opp_team_points' for k in range(temporal_window)]  
+temp_train = pd.DataFrame(index=train.index, columns=opponent_names)
+     
+for name in season_df.names.unique():
+    
+    selected_ind = season_df.names == name
+    
+    #get matches of opponents
+    opponents = season_df.loc[selected_ind, 'string_opp_team']
+    kickoff_times = season_df.loc[selected_ind, 'kickoff_time']
+    
+    for ind, opp, time in zip(opponents.index, opponents, kickoff_times):
+        #find opponent to the opponent's points k matches 
+        opp_selected = (season_df['string_team'] == opp) & (season_df['kickoff_time'] < time)
+            
+        #find the unique kickoff times
+        first_indices = season_df.loc[opp_selected].drop_duplicates(subset='kickoff_time', keep='first').index
+        
+        full_ooop = np.full(len(opponent_names), np.nan)
+        opponents_of_opponents_points = season_df.loc[first_indices[-temporal_window:], "opp_team_points"]
+        if len(opponents_of_opponents_points):
+            full_ooop[-len(opponents_of_opponents_points):] = opponents_of_opponents_points
+        
+        temp_train.loc[ind, opponent_names] = full_ooop
+        
+#set dtype
+for col in temp_train.columns:
+    temp_train[col] = temp_train[col].astype('Int64')
+            
+train = pd.concat([train, temp_train], axis=1)            
 
 #exchange old names with nan
 for name in train.names.unique():
@@ -1296,7 +1368,7 @@ elif method == 'xgboost':
     space={'max_depth': hp.quniform("max_depth", 1, 600, 1), #try to decrease from 45 to 10?
             'min_split_loss': hp.uniform('min_split_loss', 0, 40),
             'reg_lambda' : hp.uniform('reg_lambda', 0, 100),
-            'reg_alpha': hp.uniform('reg_alpha', 0.01, 100),
+            'reg_alpha': hp.uniform('reg_alpha', 0.01, 120),
             'min_child_weight' : hp.uniform('min_child_weight', 0, 375),
             'learning_rate': hp.uniform('learning_rate', 0, 0.05),
             'subsample': hp.uniform('subsample', 0.1, 1),
@@ -1305,8 +1377,8 @@ elif method == 'xgboost':
             'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
             'early_stopping_rounds': hp.quniform("early_stopping_rounds", 75, 1300, 1),
             'eval_fraction': hp.uniform('eval_fraction', min_eval_fraction, 0.2),
-            'n_estimators': hp.quniform('n_estimators', 2, 1000, 1),
-            'max_delta_step': hp.uniform('max_delta_step', 0, 200),
+            'n_estimators': hp.quniform('n_estimators', 2, 11000, 1),
+            'max_delta_step': hp.uniform('max_delta_step', 0, 250),
             'grow_policy': hp.choice('grow_policy', grow_policy), #111
             'max_leaves': hp.quniform('max_leaves', 0, 2500, 1),
             'max_bin':  hp.quniform('max_bin', 2, 50, 1),
@@ -1492,6 +1564,6 @@ elif method == 'xgboost':
         pickle.dump(summary, open(model_path, 'wb'))
     
         xgb.plot_importance(model, importance_type='gain',
-                        max_num_features=20, show_values=False)
+                        max_num_features=40, show_values=False)
         plt.show()
 
