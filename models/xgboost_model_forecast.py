@@ -21,6 +21,7 @@ from hyperopt import STATUS_OK, Trials, fmin, hp, tpe
 from hyperopt.early_stop import no_progress_loss
 
 from pandas.api.types import CategoricalDtype
+import time
 
 
 directories = r'C:\Users\jorgels\Documents\GitHub\Fantasy-Premier-League\data'
@@ -35,10 +36,10 @@ except:
     main_directory = r'C:\Users\jorgels\Git\Fantasy-Premier-League'
 
 
-optimize = False
-continue_optimize = False
+optimize = True
+continue_optimize = True
 
-check_last_data = True
+check_last_data = False
 
 #add 2. one because threshold is bounded upwards. and one because last week is only partly encoded (dynamic features)
 temporal_window = 25
@@ -98,7 +99,12 @@ for folder in folders:
                         gw = pd.read_csv(gw_path, encoding='latin1')
                     else:
                         gw = pd.read_csv(gw_path)
-
+                        
+                        
+                    #remove assistant manager
+                    if 'position' in gw.keys():
+                        gw = gw.loc[gw['position'] != 'AM']
+                    
                     sum_transfers = sum(gw.transfers_in)
 
                     if sum_transfers == 0 or season_start:
@@ -154,7 +160,9 @@ for folder in folders:
                 last_point = 0
                 
                 own_team_points = []
-                opp_team_points = []
+                own_element_points = []
+                wins = []
+
 
                 for i in range(len(player_df['total_points'])):
 
@@ -165,24 +173,73 @@ for folder in folders:
                     if last_games > 0:
                         result[i+1] = last_point/last_games
                     
-                    fixture = player_df.iloc[i].fixture
-                    opp_team = player_df.iloc[i].opponent_team
+                    # fixture = player_df.iloc[i].fixture
+                    # opp_team = player_df.iloc[i].opponent_team
                     
-                    team_players = (df_gw.fixture == fixture) & (df_gw.opponent_team != opp_team)
-                    own_team_points.append(sum(df_gw.total_points[team_players]))
+                    # #how many points own team got. same as points opponent team gave away
+                    # team_players = (df_gw.fixture == fixture) & (df_gw.opponent_team == opp_team)
+                    # own_team_points.append(sum(df_gw.total_points[team_players]))
                     
-                    opp_team_players = (df_gw.fixture == fixture) & (df_gw.opponent_team == opp_team)
-                    opp_team_points.append(sum(df_gw.total_points[opp_team_players]))
-                
-                
+                    
+                    
+                    
+                    # element_type = df_player.loc[df_player.element == player].element_type.iloc[0]
+                    # team = df_player.loc[df_player.element == player].string_team.iloc[0]
+                    # similar_elements = (df_player.element_type == element_type) & (df_player.string_team == team)
+                    # similar_elements_id = df_player.element[similar_elements].values
+                    
+                    # type_points = []
+                    # for el_id in similar_elements_id:
+                    #     player_ind = (df_gw.element == el_id) & (df_gw.fixture == fixture)
+                    #     if sum(player_ind) > 0:
+                    #         if df_gw.loc[player_ind].minutes.iloc[0] > 0:
+                    #             type_points.append(df_gw.loc[player_ind].total_points)
+                    
+                    # if len(type_points) > 0:
+                    #     own_element_points.append(np.mean(type_points))
+                    # else:
+                    #     own_element_points.append(np.nan)  
+                        
+                        
+                    # # Extract the element_type and team once
+                    # player_info = df_player[df_player.element == player].iloc[0]
+                    # element_type = player_info.element_type
+                    # team = player_info.string_team
+                    
+                    # # Filter similar elements by element_type and team in one go
+                    # similar_elements_mask = (df_player.element_type == element_type) & (df_player.string_team == team)
+                    # similar_elements_id = df_player.element[similar_elements_mask]
+                    
+                    # # Vectorized operation to select rows from df_gw
+                    # type_points_mask = df_gw[df_gw.element.isin(similar_elements_id) & (df_gw.fixture == fixture) & (df_gw.minutes > 0)]
+                    # type_points = type_points_mask.total_points.values
+                    
+                    # # Append mean of type_points to own_element_points, handling empty lists
+                    # own_element_points.append(np.mean(type_points) if len(type_points) > 0 else np.nan)
+                    
+                    # if player_df.iloc[i].team_h_score > player_df.iloc[i].team_a_score:
+                    #     if player_df.iloc[i].was_home:
+                    #         wins.append('win')
+                    #     else:
+                    #         wins.append('loss')
+                    # elif player_df.iloc[i].team_h_score < player_df.iloc[i].team_a_score:
+                    #     if player_df.iloc[i].was_home:
+                    #         wins.append('loss')
+                    #     else:
+                    #         wins.append('win')
+                    # else:
+                    #     wins.append('draw')
+                        
+
                 df_gw.loc[selected_ind, 'points_per_game'] = points_per_game.values.copy()
                 df_gw.loc[selected_ind, 'points_per_played_game'] = result[:-1].copy()
-                df_gw.loc[selected_ind, 'own_team_points'] = own_team_points.copy()
-                df_gw.loc[selected_ind, 'opp_team_points'] = opp_team_points.copy()
+                # df_gw.loc[selected_ind, 'own_team_points'] = own_team_points.copy()
+                # df_gw.loc[selected_ind, 'own_wins'] = wins.copy()
+                # df_gw.loc[selected_ind, 'own_element_points'] = wins.copy()
     
                 
                 
-            season_df = df_gw[['minutes', 'string_opp_team', 'transfers_in', 'transfers_out', 'ict_index', 'influence', 'threat', 'creativity', 'bps', 'element', 'fixture', 'total_points', 'round', 'was_home', 'kickoff_time', 'xP', 'expected_goals', 'expected_assists', 'expected_goal_involvements', 'expected_goals_conceded', 'points_per_game', 'points_per_played_game', 'own_team_points', 'opp_team_points']]
+            season_df = df_gw[['minutes', 'string_opp_team', 'transfers_in', 'transfers_out', 'ict_index', 'influence', 'threat', 'creativity', 'bps', 'element', 'fixture', 'total_points', 'round', 'was_home', 'kickoff_time', 'xP', 'expected_goals', 'expected_assists', 'expected_goal_involvements', 'expected_goals_conceded', 'points_per_game', 'points_per_played_game']]#, 'own_team_points', 'own_wins', 'own_element_points']]
             
             if  folder == '2016-17' or folder == '2017-18':
                 season_df[["team_a_difficulty", "team_h_difficulty", "fixture"]] = np.nan
@@ -206,8 +263,6 @@ season_df['transfers_in'] = season_df['transfers_in'].astype(float)
 season_df['transfers_out'] = season_df['transfers_out'].astype(float)
 season_df['points_per_game'] = season_df['points_per_game'].astype(float)
 
-season_df = season_df.reset_index()
-
 season_df['names'] = season_df['first_name'] + ' ' + season_df['second_name']
 
 #MATCH NAMES
@@ -224,22 +279,28 @@ if check_last_data:
     current_season_names = season_df.season == season_df.season.iloc[-1]
     current_season = season_df.loc[current_season_names]
     
-    downloaded = False
+    downloaded_fixtures = False
     
     for element in js["elements"]:
         
+        if element["web_name"] == 'Pickford':
+            k = element
+        
+
         if np.double(element["form"]) > 0:
             matched = 0
             
             for name_xls in np.unique(current_season["web_name"]):
+                
                
                 #get last match from excel sheet
                 selected = current_season["web_name"] == element["web_name"]
                 
-                if sum(selected > 0):
-                    last_xls_match = current_season.loc[selected].iloc[-1]
-                else: 
-                    last_xls_match =  datetime.now() - timedelta(days=365)
+                
+                if sum(selected) > 0:
+                    xls_matches = current_season.loc[selected]
+                # else: 
+                #     last_xls_match =  datetime.now() - timedelta(days=365)
                 
                 if element["web_name"] == name_xls:
                     
@@ -247,110 +308,153 @@ if check_last_data:
                     
                     player_id =  element["id"]
                     
-                    url = 'https://fantasy.premierleague.com/api/element-summary/' + str(player_id)
-                    r = requests.get(url)
-                    player = r.json()
+                    downloaded = False
+                    while not downloaded:
+                        try:
+                            url = 'https://fantasy.premierleague.com/api/element-summary/' + str(player_id)
+                            r = requests.get(url)
+                            player = r.json()
+                            downloaded = True
+                        except:
+                            print('Error in download')
+                            time.sleep(30)     
                     
-                    if player["history"][-1]["minutes"] > 0:
-                        last_kick_off = player["history"][-1]["kickoff_time"]
-                        kickoff_timestamp = datetime.fromisoformat(last_kick_off.replace('Z', '+00:00')).astimezone(pytz.UTC) 
-                        kickoff_timestamp = kickoff_timestamp.replace(tzinfo=None)
-                        
-                        #check last match
-                        if kickoff_timestamp > pd.Timestamp(last_xls_match.kickoff_time).to_pydatetime():
+                    for history in player["history"]:
+                    
+                        if history["minutes"] > 0:
+                            kick_off = history["kickoff_time"]
+                            kickoff_timestamp = datetime.fromisoformat(kick_off.replace('Z', '+00:00')).astimezone(pytz.UTC) 
+                            kickoff_timestamp = kickoff_timestamp.replace(tzinfo=None)    
                             
-                            fixture = player["history"][-1]["fixture"]
+                            # Convert this datetime to a pandas.Timestamp
+                            kickoff_timestamp = pd.Timestamp(kickoff_timestamp)
                             
-                            if not downloaded:
-                                url = 'https://fantasy.premierleague.com/api/fixtures' + '?event=' + str(player["history"][-1]["round"])
-                                r = requests.get(url)
-                                gw = r.json()
-                                downloaded = True
-                                
-                            for g in gw:
-                                if g["id"] == fixture:
-                                    team_h_difficulty = g['team_h_difficulty']
-                                    team_a_difficulty = g['team_a_difficulty']
-            
+                            time_diffs = kickoff_timestamp - xls_matches.kickoff_time
+                            
+                            #check last match
+                            if np.min(np.abs(time_diffs)) > pd.Timedelta(0):
 
-                            
-                            string_opp_team = js["teams"][player["history"][-1]["opponent_team"]-1]["short_name"]
-                            string_team = js["teams"][element["team"]-1]["short_name"]
-                            
-                            #insert data
-                            print('Insert live data for',  string_team, element["web_name"])
-                            
-                            
-                            new_row = {
-                                    'index': [season_df.index[-1]+1],
-                                    'minutes': player["history"][-1]["minutes"],          
-                                    'string_opp_team': string_opp_team,
-                                    'transfers_in': player["history"][-1]["transfers_in"],    # Replace with actual value
-                                    'transfers_out': player["history"][-1]["transfers_out"],    # Replace with actual value
-                                    'ict_index': player["history"][-1]["ict_index"],       # Replace with actual value
-                                    'influence': player["history"][-1]["influence"],       # Replace with actual value
-                                    'threat': player["history"][-1]["threat"],          # Replace with actual value
-                                    'creativity': player["history"][-1]["creativity"],      # Replace with actual value
-                                    'bps': player["history"][-1]["bps"],   
-                                    'element': player["history"][-1]["element"],   
-                                    'fixture': fixture,       
-                                    'total_points': player["history"][-1]["total_points"],      
-                                    'round': player["history"][-1]["round"], 
-                                    'was_home': player["history"][-1]["was_home"], 
-                                    'kickoff_time': pd.Timestamp(kickoff_timestamp),
-                                    'xP': np.nan, 
-                                    'expected_goals': player["history"][-1]["expected_goals"], 
-                                    'expected_assists': player["history"][-1]["expected_assists"], 
-                                    'expected_goal_involvements': player["history"][-1]["expected_goal_involvements"], 
-                                    'expected_goals_conceded': player["history"][-1]["expected_goals_conceded"], 
-                                    'points_per_game': np.float64(element["points_per_game"]), 
-                                    'points_per_played_game': np.nan, 
-                                    'team_a_difficulty': team_a_difficulty, 
-                                    'team_h_difficulty': team_h_difficulty, 
-                                    'element_type': element["element_type"],  
-                                    'first_name': element["first_name"],  
-                                    'second_name': element["second_name"],
-                                    'web_name': element["web_name"],
-                                    'string_team': string_team,
-                                    'season': season_df.season.iloc[-1],
-                                    'names': element["first_name"] + ' ' + element["second_name"],
-                                    'own_team_points': np.nan,
-                                    'opp_team_points': np.nan
-                      
-                                }
-                            
-                            season_df = pd.concat([season_df, pd.DataFrame(new_row)], ignore_index=True)
-                            
-                            
+                                
+                                fixture = history["fixture"]
+                                
+                                if not downloaded_fixtures:
+                                    url = 'https://fantasy.premierleague.com/api/fixtures' + '?event=' + str(history["round"])
+                                    r = requests.get(url)
+                                    gw = r.json()
+                                    downloaded_fixtures = True
+                                    
+                                for g in gw:
+                                    if g["id"] == fixture:
+                                        #print(g)
+                                        team_h_difficulty = g['team_h_difficulty']
+                                        team_a_difficulty = g['team_a_difficulty']
+                                        
+                                    
+                                string_opp_team = js["teams"][history["opponent_team"]-1]["short_name"]
+                                string_team = js["teams"][element["team"]-1]["short_name"]
+                                
+                                #insert data
+                                print('Insert live data for',  kickoff_timestamp, string_team, element["web_name"])
+                                
+                                element_type = element["element_type"]
+                                
+                                new_row = {
+                                        'index': [season_df.index[-1]+1],
+                                        'minutes': history["minutes"],          
+                                        'string_opp_team': string_opp_team,
+                                        'transfers_in': history["transfers_in"],    # Replace with actual value
+                                        'transfers_out': history["transfers_out"],    # Replace with actual value
+                                        'ict_index': history["ict_index"],       # Replace with actual value
+                                        'influence': history["influence"],       # Replace with actual value
+                                        'threat': history["threat"],          # Replace with actual value
+                                        'creativity': history["creativity"],      # Replace with actual value
+                                        'bps': history["bps"],   
+                                        'element': history["element"],   
+                                        'fixture': fixture,       
+                                        'total_points': history["total_points"],      
+                                        'round': history["round"], 
+                                        'was_home': history["was_home"], 
+                                        'kickoff_time': pd.Timestamp(kickoff_timestamp),
+                                        'xP': np.nan, 
+                                        'expected_goals': history["expected_goals"], 
+                                        'expected_assists': history["expected_assists"], 
+                                        'expected_goal_involvements': history["expected_goal_involvements"], 
+                                        'expected_goals_conceded': history["expected_goals_conceded"], 
+                                        'points_per_game': np.float64(element["points_per_game"]), 
+                                        'points_per_played_game': np.nan, 
+                                        'team_a_difficulty': team_a_difficulty, 
+                                        'team_h_difficulty': team_h_difficulty, 
+                                        'element_type': element["element_type"],  
+                                        'first_name': element["first_name"],  
+                                        'second_name': element["second_name"],
+                                        'web_name': element["web_name"],
+                                        'string_team': string_team,
+                                        'season': season_df.season.iloc[-1],
+                                        'names': element["first_name"] + ' ' + element["second_name"],
+                                    }
+                                
+                                season_df = pd.concat([season_df, pd.DataFrame(new_row)], ignore_index=True)
+                                
+                                
                             
             if matched > 1:
                 print('Matched too many', element["web_name"])
             if matched == 0:
                 print('Matched too few', element["web_name"])
                 
-#calculate own and opp team points:
-# Calculate values on my own
-selected = np.isnan(season_df.own_team_points)
+# #calculate own and opp team points:
+# # Calculate values on my own
+# selected = np.isnan(season_df.own_team_points)
 
-for (ind, row) in season_df.loc[selected].iterrows():
+# for (ind, row) in season_df.loc[selected].iterrows():
 
-    selected_ind = row['element'] == player
-    player_df = season_df.loc[selected_ind]
+#     # selected_ind = row['element'] == player
+#     # player_df = season_df.loc[selected_ind]
         
-    fixture = player_df.fixture
-    opp_team = player_df.opponent_team
-    kick_off = player_df.kickoff_time
+#     fixture = row.fixture
+#     opp_team = row.string_opp_team
+#     kick_off = row.kickoff_time
+#     element_type = row.element_type
     
-    team_players = (season_df.fixture == fixture) & (season_df == kick_off) & (season_df.opponent_team != opp_team)
-    own_team_points.append(sum(season_df.total_points[team_players]))
+#     team_players = (season_df.fixture == fixture) & (season_df.kickoff_time == kick_off) & (season_df.string_opp_team == opp_team)
+#     own_team_points = sum(season_df.total_points[team_players])
     
-    opp_team_players = (season_df.fixture == fixture) & (season_df == kick_off) & (season_df.opponent_team == opp_team)
-    opp_team_points.append(sum(season_df.total_points[opp_team_players]))
+#     season_df.loc[ind, 'own_team_points'] = own_team_points
     
-    season_df.loc[ind, 'own_team_points'] = own_team_points.copy()
-    season_df.loc[ind, 'opp_team_points'] = opp_team_points.copy()   
+#     team_element = (season_df.fixture == fixture) & (season_df.kickoff_time == kick_off) & (season_df.string_opp_team == opp_team)  & (season_df.element_type == element_type) & (season_df.minutes > 0)
+#     own_team_points = np.mean(season_df.total_points[team_element])
+    
+    
 
+season_df = season_df.reset_index()
+
+temp_season = pd.DataFrame(index=season_df.index, columns=['own_team_points', 'own_element_points'])
+
+#add info about wins, team points, and element points
+for team in np.unique(season_df.string_team):
     
+    team_df = season_df.loc[season_df.string_team == team]
+    
+    for match in np.unique(team_df.kickoff_time):
+        
+        match_df = team_df.loc[team_df.kickoff_time == match]
+        
+        temp_season.loc[match_df.index, "own_team_points"] = np.sum(match_df.total_points)       
+        
+        for element in range(1,5):
+            element_point_df = match_df.loc[(match_df.element_type == element) & (match_df.minutes > 60)]
+            element_df = match_df.loc[(match_df.element_type == element)]
+            temp_season.loc[element_df.index, 'own_element_points'] = np.mean(element_point_df.total_points)
+            
+season_df = pd.concat([season_df, temp_season], axis=1)
+
+own_keys = ['ict_index', 'influence', 'threat', 'creativity', 'bps', 'total_points', 'xP',
+       'expected_goals', 'expected_assists', 'expected_goal_involvements',
+       'expected_goals_conceded']
+
+selected = season_df.minutes == 0
+season_df.loc[selected, own_keys] = np.nan    
+
 elements_df = pd.DataFrame(js['elements'])
 current_names = (elements_df['first_name'] + ' ' + elements_df['second_name']).unique()
 current_positions = elements_df['element_type']
@@ -524,28 +628,6 @@ for name_ind, name in enumerate(all_names[:-1]):
 
 print('Done matching')
 
-#different events have different impacts on different player types
-# selected = season_df['element_type'] == 1
-# season_df.loc[selected, 'expected_goals'] = season_df.loc[selected, 'expected_goals']*10
-
-# selected = (season_df['element_type'] == 1) & ( (season_df['season'] == '2016-17') | (season_df['season'] == '2017-18') | (season_df['season'] == '2018-19') | (season_df['season'] == '2019-20') | (season_df['season'] == '2020-21') | (season_df['season'] == '2021-22') | (season_df['season'] == '2022-23') | (season_df['season'] == '2023-24'))
-# season_df.loc[selected, 'expected_goals'] = season_df.loc[selected, 'expected_goals']*6/10
-
-# selected = season_df['element_type'] == 1
-# season_df.loc[selected, 'expected_goals'] = season_df.loc[selected, 'expected_goals']*6
-
-# selected = np.logical_or(season_df['element_type'] == 1, season_df['element_type'] == 2)
-# season_df.loc[selected, 'expected_goals_conceded'] = season_df.loc[selected, 'expected_goals_conceded']*4
-
-# #midfielder loose one pont for goals conceded. so no change
-# selected = season_df['element_type'] == 3
-# season_df.loc[selected, 'expected_goals'] = season_df.loc[selected, 'expected_goals']*5
-
-# selected = season_df['element_type'] == 4
-# season_df.loc[selected, 'expected_goals'] = season_df.loc[selected, 'expected_goals']*4
-# season_df.loc[selected, 'expected_goals_conceded'] = 0
-
-# season_df.loc[:, 'expected_assists'] = season_df.loc[:, 'expected_assists']*3
 
 
 #calculate difficulties
@@ -566,33 +648,36 @@ season_df['other_difficulty'] = season_df["team_h_difficulty"].copy()
 season_df.loc[home, 'own_difficulty'] = season_df.loc[home, "team_h_difficulty"]
 season_df.loc[home, 'other_difficulty'] = season_df.loc[home, "team_a_difficulty"]
 
+#categories for dtype
 categorical_variables = ['element_type', 'string_team', 'season', 'names']
 season_df[categorical_variables] = season_df[categorical_variables].astype('category')
-
-dynamic_features = ['string_opp_team', 'transfers_in', 'transfers_out',
-       'was_home', 'own_difficulty', 'other_difficulty']#, 'difficulty']
-
-
 #add nan categories
 dynamic_categorical_variables = ['string_opp_team', 'own_difficulty',
         'other_difficulty'] #'difficulty',
 
-int_variables = ['minutes', 'total_points', 'was_home', 'bps']
-season_df[int_variables] = season_df[int_variables].astype('int')
+int_variables = ['minutes', 'total_points', 'was_home', 'bps', 'own_team_points']
+season_df[int_variables] = season_df[int_variables].astype('Int64')
 
-float_variables = ['transfers_in', 'transfers_out', 'threat']
+float_variables = ['transfers_in', 'transfers_out', 'threat', 'own_element_points', 'xP', 'expected_goals', 'expected_assists',
+'expected_goal_involvements', 'expected_goals_conceded', 'creativity', 'ict_index', 'influence']
 season_df[float_variables] = season_df[float_variables].astype('float')
 
 
+
+#how variables are includedvariables
+#always included. also for current weak
+dynamic_features = ['string_opp_team', 'transfers_in', 'transfers_out',
+       'was_home', 'own_difficulty', 'other_difficulty']#, 'difficulty']
+
 #features that I don't have access to in advance.
+#included for all windows, but not current
 temporal_features = ['minutes', 'ict_index', 'influence', 'threat', 'creativity', 'bps',
        'total_points', 'xP', 'expected_goals', 'expected_assists',
-       'expected_goal_involvements', 'expected_goals_conceded', 'own_team_points']
-
+       'expected_goal_involvements', 'expected_goals_conceded', 'own_team_points', 'own_element_points']
+#included once
 temporal_single_features = ['points_per_game', 'points_per_played_game']
-
-
 #total_points, minutes, kickoff time not for prediction
+#included once
 fixed_features = ['total_points', 'minutes', 'kickoff_time', 'element_type', 'string_team', 'season', 'names']
 
 
@@ -676,36 +761,69 @@ for k in range(temporal_window):
         train[opponent_feature] = train[opponent_feature].astype(opp_cats)
   
     
-  
+from time import process_time
+t1_start = process_time() 
+
 #add in data about the opponent   
-opponent_names = [str(k) + 'opp_team_points' for k in range(temporal_window)]  
-temp_train = pd.DataFrame(index=train.index, columns=opponent_names)
+opponent_point_names = [str(k) + 'opp_team_points' for k in range(temporal_window)]  
+opponent_element_names = [str(k) + 'opp_element_points' for k in range(temporal_window)]  
+
+temp_train = pd.DataFrame(index=train.index, columns=opponent_point_names + opponent_element_names)
      
-for name in season_df.names.unique():
+
+for opponent_club in season_df.string_opp_team.unique():
     
-    selected_ind = season_df.names == name
+    opp_selected = season_df.string_opp_team == opponent_club
     
-    #get matches of opponents
-    opponents = season_df.loc[selected_ind, 'string_opp_team']
-    kickoff_times = season_df.loc[selected_ind, 'kickoff_time']
-    
-    for ind, opp, time in zip(opponents.index, opponents, kickoff_times):
-        #find opponent to the opponent's points k matches 
-        opp_selected = (season_df['string_team'] == opp) & (season_df['kickoff_time'] < time)
+    #loop through all matches 
+    for kickoff in np.unique(season_df.loc[opp_selected, 'kickoff_time']):
+        
+        #find all matches of the opponent before the current match
+        opp_match_selected =  opp_selected & (season_df['kickoff_time'] < kickoff)
             
         #find the unique kickoff times
-        first_indices = season_df.loc[opp_selected].drop_duplicates(subset='kickoff_time', keep='first').index
+        first_indices = season_df.loc[opp_match_selected].drop_duplicates(subset='kickoff_time', keep='first').index
         
-        full_ooop = np.full(len(opponent_names), np.nan)
-        opponents_of_opponents_points = season_df.loc[first_indices[-temporal_window:], "opp_team_points"]
+        full_ooop = np.full(len(opponent_point_names), np.nan)
+        
+        opponents_of_opponents_points = season_df.loc[first_indices[-temporal_window:], "own_team_points"]
+        
         if len(opponents_of_opponents_points):
             full_ooop[-len(opponents_of_opponents_points):] = opponents_of_opponents_points
         
-        temp_train.loc[ind, opponent_names] = full_ooop
+        relevant_players =  opp_selected & (season_df['kickoff_time'] == kickoff)
+        temp_train.loc[relevant_players, opponent_point_names] = full_ooop[::-1]
         
+        
+        for element_type in range(1,5):       
+            #find all matches of the opponent before the current match
+            opp_elem_selected =  opp_selected & (season_df['kickoff_time'] < kickoff) & (season_df['element_type'] == element_type)
+                
+            #find the unique kickoff times
+            first_indices = season_df.loc[opp_elem_selected].drop_duplicates(subset='kickoff_time', keep='first').index
+            
+            full_oooep = [np.nan] * len(opponent_element_names)
+            
+            opponents_of_opponents_elements = season_df.loc[first_indices[-temporal_window:], "own_element_points"]
+            
+            if len(opponents_of_opponents_points):
+                full_oooep[-len(opponents_of_opponents_elements):] = opponents_of_opponents_elements
+            
+            relevant_elements =  opp_selected & (season_df['kickoff_time'] == kickoff) & (season_df['element_type'] == element_type)
+            temp_train.loc[relevant_elements, opponent_element_names] = full_oooep[::-1]
+
+
+t1_stop = process_time()
+ 
+print("Elapsed time:", (t1_stop - t1_start)/60) 
+
 #set dtype
-for col in temp_train.columns:
+for col in opponent_point_names:
     temp_train[col] = temp_train[col].astype('Int64')
+    
+for col in opponent_element_names:
+    temp_train[col] = temp_train[col].astype('float')
+    
             
 train = pd.concat([train, temp_train], axis=1)            
 
@@ -1365,7 +1483,7 @@ elif method == 'xgboost':
     
     min_eval_fraction = len(np.unique(cv_stratify))/cv_X.shape[0]
 
-    space={'max_depth': hp.quniform("max_depth", 1, 600, 1), #try to decrease from 45 to 10?
+    space={'max_depth': hp.quniform("max_depth", 1, 750, 1), #try to decrease from 45 to 10?
             'min_split_loss': hp.uniform('min_split_loss', 0, 40),
             'reg_lambda' : hp.uniform('reg_lambda', 0, 100),
             'reg_alpha': hp.uniform('reg_alpha', 0.01, 120),
@@ -1381,7 +1499,7 @@ elif method == 'xgboost':
             'max_delta_step': hp.uniform('max_delta_step', 0, 250),
             'grow_policy': hp.choice('grow_policy', grow_policy), #111
             'max_leaves': hp.quniform('max_leaves', 0, 2500, 1),
-            'max_bin':  hp.quniform('max_bin', 2, 50, 1),
+            'max_bin':  hp.quniform('max_bin', 2, 100, 1),
             'temporal_window': hp.quniform('temporal_window', 0, temporal_window+1, 1),
         }
 
@@ -1564,6 +1682,6 @@ elif method == 'xgboost':
         pickle.dump(summary, open(model_path, 'wb'))
     
         xgb.plot_importance(model, importance_type='gain',
-                        max_num_features=40, show_values=False)
+                        max_num_features=20, show_values=False)
         plt.show()
 

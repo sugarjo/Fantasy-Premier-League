@@ -4,7 +4,7 @@ points_per_game_treshold = -1
 
 exclude_team = []
 
-exclude_players = ['Solanke', 'Armstong', 'Watkins', 'Duran', 'Forster', 'Broja', 'Beto', 'Lindstrøm', 'Harrison', 'Evanilson', 'Jørgensen', 'Adama', 'Martinelli', 'Amadou Onana', 'Tsimikas', 'Areola', 'Nedeljkovic', 'Barkley', 'Walker', 'Trippier', 'Doku', 'Aké', 'Lamptey', 'Barnes', 'Maddison', 'Quansah', 'Dúbravka', 'Stones', 'Disasi']
+exclude_players = ['Solanke', 'Armstong', 'Watkins', 'Duran', 'Forster', 'Broja', 'Lindstrøm', 'Harrison', 'Evanilson', 'Jørgensen', 'Adama', 'Amadou Onana', 'Tsimikas', 'Fabianski', 'Nedeljkovic', 'Barkley', 'Walker', 'Trippier', 'Doku', 'Aké', 'Lamptey', 'Barnes', 'Maddison', 'Quansah', 'Dúbravka', 'Stones', 'Disasi']
 include_players = []
 
 do_not_exclude_players = []
@@ -22,11 +22,11 @@ wildcard = False
 skip_gw = [34]
 
 benchboost_gw = 33
-tripple_captain_gw = 25
+tripple_captain_gw = 24
 
-assistant_manager_gw = 36
+assistant_manager_gw = 44
 assistant_manager_team = 'LIV'
-assistant_manager_price = 0
+assistant_manager_price = 1.5
 
 force_90 = []
 
@@ -36,7 +36,7 @@ manual_pred = 1
 #                  }
 manual_blanks = {}
 
-string = '{"picks":[{"element":185,"position":1,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":1,"selling_price":48,"purchase_price":48},{"element":311,"position":2,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":72,"purchase_price":71},{"element":335,"position":3,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":59,"purchase_price":59},{"element":36,"position":4,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":46,"purchase_price":46},{"element":23,"position":5,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":68,"purchase_price":68},{"element":328,"position":6,"multiplier":2,"is_captain":true,"is_vice_captain":false,"element_type":3,"selling_price":132,"purchase_price":127},{"element":348,"position":7,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":92,"purchase_price":92},{"element":398,"position":8,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":76,"purchase_price":75},{"element":364,"position":9,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":55,"purchase_price":54},{"element":252,"position":10,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":4,"selling_price":56,"purchase_price":55},{"element":401,"position":11,"multiplier":1,"is_captain":false,"is_vice_captain":true,"element_type":4,"selling_price":92,"purchase_price":90},{"element":488,"position":12,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":1,"selling_price":43,"purchase_price":43},{"element":355,"position":13,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":45,"purchase_price":46},{"element":187,"position":14,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":42,"purchase_price":42},{"element":306,"position":15,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":4,"selling_price":55,"purchase_price":55}],"picks_last_updated":"2025-01-25T10:22:18.046900Z","chips":[{"id":4,"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"id":5,"status_for_entry":"available","played_by_entry":[],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"id":3,"status_for_entry":"available","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer","is_pending":false},{"id":2,"status_for_entry":"available","played_by_entry":[],"name":"wildcard","number":1,"start_event":20,"stop_event":38,"chip_type":"transfer","is_pending":false}],"transfers":{"cost":4,"status":"cost","limit":2,"made":2,"bank":23,"value":994}}'
+string = '{"picks":[{"element":235,"position":1,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":1,"selling_price":51,"purchase_price":51},{"element":311,"position":2,"multiplier":1,"is_captain":false,"is_vice_captain":true,"element_type":2,"selling_price":72,"purchase_price":71},{"element":335,"position":3,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":59,"purchase_price":59},{"element":36,"position":4,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":46,"purchase_price":46},{"element":328,"position":5,"multiplier":2,"is_captain":true,"is_vice_captain":false,"element_type":3,"selling_price":132,"purchase_price":127},{"element":23,"position":6,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":68,"purchase_price":68},{"element":398,"position":7,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":75,"purchase_price":75},{"element":348,"position":8,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":92,"purchase_price":92},{"element":306,"position":9,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":4,"selling_price":54,"purchase_price":55},{"element":252,"position":10,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":4,"selling_price":55,"purchase_price":55},{"element":401,"position":11,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":4,"selling_price":92,"purchase_price":90},{"element":185,"position":12,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":1,"selling_price":47,"purchase_price":48},{"element":364,"position":13,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":55,"purchase_price":54},{"element":187,"position":14,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":42,"purchase_price":42},{"element":355,"position":15,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":44,"purchase_price":46}],"picks_last_updated":"2025-02-09T08:22:44.185567Z","chips":[{"id":2,"status_for_entry":"available","played_by_entry":[],"name":"wildcard","number":1,"start_event":20,"stop_event":38,"chip_type":"transfer","is_pending":false},{"id":3,"status_for_entry":"available","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer","is_pending":false},{"id":4,"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"id":5,"status_for_entry":"played","played_by_entry":[24],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"id":6,"status_for_entry":"available","played_by_entry":[],"name":"manager","number":1,"start_event":24,"stop_event":38,"chip_type":"transfer","is_pending":false}],"transfers":{"cost":4,"status":"cost","limit":1,"made":0,"bank":15,"value":998}}'
 
 
 season = '2024-25'
@@ -52,6 +52,7 @@ from datetime import datetime, timedelta
 from joblib import Parallel, delayed
 import random
 import xgboost as xgb
+from datetime import datetime
 
 from pandas.api.types import CategoricalDtype
 
@@ -173,7 +174,7 @@ print('current gameweek: ' + str(current_gameweek))
 
 print('predicting:')
 #get statistics for the x next gameweeks
-df_future_games = pd.DataFrame(columns=['gameweek', 'team_h', 'team_a', 'difficulty_diff'])
+df_future_games = pd.DataFrame(columns=['gameweek', 'team_h', 'team_a', 'difficulty_diff', 'kickoff_time'])
 benchboost = []
 tripple_captain = []
 assistant_manager = []
@@ -190,7 +191,7 @@ for i in range(jump_rounds, rounds_to_value+jump_rounds):
     else:
         tripple_captain.append(False)
         
-    if assistant_manager_gw <= this_gw+2 and assistant_manager >= this_gw:
+    if assistant_manager_gw >= this_gw-2 and  assistant_manager_gw <= this_gw:
         assistant_manager.append(True)
     else:
         assistant_manager.append(False)
@@ -203,10 +204,11 @@ for i in range(jump_rounds, rounds_to_value+jump_rounds):
     url = 'https://fantasy.premierleague.com/api/fixtures' + '?event=' + str(this_gw)
     r = requests.get(url)
     gw = r.json()
-
+    
     for game in gw:
+        timestamp = datetime.strptime(game['kickoff_time'], '%Y-%m-%dT%H:%M:%SZ')
         #positive home values == difficult games
-        add_frame = pd.DataFrame({'gameweek': this_gw, 'gameweek_ind': i-jump_rounds, 'team_h': int(game['team_h']), 'team_a': int(game['team_a']), 'difficulty_diff': int(game['team_h_difficulty']) - int(game['team_a_difficulty']), 'difficulty_home': int(game['team_h_difficulty']), 'difficulty_away': int(game['team_a_difficulty'])}, index = [0])
+        add_frame = pd.DataFrame({'gameweek': this_gw, 'gameweek_ind': i-jump_rounds, 'team_h': int(game['team_h']), 'team_a': int(game['team_a']), 'difficulty_diff': int(game['team_h_difficulty']) - int(game['team_a_difficulty']), 'difficulty_home': int(game['team_h_difficulty']), 'difficulty_away': int(game['team_a_difficulty']), 'kickoff_time': timestamp}, index = [0])
         df_future_games = pd.concat([df_future_games, add_frame])
 
 slim_elements_df['form'] = slim_elements_df['form'].astype(float)
@@ -242,13 +244,10 @@ with open(model_path, 'rb') as f:
     
 
 predictions = []
-    
-    
-    
-    
 
 result = summary["model"]
 hyperparamaters = summary["hyperparameters"]
+temporal_window = int(hyperparamaters["temporal_window"])
 
 train_X = summary["train_features"]
 all_rows = summary["all_rows"]
@@ -285,14 +284,15 @@ predictions = []
 dynamic_categorical_variables = ['string_opp_team', 'own_difficulty',
        'other_difficulty'] #'difficulty',
 
-int_variables = ['minutes', 'total_points', 'was_home', 'bps']
+int_variables = ['minutes', 'total_points', 'was_home', 'bps', 'own_team_points']
 
 float_variables = ['transfers_in', 'transfers_out', 'threat']
 
 #features that I don't have access to in advance.
+#opp_team_points included because it already calculate in model
 temporal_features = ['minutes', 'ict_index', 'influence', 'threat', 'creativity', 'bps',
        'total_points', 'xP', 'expected_goals', 'expected_assists',
-       'expected_goal_involvements', 'expected_goals_conceded', 'own_team_points']
+       'expected_goal_involvements', 'expected_goals_conceded', 'own_team_points', 'own_element_points']
        #'points_per_game', 'points_per_played_game']
 
 temporal_single_features = ['points_per_game', 'points_per_played_game']
@@ -314,20 +314,29 @@ for df_name in slim_elements_df.iterrows():
 
     # if df_name[1].second_name == 'C.Richards':
     #     print(df_name)
-    # ind=418
+    # ind=12
     # df_name = (ind, slim_elements_df.iloc[ind])
+    
+    element_type = df_name[1].element_type 
 
-    if not selected_players[df_name[0]]:
+    if (not selected_players[df_name[0]]) and (element_type < 5):
         team = int(df_name[1].team)
         position = int(df_name[1].element_type)
         first_name = df_name[1].first_name
         second_name = df_name[1].second_name
         name = first_name + ' ' + second_name
         player_id =  df_name[1].id
+        element_type = df_name[1].element_type  
 
         url = 'https://fantasy.premierleague.com/api/element-summary/' + str(player_id)
-        r = requests.get(url)
-        player = r.json()
+        downloaded = False
+        while not downloaded:
+            try:
+                r = requests.get(url)
+                player = r.json()
+                downloaded = True
+            except:
+                time.sleep(30)
 
         # player_games = pd.DataFrame(player['history'])
 
@@ -362,12 +371,13 @@ for df_name in slim_elements_df.iterrows():
             print(name, ': seto to zero. Does not exist in game database. Have no historical data')
             is_estimated = True
             #just take some random data to make the script work
-            predicting_df = all_rows.iloc[-38:]
+            predicting_df = all_rows.iloc[-(temporal_window+1+rounds_to_value):]
 
         else:
             is_estimated = False
             selected = all_rows.names == name
             predicting_df = all_rows.loc[selected]
+            predicting_df = predicting_df.iloc[-(temporal_window+1+rounds_to_value):]
 
         #build prediction_matrix
         #matches with team
@@ -425,6 +435,7 @@ for df_name in slim_elements_df.iterrows():
                 new_row['string_team'] = string_names[game[1].team_a-1]
 
             new_row['difficulty'] = diff_difficulty[game_idx]
+            new_row['kickoff_time'] = game[1]['kickoff_time']
 
             sum_transfers = sum(elements_df.transfers_in_event)
             if gw_idx == 0 and sum_transfers > 0:
@@ -439,7 +450,7 @@ for df_name in slim_elements_df.iterrows():
         #for each week iteration
         category_names  = [fixed_features]
 
-        for k in range(int(hyperparamaters["temporal_window"])):
+        for k in range(int(temporal_window)):
 
 
             temporal_names = [str(k) + s for s in temporal_features]
@@ -481,31 +492,67 @@ for df_name in slim_elements_df.iterrows():
                     print('CHECK', col)
 
             predicting_df = pd.concat([predicting_df, temp_train], axis=1)
-
-
-
-            #add in data about the opponent   
-            opponent_names = [str(k) + 'opp_team_points' for k in range(temporal_window)]  
-            temp_train = pd.DataFrame(index=predicting_df.index, columns=opponent_names)
-                
-            #get matches of opponents
-            opponents = predicting_df['string_opp_team']
-            kickoff_times = season_df['kickoff_time']
             
-            for ind, opp, time in zip(opponents.index, opponents, kickoff_times):
-                #find opponent to the opponent's points k matches 
-                opp_selected = (predicting_df['string_team'] == opp) & (predicting_df['kickoff_time'] < time)
-                    
-                #find the unique kickoff times
-                first_indices = predicting_df.loc[opp_selected].drop_duplicates(subset='kickoff_time', keep='first').index
+            
+            
+        #add in data about the opponent   
+        opponent_point_names = [str(k) + 'opp_team_points' for k in range(temporal_window)]  
+        opponent_element_names = [str(k) + 'opp_element_points' for k in range(temporal_window)]  
+        
+        for ind, game in enumerate(predicting_df.iloc[-(game_idx+1):].iterrows()):
+        
+            index = [game[0]]
+    
+            temp_train = pd.DataFrame(index=index, columns=opponent_point_names + opponent_element_names)
+                 
+            opponent_club =  game[1]['string_opp_team']
                 
-                full_ooop = np.full(len(opponent_names), np.nan)
-                opponents_of_opponents_points = predicting_df.loc[first_indices[-temporal_window:], "opp_team_points"]
-                if len(opponents_of_opponents_points):
-                    full_ooop[-len(opponents_of_opponents_points):] = opponents_of_opponents_points
+            opp_selected = all_rows.string_opp_team == opponent_club
+            
+            kick_off = game[1]['kickoff_time']
                 
-                predicting_df.loc[ind, opponent_names] = full_ooop
+            #find all matches of the opponent before the current match
+            opp_match_selected =  opp_selected #& (all_rows['kickoff_time'] < kickoff)
+             
+            #find the unique kickoff times
+            first_indices = all_rows.loc[opp_match_selected].drop_duplicates(subset='kickoff_time', keep='first').index
+            
+            full_ooop = pd.Series([pd.NA] * len(opponent_point_names), dtype="Int64")
+            
+            opponents_of_opponents_points = all_rows.loc[first_indices[-temporal_window:], "own_team_points"]
+            opponents_of_opponents_points = opponents_of_opponents_points.shift(-ind)
+            if len(opponents_of_opponents_points):
+                full_ooop[-len(opponents_of_opponents_points):] = opponents_of_opponents_points
 
+            temp_train.loc[index, opponent_point_names] = full_ooop[::-1]
+            
+            
+            opp_elem_selected =  opp_selected & (all_rows['element_type'] == element_type)
+                  
+            first_indices = all_rows.loc[opp_elem_selected].drop_duplicates(subset='kickoff_time', keep='first').index
+            
+            full_oooep = [np.nan] * len(opponent_element_names)
+            
+            opponents_of_opponents_elements = all_rows.loc[first_indices[-temporal_window:], "own_element_points"]
+            opponents_of_opponents_elements = opponents_of_opponents_elements.shift(-ind)
+            if len(opponents_of_opponents_points):
+                full_oooep[-len(opponents_of_opponents_elements):] = opponents_of_opponents_elements
+            
+            temp_train.loc[index, opponent_element_names] = full_oooep[::-1]
+    
+    
+            #set dtype
+            for col in opponent_point_names:
+                temp_train[col] = temp_train[col].astype('Int64')
+                
+            for col in opponent_element_names:
+                temp_train[col] = temp_train[col].astype('float')
+                
+                
+                
+                    
+        predicting_df = pd.concat([predicting_df, temp_train], axis=1)   
+        
         #include also train_X to maintain categories. use inner to not get too many columns
         #predicting_df = pd.concat([train_X, predicting_df], ignore_index = True, join='inner')
         common_columns = train_X.columns.intersection(predicting_df.columns)
