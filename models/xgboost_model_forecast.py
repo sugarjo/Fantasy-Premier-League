@@ -37,9 +37,12 @@ except:
 
 
 optimize = True
-continue_optimize = False
+continue_optimize = True
 
-check_last_data = False
+if optimize:
+    check_last_data = False
+else:
+    check_last_data = True
 
 #add 2. one because threshold is bounded upwards. and one because last week is only partly encoded (dynamic features)
 temporal_window = 25
