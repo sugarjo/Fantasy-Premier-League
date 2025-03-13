@@ -1496,12 +1496,12 @@ elif method == 'xgboost':
             'colsample_bytree': hp.uniform('colsample_bytree', 0.1, 1),
             'colsample_bylevel': hp.uniform('colsample_bylevel', 0.1, 1),
             'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
-            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 75, 1700, 1),
+            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 75, 1750, 1),
             'eval_fraction': hp.uniform('eval_fraction', min_eval_fraction, 0.2),
             'n_estimators': hp.quniform('n_estimators', 2, 12000, 1),
-            'max_delta_step': hp.uniform('max_delta_step', 0, 300),
+            'max_delta_step': hp.uniform('max_delta_step', 0, 20),
             'grow_policy': hp.choice('grow_policy', grow_policy), #111
-            'max_leaves': hp.quniform('max_leaves', 0, 3000, 1),
+            'max_leaves': hp.quniform('max_leaves', 0, 1000, 1),
             'max_bin':  hp.quniform('max_bin', 2, 125, 1),
             'temporal_window': hp.quniform('temporal_window', 0, temporal_window+1, 1),
         }
