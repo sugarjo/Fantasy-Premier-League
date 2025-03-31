@@ -36,7 +36,7 @@ except:
     main_directory = r'C:\Users\jorgels\Git\Fantasy-Premier-League'
 
 
-optimize = True
+optimize = False
 continue_optimize = True
 
 if optimize:
