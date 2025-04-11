@@ -36,7 +36,7 @@ except:
     main_directory = r'C:\Users\jorgels\Git\Fantasy-Premier-League'
 
 
-optimize = False
+optimize = True
 continue_optimize = True
 
 if optimize:
@@ -1486,8 +1486,8 @@ elif method == 'xgboost':
     
     min_eval_fraction = len(np.unique(cv_stratify))/cv_X.shape[0]
 
-    space={'max_depth': hp.quniform("max_depth", 1, 800, 1), #try to decrease from 45 to 10?
-            'min_split_loss': hp.uniform('min_split_loss', 0, 40),
+    space={'max_depth': hp.quniform("max_depth", 1, 800, 1),
+            'min_split_loss': hp.uniform('min_split_loss', 0, 40), #log?
             'reg_lambda' : hp.uniform('reg_lambda', 0, 150),
             'reg_alpha': hp.uniform('reg_alpha', 0.01, 120),
             'min_child_weight' : hp.uniform('min_child_weight', 0, 375),
@@ -1496,13 +1496,13 @@ elif method == 'xgboost':
             'colsample_bytree': hp.uniform('colsample_bytree', 0.1, 1),
             'colsample_bylevel': hp.uniform('colsample_bylevel', 0.1, 1),
             'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
-            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 75, 1750, 1),
-            'eval_fraction': hp.uniform('eval_fraction', min_eval_fraction, 0.2),
-            'n_estimators': hp.quniform('n_estimators', 2, 12000, 1),
+            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 75, 2000, 1),
+            'eval_fraction': hp.loguniform('eval_fraction', np.log(min_eval_fraction), np.log(0.2)),
+            'n_estimators': hp.quniform('n_estimators', 2, 15000, 1),
             'max_delta_step': hp.uniform('max_delta_step', 0, 20),
             'grow_policy': hp.choice('grow_policy', grow_policy), #111
             'max_leaves': hp.quniform('max_leaves', 0, 1000, 1),
-            'max_bin':  hp.quniform('max_bin', 2, 125, 1),
+            'max_bin':  hp.qloguniform('max_bin', np.log(2), np.log(125), 1),
             'temporal_window': hp.quniform('temporal_window', 0, temporal_window+1, 1),
         }
 
