@@ -4,15 +4,15 @@ points_per_game_treshold = -1
 
 exclude_team = []
 
-exclude_players = ['Son', 'Aina', 'Alex Moreno', 'Diogo J.', 'Kelleher', 'Wilson', 'Alexander-Arnold', 'Disasi', 'Maddison', 'Gabriel', 'A. Garcia', 'Foden', 'Keane', 'Amass', 'J.Timber', 'Doku', 'Trossard', 'Cresswell', 'Kamara', 'Bogarde', 'Gündogan', 'Danso', 'Willock', 'Hill', 'Olsen', 'Cash', 'Van de Ven', 'Tsimikas', 'Mings', 'Martinelli', 'Hall', 'Gakpo', 'Matheus N.', 'Lewis-Skelly', 'Barnes', 'Calafiori', 'Ortega Moreno', 'Nwaneri', 'De Bruyne', 'Nketiah', 'Trippier', 'Lewis', 'Davies', 'Digne']
+exclude_players = ['Trossard', 'Martinelli', 'J.Timber', 'Maatsen', 'Savinho', 'Son', 'Aina', 'Alex Moreno', 'Diogo J.', 'Kelleher', 'Wilson', 'Alexander-Arnold', 'Gabriel', 'A. Garcia', 'Foden', 'Keane', 'Amass', 'Doku', 'Cresswell', 'Kamara', 'Bogarde', 'Danso', 'Willock', 'Hill', 'Olsen', 'Cash', 'Van de Ven', 'Tsimikas', 'Mings', 'Hall', 'Gakpo', 'Matheus N.', 'Calafiori', 'Ortega Moreno', 'Nwaneri', 'De Bruyne', 'Nketiah', 'Lewis', 'Davies']
 include_players = []
 
-do_not_exclude_players = ['Saka']
+do_not_exclude_players = []
 
 do_not_transfer_out = []
 
-rounds_to_value = 8
-trans_per_week = 4
+rounds_to_value = 6
+trans_per_week = 3
 save_transfers_for_later = False
 jump_rounds = 0
 #if you also want to evaluate players on the bench. in case of uncertain starters.
@@ -22,7 +22,8 @@ wildcard = False
 
 skip_gw = [34]
 
-benchboost_gw = 35
+benchboost_gw = 35 #35: 338, 36: 340, 38: 340
+
 tripple_captain_gw = 24
 
 assistant_manager_gw = 31
@@ -38,7 +39,8 @@ manual_pred = 1
 manual_blank = {37: {'MCI': 'BOU', 'AVL': 'TOT'}}
 manual_double = {36: {'MCI': ['BOU', 3, 4], 'AVL': ['TOT', 3, 3]}}
 
-string = '{"picks":[{"element":413,"position":1,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":1,"selling_price":49,"purchase_price":49},{"element":3,"position":2,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":64,"purchase_price":64},{"element":415,"position":3,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":54,"purchase_price":54},{"element":335,"position":4,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":58,"purchase_price":58},{"element":585,"position":5,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":56,"purchase_price":56},{"element":336,"position":6,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":64,"purchase_price":64},{"element":633,"position":7,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":60,"purchase_price":60},{"element":328,"position":8,"multiplier":2,"is_captain":true,"is_vice_captain":false,"element_type":3,"selling_price":132,"purchase_price":127},{"element":755,"position":9,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":4,"selling_price":74,"purchase_price":73},{"element":207,"position":10,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":4,"selling_price":75,"purchase_price":75},{"element":401,"position":11,"multiplier":1,"is_captain":false,"is_vice_captain":true,"element_type":4,"selling_price":92,"purchase_price":90},{"element":47,"position":12,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":1,"selling_price":50,"purchase_price":50},{"element":54,"position":13,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":55,"purchase_price":55},{"element":350,"position":14,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":60,"purchase_price":59},{"element":504,"position":15,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":44,"purchase_price":44}],"picks_last_updated":"2025-04-01T18:57:54.942754Z","chips":[{"id":2,"status_for_entry":"played","played_by_entry":[30],"name":"wildcard","number":1,"start_event":20,"stop_event":38,"chip_type":"transfer","is_pending":false},{"id":3,"status_for_entry":"available","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer","is_pending":false},{"id":4,"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"id":5,"status_for_entry":"played","played_by_entry":[24],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"id":6,"status_for_entry":"available","played_by_entry":[],"name":"manager","number":1,"start_event":24,"stop_event":38,"chip_type":"transfer","is_pending":false}],"transfers":{"cost":4,"status":"cost","limit":1,"made":0,"bank":9,"value":1000}}'
+string = '{"picks":[{"element":47,"position":1,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":1,"selling_price":50,"purchase_price":50},{"element":350,"position":2,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":60,"purchase_price":59},{"element":8,"position":3,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":48,"purchase_price":48},{"element":335,"position":4,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":58,"purchase_price":58},{"element":585,"position":5,"multiplier":1,"is_captain":false,"is_vice_captain":true,"element_type":3,"selling_price":57,"purchase_price":56},{"element":633,"position":6,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":60,"purchase_price":60},{"element":54,"position":7,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":55,"purchase_price":55},{"element":328,"position":8,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":132,"purchase_price":127},{"element":755,"position":9,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":4,"selling_price":74,"purchase_price":73},{"element":207,"position":10,"multiplier":2,"is_captain":true,"is_vice_captain":false,"element_type":4,"selling_price":76,"purchase_price":75},{"element":401,"position":11,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":4,"selling_price":92,"purchase_price":90},{"element":413,"position":12,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":1,"selling_price":49,"purchase_price":49},{"element":336,"position":13,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":63,"purchase_price":64},{"element":504,"position":14,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":44,"purchase_price":44},{"element":415,"position":15,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":54,"purchase_price":54},{"element":741,"position":16,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":5,"selling_price":8,"purchase_price":8}],"picks_last_updated":"2025-04-16T14:02:53.929783Z","chips":[{"id":2,"status_for_entry":"played","played_by_entry":[30],"name":"wildcard","number":1,"start_event":20,"stop_event":38,"chip_type":"transfer","is_pending":false},{"id":3,"status_for_entry":"unavailable","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer","is_pending":false},{"id":4,"status_for_entry":"unavailable","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"id":5,"status_for_entry":"played","played_by_entry":[24],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"id":6,"status_for_entry":"active","played_by_entry":[31],"name":"manager","number":1,"start_event":24,"stop_event":38,"chip_type":"transfer","is_pending":false}],"transfers":{"cost":4,"status":"cost","limit":2,"made":0,"bank":17,"value":999}}'
+
 
 season = '2024-25'
 previous_season = '2023-24'
@@ -301,29 +303,6 @@ min_y = np.min(train_X['0total_points'])
 predictions = []
 
 
-# #features that I don't have access to in advance.
-# temporal_features = ['minutes', 'ict_index', 'influence', 'threat', 'creativity', 'bps',
-#        'total_points', 'xP', 'expected_goals', 'expected_assists',
-#        'expected_goal_involvements', 'expected_goals_conceded']
-#        #'points_per_game', 'points_per_played_game']
-
-# temporal_single_features = ['points_per_game', 'points_per_played_game']
-
-# #total_points, minutes, kickoff time not for prediction
-# fixed_features = ['element_type', 'string_team', 'season', 'names']
-
-# dynamic_features = ['string_opp_team', 'transfers_in', 'transfers_out',
-#        'was_home', 'own_difficulty', 'other_difficulty']#, 'difficulty']
-
-# #add nan categories
-# dynamic_categorical_variables = ['string_opp_team', 'own_difficulty',
-#        'other_difficulty'] #'difficulty',
-
-# #add nan categories
-# dynamic_float_variables = ['transfers_in', 'transfers_out', 'was_home']
-
-
-
 #add nan categories
 dynamic_categorical_variables = ['string_opp_team', 'own_difficulty',
        'other_difficulty'] #'difficulty',
@@ -356,13 +335,14 @@ keep_ind = np.where((slim_elements_df['now_cost']==min_keeper_price) & (slim_ele
 #predict future points
 for df_name in slim_elements_df.iterrows():
 
-    # if df_name[1].second_name == 'C.Richards':
+    # if df_name[1].second_name == 'Henry-Francis':
     #     print(df_name)
-    # ind=271
+    # ind=35
     # df_name = (ind, slim_elements_df.iloc[ind])
     
     element_type = df_name[1].element_type 
-
+    
+    #with loose criteria all pass.
     if (not selected_players[df_name[0]]) and (element_type < 5):
         team = int(df_name[1].team)
         position = int(df_name[1].element_type)
@@ -622,6 +602,22 @@ for df_name in slim_elements_df.iterrows():
         #predicting_df = predicting_df.iloc[-keep_rows:]
 
         predicting_df = predicting_df.reset_index(drop=True)
+        
+        
+        #make sure all categories in pred is present in train. to avoid predictions outside of feature space
+        for column in predicting_df.columns:
+            if pd.api.types.is_categorical_dtype(predicting_df[column]):
+                # Get the values in the current column of val_X
+                val_values = predicting_df[column]
+                
+                # Check which values are present in the corresponding column of cv_X
+                mask = val_values.isin(train_X[column])
+                
+                if sum(~mask) > 0:                
+                    # Set values that are not present in cv_X[column] to NaN
+                    predicting_df.loc[~mask, column] = np.nan
+                    
+                    print(val_values[~mask] + ': does not exist in training data. Set to nan')
 
 
 
@@ -671,8 +667,8 @@ for df_name in slim_elements_df.iterrows():
     
                 if sum(all_rows.names == name) == 0 and (game_idx == 0):
                     if should_have_trainingdata:
-                        print(name + ': does not exist in training data. Set to 0')
-                    estimated = 0
+                        print(name + ': does not exist in training data. Shoul dbe predicted without name')
+                    #estimated = 0
                 elif game_idx == 0:
                     #check that categorical is the same!
                     # Identify categorical columns
@@ -1117,6 +1113,8 @@ def check_random_transfers(i):
     random_sum_points = np.zeros((len(point_diff), len(probabilities[0])))
 
     for j in range(batch_size):
+        
+        print(j)
 
         #loop to get a transfer combination
         random_transfer_ind = []
@@ -1235,53 +1233,53 @@ def check_random_transfers(i):
             
             
             
-            #DELAY transfers as much as possible
-            
-            delayed_trans_ind = random_best_transfer.copy()
-            
-            if not unlimited_transfers:
-    
-                for t in range(len(random_best_transfer)-1):
-                    
-                    #print(t)
-                    
-                    #do not check if nan:
-                    if delayed_trans_ind[t] == len(transfers)-1:
-                        continue
-                    
-                    #print('Move from', t)
-                    
-                    #loop tp the next transfers
-                    for potential_move_to in range(t+1, len(delayed_trans_ind)):
-                        
-                        #print(t, potential_move_to)
-                        
-                        delayed_trans_ind = random_best_transfer.copy()
-                        
-                        if delayed_trans_ind[potential_move_to] == len(transfers)-1:
-                            
-                            #print('Check move to', potential_move_to)
+        #DELAY transfers as much as possible
+        
+        delayed_trans_ind = random_best_transfer.copy()
+        
+        if not unlimited_transfers:
 
-                            #switch transfer
-                            delayed_trans_ind[potential_move_to] = delayed_trans_ind[t]
-                            delayed_trans_ind[t] = len(transfers)-1
+            for t in range(len(random_best_transfer)-1):
+                
+                #print(t)
+                
+                #do not check if nan:
+                if delayed_trans_ind[t] == len(transfers)-1:
+                    continue
+                
+                #print('Move from', t)
+                
+                #loop tp the next transfers
+                for potential_move_to in range(t+1, len(delayed_trans_ind)):
+                    
+                    #print(t, potential_move_to)
+                    
+                    delayed_trans_ind = random_best_transfer.copy()
+                    
+                    if delayed_trans_ind[potential_move_to] == len(transfers)-1:
+                        
+                        #print('Check move to', potential_move_to)
+
+                        #switch transfer
+                        delayed_trans_ind[potential_move_to] = delayed_trans_ind[t]
+                        delayed_trans_ind[t] = len(transfers)-1
+                        
+                        delayed_transfers = []
+                        for k in range(len(delayed_trans_ind)):
+                            delayed_transfers.append(transfers[delayed_trans_ind[k]])
+                        
+                        delayed_point, delayed_price, delayed_all_point = objective(delayed_transfers, free_transfers)
+                        
+                        if delayed_point >= random_best_point:
+                            #print('Move', t, 'to', potential_move_to)
                             
-                            delayed_transfers = []
-                            for k in range(len(delayed_trans_ind)):
-                                delayed_transfers.append(transfers[delayed_trans_ind[k]])
+                            random_best_point = delayed_point.copy()
+                            random_best_all_point = delayed_all_point.copy()
+                            random_best_transfer = delayed_trans_ind.copy()
                             
-                            delayed_point, delayed_price, delayed_all_point = objective(delayed_transfers, free_transfers)
-                            
-                            if delayed_point >= random_best_point:
-                                #print('Move', t, 'to', potential_move_to)
-                                
-                                random_best_point = delayed_point.copy()
-                                random_best_all_point = delayed_all_point.copy()
-                                random_best_transfer = delayed_trans_ind.copy()
-                                
-                                break
-                            
-                            else:
+                            break
+                        
+                            #else:
                                 #print('Did not move', t, 'to', potential_move_to)
                             
     

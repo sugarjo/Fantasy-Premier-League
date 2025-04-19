@@ -175,64 +175,6 @@ for folder in folders:
 
                     if last_games > 0:
                         result[i+1] = last_point/last_games
-                    
-                    # fixture = player_df.iloc[i].fixture
-                    # opp_team = player_df.iloc[i].opponent_team
-                    
-                    # #how many points own team got. same as points opponent team gave away
-                    # team_players = (df_gw.fixture == fixture) & (df_gw.opponent_team == opp_team)
-                    # own_team_points.append(sum(df_gw.total_points[team_players]))
-                    
-                    
-                    
-                    
-                    # element_type = df_player.loc[df_player.element == player].element_type.iloc[0]
-                    # team = df_player.loc[df_player.element == player].string_team.iloc[0]
-                    # similar_elements = (df_player.element_type == element_type) & (df_player.string_team == team)
-                    # similar_elements_id = df_player.element[similar_elements].values
-                    
-                    # type_points = []
-                    # for el_id in similar_elements_id:
-                    #     player_ind = (df_gw.element == el_id) & (df_gw.fixture == fixture)
-                    #     if sum(player_ind) > 0:
-                    #         if df_gw.loc[player_ind].minutes.iloc[0] > 0:
-                    #             type_points.append(df_gw.loc[player_ind].total_points)
-                    
-                    # if len(type_points) > 0:
-                    #     own_element_points.append(np.mean(type_points))
-                    # else:
-                    #     own_element_points.append(np.nan)  
-                        
-                        
-                    # # Extract the element_type and team once
-                    # player_info = df_player[df_player.element == player].iloc[0]
-                    # element_type = player_info.element_type
-                    # team = player_info.string_team
-                    
-                    # # Filter similar elements by element_type and team in one go
-                    # similar_elements_mask = (df_player.element_type == element_type) & (df_player.string_team == team)
-                    # similar_elements_id = df_player.element[similar_elements_mask]
-                    
-                    # # Vectorized operation to select rows from df_gw
-                    # type_points_mask = df_gw[df_gw.element.isin(similar_elements_id) & (df_gw.fixture == fixture) & (df_gw.minutes > 0)]
-                    # type_points = type_points_mask.total_points.values
-                    
-                    # # Append mean of type_points to own_element_points, handling empty lists
-                    # own_element_points.append(np.mean(type_points) if len(type_points) > 0 else np.nan)
-                    
-                    # if player_df.iloc[i].team_h_score > player_df.iloc[i].team_a_score:
-                    #     if player_df.iloc[i].was_home:
-                    #         wins.append('win')
-                    #     else:
-                    #         wins.append('loss')
-                    # elif player_df.iloc[i].team_h_score < player_df.iloc[i].team_a_score:
-                    #     if player_df.iloc[i].was_home:
-                    #         wins.append('loss')
-                    #     else:
-                    #         wins.append('win')
-                    # else:
-                    #     wins.append('draw')
-                        
 
                 df_gw.loc[selected_ind, 'points_per_game'] = points_per_game.values.copy()
                 df_gw.loc[selected_ind, 'points_per_played_game'] = result[:-1].copy()
@@ -286,8 +228,8 @@ if check_last_data:
     
     for element in js["elements"]:
         
-        if element["web_name"] == 'Pickford':
-            k = element
+        # if element["web_name"] == 'Pickford':
+        #     k = element
         
 
         if np.double(element["form"]) > 0:
@@ -404,30 +346,7 @@ if check_last_data:
                 print('Matched too many', element["web_name"])
             if matched == 0:
                 print('Matched too few', element["web_name"])
-                
-# #calculate own and opp team points:
-# # Calculate values on my own
-# selected = np.isnan(season_df.own_team_points)
-
-# for (ind, row) in season_df.loc[selected].iterrows():
-
-#     # selected_ind = row['element'] == player
-#     # player_df = season_df.loc[selected_ind]
-        
-#     fixture = row.fixture
-#     opp_team = row.string_opp_team
-#     kick_off = row.kickoff_time
-#     element_type = row.element_type
-    
-#     team_players = (season_df.fixture == fixture) & (season_df.kickoff_time == kick_off) & (season_df.string_opp_team == opp_team)
-#     own_team_points = sum(season_df.total_points[team_players])
-    
-#     season_df.loc[ind, 'own_team_points'] = own_team_points
-    
-#     team_element = (season_df.fixture == fixture) & (season_df.kickoff_time == kick_off) & (season_df.string_opp_team == opp_team)  & (season_df.element_type == element_type) & (season_df.minutes > 0)
-#     own_team_points = np.mean(season_df.total_points[team_element])
-    
-    
+                    
 
 season_df = season_df.reset_index()
 
@@ -763,10 +682,6 @@ for k in range(temporal_window):
         opponent_feature = str(k-1) + 'string_opp_team'
         train[opponent_feature] = train[opponent_feature].astype(opp_cats)
   
-    
-from time import process_time
-t1_start = process_time() 
-
 #add in data about the opponent   
 opponent_point_names = [str(k) + 'opp_team_points' for k in range(temporal_window)]  
 opponent_element_names = [str(k) + 'opp_element_points' for k in range(temporal_window)]  
@@ -815,10 +730,6 @@ for opponent_club in season_df.string_opp_team.unique():
             relevant_elements =  opp_selected & (season_df['kickoff_time'] == kickoff) & (season_df['element_type'] == element_type)
             temp_train.loc[relevant_elements, opponent_element_names] = full_oooep[::-1]
 
-
-t1_stop = process_time()
- 
-print("Elapsed time:", (t1_stop - t1_start)/60) 
 
 #set dtype
 for col in opponent_point_names:
@@ -927,6 +838,8 @@ def objective_xgboost(space):
         'max_bin':  int(space['max_bin']),
         'disable_default_eval_metric': 1
         }
+    
+   #print(space)
 
     #remove weaks that we don't need.
     # Define the threshold
@@ -939,8 +852,30 @@ def objective_xgboost(space):
     # interaction_constraints = get_interaction_constraints(objective_X.columns)
     # pars['interaction_constraints'] = str(interaction_constraints)
 
-    fit_X, eval_X, fit_y, eval_y, fit_sample_weights, eval_sample_weights = train_test_split(objective_X, cv_y, cv_sample_weights, test_size=space['eval_fraction'], stratify=cv_stratify, random_state=42)
+    #fit_X, eval_X, fit_y, eval_y, fit_sample_weights, eval_sample_weights = train_test_split(objective_X, cv_y, cv_sample_weights, test_size=space['eval_fraction'], stratify=cv_stratify, random_state=42)
 
+    
+    val_ind = int(objective_X.shape[0]*space['eval_fraction'])
+    
+    fit_X = objective_X.iloc[:-val_ind].copy()
+    eval_X =  objective_X.iloc[-val_ind:].copy()
+    fit_y =  cv_y.iloc[:-val_ind].copy()
+    eval_y = cv_y.iloc[-val_ind:].copy()
+    fit_sample_weights =  cv_sample_weights[:-val_ind].copy()
+    eval_sample_weights = cv_sample_weights[-val_ind:].copy()
+    
+    #make sure all categories in val_x is present in cv_x
+    for column in eval_X.columns:
+        if pd.api.types.is_categorical_dtype(eval_X[column]):
+            # Get the values in the current column of val_X
+            val_values = eval_X[column]
+            
+            # Check which values are present in the corresponding column of cv_X
+            mask = val_values.isin(fit_X[column])
+            
+            # Set values that are not present in cv_X[column] to NaN
+            eval_X.loc[~mask, column] = np.nan
+    
     dfit = xgb.DMatrix(data=fit_X, label=fit_y, enable_categorical=True, weight=fit_sample_weights)
     deval = xgb.DMatrix(data=eval_X, label=eval_y, enable_categorical=True, weight=eval_sample_weights)
 
@@ -967,65 +902,6 @@ def objective_xgboost(space):
 
     return {'loss': val_error, 'status': STATUS_OK }
 
-#optimize hyperparameters
-def val_xgboost(space):
-
-    pars = {
-        'max_depth': int(space['max_depth']),
-        'min_split_loss': space['min_split_loss'],
-        'reg_lambda': space['reg_lambda'],
-        'reg_alpha': space['reg_alpha'],
-        'min_child_weight': int(space['min_child_weight']),
-        'learning_rate': space['learning_rate'],
-        'subsample': space['subsample'],
-        'colsample_bytree': space['colsample_bytree'],
-        'colsample_bylevel': space['colsample_bylevel'],
-        'colsample_bynode': space['colsample_bynode'],
-        'max_delta_step': space['max_delta_step'],
-        'grow_policy': space['grow_policy'],
-        'max_leaves': int(space['max_leaves']),
-        'tree_method': 'hist',
-        'max_bin':  int(space['max_bin']),
-        'disable_default_eval_metric': 1
-        }
-
-    #remove weaks that we don't need.
-    # Define the threshold
-    threshold = int(space['temporal_window'])
-
-    # Filter the columns based on the defined function
-    columns_to_keep = [col for col in cv_X.columns if should_keep_column(col, threshold)]
-    objective_X = cv_X[columns_to_keep]   
-    
-    # interaction_constraints = get_interaction_constraints(objective_X.columns)
-    # pars['interaction_constraints'] = str(interaction_constraints)
-
-    fit_X, eval_X, fit_y, eval_y, fit_sample_weights, eval_sample_weights = train_test_split(objective_X, cv_y, cv_sample_weights, test_size=space['eval_fraction'], stratify=cv_stratify, random_state=42)
-
-    dfit = xgb.DMatrix(data=fit_X, label=fit_y, enable_categorical=True, weight=fit_sample_weights)
-    deval = xgb.DMatrix(data=eval_X, label=eval_y, enable_categorical=True, weight=eval_sample_weights)
-
-    evals = [(dfit, 'train'), (deval, 'eval')]
-
-    model = xgb.train(
-    params=pars,
-    num_boost_round=int(space['n_estimators']),
-    early_stopping_rounds= int(space['early_stopping_rounds']),
-    dtrain=dfit,
-    evals=evals,
-    custom_metric=custom_metric,
-    obj=custom_objective,
-    verbose_eval=False  # Set to True if you want to see detailed logging
-        )
-
-    objective_val_X = val_X[columns_to_keep]
-    dval_objective = xgb.DMatrix(data= objective_val_X, label=val_y, enable_categorical=True, weight=val_sample_weights)
-
-    val_pred = model.predict(dval_objective)
-    val_error = mean_squared_error(val_y,  val_pred)
-    #val_error = mean_squared_error(val_y,  (10**val_pred) - 1 + min_y)
-
-    return val_error
 
 def get_interaction_constraints(features):
     #set up interaction_constraints
@@ -1480,17 +1356,54 @@ elif method == 'xgboost':
 
     
     #get an validation set for fitting
-    cv_X, val_X, cv_y, val_y, cv_sample_weights, val_sample_weights, cv_stratify, _= train_test_split(train_X, train_y, sample_weights, stratify, test_size=0.20, stratify=stratify, random_state=42)    
+    #cv_X, val_X, cv_y, val_y, cv_sample_weights, val_sample_weights, cv_stratify, _= train_test_split(train_X, train_y, sample_weights, stratify, test_size=0.20, stratify=stratify, random_state=42)
+    #use half of the current seasons's data as test set   
+    
+    #20% for testing
+    val_ind = int(train_X.shape[0]*0.2)
+    
+    cv_X = train_X.iloc[:-val_ind].copy()
+    val_X =  train_X.iloc[-val_ind:].copy()
+    cv_y =  train_y.iloc[:-val_ind].copy()
+    val_y = train_y.iloc[-val_ind:].copy()
+    cv_sample_weights =  sample_weights[:-val_ind].copy()
+    val_sample_weights = sample_weights[-val_ind:].copy()
+    cv_stratify = stratify[:-val_ind].copy()
+    
+    
+    #make sure all categories in val_x is present in cv_x
+    for column in val_X.columns:
+        if pd.api.types.is_categorical_dtype(val_X[column]):
+            # Get the values in the current column of val_X
+            val_values = val_X[column]
+            
+            # Check which values are present in the corresponding column of cv_X
+            mask = val_values.isin(cv_X[column])
+            
+            # Set values that are not present in cv_X[column] to NaN
+            val_X.loc[~mask, column] = np.nan
     
     grow_policy = ['depthwise', 'lossguide']
     
+    
+    #make sure that there will be data left for evaluation in the final model
+    cv_season =  cv_X.iloc[-1].season
+    selected_cv =  cv_X.season == cv_season
+    cv_fraction = sum(selected_cv) / cv_X.shape[0]   
+    
+    current_season =  train_X.iloc[-1].season
+    selected_test =  train_X.season == current_season
+    current_fraction = sum(selected_test) / train_X.shape[0]   
+    
+    #max_eval_fraction = np.min([cv_fraction, current_fraction])
     min_eval_fraction = len(np.unique(cv_stratify))/cv_X.shape[0]
+    
 
     space={'max_depth': hp.quniform("max_depth", 1, 800, 1),
             'min_split_loss': hp.uniform('min_split_loss', 0, 40), #log?
             'reg_lambda' : hp.uniform('reg_lambda', 0, 150),
-            'reg_alpha': hp.uniform('reg_alpha', 0.01, 120),
-            'min_child_weight' : hp.uniform('min_child_weight', 0, 375),
+            'reg_alpha': hp.uniform('reg_alpha', 0.01, 150),
+            'min_child_weight' : hp.uniform('min_child_weight', 0, 400),
             'learning_rate': hp.uniform('learning_rate', 0, 0.05),
             'subsample': hp.uniform('subsample', 0.1, 1),
             'colsample_bytree': hp.uniform('colsample_bytree', 0.1, 1),
@@ -1498,10 +1411,10 @@ elif method == 'xgboost':
             'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
             'early_stopping_rounds': hp.quniform("early_stopping_rounds", 75, 2000, 1),
             'eval_fraction': hp.loguniform('eval_fraction', np.log(min_eval_fraction), np.log(0.2)),
-            'n_estimators': hp.quniform('n_estimators', 2, 15000, 1),
+            'n_estimators': hp.quniform('n_estimators', 2, 17000, 1),
             'max_delta_step': hp.uniform('max_delta_step', 0, 20),
             'grow_policy': hp.choice('grow_policy', grow_policy), #111
-            'max_leaves': hp.quniform('max_leaves', 0, 1000, 1),
+            'max_leaves': hp.quniform('max_leaves', 0, 1100, 1),
             'max_bin':  hp.qloguniform('max_bin', np.log(2), np.log(125), 1),
             'temporal_window': hp.quniform('temporal_window', 0, temporal_window+1, 1),
         }
@@ -1536,7 +1449,8 @@ elif method == 'xgboost':
     
     old_hyperparams["grow_policy"] = grow_policy[old_hyperparams["grow_policy"]]
     
-    old_loss = val_xgboost(old_hyperparams)
+    loss = objective_xgboost(old_hyperparams)
+    old_loss = loss['loss']
     
     print('Old loss: ', old_loss)
         
@@ -1595,7 +1509,8 @@ elif method == 'xgboost':
 
         # new_loss =  new_trials.best_trial["result"]["loss"]
         
-        new_loss = val_xgboost(new_hyperparams)
+        loss = objective_xgboost(new_hyperparams)
+        new_loss = loss['loss']
         
         print('New loss: ', new_loss)
         
@@ -1662,8 +1577,33 @@ elif method == 'xgboost':
         columns_to_keep = [col for col in train_X.columns if should_keep_column(col, threshold)]
         objective_X = train_X[columns_to_keep]
     
-        fit_X, eval_X, fit_y, eval_y, fit_sample_weights, eval_sample_weights = train_test_split(objective_X, train_y, sample_weights, test_size=space['eval_fraction'], stratify=stratify, random_state=42)
-    
+        #fit_X, eval_X, fit_y, eval_y, fit_sample_weights, eval_sample_weights = train_test_split(objective_X, train_y, sample_weights, test_size=space['eval_fraction'], stratify=stratify, random_state=42)
+        
+        current_season = objective_X.iloc[-1].season
+        selected_test = objective_X.season == current_season
+        
+        val_ind = int(objective_X.shape[0]*space['eval_fraction'])
+        
+        fit_X = objective_X.iloc[:-val_ind].copy()
+        eval_X =  objective_X.iloc[-val_ind:].copy()
+        fit_y =  train_y.iloc[:-val_ind].copy()
+        eval_y = train_y.iloc[-val_ind:].copy()
+        fit_sample_weights =  sample_weights[:-val_ind].copy()
+        eval_sample_weights = sample_weights[-val_ind:].copy()
+        
+        #make sure all categories in val_x is present in cv_x
+        for column in eval_X.columns:
+            if pd.api.types.is_categorical_dtype(eval_X[column]):
+                # Get the values in the current column of val_X
+                val_values = eval_X[column]
+                
+                # Check which values are present in the corresponding column of cv_X
+                mask = val_values.isin(fit_X[column])
+                
+                # Set values that are not present in cv_X[column] to NaN
+                eval_X.loc[~mask, column] = np.nan
+        
+        
         dfit = xgb.DMatrix(data=fit_X, label=fit_y, enable_categorical=True, weight=fit_sample_weights)
         deval = xgb.DMatrix(data=eval_X, label=eval_y, enable_categorical=True, weight=eval_sample_weights)
     
