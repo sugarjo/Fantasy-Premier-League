@@ -36,7 +36,7 @@ except:
     main_directory = r'C:\Users\jorgels\Git\Fantasy-Premier-League'
 
 
-optimize = True
+optimize = False
 continue_optimize = True
 
 if optimize:
@@ -45,7 +45,7 @@ else:
     check_last_data = True
 
 #add 2. one because threshold is bounded upwards. and one because last week is only partly encoded (dynamic features)
-temporal_window = 25
+temporal_window = 26
 
 season_start = False
 
