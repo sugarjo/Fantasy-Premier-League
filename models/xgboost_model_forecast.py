@@ -36,8 +36,8 @@ except:
     main_directory = r'C:\Users\jorgels\Git\Fantasy-Premier-League'
 
 
-optimize = False
-continue_optimize = True
+optimize = True
+continue_optimize = False
 
 if optimize:
     check_last_data = False
@@ -45,7 +45,8 @@ else:
     check_last_data = True
 
 #add 2. one because threshold is bounded upwards. and one because last week is only partly encoded (dynamic features)
-temporal_window = 26
+#+1. e.g 28 here means 29 later.
+temporal_window = 28
 
 season_start = False
 
@@ -570,6 +571,9 @@ season_df['other_difficulty'] = season_df["team_h_difficulty"].copy()
 season_df.loc[home, 'own_difficulty'] = season_df.loc[home, "team_h_difficulty"]
 season_df.loc[home, 'other_difficulty'] = season_df.loc[home, "team_a_difficulty"]
 
+
+
+
 #categories for dtype
 categorical_variables = ['element_type', 'string_team', 'season', 'names']
 season_df[categorical_variables] = season_df[categorical_variables].astype('category')
@@ -586,21 +590,36 @@ season_df[float_variables] = season_df[float_variables].astype('float')
 
 
 
+#ALL VARIABLES:
 #how variables are includedvariables
 #always included. also for current weak
 dynamic_features = ['string_opp_team', 'transfers_in', 'transfers_out',
-       'was_home', 'own_difficulty', 'other_difficulty']#, 'difficulty']
+        'was_home', 'own_difficulty', 'other_difficulty']#, 'difficulty']
 
 #features that I don't have access to in advance.
 #included for all windows, but not current
 temporal_features = ['minutes', 'ict_index', 'influence', 'threat', 'creativity', 'bps',
-       'total_points', 'xP', 'expected_goals', 'expected_assists',
-       'expected_goal_involvements', 'expected_goals_conceded', 'own_team_points', 'own_element_points']
+        'total_points', 'xP', 'expected_goals', 'expected_assists',
+        'expected_goal_involvements', 'expected_goals_conceded', 'own_team_points', 'own_element_points']
 #included once
 temporal_single_features = ['points_per_game', 'points_per_played_game']
 #total_points, minutes, kickoff time not for prediction
 #included once
 fixed_features = ['total_points', 'minutes', 'kickoff_time', 'element_type', 'string_team', 'season', 'names']
+
+
+# #how variables are included
+# #always included. also for current weak
+# dynamic_features = ['string_opp_team', 'was_home', 'own_difficulty']#, 'difficulty']
+
+# #features that I don't have access to in advance.
+# #included for all windows, but not current
+# temporal_features = []
+# #included once
+# temporal_single_features = ['points_per_played_game']
+# #total_points, minutes, kickoff time not for prediction
+# #included once
+# fixed_features = ['total_points', 'minutes', 'kickoff_time', 'string_team', 'names']
 
 
 #initiate train dataframe
@@ -838,8 +857,6 @@ def objective_xgboost(space):
         'max_bin':  int(space['max_bin']),
         'disable_default_eval_metric': 1
         }
-    
-   #print(space)
 
     #remove weaks that we don't need.
     # Define the threshold
@@ -1386,21 +1403,23 @@ elif method == 'xgboost':
     grow_policy = ['depthwise', 'lossguide']
     
     
-    #make sure that there will be data left for evaluation in the final model
-    cv_season =  cv_X.iloc[-1].season
-    selected_cv =  cv_X.season == cv_season
-    cv_fraction = sum(selected_cv) / cv_X.shape[0]   
+    # #make sure that there will be data left for evaluation in the final model
+    # cv_season =  cv_X.iloc[-1].season
+    # selected_cv =  cv_X.season == cv_season
+    # cv_fraction = sum(selected_cv) / cv_X.shape[0]   
     
-    current_season =  train_X.iloc[-1].season
-    selected_test =  train_X.season == current_season
-    current_fraction = sum(selected_test) / train_X.shape[0]   
+    # current_season =  train_X.iloc[-1].season
+    # selected_test =  train_X.season == current_season
+    # current_fraction = sum(selected_test) / train_X.shape[0]   
     
     #max_eval_fraction = np.min([cv_fraction, current_fraction])
-    min_eval_fraction = len(np.unique(cv_stratify))/cv_X.shape[0]
+    
+    
+    min_eval_fraction = 1/cv_X.shape[0] #len(np.unique(cv_stratify))/cv_X.shape[0]
     
 
-    space={'max_depth': hp.quniform("max_depth", 1, 800, 1),
-            'min_split_loss': hp.uniform('min_split_loss', 0, 40), #log?
+    space={'max_depth': hp.quniform("max_depth", 1, 1000, 1),
+            'min_split_loss': hp.uniform('min_split_loss', 0, 45), #log?
             'reg_lambda' : hp.uniform('reg_lambda', 0, 150),
             'reg_alpha': hp.uniform('reg_alpha', 0.01, 150),
             'min_child_weight' : hp.uniform('min_child_weight', 0, 400),
@@ -1412,7 +1431,7 @@ elif method == 'xgboost':
             'early_stopping_rounds': hp.quniform("early_stopping_rounds", 75, 2000, 1),
             'eval_fraction': hp.loguniform('eval_fraction', np.log(min_eval_fraction), np.log(0.2)),
             'n_estimators': hp.quniform('n_estimators', 2, 17000, 1),
-            'max_delta_step': hp.uniform('max_delta_step', 0, 20),
+            'max_delta_step': hp.uniform('max_delta_step', 0, 25),
             'grow_policy': hp.choice('grow_policy', grow_policy), #111
             'max_leaves': hp.quniform('max_leaves', 0, 1100, 1),
             'max_bin':  hp.qloguniform('max_bin', np.log(2), np.log(125), 1),
@@ -1460,7 +1479,7 @@ elif method == 'xgboost':
         max_evals = 500000
     
     if continue_optimize:
-        hyperparam_path = main_directory + '\models\hyperparams_temp.pkl'
+        hyperparam_path = main_directory + '\models\hyperparams_test.pkl'
         with open(hyperparam_path, 'rb') as f:
             trials = pickle.load(f)
     else:
@@ -1481,7 +1500,8 @@ elif method == 'xgboost':
 
             print(best_hyperparams)
             
-            hyperparam_path = main_directory + '\models\hyperparams_temp.pkl'
+            #hyperparam_path = main_directory + '\models\hyperparams_temp.pkl'
+            hyperparam_path = main_directory + '\models\hyperparams_test.pkl'
             pickle.dump(trials, open(hyperparam_path, "wb"))
             
     else:      
@@ -1627,4 +1647,33 @@ elif method == 'xgboost':
         xgb.plot_importance(model, importance_type='gain',
                         max_num_features=20, show_values=False)
         plt.show()
+        
+        
+        
+        data =  model.get_score()
+
+
+        # Dictionary to hold summed values and counts
+        summed_values = {}
+        count_values = {}
+
+        for key, value in data.items():
+            # Extract the part of the string after the digits
+            new_key = ''.join(filter(lambda x: not x.isdigit(), key))  # or use re.sub(r'^\d+', '', key)
+            
+            # Sum the values and count the occurrences for the same new_key
+            if new_key in summed_values:
+                summed_values[new_key] += value
+                count_values[new_key] += 1
+            else:
+                summed_values[new_key] = value
+                count_values[new_key] = 1
+
+        # Calculate mean for each key
+        mean_values = {k: summed_values[k] / count_values[k] for k in summed_values}
+
+        # Sort the mean values by their values
+        sorted_mean_values = dict(sorted(mean_values.items(), key=lambda item: item[1]))
+
+        print(sorted_mean_values)  # Output will be sorted by mean values
 
