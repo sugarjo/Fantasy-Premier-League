@@ -4,10 +4,10 @@ points_per_game_treshold = -1
 
 exclude_team = []
 
-exclude_players = ['Quansah', 'Gordon', 'Martinelli', 'J.Timber', 'Savinho', 'Son', 'Aina', 'Alex Moreno', 'Diogo J.', 'Kelleher', 'Wilson', 'Gabriel', 'A. Garcia', 'Foden', 'Keane', 'Amass', 'Doku', 'Cresswell', 'Kamara', 'Bogarde', 'Danso', 'Willock', 'Hill', 'Olsen', 'Cash', 'Van de Ven', 'Tsimikas', 'Hall', 'Gakpo', 'Matheus N.', 'Calafiori', 'Ortega Moreno', 'Nwaneri', 'Nketiah', 'Lewis', 'Davies']
+exclude_players = ['Robertson', 'Quansah', 'Gordon', 'Martinelli', 'J.Timber', 'Savinho', 'Son', 'Aina', 'Alex Moreno', 'Diogo J.', 'Kelleher', 'Wilson', 'Gabriel', 'A. Garcia', 'Foden', 'Keane', 'Amass', 'Doku', 'Cresswell', 'Kamara', 'Bogarde', 'Danso', 'Willock', 'Hill', 'Olsen', 'Cash', 'Van de Ven', 'Tsimikas', 'Hall', 'Gakpo', 'Matheus N.', 'Calafiori', 'Ederson', 'Nwaneri', 'Nketiah', 'Lewis', 'Davies']
 include_players = []
 #tarkowski
-do_not_exclude_players = []
+do_not_exclude_players = ['Alexander-Arnold']
 
 do_not_transfer_out = []
 
@@ -39,7 +39,8 @@ manual_pred = 1
 manual_blank = {37: {'MCI': 'BOU', 'AVL': 'TOT'}}
 manual_double = {36: {'MCI': ['BOU', 3, 4], 'AVL': ['TOT', 3, 3]}}
 
-string = '{"picks":[{"element":47,"position":1,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":1,"selling_price":50,"purchase_price":50},{"element":350,"position":2,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":61,"purchase_price":59},{"element":8,"position":3,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":48,"purchase_price":48},{"element":361,"position":4,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":54,"purchase_price":54},{"element":585,"position":5,"multiplier":1,"is_captain":false,"is_vice_captain":true,"element_type":3,"selling_price":57,"purchase_price":56},{"element":633,"position":6,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":60,"purchase_price":60},{"element":54,"position":7,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":56,"purchase_price":55},{"element":328,"position":8,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":132,"purchase_price":127},{"element":16,"position":9,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":62,"purchase_price":62},{"element":755,"position":10,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":4,"selling_price":75,"purchase_price":73},{"element":207,"position":11,"multiplier":2,"is_captain":true,"is_vice_captain":false,"element_type":4,"selling_price":76,"purchase_price":75},{"element":413,"position":12,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":1,"selling_price":49,"purchase_price":49},{"element":335,"position":13,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":58,"purchase_price":58},{"element":401,"position":14,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":4,"selling_price":92,"purchase_price":90},{"element":504,"position":15,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":44,"purchase_price":44}],"picks_last_updated":"2025-04-18T06:41:12.363916Z","chips":[{"id":2,"status_for_entry":"played","played_by_entry":[30],"name":"wildcard","number":1,"start_event":20,"stop_event":38,"chip_type":"transfer","is_pending":false},{"id":3,"status_for_entry":"available","played_by_entry":[],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer","is_pending":false},{"id":4,"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"id":5,"status_for_entry":"played","played_by_entry":[24],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"id":6,"status_for_entry":"played","played_by_entry":[31],"name":"manager","number":1,"start_event":24,"stop_event":38,"chip_type":"transfer","is_pending":false}],"transfers":{"cost":4,"status":"cost","limit":1,"made":0,"bank":26,"value":992}}'
+string = '{"picks":[{"element":413,"position":1,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":1,"selling_price":49,"purchase_price":49},{"element":418,"position":2,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":56,"purchase_price":56},{"element":163,"position":3,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":54,"purchase_price":54},{"element":326,"position":4,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":53,"purchase_price":53},{"element":182,"position":5,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":106,"purchase_price":106},{"element":99,"position":6,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":80,"purchase_price":80},{"element":327,"position":7,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":75,"purchase_price":75},{"element":328,"position":8,"multiplier":2,"is_captain":true,"is_vice_captain":false,"element_type":3,"selling_price":132,"purchase_price":127},{"element":78,"position":9,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":57,"purchase_price":57},{"element":401,"position":10,"multiplier":1,"is_captain":false,"is_vice_captain":true,"element_type":4,"selling_price":93,"purchase_price":90},{"element":110,"position":11,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":4,"selling_price":65,"purchase_price":65},{"element":513,"position":12,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":1,"selling_price":42,"purchase_price":42},{"element":617,"position":13,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":4,"selling_price":58,"purchase_price":58},{"element":579,"position":14,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":41,"purchase_price":41},{"element":228,"position":15,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":38,"purchase_price":38}],"picks_last_updated":"2025-04-25T14:04:44.837734Z","chips":[{"id":2,"status_for_entry":"played","played_by_entry":[30],"name":"wildcard","number":1,"start_event":20,"stop_event":38,"chip_type":"transfer","is_pending":false},{"id":3,"status_for_entry":"active","played_by_entry":[34],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer","is_pending":false},{"id":4,"status_for_entry":"unavailable","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"id":5,"status_for_entry":"played","played_by_entry":[24],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"id":6,"status_for_entry":"played","played_by_entry":[31],"name":"manager","number":1,"start_event":24,"stop_event":38,"chip_type":"transfer","is_pending":false}],"transfers":{"cost":4,"status":"cost","limit":1,"made":0,"bank":2,"value":1011}}'
+
 
 season = '2024-25'
 previous_season = '2023-24'
@@ -327,10 +328,38 @@ dynamic_features = ['string_opp_team', 'transfers_in', 'transfers_out',
        'was_home', 'own_difficulty', 'other_difficulty']#, 'difficulty']
 
 
-selected = slim_elements_df.element_type == 1
-min_keeper_price = np.min(slim_elements_df.loc[selected, 'now_cost'])
-keep_ind = np.where((slim_elements_df['now_cost']==min_keeper_price) & (slim_elements_df.element_type == 1))[0][0]
-                
+
+
+#free hit
+keep_ind = []
+if rounds_to_value == 1 and wildcard:
+    for el in [1, 2, 3, 4]:
+        selected = slim_elements_df.element_type == el
+        min_keeper_price = np.min(slim_elements_df.loc[selected, 'now_cost'])
+        keep_ind.append(np.where((slim_elements_df['now_cost']==min_keeper_price) & (slim_elements_df.element_type == el))[0][0])
+        
+        if len(np.where((slim_elements_df['now_cost']==min_keeper_price) & (slim_elements_df.element_type == el))[0]) > 1 and el > 1:  
+            keep_ind.append(np.where((slim_elements_df['now_cost']==min_keeper_price) & (slim_elements_df.element_type == el))[0][1])
+    
+else:
+    selected = slim_elements_df.element_type == 1
+    min_keeper_price = np.min(slim_elements_df.loc[selected, 'now_cost'])
+    
+    keep_ind.append(np.where((slim_elements_df['now_cost']==min_keeper_price) & (slim_elements_df.element_type == 1))[0][0])
+              
+    
+# keep_ind = []
+# sort_ind = np.argsort(slim_elements_df.now_cost)
+# if rounds_to_value == 1 and wildcard:
+#     for el in [1, 2, 3, 4]:
+#         selected = slim_elements_df.iloc[sort_ind, slim_elements_df.keys() == 'element_type'] == el
+        
+#         keep_ind.append(sort_ind[selected['element_type']].iloc[0])
+        
+#         if el > 1:  
+#             keep_ind.append(sort_ind[selected].iloc[1])
+    
+    
 #predict future points
 for df_name in slim_elements_df.iterrows():
 
@@ -649,9 +678,9 @@ for df_name in slim_elements_df.iterrows():
 
             
             #keep a budget keeper
-            if df_name[0] == keep_ind:
-                #if estimated < 0.1:
-                estimated = 0.1
+            if df_name[0] in keep_ind:
+                if estimated < 0.1:
+                    estimated = 0.1
                     
                 if game_idx == 0:
                     print('Including because of low price:', df_name[1].web_name)

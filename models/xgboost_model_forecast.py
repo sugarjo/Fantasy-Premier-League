@@ -36,17 +36,18 @@ except:
     main_directory = r'C:\Users\jorgels\Git\Fantasy-Premier-League'
 
 
-optimize = True
+optimize = False
 continue_optimize = False
 
 if optimize:
     check_last_data = False
 else:
     check_last_data = True
+    
 
 #add 2. one because threshold is bounded upwards. and one because last week is only partly encoded (dynamic features)
 #+1. e.g 28 here means 29 later.
-temporal_window = 28
+temporal_window = 30
 
 season_start = False
 
@@ -1421,7 +1422,7 @@ elif method == 'xgboost':
     space={'max_depth': hp.quniform("max_depth", 1, 1000, 1),
             'min_split_loss': hp.uniform('min_split_loss', 0, 45), #log?
             'reg_lambda' : hp.uniform('reg_lambda', 0, 150),
-            'reg_alpha': hp.uniform('reg_alpha', 0.01, 150),
+            'reg_alpha': hp.uniform('reg_alpha', 0.01, 200),
             'min_child_weight' : hp.uniform('min_child_weight', 0, 400),
             'learning_rate': hp.uniform('learning_rate', 0, 0.05),
             'subsample': hp.uniform('subsample', 0.1, 1),
@@ -1479,7 +1480,7 @@ elif method == 'xgboost':
         max_evals = 500000
     
     if continue_optimize:
-        hyperparam_path = main_directory + '\models\hyperparams_test.pkl'
+        hyperparam_path = main_directory + '\models\hyperparams_temp.pkl'
         with open(hyperparam_path, 'rb') as f:
             trials = pickle.load(f)
     else:
@@ -1501,7 +1502,7 @@ elif method == 'xgboost':
             print(best_hyperparams)
             
             #hyperparam_path = main_directory + '\models\hyperparams_temp.pkl'
-            hyperparam_path = main_directory + '\models\hyperparams_test.pkl'
+            hyperparam_path = main_directory + '\models\hyperparams_temp.pkl'
             pickle.dump(trials, open(hyperparam_path, "wb"))
             
     else:      
@@ -1677,3 +1678,14 @@ elif method == 'xgboost':
 
         print(sorted_mean_values)  # Output will be sorted by mean values
 
+        # Plotting the sorted mean values
+        plt.figure(figsize=(10, 6))
+        plt.bar(sorted_mean_values.keys(), sorted_mean_values.values(), color='skyblue')
+        plt.xlabel('Labels')
+        plt.ylabel('Mean Values')
+        plt.title('Mean Values of Points Sorted')
+        plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
+        plt.tight_layout()  # Adjust layout to prevent clipping of labels
+
+        # Show the plot
+        plt.show()
