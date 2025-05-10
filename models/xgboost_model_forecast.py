@@ -37,7 +37,7 @@ except:
 
 
 optimize = False
-continue_optimize = False
+continue_optimize = True
 
 if optimize:
     check_last_data = False
@@ -1419,22 +1419,22 @@ elif method == 'xgboost':
     min_eval_fraction = 1/cv_X.shape[0] #len(np.unique(cv_stratify))/cv_X.shape[0]
     
 
-    space={'max_depth': hp.quniform("max_depth", 1, 1000, 1),
+    space={'max_depth': hp.quniform("max_depth", 1, 1100, 1),
             'min_split_loss': hp.uniform('min_split_loss', 0, 45), #log?
             'reg_lambda' : hp.uniform('reg_lambda', 0, 150),
-            'reg_alpha': hp.uniform('reg_alpha', 0.01, 200),
+            'reg_alpha': hp.uniform('reg_alpha', 0.01, 250),
             'min_child_weight' : hp.uniform('min_child_weight', 0, 400),
             'learning_rate': hp.uniform('learning_rate', 0, 0.05),
             'subsample': hp.uniform('subsample', 0.1, 1),
             'colsample_bytree': hp.uniform('colsample_bytree', 0.1, 1),
             'colsample_bylevel': hp.uniform('colsample_bylevel', 0.1, 1),
             'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
-            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 75, 2000, 1),
+            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 50, 2000, 1),
             'eval_fraction': hp.loguniform('eval_fraction', np.log(min_eval_fraction), np.log(0.2)),
             'n_estimators': hp.quniform('n_estimators', 2, 17000, 1),
             'max_delta_step': hp.uniform('max_delta_step', 0, 25),
             'grow_policy': hp.choice('grow_policy', grow_policy), #111
-            'max_leaves': hp.quniform('max_leaves', 0, 1100, 1),
+            'max_leaves': hp.quniform('max_leaves', 0, 1200, 1),
             'max_bin':  hp.qloguniform('max_bin', np.log(2), np.log(125), 1),
             'temporal_window': hp.quniform('temporal_window', 0, temporal_window+1, 1),
         }
@@ -1562,10 +1562,10 @@ elif method == 'xgboost':
     
         #train with all data
         best_cv_trial =  sorted_losses[best_best_ind]
-        print(losses[best_cv_trial])
+        print('Original loss:', losses[best_cv_trial])
     
         hyperparams = trials.trials[best_cv_trial]['misc']['vals']
-        print(hyperparams)
+        #print(hyperparams)
     
         space = {}
         for field, val in hyperparams.items():
@@ -1676,7 +1676,7 @@ elif method == 'xgboost':
         # Sort the mean values by their values
         sorted_mean_values = dict(sorted(mean_values.items(), key=lambda item: item[1]))
 
-        print(sorted_mean_values)  # Output will be sorted by mean values
+        #print(sorted_mean_values)  # Output will be sorted by mean values
 
         # Plotting the sorted mean values
         plt.figure(figsize=(10, 6))
@@ -1689,3 +1689,10 @@ elif method == 'xgboost':
 
         # Show the plot
         plt.show()
+        
+        train_data = xgb.DMatrix(data=objective_X, label=train_y, enable_categorical=True)
+        pred = model.predict(train_data)
+        
+        train_error = np.mean(np.abs((train_y - pred)**2))
+        
+        print('Train error:', train_error)
