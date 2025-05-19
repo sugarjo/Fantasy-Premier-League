@@ -2,6 +2,7 @@ import os
 import re
 import pickle
 import requests
+import random
 
 import pandas as pd
 import numpy as np
@@ -36,7 +37,7 @@ except:
     main_directory = r'C:\Users\jorgels\Git\Fantasy-Premier-League'
 
 
-optimize = False
+optimize = True
 continue_optimize = True
 
 if optimize:
@@ -858,6 +859,8 @@ def objective_xgboost(space):
         'max_bin':  int(space['max_bin']),
         'disable_default_eval_metric': 1
         }
+    
+    #print(space)
 
     #remove weaks that we don't need.
     # Define the threshold
@@ -871,16 +874,39 @@ def objective_xgboost(space):
     # pars['interaction_constraints'] = str(interaction_constraints)
 
     #fit_X, eval_X, fit_y, eval_y, fit_sample_weights, eval_sample_weights = train_test_split(objective_X, cv_y, cv_sample_weights, test_size=space['eval_fraction'], stratify=cv_stratify, random_state=42)
-
+    match_ind = pd.factorize(
+        objective_X[['string_team', 'was_home', 'string_opp_team', 'season']]
+        .apply(lambda row: '-'.join(row.astype(str)), axis=1)
+    )[0]
+        
+    #get 20% of those matches
+    # Step 1: Get unique integers using a set
+    unique_integers = list(set(match_ind))
     
-    val_ind = int(objective_X.shape[0]*space['eval_fraction'])
+    # Step 2: Calculate 20% of the unique integers
+    num_to_select = max(1, int(np.round(len(unique_integers) * space['eval_fraction'])))  # Ensure at least one is selected
     
-    fit_X = objective_X.iloc[:-val_ind].copy()
-    eval_X =  objective_X.iloc[-val_ind:].copy()
-    fit_y =  cv_y.iloc[:-val_ind].copy()
-    eval_y = cv_y.iloc[-val_ind:].copy()
-    fit_sample_weights =  cv_sample_weights[:-val_ind].copy()
-    eval_sample_weights = cv_sample_weights[-val_ind:].copy()
+    # Step 3: Randomly select 20% of the unique integers
+    random.seed(42)
+    random_sample = random.sample(unique_integers, num_to_select)
+    fits = [x in random_sample for x in match_ind]
+    evals = [x not in random_sample for x in match_ind]
+    
+    fit_X = objective_X.loc[fits ].copy()
+    eval_X =  objective_X.loc[evals].copy()
+    fit_y =  cv_y.loc[fits ].copy()
+    eval_y = cv_y.loc[evals].copy()
+    fit_sample_weights =  cv_sample_weights[fits].copy()
+    eval_sample_weights = cv_sample_weights[evals].copy()
+    
+    # val_ind = int(objective_X.shape[0]*space['eval_fraction'])
+    
+    # fit_X = objective_X.iloc[:-val_ind].copy()
+    # eval_X =  objective_X.iloc[-val_ind:].copy()
+    # fit_y =  cv_y.iloc[:-val_ind].copy()
+    # eval_y = cv_y.iloc[-val_ind:].copy()
+    # fit_sample_weights =  cv_sample_weights[:-val_ind].copy()
+    # eval_sample_weights = cv_sample_weights[-val_ind:].copy()
     
     #make sure all categories in val_x is present in cv_x
     for column in eval_X.columns:
@@ -1378,16 +1404,36 @@ elif method == 'xgboost':
     #use half of the current seasons's data as test set   
     
     #20% for testing
-    val_ind = int(train_X.shape[0]*0.2)
+    #get match indices
+        
+    match_ind = pd.factorize(
+        train_X[['string_team', 'was_home', 'string_opp_team', 'season']]
+        .apply(lambda row: '-'.join(row.astype(str)), axis=1)
+    )[0]
+        
+    #get 20% of those matches
+    # Step 1: Get unique integers using a set
+    unique_integers = list(set(match_ind))
     
-    cv_X = train_X.iloc[:-val_ind].copy()
-    val_X =  train_X.iloc[-val_ind:].copy()
-    cv_y =  train_y.iloc[:-val_ind].copy()
-    val_y = train_y.iloc[-val_ind:].copy()
-    cv_sample_weights =  sample_weights[:-val_ind].copy()
-    val_sample_weights = sample_weights[-val_ind:].copy()
-    cv_stratify = stratify[:-val_ind].copy()
+    # Step 2: Calculate 20% of the unique integers
+    num_to_select = max(1, int(len(unique_integers) * 0.20))  # Ensure at least one is selected
     
+    # Step 3: Randomly select 20% of the unique integers
+    random.seed(42)
+    random_sample = random.sample(unique_integers, num_to_select, )
+    vals = [x in random_sample for x in match_ind]
+    cvs = [x not in random_sample for x in match_ind]
+    
+    
+    #val_ind = int(train_X.shape[0]*0.2)
+    
+    cv_X = train_X.loc[cvs].copy()
+    val_X =  train_X.loc[vals].copy()
+    cv_y =  train_y.loc[cvs].copy()
+    val_y = train_y.loc[vals].copy()
+    cv_sample_weights =  sample_weights[cvs].copy()
+    val_sample_weights = sample_weights[vals].copy()
+    cv_stratify = stratify[cvs].copy()
     
     #make sure all categories in val_x is present in cv_x
     for column in val_X.columns:
@@ -1416,25 +1462,25 @@ elif method == 'xgboost':
     #max_eval_fraction = np.min([cv_fraction, current_fraction])
     
     
-    min_eval_fraction = 1/cv_X.shape[0] #len(np.unique(cv_stratify))/cv_X.shape[0]
+    min_eval_fraction = 1/(len(unique_integers) * 0.80)#len(np.unique(cv_stratify))/cv_X.shape[0]
     
 
     space={'max_depth': hp.quniform("max_depth", 1, 1100, 1),
-            'min_split_loss': hp.uniform('min_split_loss', 0, 45), #log?
-            'reg_lambda' : hp.uniform('reg_lambda', 0, 150),
-            'reg_alpha': hp.uniform('reg_alpha', 0.01, 250),
-            'min_child_weight' : hp.uniform('min_child_weight', 0, 400),
+            'min_split_loss': hp.uniform('min_split_loss', 0, 100), #log?
+            'reg_lambda' : hp.uniform('reg_lambda', 0, 200),
+            'reg_alpha': hp.uniform('reg_alpha', 0.01, 300),
+            'min_child_weight' : hp.uniform('min_child_weight', 0, 450),
             'learning_rate': hp.uniform('learning_rate', 0, 0.05),
             'subsample': hp.uniform('subsample', 0.1, 1),
             'colsample_bytree': hp.uniform('colsample_bytree', 0.1, 1),
             'colsample_bylevel': hp.uniform('colsample_bylevel', 0.1, 1),
             'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
-            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 50, 2000, 1),
-            'eval_fraction': hp.loguniform('eval_fraction', np.log(min_eval_fraction), np.log(0.2)),
+            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 10, 2000, 1),
+            'eval_fraction': hp.uniform('eval_fraction', min_eval_fraction, 1-min_eval_fraction),
             'n_estimators': hp.quniform('n_estimators', 2, 17000, 1),
-            'max_delta_step': hp.uniform('max_delta_step', 0, 25),
+            'max_delta_step': hp.uniform('max_delta_step', 0, 40),
             'grow_policy': hp.choice('grow_policy', grow_policy), #111
-            'max_leaves': hp.quniform('max_leaves', 0, 1200, 1),
+            'max_leaves': hp.quniform('max_leaves', 0, 1400, 1),
             'max_bin':  hp.qloguniform('max_bin', np.log(2), np.log(125), 1),
             'temporal_window': hp.quniform('temporal_window', 0, temporal_window+1, 1),
         }
@@ -1600,17 +1646,34 @@ elif method == 'xgboost':
     
         #fit_X, eval_X, fit_y, eval_y, fit_sample_weights, eval_sample_weights = train_test_split(objective_X, train_y, sample_weights, test_size=space['eval_fraction'], stratify=stratify, random_state=42)
         
-        current_season = objective_X.iloc[-1].season
-        selected_test = objective_X.season == current_season
+        match_ind = pd.factorize(
+            objective_X[['string_team', 'was_home', 'string_opp_team', 'season']]
+            .apply(lambda row: '-'.join(row.astype(str)), axis=1)
+        )[0]
+            
+        #get 20% of those matches
+        # Step 1: Get unique integers using a set
+        unique_integers = list(set(match_ind))
         
-        val_ind = int(objective_X.shape[0]*space['eval_fraction'])
+        # Step 2: Calculate 20% of the unique integers
+        num_to_select = int(len(unique_integers) * space['eval_fraction'])
         
-        fit_X = objective_X.iloc[:-val_ind].copy()
-        eval_X =  objective_X.iloc[-val_ind:].copy()
-        fit_y =  train_y.iloc[:-val_ind].copy()
-        eval_y = train_y.iloc[-val_ind:].copy()
-        fit_sample_weights =  sample_weights[:-val_ind].copy()
-        eval_sample_weights = sample_weights[-val_ind:].copy()
+        # Step 3: Randomly select 20% of the unique integers
+        random_sample = random.sample(unique_integers, num_to_select)
+        fits = [x in random_sample for x in match_ind]
+        evals = [x not in random_sample for x in match_ind]
+        
+        
+        #val_ind = int(train_X.shape[0]*0.2)
+        
+        fit_X = objective_X.loc[fits].copy()
+        eval_X =  objective_X.loc[evals].copy()
+        fit_y =  train_y.loc[fits].copy()
+        eval_y = train_y.loc[evals].copy()
+        fit_sample_weights =  sample_weights[fits].copy()
+        eval_sample_weights = sample_weights[evals].copy()
+        
+
         
         #make sure all categories in val_x is present in cv_x
         for column in eval_X.columns:

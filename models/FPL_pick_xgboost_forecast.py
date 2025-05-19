@@ -2,18 +2,18 @@ minutes_thisyear_treshold = -1
 form_treshold = -1
 points_per_game_treshold = -1
 
-#LIV 12
-exclude_team = [12]
+#BOU 3, BRE 4, CPL 7, EVE 8, FUL 9, IPS 10, LEI 11, LIV 12, UTD 14, SOTON 17, SPURS 18, WHU 19, WOL 20
+exclude_team = [9, 12, 7, 8, 20, 19, 14, 18, 10, 11, 17]
 
-exclude_players = ['Gordon', 'Martinelli', 'J.Timber', 'Savinho', 'Son', 'Aina', 'Alex Moreno', 'Wilson', 'Gabriel', 'A. Garcia', 'Foden', 'Keane', 'Amass', 'Doku', 'Cresswell', 'Bogarde', 'Danso', 'Willock', 'Hill', 'Olsen', 'Van de Ven', 'Hall', 'Ederson', 'Nwaneri', 'Nketiah', 'Lewis']
+exclude_players = ['Kluivert', 'Digne', 'Trossard', 'Gordon', 'J.Timber', 'Savinho', 'Son', 'Alex Moreno', 'Wilson', 'Gabriel', 'A. Garcia', 'Foden', 'Keane', 'Amass', 'Doku', 'Cresswell', 'Bogarde', 'Danso', 'Willock', 'Hill', 'Olsen', 'Van de Ven', 'Hall', 'Ederson', 'Nwaneri', 'Nketiah', 'Lewis']
 include_players = []
 #tarkowski
-do_not_exclude_players = ['M.Salah', 'Merino', 'Haaland']
+do_not_exclude_players = ['M.Salah', 'Robertson', 'Spence']
 
 do_not_transfer_out = []
 
-rounds_to_value = 3
-trans_per_week = 3
+rounds_to_value = 2
+trans_per_week = 2
 save_transfers_for_later = False
 jump_rounds = 0
 #if you also want to evaluate players on the bench. in case of uncertain starters.
@@ -23,7 +23,7 @@ wildcard = False
 
 skip_gw = []
 
-benchboost_gw = 37 #36: 180.2 (Robertson for Trippier, Marmoush for Wissa), 37: 181.8 Marmoush for Wissa. I.Sarr for Mbeumo. 38: 181.9 Marmoush for Wissa. I.Sarr for Mbeumo
+benchboost_gw = 38 #37: 111.7 Merino for Martinelli. Marmoush for Evanilson. 38: 114.1 Spence for Kerkez. Marmoush for Evanilson.
 
 tripple_captain_gw = 24
 
@@ -36,14 +36,15 @@ force_90 = []
 manual_pred = 1
 
 #players
-manual_blanks = {36: ['Haaland'], 37: ['Haaland'], 38: ['Marmoush']}
+manual_blanks = {37: ['Haaland', 'Robertson'], 38: ['Marmoush', 'Spence']}
 
 
 #GW               
 manual_blank = {}
 manual_double = {}
 
-string = '{"picks":[{"element":413,"position":1,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":1,"selling_price":49,"purchase_price":49},{"element":350,"position":2,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":61,"purchase_price":59},{"element":361,"position":3,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":54,"purchase_price":54},{"element":504,"position":4,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":44,"purchase_price":44},{"element":585,"position":5,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":56,"purchase_price":56},{"element":54,"position":6,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":56,"purchase_price":55},{"element":328,"position":7,"multiplier":1,"is_captain":false,"is_vice_captain":true,"element_type":3,"selling_price":132,"purchase_price":127},{"element":633,"position":8,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":60,"purchase_price":60},{"element":401,"position":9,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":4,"selling_price":93,"purchase_price":90},{"element":755,"position":10,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":4,"selling_price":74,"purchase_price":73},{"element":110,"position":11,"multiplier":2,"is_captain":true,"is_vice_captain":false,"element_type":4,"selling_price":67,"purchase_price":67},{"element":47,"position":12,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":1,"selling_price":50,"purchase_price":50},{"element":16,"position":13,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":62,"purchase_price":62},{"element":8,"position":14,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":48,"purchase_price":48},{"element":335,"position":15,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":58,"purchase_price":58}],"picks_last_updated":"2025-05-08T13:02:09.990060Z","chips":[{"id":2,"status_for_entry":"played","played_by_entry":[30],"name":"wildcard","number":1,"start_event":20,"stop_event":38,"chip_type":"transfer","is_pending":false},{"id":3,"status_for_entry":"played","played_by_entry":[34],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer","is_pending":false},{"id":4,"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"id":5,"status_for_entry":"played","played_by_entry":[24],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"id":6,"status_for_entry":"played","played_by_entry":[31],"name":"manager","number":1,"start_event":24,"stop_event":38,"chip_type":"transfer","is_pending":false}],"transfers":{"cost":4,"status":"cost","limit":2,"made":1,"bank":35,"value":982}}'
+string = '{"picks":[{"element":413,"position":1,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":1,"selling_price":49,"purchase_price":49},{"element":350,"position":2,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":62,"purchase_price":59},{"element":361,"position":3,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":54,"purchase_price":54},{"element":504,"position":4,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":44,"purchase_price":44},{"element":99,"position":5,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":82,"purchase_price":82},{"element":54,"position":6,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":56,"purchase_price":55},{"element":328,"position":7,"multiplier":1,"is_captain":false,"is_vice_captain":true,"element_type":3,"selling_price":131,"purchase_price":127},{"element":633,"position":8,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":60,"purchase_price":60},{"element":401,"position":9,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":4,"selling_price":92,"purchase_price":90},{"element":755,"position":10,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":4,"selling_price":74,"purchase_price":73},{"element":110,"position":11,"multiplier":2,"is_captain":true,"is_vice_captain":false,"element_type":4,"selling_price":67,"purchase_price":67},{"element":47,"position":12,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":1,"selling_price":50,"purchase_price":50},{"element":16,"position":13,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":62,"purchase_price":62},{"element":8,"position":14,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":48,"purchase_price":48},{"element":335,"position":15,"multiplier":0,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":58,"purchase_price":58}],"picks_last_updated":"2025-05-09T20:15:47.556883Z","chips":[{"id":2,"status_for_entry":"played","played_by_entry":[30],"name":"wildcard","number":1,"start_event":20,"stop_event":38,"chip_type":"transfer","is_pending":false},{"id":3,"status_for_entry":"played","played_by_entry":[34],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer","is_pending":false},{"id":4,"status_for_entry":"available","played_by_entry":[],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"id":5,"status_for_entry":"played","played_by_entry":[24],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"id":6,"status_for_entry":"played","played_by_entry":[31],"name":"manager","number":1,"start_event":24,"stop_event":38,"chip_type":"transfer","is_pending":false}],"transfers":{"cost":4,"status":"cost","limit":1,"made":0,"bank":9,"value":1006}}'
+
 
 
 season = '2024-25'
@@ -669,6 +670,7 @@ for df_name in slim_elements_df.iterrows():
 
             game_idx = game[0]
             gw_idx = int(game[1].gameweek_ind)
+            
             gw = game[1].gameweek
 
             Dgame = xgb.DMatrix(data=predicting_df.iloc[[game_idx]], enable_categorical=True)
@@ -699,6 +701,13 @@ for df_name in slim_elements_df.iterrows():
                     
                 if game_idx == 0:
                     print('Including because of low price:', df_name[1].web_name)
+            
+            
+            elif (gw in manual_blanks.keys()) and (df_name[1]['web_name'] in manual_blanks[gw]):
+                estimated = 0
+            
+            
+            
             elif df_name[1]['web_name'] not in do_not_exclude_players:       
                 
                 if minutes < 10 or np.isnan(minutes):
@@ -707,10 +716,6 @@ for df_name in slim_elements_df.iterrows():
                 #remove if unlikely to play: game_idx for game. gw_idx for gw
                 if gw_idx==0 and gw_idx+jump_rounds == 0 and df_name[1]['chance_of_playing_next_round'] < 75:
                     estimated = 0
-    
-                if gw in manual_blanks.keys():
-                    if df_name[1]['web_name'] in manual_blanks[gw]:
-                        estimated = 0
     
                 if sum(all_rows.names == name) == 0 and (game_idx == 0):
                     if should_have_trainingdata:
