@@ -60,6 +60,17 @@ season_count = 0
 
 print('HARD CODED short names for HULL, MIDlesborough, SUNDERLAND (2016-17). DOUBLE CHECK IF PROMOTED')
 
+
+# Function to correct string_team based on the majority
+def correct_string_team(group):
+    # Count occurrences of each string_team
+    counts = group['string_team'].value_counts()
+    majority_team = counts.idxmax()  # Get the majority string_team
+    # Replace incorrect string_team with the majority_team
+    group['string_team'] = majority_team
+    return group
+
+
 #get each season
 for folder in folders:
 
@@ -74,7 +85,7 @@ for folder in folders:
         #check that it is not a file
         if folder[-4] != '.':
 
-            print('\n', folder)
+            print('\n', folder)   
 
             #get id so it can be matched with position
             player_path = directory + '/players_raw.csv'
@@ -93,6 +104,7 @@ for folder in folders:
             df_player["string_team"] = string_names[df_player["team"]-1]
 
             dfs_gw = []
+            
 
             #open each gw and get data for players
             for gw_csv in os.listdir(directory + '/gws'):
@@ -117,6 +129,11 @@ for folder in folders:
                         gw[['transfers_in', 'transfers_out']] = np.nan
                     else:
                         gw[['transfers_in', 'transfers_out']] = gw[['transfers_in', 'transfers_out']]/sum_transfers
+                        
+                    # selected = gw.name == 'Patrick_van Aanholt'
+                    # if (sum(selected)) > 0:
+                    #     if gw[selected].opponent_team.values[0] == 4:
+                    #         print(gw_csv)
 
                     if gw.shape[0] == 0:
                         print(gw_csv, 'is empty')
@@ -152,11 +169,21 @@ for folder in folders:
                 
                 
                 opp_team = []
+                
                 for team in player_df['opponent_team'].astype(int).values-1:
                     opp_team.append(string_names[team])
+            
+                    
+                # own_team = []
+                # for fix in player_df['fixture'].astype(int).values:
+                #     sel_fix = fixture_df.fixture == fix
+                #     if was_home:                      
+                #         own_team.append(fixture_df[sel_fix].team_h.values[0]-1)
+                #     else:
+                #         own_team.append(fixture_df[sel_fix].team_a.values[0]-1)
 
-                df_gw.loc[selected_ind, 'string_opp_team'] = opp_team.copy()
-                
+                df_gw.loc[selected_ind, 'string_opp_team'] = opp_team.copy() 
+                #df_gw.loc[selected_ind, 'string_team'] = own_team.copy() 
                 
                 points_per_game =  player_df['total_points'].cumsum() / (player_df['round'])
                 
@@ -190,12 +217,11 @@ for folder in folders:
             season_df = df_gw[['minutes', 'string_opp_team', 'transfers_in', 'transfers_out', 'ict_index', 'influence', 'threat', 'creativity', 'bps', 'element', 'fixture', 'total_points', 'round', 'was_home', 'kickoff_time', 'xP', 'expected_goals', 'expected_assists', 'expected_goal_involvements', 'expected_goals_conceded', 'points_per_game', 'points_per_played_game']]#, 'own_team_points', 'own_wins', 'own_element_points']]
             
             if  folder == '2016-17' or folder == '2017-18':
-                season_df[["team_a_difficulty", "team_h_difficulty", "fixture"]] = np.nan
+                season_df[["team_a_difficulty", "team_h_difficulty"]] = np.nan
             else:
                 #get fixture difficulty difference for each datapoint
-                #open fixtures data
                 fixture_df = pd.read_csv(fixture_data)
-    
+                
                 #rename befor merge
                 fixture_df = fixture_df.rename(columns={"id": "fixture"})
                 season_df = pd.merge(season_df, fixture_df[["team_a_difficulty", "team_h_difficulty", "fixture"]], on='fixture')
@@ -203,8 +229,13 @@ for folder in folders:
             season_df = pd.merge(season_df, df_player[["element_type", "first_name", "second_name", "web_name", "string_team", "element"]], on="element")
 
             season_df["season"] = folder
-
+            
+            #apply correct club for those who has transferred
+            season_df = season_df.groupby(['fixture', 'string_opp_team'], group_keys=False).apply(correct_string_team)
+            
             season_dfs.append(season_df)
+            
+        
 
 season_df = pd.concat(season_dfs)
 season_df['transfers_in'] = season_df['transfers_in'].astype(float)
@@ -763,10 +794,12 @@ for col in opponent_element_names:
 train = pd.concat([train, temp_train], axis=1)            
 
 #exchange old names with nan
-for name in train.names.unique():
-    if not name in current_names:
-        selected = train.names == name
-        train.loc[selected, 'names'] = np.nan
+# for name in train.names.unique():
+
+        
+    # if not name in current_names:
+    #     selected = train.names == name
+    #     train.loc[selected, 'names'] = np.nan
 
 original_df = season_df.copy()
 
@@ -871,42 +904,24 @@ def objective_xgboost(space):
     objective_X = cv_X[columns_to_keep]   
     
     # interaction_constraints = get_interaction_constraints(objective_X.columns)
-    # pars['interaction_constraints'] = str(interaction_constraints)
-
-    #fit_X, eval_X, fit_y, eval_y, fit_sample_weights, eval_sample_weights = train_test_split(objective_X, cv_y, cv_sample_weights, test_size=space['eval_fraction'], stratify=cv_stratify, random_state=42)
-    match_ind = pd.factorize(
-        objective_X[['string_team', 'was_home', 'string_opp_team', 'season']]
-        .apply(lambda row: '-'.join(row.astype(str)), axis=1)
-    )[0]
-        
-    #get 20% of those matches
-    # Step 1: Get unique integers using a set
-    unique_integers = list(set(match_ind))
-    
+    # pars['interaction_constraints'] = str(interaction_constraints)       
     # Step 2: Calculate 20% of the unique integers
-    num_to_select = max(1, int(np.round(len(unique_integers) * space['eval_fraction'])))  # Ensure at least one is selected
-    
+    num_to_select = max(1, int(len(train_sample) * space['eval_fraction']))  # Ensure at least one is selected
+
     # Step 3: Randomly select 20% of the unique integers
     random.seed(42)
-    random_sample = random.sample(unique_integers, num_to_select)
-    fits = [x in random_sample for x in match_ind]
-    evals = [x not in random_sample for x in match_ind]
-    
-    fit_X = objective_X.loc[fits ].copy()
+    eval_sample = random.sample(train_sample, num_to_select, )
+    evals = [x in eval_sample for x in match_ind[cvs]]
+    fits = [x not in eval_sample for x in match_ind[cvs]]
+
+    fit_X = objective_X.loc[fits].copy()
     eval_X =  objective_X.loc[evals].copy()
-    fit_y =  cv_y.loc[fits ].copy()
+    fit_y =  cv_y.loc[fits].copy()
     eval_y = cv_y.loc[evals].copy()
-    fit_sample_weights =  cv_sample_weights[fits].copy()
-    eval_sample_weights = cv_sample_weights[evals].copy()
+    # fit_sample_weights =  cv_sample_weights[fits].copy()
+    # eval_sample_weights = cv_sample_weights[evals].copy()
     
-    # val_ind = int(objective_X.shape[0]*space['eval_fraction'])
-    
-    # fit_X = objective_X.iloc[:-val_ind].copy()
-    # eval_X =  objective_X.iloc[-val_ind:].copy()
-    # fit_y =  cv_y.iloc[:-val_ind].copy()
-    # eval_y = cv_y.iloc[-val_ind:].copy()
-    # fit_sample_weights =  cv_sample_weights[:-val_ind].copy()
-    # eval_sample_weights = cv_sample_weights[-val_ind:].copy()
+
     
     #make sure all categories in val_x is present in cv_x
     for column in eval_X.columns:
@@ -920,8 +935,8 @@ def objective_xgboost(space):
             # Set values that are not present in cv_X[column] to NaN
             eval_X.loc[~mask, column] = np.nan
     
-    dfit = xgb.DMatrix(data=fit_X, label=fit_y, enable_categorical=True, weight=fit_sample_weights)
-    deval = xgb.DMatrix(data=eval_X, label=eval_y, enable_categorical=True, weight=eval_sample_weights)
+    dfit = xgb.DMatrix(data=fit_X, label=fit_y, enable_categorical=True)
+    deval = xgb.DMatrix(data=eval_X, label=eval_y, enable_categorical=True)
 
     evals = [(dfit, 'train'), (deval, 'eval')]
 
@@ -937,7 +952,7 @@ def objective_xgboost(space):
         )
 
     objective_val_X = val_X[columns_to_keep]
-    dval_objective = xgb.DMatrix(data= objective_val_X, label=val_y, enable_categorical=True, weight=val_sample_weights)
+    dval_objective = xgb.DMatrix(data= objective_val_X, label=val_y, enable_categorical=True)
 
     val_pred = model.predict(dval_objective)
     
@@ -1064,8 +1079,6 @@ selected = last_year < timedelta(365)
 sample_weights = np.ones(selected.shape)
 sample_weights[selected] = 4
 
-season_df = season_df.drop(['kickoff_time'], axis=1)
-
 #season_df.replace(to_replace=[None], value=np.nan, inplace=True)
 
 #train model. no changes of catgeories in train_X after this point!
@@ -1079,23 +1092,85 @@ categorical_columns = train_X.select_dtypes(['category']).columns
 for column in categorical_columns:
     train_X[column] = train_X[column].cat.remove_unused_categories()
 
-# Define the number of quantiles/bins
-num_bins = 100
+# # Define the number of quantiles/bins
+# num_bins = 100
 
-# Calculate the quantile boundaries of the outcome variable
-centiles = pd.qcut(train_y, q=100, duplicates="drop", retbins=True)[1]
-centiles[0] = -np.inf
-# Discretize the outcome variable using the quantile boundaries
-stratify = pd.cut(train_y, bins=centiles, labels=False)
+# # Calculate the quantile boundaries of the outcome variable
+# centiles = pd.qcut(train_y, q=100, duplicates="drop", retbins=True)[1]
+# centiles[0] = -np.inf
+# # Discretize the outcome variable using the quantile boundaries
+# stratify = pd.cut(train_y, bins=centiles, labels=False)
 
 # min_y = np.min(train_y)
 # train_y = np.log10(train_y-min_y+1)
 
-cw = compute_class_weight('balanced', classes=np.unique(stratify), y=stratify)
+# cw = compute_class_weight('balanced', classes=np.unique(stratify), y=stratify)
 
-for k in np.unique(stratify):
-    selected = stratify == k
-    sample_weights[selected] = sample_weights[selected]*cw[k]
+# for k in np.unique(stratify):
+#     selected = stratify == k
+#     sample_weights[selected] = sample_weights[selected]*cw[k]
+
+
+match_ind = pd.factorize(
+    train_X[['string_team', 'was_home', 'string_opp_team', 'kickoff_time']]
+    .apply(lambda row: '-'.join(row.astype(str)), axis=1)
+)[0]
+   
+#get 20% of those matches
+# Step 1: Get unique integers using a set
+unique_integers = list(set(match_ind))
+
+for ind in unique_integers:
+    matches = np.where(match_ind == ind)[0]
+    
+    if len(matches)>0:
+    
+        df_match = train_X.iloc[matches[0]]
+        
+        if df_match['was_home']:
+            kick_off = df_match['kickoff_time']
+            team_a = df_match['string_team']
+            team_b = df_match['string_opp_team']
+            
+            selected = (train_X['string_opp_team'] == team_a) & (train_X['string_team'] == team_b) & (train_X['kickoff_time'] == kick_off) & (train_X['was_home']==0)
+            
+            match_ind[selected.values.to_numpy(dtype=bool)] = ind
+            
+            if sum(selected) < 6:
+                print(ind, sum(selected), kick_off, team_b, team_a)
+            elif sum(selected) > 11:
+                print(ind, sum(selected), kick_off, team_b, team_a)
+                
+            if len(matches) < 6:
+                print(ind, len(matches), kick_off, team_a, team_b)
+            elif len(matches) > 11:
+                print(ind,len(matches), kick_off, team_a, team_b)
+                
+train_X = train_X.drop(['kickoff_time'], axis=1)
+
+# Reset categories for each categorical column
+for column in categorical_columns:
+    train_X[column] = train_X[column].cat.remove_unused_categories()
+    
+    
+unique_integers = list(set(match_ind))
+
+
+# Step 2: Calculate 20% of the unique integers
+num_to_select = max(1, int(len(unique_integers) * 0.80))  # Ensure at least one is selected
+
+# Step 3: Randomly select 20% of the unique integers
+random.seed(42)
+train_sample = random.sample(unique_integers, num_to_select, )
+vals = [x not in train_sample for x in match_ind]
+cvs = [x in train_sample for x in match_ind]
+
+
+cv_X = train_X.iloc[cvs].copy()
+val_X =  train_X.loc[vals].copy()
+cv_y =  train_y.loc[cvs].copy()
+val_y = train_y.loc[vals].copy()
+
 
 
 if method == 'linear_reg':
@@ -1406,34 +1481,34 @@ elif method == 'xgboost':
     #20% for testing
     #get match indices
         
-    match_ind = pd.factorize(
-        train_X[['string_team', 'was_home', 'string_opp_team', 'season']]
-        .apply(lambda row: '-'.join(row.astype(str)), axis=1)
-    )[0]
+    # match_ind = pd.factorize(
+    #     train_X[['string_team', 'was_home', 'string_opp_team', 'season']]
+    #     .apply(lambda row: '-'.join(row.astype(str)), axis=1)
+    # )[0]
         
-    #get 20% of those matches
-    # Step 1: Get unique integers using a set
-    unique_integers = list(set(match_ind))
+    # #get 20% of those matches
+    # # Step 1: Get unique integers using a set
+    # unique_integers = list(set(match_ind))
     
-    # Step 2: Calculate 20% of the unique integers
-    num_to_select = max(1, int(len(unique_integers) * 0.20))  # Ensure at least one is selected
+    # # Step 2: Calculate 20% of the unique integers
+    # num_to_select = max(1, int(len(unique_integers) * 0.20))  # Ensure at least one is selected
     
-    # Step 3: Randomly select 20% of the unique integers
-    random.seed(42)
-    random_sample = random.sample(unique_integers, num_to_select, )
-    vals = [x in random_sample for x in match_ind]
-    cvs = [x not in random_sample for x in match_ind]
+    # # Step 3: Randomly select 20% of the unique integers
+    # random.seed(42)
+    # random_sample = random.sample(unique_integers, num_to_select, )
+    # vals = [x not in random_sample for x in match_ind]
+    # cvs = [x in random_sample for x in match_ind]
     
     
     #val_ind = int(train_X.shape[0]*0.2)
     
-    cv_X = train_X.loc[cvs].copy()
-    val_X =  train_X.loc[vals].copy()
-    cv_y =  train_y.loc[cvs].copy()
-    val_y = train_y.loc[vals].copy()
-    cv_sample_weights =  sample_weights[cvs].copy()
-    val_sample_weights = sample_weights[vals].copy()
-    cv_stratify = stratify[cvs].copy()
+    # cv_X = train_X.loc[cvs].copy()
+    # val_X =  train_X.loc[vals].copy()
+    # cv_y =  train_y.loc[cvs].copy()
+    # val_y = train_y.loc[vals].copy()
+    # cv_sample_weights =  sample_weights[cvs].copy()
+    # val_sample_weights = sample_weights[vals].copy()
+    # cv_stratify = stratify[cvs].copy()
     
     #make sure all categories in val_x is present in cv_x
     for column in val_X.columns:
@@ -1465,19 +1540,19 @@ elif method == 'xgboost':
     min_eval_fraction = 1/(len(unique_integers) * 0.80)#len(np.unique(cv_stratify))/cv_X.shape[0]
     
 
-    space={'max_depth': hp.quniform("max_depth", 1, 1100, 1),
-            'min_split_loss': hp.uniform('min_split_loss', 0, 100), #log?
-            'reg_lambda' : hp.uniform('reg_lambda', 0, 200),
-            'reg_alpha': hp.uniform('reg_alpha', 0.01, 300),
-            'min_child_weight' : hp.uniform('min_child_weight', 0, 450),
+    space={'max_depth': hp.quniform("max_depth", 1, 1400, 1),
+            'min_split_loss': hp.uniform('min_split_loss', 0, 150), #log?
+            'reg_lambda' : hp.uniform('reg_lambda', 0, 250),
+            'reg_alpha': hp.uniform('reg_alpha', 0.01, 400),
+            'min_child_weight' : hp.uniform('min_child_weight', 0, 700),
             'learning_rate': hp.uniform('learning_rate', 0, 0.05),
             'subsample': hp.uniform('subsample', 0.1, 1),
             'colsample_bytree': hp.uniform('colsample_bytree', 0.1, 1),
             'colsample_bylevel': hp.uniform('colsample_bylevel', 0.1, 1),
             'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
-            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 10, 2000, 1),
-            'eval_fraction': hp.uniform('eval_fraction', min_eval_fraction, 1-min_eval_fraction),
-            'n_estimators': hp.quniform('n_estimators', 2, 17000, 1),
+            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 10, 2500, 1),
+            'eval_fraction': hp.uniform('eval_fraction', min_eval_fraction, 0.15),
+            'n_estimators': hp.quniform('n_estimators', 2, 19000, 1),
             'max_delta_step': hp.uniform('max_delta_step', 0, 40),
             'grow_policy': hp.choice('grow_policy', grow_policy), #111
             'max_leaves': hp.quniform('max_leaves', 0, 1400, 1),
@@ -1659,9 +1734,9 @@ elif method == 'xgboost':
         num_to_select = int(len(unique_integers) * space['eval_fraction'])
         
         # Step 3: Randomly select 20% of the unique integers
-        random_sample = random.sample(unique_integers, num_to_select)
-        fits = [x in random_sample for x in match_ind]
-        evals = [x not in random_sample for x in match_ind]
+        eval_sample = random.sample(unique_integers, num_to_select)
+        fits = [x not in eval_sample for x in match_ind]
+        evals = [x in eval_sample for x in match_ind]
         
         
         #val_ind = int(train_X.shape[0]*0.2)
@@ -1670,9 +1745,6 @@ elif method == 'xgboost':
         eval_X =  objective_X.loc[evals].copy()
         fit_y =  train_y.loc[fits].copy()
         eval_y = train_y.loc[evals].copy()
-        fit_sample_weights =  sample_weights[fits].copy()
-        eval_sample_weights = sample_weights[evals].copy()
-        
 
         
         #make sure all categories in val_x is present in cv_x
@@ -1688,8 +1760,8 @@ elif method == 'xgboost':
                 eval_X.loc[~mask, column] = np.nan
         
         
-        dfit = xgb.DMatrix(data=fit_X, label=fit_y, enable_categorical=True, weight=fit_sample_weights)
-        deval = xgb.DMatrix(data=eval_X, label=eval_y, enable_categorical=True, weight=eval_sample_weights)
+        dfit = xgb.DMatrix(data=fit_X, label=fit_y, enable_categorical=True)
+        deval = xgb.DMatrix(data=eval_X, label=eval_y, enable_categorical=True)
     
         evals = [(dfit, 'train'), (deval, 'eval')]
     
