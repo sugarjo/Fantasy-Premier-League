@@ -38,7 +38,7 @@ except:
 
 
 optimize = True
-continue_optimize = True
+continue_optimize = False
 
 if optimize:
     check_last_data = False
