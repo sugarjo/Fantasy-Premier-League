@@ -1160,7 +1160,11 @@ unique_integers = list(set(match_ind))
 num_to_select = max(1, int(len(unique_integers) * 0.80))  # Ensure at least one is selected
 
 # Step 3: Randomly select 20% of the unique integers
-random.seed(42)
+if optimize:
+    random.seed(42)
+else:
+    random.seed(43)
+    
 train_sample = random.sample(unique_integers, num_to_select, )
 vals = [x not in train_sample for x in match_ind]
 cvs = [x in train_sample for x in match_ind]
@@ -1551,7 +1555,7 @@ elif method == 'xgboost':
             'colsample_bylevel': hp.uniform('colsample_bylevel', 0.1, 1),
             'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
             'early_stopping_rounds': hp.quniform("early_stopping_rounds", 10, 2500, 1),
-            'eval_fraction': hp.uniform('eval_fraction', min_eval_fraction, 0.15),
+            'eval_fraction': hp.uniform('eval_fraction', min_eval_fraction, 0.2),
             'n_estimators': hp.quniform('n_estimators', 2, 19000, 1),
             'max_delta_step': hp.uniform('max_delta_step', 0, 40),
             'grow_policy': hp.choice('grow_policy', grow_policy), #111
