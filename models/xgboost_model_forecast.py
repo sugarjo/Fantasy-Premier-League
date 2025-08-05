@@ -37,7 +37,7 @@ except:
     main_directory = r'C:\Users\jorgels\Git\Fantasy-Premier-League'
 
 
-optimize = True
+optimize = False
 continue_optimize = False
 
 if optimize:
@@ -50,7 +50,7 @@ else:
 #+1. e.g 28 here means 29 later.
 temporal_window = 30
 
-season_start = False
+season_start = True
 
 method = 'xgboost'
 
@@ -73,6 +73,7 @@ def correct_string_team(group):
 
 #get each season
 for folder in folders:
+    
 
     directory = os.path.join(directories, folder)
     fixture_data = os.path.join(directory, 'fixtures.csv')
@@ -86,6 +87,23 @@ for folder in folders:
         if folder[-4] != '.':
 
             print('\n', folder)   
+            
+            if folder == '2014-15':
+                
+                continue 
+                season_data = pd.read_excel(os.path.join(directory, 'season_data.xlsx'))
+                
+                season_data.rename(columns={'PID': 'element'}, inplace=True)
+                season_data.rename(columns={'Name': 'web_name'}, inplace=True)
+                season_data.rename(columns={'Team': 'string_team'}, inplace=True)
+                season_data.rename(columns={'Fixture/Score': 'string_opp_team'}, inplace=True)
+                season_data['string_opp_team'] = season_data['string_opp_team'].str[:3]
+                season_data.rename(columns={'Mins': 'minutes'}, inplace=True)
+                #delete: gameweek, GS, A, CS, GC, 
+            elif folder == '2024-25':
+                season_data = pd.read_csv(directory + '/fpl-data-stats-2024-25.csv')
+                
+                
 
             #get id so it can be matched with position
             player_path = directory + '/players_raw.csv'
@@ -117,8 +135,111 @@ for folder in folders:
                         gw = pd.read_csv(gw_path, encoding='latin1')
                     else:
                         gw = pd.read_csv(gw_path)
+                    
+                    #add to accomodate new 2025-26 rules. miss data from 2019-2025
+                    cbirt_folders = ['2016-17', '2017-18', '2018-19']
+                    if folder in cbirt_folders:
+                        if 'tackles' in gw.keys() and 'clearances_blocks_interceptions' in gw.keys():
+                            cbit = gw.tackles + gw.clearances_blocks_interceptions
+                            gw_selected = np.argwhere((cbit >= 10).values)
+                            
+                            for p in gw_selected:
+                                element = gw.iloc[p[0]].element
+                                player_selected = df_player.element == element
+                                position = df_player.loc[player_selected].element_type
+                                
+                                #if defender add two points
+                                if position.iloc[0] == 2:
+                                    gw.loc[p[0], 'total_points'] += 2
+                                    
+                            #add to accomodate new 2025-26 rules
+                            if 'recoveries' in gw.keys():
+                                    cbirt = cbit + gw.recoveries
+                                    gw_selected = np.argwhere((cbit >= 12).values)
+                                    
+                                    for p in gw_selected:
+                                        element = gw.iloc[p[0]].element
+                                        player_selected = df_player.element == element
+                                        position = df_player.loc[player_selected].element_type
+                                        
+                                        #if mid or fw add two points
+                                        if position.iloc[0] > 2:
+                                            gw.loc[p[0], 'total_points'] += 2  
+                                            
+                    if folder == '2024-25':
+                        
+                        gw_num = int(re.findall(r'\d+', gw_csv)[0])
+                    
+                        
+                        for el in gw.iterrows():
+                            
+                            if el[1].minutes == 0:
+                                continue
+                            
+                            num_adds = 0
+                            
+                            
+                            selected = (season_data.gameweek == gw_num) & (season_data.id == el[1].element) & (season_data.minutes == el[1].minutes)
+                            
+                            #also use xGC to acocmodate multiple matches
+                            if sum(selected) > 1:
+                                diff_xGC = np.abs(season_data.loc[selected, 'xGC'] - el[1].expected_goals_conceded)
+                                ind_min = np.argmin(diff_xGC)
+                                
+                                xGC_use = season_data.loc[selected, 'xGC'].iloc[ind_min]
+                                
+                                selected = (season_data.gameweek == gw_num) & (season_data.id == el[1].element) & (season_data.minutes == el[1].minutes) & (season_data.xGC == xGC_use)
+                            
+                            
+                            if el[1].position == 'DEF':
+                                cbit = season_data.loc[selected, ['clearances', 'shot_blocks',
+                                'interceptions', 'tackles']].sum(axis=1).iloc[0]
+                                
+                                if cbit >= 10:
+                                    gw.loc[el[0], 'total_points'] += 2
+                                    if not sum(selected == 1):
+                                        print('Possible error: more than one matched match')                                   
+                          
+                            elif not el[1].position == 'GK':
+                                cbirt = season_data.loc[selected, ['clearances', 'shot_blocks',
+                                'interceptions', 'recoveries', 'tackles']].sum(axis=1).iloc[0]
+                                
+                                if cbirt >= 12:
+                                    gw.loc[el[0], 'total_points'] += 2
+                                    if not sum(selected == 1):
+                                        print('Possible error: more than one matched match')
+
+
+
+
+                                            
+                    # cbirt_understat = ['2021-22', '2022-23', '2023-24', '2024-25']
+                    # if folder in cbirt_understat:
+                    #     understat_path =  directory + '/id_dict.csv'
+                        
+                    #     df_understat = pd.read_csv(understat_path)
+                    #     df_understat.columns = df_understat.columns.str.replace(' ', '')
+                    #     df_understat.rename(columns={'FPL_ID': 'element'}, inplace=True)
+                    #     gw = pd.merge(gw, df_understat, on = "element", how='left')
+                    #     gw['Understat_ID'].fillna(-1, inplace=True)
+                    #     gw['Understat_ID'] = gw['Understat_ID'].astype(int)
+                        
+                    #     from understatapi import UnderstatClient
+                    #     understat = UnderstatClient()
+                        
+                    #     league_player_data = understat.league(league="EPL").get_player_data(season="2021")
                         
                         
+                    #     player_shot_data = understat.player(player=player_id).get_match_data()
+                        
+                    #     #Change Season to 2022 when the season starts on 5th August
+                    #     league_player_data = understat.league(league="EPL").get_player_data(season="2021")
+                        
+                    #     # convert to pandas dataframe
+                    #     league_player_data = pd.DataFrame(league_player_data)
+                    #     league_player_data.columns
+
+                    
                     #remove assistant manager
                     if 'position' in gw.keys():
                         gw = gw.loc[gw['position'] != 'AM']
@@ -411,6 +532,8 @@ own_keys = ['ict_index', 'influence', 'threat', 'creativity', 'bps', 'total_poin
 selected = season_df.minutes == 0
 season_df.loc[selected, own_keys] = np.nan    
 
+
+#match names to online names!
 elements_df = pd.DataFrame(js['elements'])
 current_names = (elements_df['first_name'] + ' ' + elements_df['second_name']).unique()
 current_positions = elements_df['element_type']
@@ -560,7 +683,46 @@ for name_ind, name in enumerate(all_names[:-1]):
                                   ['Christian Fuchs', 'Christian Marques'],
                                   ['Charlie Savage', 'Charles Sagoe'],
                                   ['Andrew Surman', 'Andrew Moran'],
-                                  ['Niels Nkounkou', 'Nicolas Nkoulou']
+                                  ['Niels Nkounkou', 'Nicolas Nkoulou'],
+                                  ['Christian Marques changed', 'Cristhian Mosquera'],
+                                  ['Joe Allen', 'Josh Cullen'],
+                                  ['Alex Palmer', 'Alex Paulsen'],
+                                  ['Kyle Scott', 'Alex Scott'],
+                                  ['Daniel Agyei', 'Daniel Adu-Adjei'],
+                                  ['Michael Dawson', 'Michael Kayode'],
+                                  ['Louie Watson', 'Tom Watson'],
+                                  ['Mamadou Sakho', 'Mamadou Sarr'],
+                                  ['Adam Clayton', 'Adam Wharton'],
+                                  ['Michael Hefele', 'Michael Keane'],
+                                  ['Stuart Armstrong', 'Harrison Armstrong'],
+                                  ['Josh Robson', 'Joe Rodon'],
+                                  ['Conor Coady', 'Conor Bradley'],
+                                  ['Jamie McDonnell', 'James McConnell'],
+                                  ['Jamal Lewis', 'Lewis Hall'], 
+                                  ['Kieran Tierney', 'Kieran Trippier'],
+                                  ['Ibrahim Osman', 'Ibrahim Sangaré'],
+                                  ['Daniel Ayala', 'Daniel Ballard'],
+                                  ['Zak Swanson', 'Zak Johnson'],
+                                  ['Ollie Harrison', 'Harrison Jones'],
+                                  ['Matthew Daly', 'Jay Matete'],
+                                  ['Cristian Gamboa', 'Cristian Romero'],
+                                  ['Mike van der Hoorn', 'Micky van de Ven'],
+                                  ['Ben Johnson', 'Brennan Johnson'],
+                                  ['James Morrison', 'James Maddison'],
+                                  ['Rodrigo Hernandez', 'Rodrigo Bentancur'],
+                                  ['Leiva Lucas', 'Lucas Bergvall'],
+                                  ['Maximillian Aarons', 'Maximilian Kilman'],
+                                  ['Callum Robinson', 'Callum Wilson'],
+                                  ['Alfie Jones', 'Alfie Pond'],
+                                  ['Ben Watson', 'Tom Watson'],
+                                  ['David Martin', 'David Raya Martín'],
+                                  ['Christian Fuchs', 'Cristhian Mosquera'],
+                                  ['Matthew James', 'Jay Matete'],
+                                  ['Glen Johnson', 'Brennan Johnson'],
+                                  ['Jefferson Montero', 'Jefferson Lerma Solís'],
+                                  ['Michael Ledger', 'Michael Keane'],
+                                  ['Ander Herrera', 'Andreas Hoelgebaum Pereira'],
+                                  ['Christian Marques', 'Cristhian Mosquera']
                                   ]
 
             continue_marker = False
@@ -862,14 +1024,18 @@ def quantile_objective(pred_y, dtrain):
 
 # Define a function to check if the column name meets the criteria
 def should_keep_column(column_name, threshold):
-    # Extract all numbers from the column name
-    numbers = re.findall(r'\d+', column_name)
-    for number in numbers:
-        # If any number is lower than the threshold, return False
-        if int(number) < threshold:
-            return True
-        else:
-            return False
+    try:
+        # Extract all numbers from the column name
+        numbers = re.findall(r'\d+', column_name)
+        for number in numbers:
+            # If any number is lower than the threshold, return False
+            if int(number) < threshold:
+                return True
+            else:
+                return False
+    except:
+        print(column_name)
+        
     return True
 
 #optimize hyperparameters
@@ -1029,46 +1195,45 @@ def objective_linear_reg(space):
     else:
         model = Ridge(alpha=space['alpha'])
 
-    model.fit(cv_filled_mean, cv_y)
+    model.fit(scaled_cv_X, log_cv_y)
 
-    #selected = val_sample_weights >= 1
-    selected = val_X['running_minutes'] > 60
-
-    val_pred = model.predict(val_filled_mean[selected])
-    val_error = mean_squared_error(val_y[selected], val_pred)
+    val_pred = model.predict(scaled_val_X)
+    
+    val_normal = np.exp(val_pred) + min_val - 1
+    
+    val_error = mean_squared_error(val_y,  val_normal)
 
     return {'loss': val_error, 'status': STATUS_OK }
 
 def objective_svr(space):
-    print(space)
+    #print(space)
 
     model = SVR(**space['pars'])
+    
+    
+    model.fit(scaled_cv_X, log_cv_y)
 
-    model.fit(cv_filled_mean, cv_y)
-
-    #selected = val_sample_weights >= 1
-    selected = val_X['running_minutes'] > 60
-
-    val_pred = model.predict(val_filled_mean[selected])
-    val_error = mean_squared_error(val_y[selected], val_pred)
+    val_pred = model.predict(scaled_val_X)
+    
+    val_normal = np.exp(val_pred) + min_val - 1
+    
+    val_error = mean_squared_error(val_y,  val_normal)
 
     return {'loss': val_error, 'status': STATUS_OK }
 
 def objective_linear_svr(space):
 
-    print(space)
+    #print(space)
 
     model = LinearSVR(**space, fit_intercept=False, dual="auto")
+    
+    model.fit(scaled_cv_X, log_cv_y)
 
-    model.fit(scaled_cv_X, cv_y)
-
-    #selected = val_sample_weights >= 1
-    selected = val_X['running_minutes'] > 60
-
-    val_pred = model.predict(scaled_val_X[selected])
-    val_error = mean_squared_error(val_y[selected], val_pred)
-
-    print(val_error)
+    val_pred = model.predict(scaled_val_X)
+    
+    val_normal = np.exp(val_pred) + min_val - 1
+    
+    val_error = mean_squared_error(val_y,  val_normal)
 
     return {'loss': val_error, 'status': STATUS_OK }
 
@@ -1175,27 +1340,51 @@ val_X =  train_X.loc[vals].copy()
 cv_y =  train_y.loc[cvs].copy()
 val_y = train_y.loc[vals].copy()
 
-
-
 if method == 'linear_reg':
-    #8.94
-
+    #8.82 with hyperparams tested on val data. temp win = 0
+    #8.80 with hyperparams tested on val data. temp win = 1
+    #8.82 with hyperparams tested on val data. temp win = 2
+    
     from sklearn.linear_model import LinearRegression, Ridge, Lasso
     from sklearn.preprocessing import StandardScaler
+    
+    #do not keep historical data
+    threshold = 2
 
+    # Filter the columns based on the defined function
+    columns_to_keep = [col for col in cv_X.columns if should_keep_column(col, threshold)]
+    
+    objective_X = cv_X[columns_to_keep]
+    val_X = val_X[columns_to_keep]  
+    
+    objective_X = objective_X.drop('season', axis=1)
+    val_X = val_X.drop('season', axis=1)
+    
+    for c in objective_X.columns:
+        if 'own_difficulty' in c or 'other_difficulty' in c:
+            objective_X[c] = objective_X[c].astype(float)
+            val_X[c] = val_X[c].astype(float)
+        elif objective_X[c].dtype == 'Int64':
+            objective_X[c] = objective_X[c].astype(float)
+            val_X[c] = val_X[c].astype(float)
+        
+   
+    df_cv_one_hot = pd.get_dummies(objective_X, columns=['element_type', 'names'])
+    df_val_one_hot = pd.get_dummies(val_X, columns=['element_type', 'names'])
+    
+    for c in objective_X.columns:
+        if 'string_team' in c or 'string_opp_team' in c:
+            df_cv_one_hot = pd.get_dummies(df_cv_one_hot, columns=[c])
+            df_val_one_hot = pd.get_dummies(df_val_one_hot, columns=[c])
+            
+    cv_filled_mean = df_cv_one_hot.fillna(df_cv_one_hot.mean(numeric_only=True))
+    val_filled_mean = df_val_one_hot.fillna(df_val_one_hot.mean(numeric_only=True))
+    
     scaler = StandardScaler()
-
-    df_one_hot = pd.get_dummies(train_X, columns=['string_team', 'string_opp_team', 'element_type', 'names'])
-
-    #df_one_hot = df_one_hot.drop('names', axis=1)
-    #get an validation set for fitting
-    cv_X, val_X, cv_y, val_y, cv_sample_weights, _, cv_stratify, _ = train_test_split(df_one_hot, train_y, sample_weights, stratify, test_size=0.25, stratify=stratify, random_state=42)
-
-    scaled_cv_X = scaler.fit_transform(cv_X)
-    scaled_val_X = scaler.transform(val_X)
-
-    cv_filled_mean = cv_X.fillna(cv_X.mean(numeric_only=True))
-    val_filled_mean = val_X.fillna(cv_X.mean(numeric_only=True))
+    scaled_cv_X = scaler.fit_transform(cv_filled_mean)
+    
+    scaled_cv_X = pd.DataFrame(scaled_cv_X, columns=cv_filled_mean.columns)
+    scaled_val_X =  pd.DataFrame(scaler.transform(val_filled_mean), columns=cv_filled_mean.columns)
 
     regularization = ['lasso', 'ridge']
 
@@ -1212,33 +1401,66 @@ if method == 'linear_reg':
                     trials = trials)
 
 
-    model.fit(cv_filled_mean, cv_y)
+    # model.fit(cv_filled_mean, cv_y)
 
-    selected = val_X['running_minutes'] > 60
+    # selected = val_X['running_minutes'] > 60
 
-    val_pred = model.predict(val_filled_mean[selected])
-    val_error = mean_squared_error(val_y[selected], val_pred)
+    # val_pred = model.predict(val_filled_mean[selected])
+    # val_error = mean_squared_error(val_y[selected], val_pred)
 
-    plt.scatter(val_y[selected], np.abs((val_y[selected]-val_pred)))
+    # plt.scatter(val_y[selected], np.abs((val_y[selected]-val_pred)))
 
 elif method == 'svr':
+    
+    #takes too long to fit...
 
     from sklearn.svm import SVR
     from sklearn.preprocessing import StandardScaler
+    
+    #do not keep historical data
+    threshold = 0
 
+    # Filter the columns based on the defined function
+    columns_to_keep = [col for col in cv_X.columns if should_keep_column(col, threshold)]
+    
+    objective_X = cv_X[columns_to_keep]
+    val_X = val_X[columns_to_keep]  
+    
+    objective_X = objective_X.drop('season', axis=1)
+    val_X = val_X.drop('season', axis=1)
+    
+    for c in objective_X.columns:
+        if 'own_difficulty' in c or 'other_difficulty' in c:
+            objective_X[c] = objective_X[c].astype(float)
+            val_X[c] = val_X[c].astype(float)
+        elif objective_X[c].dtype == 'Int64':
+            objective_X[c] = objective_X[c].astype(float)
+            val_X[c] = val_X[c].astype(float)
+        
+   
+    df_cv_one_hot = pd.get_dummies(objective_X, columns=['element_type', 'names'])
+    df_val_one_hot = pd.get_dummies(val_X, columns=['element_type', 'names'])
+    
+    for c in objective_X.columns:
+        if 'string_team' in c or 'string_opp_team' in c:
+            df_cv_one_hot = pd.get_dummies(df_cv_one_hot, columns=[c])
+            df_val_one_hot = pd.get_dummies(df_val_one_hot, columns=[c])
+            
+    cv_filled_mean = df_cv_one_hot.fillna(df_cv_one_hot.mean(numeric_only=True))
+    val_filled_mean = df_val_one_hot.fillna(df_val_one_hot.mean(numeric_only=True))
+    
     scaler = StandardScaler()
-
-    df_one_hot = pd.get_dummies(train_X, columns=['string_team', 'string_opp_team', 'element_type', 'names'])
-
-    #df_one_hot = df_one_hot.drop('names', axis=1)
+    scaled_cv_X = scaler.fit_transform(cv_filled_mean)
+    
+    scaled_cv_X = pd.DataFrame(scaled_cv_X, columns=cv_filled_mean.columns)
+    scaled_val_X =  pd.DataFrame(scaler.transform(val_filled_mean), columns=cv_filled_mean.columns)
+    
+    #transform y to normal distribution
+    min_val = np.min(cv_y)
+    log_cv_y = np.log(cv_y - min_val + 1)   
+    
     #get an validation set for fitting
-    cv_X, val_X, cv_y, val_y, cv_sample_weights, _, cv_stratify, _ = train_test_split(df_one_hot, train_y, sample_weights, stratify, test_size=0.25, stratify=stratify, random_state=42)
-
-    scaled_cv_X = scaler.fit_transform(cv_X)
-    scaled_val_X = scaler.transform(val_X)
-
-    cv_filled_mean = cv_X.fillna(cv_X.mean(numeric_only=True))
-    val_filled_mean = val_X.fillna(cv_X.mean(numeric_only=True))
+    #cv_X, val_X, cv_y, val_y, cv_sample_weights, _, cv_stratify, _ = train_test_split(df_one_hot, train_y, sample_weights, stratify, test_size=0.25, stratify=stratify, random_state=42)
 
     space = {
         'pars': hp.choice('kernel_shape', [
@@ -1271,50 +1493,54 @@ elif method == 'svr':
 
 
 elif method == 'linear_svr':
+    
+    #totally off. not even close... (90isj)
 
     from sklearn.svm import LinearSVR
     from sklearn.preprocessing import StandardScaler
+    
+    
+    #do not keep historical data
+    threshold = 0
 
-    #remove columns with a lot of nans
-    keep_col = ['names', 'running_minutes', 'transfer_in', 'transfer_out', 'running_ict', 'running_influence', 'running_threat', 'running_creativity', 'running_bps', 'string_opp_team', 'string_team', 'element_type', 'was_home', 'form', 'points_per_game', 'points_per_played_game',  'other_difficulty', 'own_difficulty']
-    pruned_df = train_X[keep_col]
-
-
-    # Identify indices of rows to be removed
-    mask = pruned_df.isna().any(axis=1)
-    nan_indices = pruned_df[mask].index
-
-    # Remove rows with NaN from the original DataFrame
-    df_cleaned = pruned_df.dropna()
-
-    # Remove corresponding rows from the output DataFrame
-    outputs_cleaned = train_y.drop(nan_indices)
-    stratify_cleaned = stratify[~mask]
-    sample_weights_cleaned = sample_weights[~mask]
-
-    df_one_hot = pd.get_dummies(df_cleaned, columns=['string_team', 'string_opp_team', 'element_type', 'names', 'other_difficulty', 'own_difficulty'])
-
-    #df_one_hot = df_one_hot.drop('names', axis=1)
-    #get an validation set for fitting
-    cv_X, val_X, cv_y, val_y, cv_sample_weights, _, cv_stratify, _ = train_test_split(df_one_hot, outputs_cleaned, sample_weights_cleaned, stratify_cleaned, test_size=0.25, stratify=stratify_cleaned, random_state=42)
-
-
+    # Filter the columns based on the defined function
+    columns_to_keep = [col for col in cv_X.columns if should_keep_column(col, threshold)]
+    
+    objective_X = cv_X[columns_to_keep]
+    val_X = val_X[columns_to_keep]  
+    
+    objective_X = objective_X.drop('season', axis=1)
+    val_X = val_X.drop('season', axis=1)
+    
+    for c in objective_X.columns:
+        if 'own_difficulty' in c or 'other_difficulty' in c:
+            objective_X[c] = objective_X[c].astype(float)
+            val_X[c] = val_X[c].astype(float)
+        elif objective_X[c].dtype == 'Int64':
+            objective_X[c] = objective_X[c].astype(float)
+            val_X[c] = val_X[c].astype(float)
+        
+   
+    df_cv_one_hot = pd.get_dummies(objective_X, columns=['element_type', 'names'])
+    df_val_one_hot = pd.get_dummies(val_X, columns=['element_type', 'names'])
+    
+    for c in objective_X.columns:
+        if 'string_team' in c or 'string_opp_team' in c:
+            df_cv_one_hot = pd.get_dummies(df_cv_one_hot, columns=[c])
+            df_val_one_hot = pd.get_dummies(df_val_one_hot, columns=[c])
+            
+    cv_filled_mean = df_cv_one_hot.fillna(df_cv_one_hot.mean(numeric_only=True))
+    val_filled_mean = df_val_one_hot.fillna(df_val_one_hot.mean(numeric_only=True))
+    
     scaler = StandardScaler()
-    scaled_cv_X = scaler.fit_transform(cv_X)
-    scaled_val_X = scaler.transform(val_X)
-
-    # # Compute the column-wise mean of the array
-    # col_mean = np.nanmedian(scaled_cv_X, axis=0)
-
-    # # Find indices where NaNs are present
-    # inds = np.where(np.isnan(scaled_cv_X))
-    # # Replace NaNs with the mean of the column
-    # scaled_cv_X[inds] = np.take(col_mean, inds[1])
-    # # Find indices where NaNs are present
-    # inds = np.where(np.isnan(scaled_val_X))
-    # # Replace NaNs with the mean of the column
-    # scaled_val_X[inds] = np.take(col_mean, inds[1])
-
+    scaled_cv_X = scaler.fit_transform(cv_filled_mean)
+    
+    scaled_cv_X = pd.DataFrame(scaled_cv_X, columns=cv_filled_mean.columns)
+    scaled_val_X =  pd.DataFrame(scaler.transform(val_filled_mean), columns=cv_filled_mean.columns)
+    
+    #transform y to normal distribution
+    min_val = np.min(cv_y)
+    log_cv_y = np.log(cv_y - min_val + 1)   
 
     space = {'C': hp.loguniform('C_linear', -3, 3),
              'epsilon': hp.loguniform('epsilon_linear', -2, 2),
@@ -1327,7 +1553,7 @@ elif method == 'linear_svr':
     best_hyperparams = fmin(fn = objective_linear_svr,
                     space = space,
                     algo = tpe.suggest,
-                    early_stop_fn=no_progress_loss(1000),
+                    early_stop_fn=no_progress_loss(500),
                     max_evals = 10000,
                     trials = trials)
 
@@ -1351,39 +1577,52 @@ elif method == 'cnn':
     from keras.callbacks import EarlyStopping
     from keras.callbacks import ReduceLROnPlateau
     from keras.regularizers import l1, l2, l1_l2
+    
+    #do not keep historical data
+    threshold = 0
 
-    #remove columns with a lot of nans
-    keep_col = ['names', 'running_minutes', 'transfer_in', 'transfer_out', 'running_ict', 'running_influence', 'running_threat', 'running_creativity', 'running_bps', 'string_opp_team', 'string_team', 'element_type', 'was_home', 'form', 'points_per_game', 'points_per_played_game',  'other_difficulty', 'own_difficulty']
-    pruned_df = train_X[keep_col]
-
-
-    # Identify indices of rows to be removed
-    mask = pruned_df.isna().any(axis=1)
-    nan_indices = pruned_df[mask].index
-
-    # Remove rows with NaN from the original DataFrame
-    df_cleaned = pruned_df.dropna()
-
-    # Remove corresponding rows from the output DataFrame
-    outputs_cleaned = train_y.drop(nan_indices)
-    stratify_cleaned = stratify[~mask]
-    sample_weights_cleaned = sample_weights[~mask]
-
-    df_one_hot = pd.get_dummies(df_cleaned, columns=['string_team', 'string_opp_team', 'element_type', 'names', 'other_difficulty', 'own_difficulty'])
-
-    #df_one_hot = df_one_hot.drop('names', axis=1)
-    #get an validation set for fitting
-    cv_X, val_X, cv_y, val_y, cv_sample_weights, _, cv_stratify, _ = train_test_split(df_one_hot, outputs_cleaned, sample_weights_cleaned, stratify_cleaned, test_size=0.25, stratify=stratify_cleaned, random_state=42)
-
-    fit_X, eval_X, fit_y, eval_y, fit_sample_weights, _ = train_test_split(cv_X, cv_y, cv_sample_weights, test_size=0.25, stratify=cv_stratify, random_state=42)
+    # Filter the columns based on the defined function
+    columns_to_keep = [col for col in cv_X.columns if should_keep_column(col, threshold)]
+    
+    objective_X = cv_X[columns_to_keep]
+    val_X = val_X[columns_to_keep]  
+    
+    objective_X = objective_X.drop('season', axis=1)
+    val_X = val_X.drop('season', axis=1)
+    
+    for c in objective_X.columns:
+        if 'own_difficulty' in c or 'other_difficulty' in c:
+            objective_X[c] = objective_X[c].astype(float)
+            val_X[c] = val_X[c].astype(float)
+        elif objective_X[c].dtype == 'Int64':
+            objective_X[c] = objective_X[c].astype(float)
+            val_X[c] = val_X[c].astype(float)
+        
+   
+    df_cv_one_hot = pd.get_dummies(objective_X, columns=['element_type', 'names'])
+    df_val_one_hot = pd.get_dummies(val_X, columns=['element_type', 'names'])
+    
+    for c in objective_X.columns:
+        if 'string_team' in c or 'string_opp_team' in c:
+            df_cv_one_hot = pd.get_dummies(df_cv_one_hot, columns=[c])
+            df_val_one_hot = pd.get_dummies(df_val_one_hot, columns=[c])
+            
+            
+    fit_X, eval_X, fit_y, eval_y = train_test_split(df_cv_one_hot, cv_y, test_size=0.25, random_state=42)
+    
+    cv_filled_mean = df_cv_one_hot.fillna(df_cv_one_hot.median(numeric_only=True))
+    val_filled_mean = df_val_one_hot.fillna(df_cv_one_hot.median(numeric_only=True))
+    
+    eval_X_filled_mean = eval_X.fillna(fit_X.nanmedian(numeric_only=True))
+    fit_X_filled_mean = fit_X.fillna(fit_X.median(numeric_only=True))   
 
     scaler = StandardScaler()
-    scaled_fit_X = scaler.fit_transform(fit_X)
-    scaled_eval_X = scaler.transform(eval_X)
+    scaled_fit_X = scaler.fit_transform(fit_X_filled_mean)
+    scaled_eval_X = scaler.transform(eval_X_filled_mean)
 
     scaler = StandardScaler()
-    scaled_cv_X = scaler.fit_transform(cv_X)
-    scaled_val_X = scaler.transform(val_X)
+    scaled_cv_X = scaler.fit_transform(cv_filled_mean)
+    scaled_val_X = scaler.transform(val_filled_mean)
 
     alpha_l1 = 0.001
     alpha_l2 = 0.001
@@ -1411,53 +1650,134 @@ elif method == 'cnn':
     model.fit(scaled_fit_X.astype(float), fit_y, epochs=100, batch_size=32, callbacks=[EarlyStopping(monitor='val_loss', patience=2), reduce_lr], validation_data=(scaled_eval_X.astype(float), eval_y))
 
     # Evaluate the model
-    selected = val_X['running_minutes'] > 60
+    #selected = val_X['running_minutes'] > 60
 
-    val_pred = model.predict(scaled_val_X[selected])
-    val_error = mean_squared_error(val_y[selected], val_pred)
+    val_pred = model.predict(scaled_val_X)
+    val_error = mean_squared_error(val_y, val_pred)
     print(val_error)
 
 elif method == 'mixedLM':
+    #2025: with random effect: 8.80, window 0
+    #2025: with random effect: 8.79, window 1
+    #2025: with random effect: 8.80, window 2
+    
+    cv_X = train_X.iloc[cvs].copy()
+    val_X =  train_X.loc[vals].copy()
+    cv_y =  train_y.loc[cvs].copy()
+    val_y = train_y.loc[vals].copy()
 
-    train_y.columns = ['total_points']
 
-    min_val = np.min(train_y) - 1
+    #do not keep historical data
+    threshold = 2
 
-    #train_df = pd.concat([train_X, np.log10(train_y-min_val)], axis=1)
-    train_df = pd.concat([train_X, train_y], axis=1)
+    # Filter the columns based on the defined function
+    columns_to_keep = [col for col in cv_X.columns if should_keep_column(col, threshold)]
+    
+    objective_X = cv_X[columns_to_keep]
+    val_X = val_X[columns_to_keep]  
+    
+    objective_X = objective_X.drop('season', axis=1)
+    val_X = val_X.drop('season', axis=1)
+    
+    #objective_X = objective_X.dropna(how='any')
+    
+    for c in objective_X.columns:
+        if 'own_difficulty' in c or 'other_difficulty' in c:
+            objective_X[c] = objective_X[c].astype(float)
+            val_X[c] = val_X[c].astype(float)
+        elif objective_X[c].dtype == 'Int64':
+            objective_X[c] = objective_X[c].astype(float)
+            val_X[c] = val_X[c].astype(float)   
+        elif objective_X[c].dtype == 'category':
+            objective_X[c] = objective_X[c].cat.add_categories('unknown')  # Make sure 'NaN' is a category
+            objective_X[c].fillna('unknown', inplace=True)
+            
+            val_X[c] = val_X[c].cat.add_categories('unknown')  # Make sure 'NaN' is a category
+            val_X[c].fillna('unknown', inplace=True)
+            
+            objective_X[c] = objective_X[c].astype(str)
+            val_X[c] = val_X[c].astype(str)  
+            
 
-    #remove with columns with a lot of nans
-    keep_col = ['names', 'total_points', 'running_minutes', 'transfer_in', 'transfer_out', 'running_ict', 'running_influence', 'running_threat', 'running_creativity', 'running_bps', 'string_opp_team', 'string_team', 'element_type', 'was_home', 'form', 'points_per_game', 'points_per_played_game',  'other_difficulty', 'own_difficulty']
-    pruned_df = train_df[keep_col]
+    cv_filled_mean = objective_X.fillna(objective_X.median(numeric_only=True))
+    val_filled_mean = val_X.fillna(objective_X.median(numeric_only=True))
+    
+    
+    #rename columns
+    new_columns = []
+    # Create a mapping of digits to capital letters
+    digit_to_letter = {
+        '0': 'A',
+        '1': 'B',
+        '2': 'C',
+        '3': 'D',
+        '4': 'E',
+        '5': 'F',
+        '6': 'G',
+        '7': 'H',
+        '8': 'I',
+        '9': 'J'
+    }
 
-    # Identify indices of rows to be removed
-    mask = pruned_df.isna().any(axis=1)
-    nan_indices = pruned_df[mask].index
 
-    # Remove rows with NaN from the original DataFrame
-    df_cleaned = pruned_df.dropna()
-    stratify_cleaned = stratify[~mask]
+    for col in cv_filled_mean:
+        if col[0].isdigit():  # Check if the first character is a digit
+            new_col = digit_to_letter[col[0]] + col[1:]  # Move the first character to the end
+            new_columns.append(new_col)
+        else:
+            new_columns.append(col)  # Keep the original name
 
-    #df_one_hot = df_one_hot.drop('names', axis=1)
-    #get an validation set for fitting
-    cv, val = train_test_split(df_cleaned, test_size=0.25, stratify=stratify_cleaned, random_state=42)
+    # Renaming the columns
+    cv_filled_mean.columns = new_columns
+    val_filled_mean.columns = new_columns
+    
+    
+    #make fit_tring
+    fit_string = "total_points ~ "
+    for ind, c in enumerate(cv_filled_mean.keys()):
+        
+        if ind > 100:
+            continue
+        
+        if c == 'names' or c =='total_points':
+            continue
+        
+        if cv_filled_mean[c].dtype == 'category':
+            c_string = "C(" + c + ")"
+        else:
+            c_string = c
+        
+        if ind > 0:
+            fit_string = fit_string + " + " + c_string
+        else:
+            fit_string = fit_string + c_string
+        
+    #transform y to normal distribution
+    min_val = np.min(cv_y)
+    log_cv_y = np.log(cv_y - min_val + 1)  
+    
+    cv_filled_mean['total_points'] = log_cv_y
+    cv_filled_mean['names'] = cv_filled_mean['names'].astype(str)
+    
+    #necessary to avoid singular matrix
+    # Remove rows that contain 'unknown' in any column
+    #cv_filled_mean = cv_filled_mean[~cv_filled_mean.isin(['unknown']).any(axis=1)]
 
-    #doesn't work with categorical variables
-    #fit_string = "total_points ~ running_minutes + transfer_in + transfer_out + running_ict + running_influence + running_threat + running_creativity + running_bps + C(string_opp_team) + C(string_team) + C(element_type) + was_home + running_xP + running_xG + running_xA + running_xGI + running_xGC + form + points_per_game + points_per_played_game + C(other_difficulty) + C(own_difficulty)"
-    fit_string = "total_points ~ running_minutes + transfer_in + transfer_out + running_ict + running_influence + running_threat + C(string_opp_team) + C(element_type) + was_home + points_per_game + points_per_played_game + C(other_difficulty) + C(own_difficulty)"
-
-    model = sm.MixedLM.from_formula(fit_string, groups='names', data=cv)
+    model = sm.MixedLM.from_formula(fit_string, groups='names', data=cv_filled_mean)
     result = model.fit()
 
-    prediction = result.predict(val)
+    prediction = result.predict(val_filled_mean)
+    val_normal = np.exp(prediction) + min_val - 1    
+    val_error = mean_squared_error(val_y,  val_normal)
+    print('without random effect', val_error)
+    
 
-    re = result.random_effects
+    rand_e = result.random_effects
+    name_list = list(rand_e.keys())
 
-    name_list = list(re.keys())
-
-    for row in val.iterrows():
+    for row in val_filled_mean.iterrows():
         if row[1]["names"] in name_list:
-            random_effect = re[row[1]["names"]].iloc[0]
+            random_effect = rand_e[row[1]["names"]].iloc[0]
         else:
             random_effect = 0
 
@@ -1468,11 +1788,9 @@ elif method == 'mixedLM':
 
         prediction[row[0]] = prediction[row[0]] + random_effect
 
-    selected = val['running_minutes'] > 60
-
-    val_error = mean_squared_error(val['total_points'][selected], prediction[selected])
-    #val_error = mean_squared_error((10**val['total_points'][selected] + min_val), 10**prediction[selected] + min_val)
-    print(val_error)
+    val_normal = np.exp(prediction) + min_val - 1    
+    val_error = mean_squared_error(val_y,  val_normal)
+    print('with random effect', val_error)
 
 
 elif method == 'xgboost':

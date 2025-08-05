@@ -3,30 +3,32 @@ form_treshold = -1
 points_per_game_treshold = -1
 
 #ARS 1, BOU 3, BRE 4, CPL 7, EVE 8, FUL 9, IPS 10, LEI 11, LIV 12, UTD 14, SOTON 17, SPURS 18, WHU 19, WOL 20
-exclude_team = [1, 3, 7, 8, 9, 12, 20, 19, 14, 18, 10, 11, 17]
+exclude_team = []
 
-exclude_players = ['Isak', 'Kluivert', 'Digne', 'Savinho', 'Son', 'Alex Moreno', 'Wilson', 'A. Garcia', 'Foden', 'Keane', 'Amass', 'Doku', 'Cresswell', 'Bogarde', 'Danso', 'Willock', 'Hill', 'Olsen', 'Van de Ven', 'Hall', 'Ederson', 'Nwaneri', 'Nketiah', 'Lewis']
+exclude_players = []
 include_players = []
 #tarkowski
-do_not_exclude_players = ['M.Salah', 'Robertson', 'Kiwior', 'Rice', 'Merino']
+do_not_exclude_players = []
 
 do_not_transfer_out = []
 
-rounds_to_value = 1
+rounds_to_value = 5
+#transfer to evaluate per week
 trans_per_week = 3
-save_transfers_for_later = False
+save_transfers_for_later = True
 jump_rounds = 0
 #if you also want to evaluate players on the bench. in case of uncertain starters.
 number_players_eval = 11
 
-wildcard = False
+wildcard = True
 
 skip_gw = []
 
 benchboost_gw = 38 #schar, milenkovic, wood, watkins
 tripple_captain_gw = 24
 
-assistant_manager_gw = 31
+#assistant manager in 2024-25 season
+assistant_manager_gw = 100
 assistant_manager_team = 'CRY'
 assistant_manager_price = 0.8 #in millions
 
@@ -41,9 +43,6 @@ manual_blanks = {38: ['']} #nothing:  Spence for Burn, Marmoush for Wood. Isak: 
 #GW               
 manual_blank = {}
 manual_double = {}
-
-string = '{"picks":[{"element":413,"position":1,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":1,"selling_price":49,"purchase_price":49},{"element":350,"position":2,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":62,"purchase_price":59},{"element":335,"position":3,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":58,"purchase_price":58},{"element":8,"position":4,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":48,"purchase_price":48},{"element":16,"position":5,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":62,"purchase_price":62},{"element":99,"position":6,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":82,"purchase_price":82},{"element":633,"position":7,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":60,"purchase_price":60},{"element":328,"position":8,"multiplier":2,"is_captain":true,"is_vice_captain":false,"element_type":3,"selling_price":131,"purchase_price":127},{"element":401,"position":9,"multiplier":1,"is_captain":false,"is_vice_captain":true,"element_type":4,"selling_price":92,"purchase_price":90},{"element":755,"position":10,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":4,"selling_price":73,"purchase_price":73},{"element":110,"position":11,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":4,"selling_price":68,"purchase_price":67},{"element":47,"position":12,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":1,"selling_price":50,"purchase_price":50},{"element":54,"position":13,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":3,"selling_price":56,"purchase_price":55},{"element":361,"position":14,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":54,"purchase_price":54},{"element":504,"position":15,"multiplier":1,"is_captain":false,"is_vice_captain":false,"element_type":2,"selling_price":44,"purchase_price":44}],"picks_last_updated":"2025-05-22T16:55:44.818812Z","chips":[{"id":2,"status_for_entry":"played","played_by_entry":[30],"name":"wildcard","number":1,"start_event":20,"stop_event":38,"chip_type":"transfer","is_pending":false},{"id":3,"status_for_entry":"played","played_by_entry":[34],"name":"freehit","number":1,"start_event":2,"stop_event":38,"chip_type":"transfer","is_pending":false},{"id":4,"status_for_entry":"active","played_by_entry":[38],"name":"bboost","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"id":5,"status_for_entry":"played","played_by_entry":[24],"name":"3xc","number":1,"start_event":1,"stop_event":38,"chip_type":"team","is_pending":false},{"id":6,"status_for_entry":"played","played_by_entry":[31],"name":"manager","number":1,"start_event":24,"stop_event":38,"chip_type":"transfer","is_pending":false}],"transfers":{"cost":4,"status":"cost","limit":2,"made":0,"bank":9,"value":1007}}'
-
 
 
 season = '2024-25'
@@ -100,10 +99,154 @@ payload = {
 session.post(url, data=payload)
 
 #get my team and money in the bank
-r = session.get('https://fantasy.premierleague.com/api/my-team/2088464/')
-js = r.json()
 
-js = json.loads(string)
+
+#https://discord.gg/cjY37fv
+def get_team():
+    # -*- coding: utf-8 -*-
+    """
+    Created on Mon Aug  4 22:25:08 2025
+
+    @author: jorgels
+    """
+
+    import base64
+    import hashlib
+    import os
+    import re
+    import secrets
+    import uuid
+    import requests
+
+    URLS = {
+        "auth": "https://account.premierleague.com/as/authorize",
+        "start": "https://account.premierleague.com/davinci/policy/262ce4b01d19dd9d385d26bddb4297b6/start",
+        "login": "https://account.premierleague.com/davinci/connections/0d8c928e4970386733ce110b9dda8412/capabilities/customHTMLTemplate",
+        "resume": "https://account.premierleague.com/as/resume",
+        "token": "https://account.premierleague.com/as/token",
+        "me": "https://fantasy.premierleague.com/api/me/",
+        "team": "https://fantasy.premierleague.com/api/my-team/3870053/"
+    }
+
+
+    def generate_code_verifier():
+        return secrets.token_urlsafe(64)[:128]
+
+
+    def generate_code_challenge(verifier):
+        digest = hashlib.sha256(verifier.encode()).digest()
+        return base64.urlsafe_b64encode(digest).decode().rstrip("=")
+
+
+    code_verifier = generate_code_verifier()  # code_verifier for PKCE
+    code_challenge = generate_code_challenge(code_verifier)  # code_challenge from the code_verifier
+    initial_state = uuid.uuid4().hex  # random initial state for the OAuth flow
+
+    session = requests.Session()
+
+    # Step 1: Request authorization page
+    params = {
+        "client_id": "bfcbaf69-aade-4c1b-8f00-c1cb8a193030",
+        "redirect_uri": "https://fantasy.premierleague.com/",
+        "response_type": "code",
+        "scope": "openid profile email offline_access",
+        "state": initial_state,
+        "code_challenge": code_challenge,
+        "code_challenge_method": "S256",
+    }
+    auth_response = session.get(URLS["auth"], params=params)
+    login_html = auth_response.text
+
+    access_token = re.search(r'"accessToken":"([^"]+)"', login_html).group(1)
+    # need to read state here for when we resume the OAuth flow later on
+    new_state = re.search(r'<input[^>]+name="state"[^>]+value="([^"]+)"', login_html).group(1)
+
+
+    # Step 2: Use accessToken to get interaction id and token
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json",
+    }
+    response = session.post(URLS["start"], headers=headers).json()
+    interaction_id = response["interactionId"]
+    interaction_token = response["interactionToken"]
+
+
+    # Step 3: log in with interaction tokens (requires 2 post requests)
+    response = session.post(
+        URLS["login"],
+        headers={
+            "interactionId": interaction_id,
+            "interactionToken": interaction_token,
+        },
+        json={
+            "id": response["id"],
+            "eventName": "continue",
+            "parameters": {"eventType": "polling"},
+            "pollProps": {"status": "continue", "delayInMs": 10, "retriesAllowed": 1, "pollChallengeStatus": False},
+        },
+    )
+
+    response = session.post(
+        URLS["login"],
+        headers={
+            "interactionId": interaction_id,
+            "interactionToken": interaction_token,
+        },
+        json={
+            "id": response.json()["id"],
+            "nextEvent": {
+                "constructType": "skEvent",
+                "eventName": "continue",
+                "params": [],
+                "eventType": "post",
+                "postProcess": {},
+            },
+            "parameters": {
+                "buttonType": "form-submit",
+                "buttonValue": "SIGNON",
+                "username": 'jorgen.sugar@gmail.com',
+                "password": '3QdyXEGAP6t_9ad',
+            },
+            "eventName": "continue",
+        },
+    )
+    dv_response = response.json()["dvResponse"]
+
+
+    # Step 4: Resume the login using the dv_response and handle redirect
+    response = session.post(
+        URLS["resume"],
+        data={
+            "dvResponse": dv_response,
+            "state": new_state,
+        },
+        allow_redirects=False,
+    )
+
+    location = response.headers["Location"]
+    auth_code = re.search(r"[?&]code=([^&]+)", location).group(1)
+
+    # Step 5: Exchange auth code for access token
+    response = session.post(
+        URLS["token"],
+        data={
+            "grant_type": "authorization_code",
+            "redirect_uri": "https://fantasy.premierleague.com/",
+            "code": auth_code,  # from the parsed redirect URL
+            "code_verifier": code_verifier,  # the original code_verifier generated at the start
+            "client_id": "bfcbaf69-aade-4c1b-8f00-c1cb8a193030",
+        },
+    )
+
+    access_token = response.json()["access_token"]
+    response = session.get(URLS["team"], headers={"X-API-Authorization": f"Bearer {access_token}"})
+    
+    return response.json()
+
+    
+    
+js = get_team()
 
 my_players = pd.DataFrame(js['picks'])
 a = json.dumps(js)
