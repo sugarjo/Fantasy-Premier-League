@@ -58,7 +58,7 @@ season_dfs = []
 
 season_count = 0
 
-print('HARD CODED short names for HULL, MIDlesborough, SUNDERLAND (2016-17). DOUBLE CHECK IF PROMOTED')
+print('HARD CODED short names for HULL, MIDlesborough. DOUBLE CHECK IF PROMOTED')
 
 
 # Function to correct string_team based on the majority
@@ -538,6 +538,7 @@ elements_df = pd.DataFrame(js['elements'])
 current_names = (elements_df['first_name'] + ' ' + elements_df['second_name']).unique()
 current_positions = elements_df['element_type']
 
+#current from online. name position from historical data
 names = np.concatenate((current_names, name_position_list['names'][::-1]))
 positions =  np.concatenate((current_positions, name_position_list['element_type'][::-1]))
 
@@ -561,6 +562,8 @@ new_names = all_names.copy()
 #not that dangerous to merge previous players, but avoid to merge into current player
 #loop through the most recent players first
 for name_ind, name in enumerate(all_names[:-1]):
+    if 'Matheus' in name:
+        print(name, name_ind)
 
     #where in list to check to avoid merges in the same season
     check_ind = np.max([len(current_names), name_ind+1])

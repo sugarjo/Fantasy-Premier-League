@@ -1,14 +1,15 @@
 minutes_thisyear_treshold = -1
 form_treshold = -1
 points_per_game_treshold = -1
+running_minutes_threshold = -1
 
 #ARS 1, BOU 3, BRE 4, CPL 7, EVE 8, FUL 9, IPS 10, LEI 11, LIV 12, UTD 14, SOTON 17, SPURS 18, WHU 19, WOL 20
 exclude_team = []
 
-exclude_players = []
+exclude_players = ['G.Jesus', 'Morgan', 'Son', 'Nallo', 'Ji-soo', 'Dúbravka', 'Tsimikas', 'Bailey', 'Barkley', 'R.Williams', 'Danns', 'Woodman', 'Arrizabalaga', 'Marsh', 'Boly', 'Foden', 'Awoniyi', 'Holding', 'Hein', 'Scarlett', 'Bradley', 'Cornet']
 include_players = []
 #tarkowski
-do_not_exclude_players = []
+do_not_exclude_players = ['Frimpong', 'Wirtz', 'Matheus N.', 'Cunha', 'Kilman']
 
 do_not_transfer_out = []
 
@@ -45,8 +46,8 @@ manual_blank = {}
 manual_double = {}
 
 
-season = '2024-25'
-previous_season = '2023-24'
+season = '2025-26'
+previous_season = '2024-25'
 
 
 import requests
@@ -514,9 +515,9 @@ else:
 #predict future points
 for df_name in slim_elements_df.iterrows():
 
-    # if df_name[1].second_name == 'Merino':
+    # if df_name[1].second_name == 'dos Santos Magalhães':
     #     print(df_name)
-    # ind=25
+    # ind=4
     # df_name = (ind, slim_elements_df.iloc[ind])
     
     element_type = df_name[1].element_type 
@@ -575,8 +576,6 @@ for df_name in slim_elements_df.iterrows():
             selected_ind = np.where(elements_df.id == player_id)[0][-1]
 
             #at beginnig of season data contains season sums
-            played_games = np.round((elements_df.iloc[selected_ind].total_points / (float(elements_df.iloc[selected_ind].points_per_game)+1e-6))) + 1e-6
-            #print(name, ': estimate values. Does not exist in game database. Have no historical data')
             if sum(all_rows.names == name) == 0:
                 print(name, ': seto to zero. Does not exist in game database. Have no historical data')
             is_estimated = True
@@ -853,7 +852,7 @@ for df_name in slim_elements_df.iterrows():
             
             elif df_name[1]['web_name'] not in do_not_exclude_players:       
                 
-                if minutes < 10 or np.isnan(minutes):
+                if minutes < running_minutes_threshold  or np.isnan(minutes):
                     estimated = 0
     
                 #remove if unlikely to play: game_idx for game. gw_idx for gw
@@ -883,7 +882,7 @@ for df_name in slim_elements_df.iterrows():
                     if df_name[1]['first_name'] in exclude_name and df_name[1]['second_name'] in exclude_name:
                         estimated = 0
                         
-                if is_estimated:
+                if is_estimated and df_name[1]['web_name'] not in do_not_exclude_players:
                     estimated = 0
 
             pred_score[gw_idx] = pred_score[gw_idx] + estimated
@@ -1249,9 +1248,9 @@ def objective(check_transfers, free_transfers):
                             team_points.append(-transfer_cost)
                             free_transfers += 1
                     
-                    #ceil the possible number of transfers
-                    if free_transfers > 5:
-                        free_transfers = 5
+                    #ceil the possible number of transfers. 4 since we add one before next round
+                    if free_transfers > 4:
+                        free_transfers = 4
 
                 gw_prediction = predictions[team, gw]
                 team_positions = slim_elements_df.loc[team, 'element_type'].values
@@ -1343,7 +1342,7 @@ def check_random_transfers(i):
 
         for week, transfer in enumerate(random_transfer_ind):
             if not np.isnan(random_point):
-                random_sum_points[week, transfer] = random_sum_points[week, transfer] + (random_point-baseline)
+                random_sum_points[week, transfer] = random_sum_points[week, transfer] + (random_point-baseline_point)
                 random_counts[week, transfer] += 1
             #punish also nan teams
             else:
@@ -1536,25 +1535,25 @@ no_transfers = []
 for i in range(len(point_diff)):
     no_transfers.append([np.nan, np.nan])
 
-baseline, _, _ = objective(no_transfers, free_transfers)
+baseline, baseline_price, baseline_all_point = objective(no_transfers, free_transfers)
 
 if rounds_to_value == 1:
     batch_size = 1
 else:
     batch_size = 100000
 
-best_points = 0
+best_points = baseline
 
-best_all_points = 0
+best_all_points = baseline_all_point
 
-best_price = np.inf
+best_price = baseline_price
 
 counts = np.ones((len(no_transfers), len(probabilities[0])), dtype='uint32')
 
 counter = 0
 best_counter = 0
-best_transfer = []
-all_evaluated_transfers = []
+best_transfer = no_transfer
+all_evaluated_transfers = [no_transfer]
 old_num_teams = 0
 
 import time
@@ -1657,7 +1656,7 @@ while True:
                 price.append(slim_elements_df.loc[transfer[0], 'now_cost'])
 
 
-    print('points: ', best_points, '. diff: ', best_points-baseline, '. price: ', sum(price))
+    print('points: ', best_points, '. diff: ', best_points-baseline_point, '. price: ', sum(price))
     print('\n')
 
 
@@ -1682,7 +1681,7 @@ for ind in max_ind:
             print(predictions[transfer[0], :])
             print(predictions[transfer[1], :])
 
-    print('points: ', checked_points[best_ind]-baseline)
+    print('points: ', checked_points[best_ind]-baseline_point)
     print('\n')
 
 
