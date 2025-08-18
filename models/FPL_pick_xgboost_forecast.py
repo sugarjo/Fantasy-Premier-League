@@ -1,3 +1,49 @@
+my_players = [
+    {'web_name': 'A.Becker', 'selling_price': 55, 'element_type': 1},
+    {'web_name': 'Dúbravka', 'selling_price': 40, 'element_type': 1},
+    
+    {'web_name': 'Doherty', 'selling_price': 45, 'element_type': 2},
+    {'web_name': 'Tosin', 'selling_price': 45, 'element_type': 2},
+    {'web_name': 'Chalobah', 'selling_price': 50, 'element_type': 2},
+    {'web_name': 'Virgil', 'selling_price': 60, 'element_type': 2},
+    {'web_name': 'Trippier', 'selling_price': 50, 'element_type': 2},
+    
+    {'web_name': 'Palmer', 'selling_price': 105, 'element_type': 3},
+    {'web_name': 'Wharton', 'selling_price': 50, 'element_type': 3},
+    {'web_name': 'M.Salah', 'selling_price': 145, 'element_type': 3},
+    {'web_name': 'Amad', 'selling_price': 65, 'element_type': 3},
+    {'web_name': 'Sarr', 'selling_price': 65, 'element_type': 3},
+    
+    {'web_name': 'Watkins', 'selling_price': 90, 'element_type': 4},
+    {'web_name': 'Füllkrug', 'selling_price': 60, 'element_type': 4},
+    {'web_name': 'Mateta', 'selling_price': 75, 'element_type': 4},
+]
+#281.9
+
+# my_players = [
+#     {'web_name': 'Pope', 'selling_price': 50, 'element_type': 1},
+#     {'web_name': 'Dúbravka', 'selling_price': 40, 'element_type': 1},
+    
+#     {'web_name': 'Doherty', 'selling_price': 45, 'element_type': 2},
+#     {'web_name': 'Lacroix', 'selling_price': 50, 'element_type': 2},
+#     {'web_name': 'Chalobah', 'selling_price': 50, 'element_type': 2},
+#     {'web_name': 'Virgil', 'selling_price': 60, 'element_type': 2},
+#     {'web_name': 'Trippier', 'selling_price': 50, 'element_type': 2},
+    
+#     {'web_name': 'Palmer', 'selling_price': 105, 'element_type': 3},
+#     {'web_name': 'Wharton', 'selling_price': 50, 'element_type': 3},
+#     {'web_name': 'M.Salah', 'selling_price': 145, 'element_type': 3},
+#     {'web_name': 'Amad', 'selling_price': 65, 'element_type': 3},
+#     {'web_name': 'Barnes', 'selling_price': 65, 'element_type': 3},
+    
+#     {'web_name': 'Watkins', 'selling_price': 90, 'element_type': 4},
+#     {'web_name': 'Füllkrug', 'selling_price': 60, 'element_type': 4},
+#     {'web_name': 'Mateta', 'selling_price': 75, 'element_type': 4},
+# ]
+
+
+bank = 0
+
 minutes_thisyear_treshold = -1
 form_treshold = -1
 points_per_game_treshold = -1
@@ -6,17 +52,40 @@ running_minutes_threshold = -1
 #ARS 1, BOU 3, BRE 4, CPL 7, EVE 8, FUL 9, IPS 10, LEI 11, LIV 12, UTD 14, SOTON 17, SPURS 18, WHU 19, WOL 20
 exclude_team = []
 
-exclude_players = ['G.Jesus', 'Morgan', 'Son', 'Nallo', 'Ji-soo', 'Dúbravka', 'Tsimikas', 'Bailey', 'Barkley', 'R.Williams', 'Danns', 'Woodman', 'Arrizabalaga', 'Marsh', 'Boly', 'Foden', 'Awoniyi', 'Holding', 'Hein', 'Scarlett', 'Bradley', 'Cornet']
+exclude_players = ['G.Jesus', 'Arrizabalaga', 'Hein', 'Trossard', 'Kabia', 'Zinchenko', 'Setford', 'Nelson', 'Kacurri', #Arsenal
+                   'Adu-Adjei', 'Christie', 'Sinisterra', 'Philip', 'Brooks', 'Enes Ünal',  #Bournmouth
+                   'Morgan', 'Ji-soo', 'Wissa', 'Pinnock', 'Cox', 'Balcombe', 'Jensen', #Brentford
+                   'Son',  'Scarlett', 'Davies', 'Austin', 'Richarlison', 'Olusesi', 'Bryan', #Spurs
+                   'Nallo', 'Tsimikas', 'R.Williams', 'Danns', 'Doak', 'Elliott', 'Woodman', 'Darwin', 'Bradley', 'Robertson', 'Mac Allister', 'Joe Gomez', 'Bajcetic', 'Ramsay', 'McConnell', 'Nyoni', #Liverpool
+                   'Ashley Barnes', 'A.Ramsey', 'Broja', 'Foster', 'Amdouni', #Burnley
+                    'Bailey', 'Barkley', 'Alex Moreno', 'Buendía', 'Mings', #AV 
+                     'March', 'Welbeck', #Brigthon
+                     'Boly', #NF
+                     'Foden', 'Gündoğan', 'Bettinelli', #MCI
+                     'Awoniyi', 'Gunn',  #Forest
+                     'Cornet', 'Callum Wilson', #WHU
+                     'Nketiah', 'Hughes', 'Esse', 'Lerma',  #Palace.  consider Esse if Eze leaves
+                     'Bamford', 'Harrison', 'Nmecha', #Leeds
+                     'Obi', 'Heaton', 'Wheatley', #UTD,
+                     'Keane', 'Sherif', 'Y.Chermiti', 'Beto', #Everton
+                     'Raúl', 'Muniz', 'King', 'Cairney', # FUlham check muniz/raul
+                     'Neave', 'Osula', 'Lascelles', 'Willock', 'Botman', #Newcastle
+                     'Fábio Silva', 'Kalajdžić', #Wolves
+                     'Mudryk', #Chelsea
+                     'Holding', 'Ferguson', 'Mateo Joseph']
 include_players = []
 #tarkowski
-do_not_exclude_players = ['Frimpong', 'Wirtz', 'Matheus N.', 'Cunha', 'Kilman']
+do_not_exclude_players = ['Frimpong', 'Wirtz', 'Matheus N.', 'Cunha', 'Kilman', 'Ekitiké', 'E.Le Fee', 'Stach', 'Baleba' ,'Sesko', 'Diouf']
+
+forward_price_limit = 5.5
+midfield_price_limit = 4.5
 
 do_not_transfer_out = []
 
 rounds_to_value = 5
 #transfer to evaluate per week
 trans_per_week = 3
-save_transfers_for_later = True
+save_transfers_for_later = 0
 jump_rounds = 0
 #if you also want to evaluate players on the bench. in case of uncertain starters.
 number_players_eval = 11
@@ -32,6 +101,7 @@ tripple_captain_gw = 24
 assistant_manager_gw = 100
 assistant_manager_team = 'CRY'
 assistant_manager_price = 0.8 #in millions
+
 
 force_90 = []
 
@@ -247,13 +317,13 @@ def get_team():
 
     
     
-js = get_team()
+#my_team = get_team()
 
-my_players = pd.DataFrame(js['picks'])
-a = json.dumps(js)
-js = json.loads(a)
-transfers = js["transfers"]
-bank = transfers['bank']
+#my_players = pd.DataFrame(my_team['picks'])
+#a = json.dumps(my_team)
+#my_team_json = json.loads(a)
+#transfers = my_team_json["transfers"]
+#transfers['bank']
 
 if wildcard or transfers['status'] == 'unlimited':
     free_transfers = 15
@@ -261,13 +331,11 @@ if wildcard or transfers['status'] == 'unlimited':
     print('Free transfers: ', 15)
 else:
     unlimited_transfers = False
-    free_transfers = transfers["limit"] - transfers["made"]
+    #free_transfers = transfers["limit"] - transfers["made"]
     
     if free_transfers < 0:
         free_transfers = 0
-
-    if save_transfers_for_later:
-        free_transfers -= 5
+        
     print('Free transfers: ', free_transfers)
 
 #subtract 1 since we add one for each gw later
@@ -276,9 +344,9 @@ free_transfers -= 1
 #get statistics of all players
 url = 'https://fantasy.premierleague.com/api/bootstrap-static/'
 r = requests.get(url)
-js = r.json()
+statistics = r.json()
 
-elements_df = pd.DataFrame(js['elements'])
+elements_df = pd.DataFrame(statistics['elements'])
 #elements_types_df = pd.DataFrame(json['element_types'])
 #teams_df = pd.DataFrame(json['teams'])
 
@@ -293,9 +361,8 @@ slim_elements_df["string_team"] = string_names[slim_elements_df["team"]-1]
 slim_elements_df = slim_elements_df.reset_index()
 
 
-
 #find out which gameweek
-events_df = pd.DataFrame(js['events'])
+events_df = pd.DataFrame(statistics['events'])
 
 # if not have_season_data:
 #     df_gw.element = df_gw.new_year_element
@@ -353,8 +420,8 @@ for i in range(jump_rounds, rounds_to_value+jump_rounds):
     else:
         assistant_manager.append(False)
 
-    if any(np.array(skip_gw) == this_gw):
-        continue
+    # if any(np.array(skip_gw) == this_gw):
+    #     continue
 
     print(this_gw)
 
@@ -386,8 +453,11 @@ for i in range(jump_rounds, rounds_to_value+jump_rounds):
             timestamp = datetime.strptime(game['kickoff_time'], '%Y-%m-%dT%H:%M:%SZ')
             #positive home values == difficult games
             add_frame = pd.DataFrame({'gameweek': this_gw, 'gameweek_ind': i-jump_rounds, 'team_h': int(game['team_h']), 'team_a': int(game['team_a']), 'difficulty_diff': int(game['team_h_difficulty']) - int(game['team_a_difficulty']), 'difficulty_home': int(game['team_h_difficulty']), 'difficulty_away': int(game['team_a_difficulty']), 'kickoff_time': timestamp}, index = [0])
-            df_future_games = pd.concat([df_future_games, add_frame])
-    
+            if not df_future_games.empty:
+                df_future_games = pd.concat([df_future_games, add_frame])
+            else:
+                df_future_games = add_frame              
+            
     #add
     if this_gw in manual_double:
         timestamp = datetime.strptime(game['kickoff_time'], '%Y-%m-%dT%H:%M:%SZ') + timedelta(hours=24)            
@@ -403,7 +473,11 @@ for i in range(jump_rounds, rounds_to_value+jump_rounds):
             away_ind = np.where(string_names == away_team)[0][0] + 1
             
             add_frame = pd.DataFrame({'gameweek': this_gw, 'gameweek_ind': i-jump_rounds, 'team_h': int(home_ind), 'team_a': int(away_ind), 'difficulty_diff': int(home_diff) - int(away_diff), 'difficulty_home': home_diff, 'difficulty_away': away_diff, 'kickoff_time': timestamp}, index = [0])
-            df_future_games = pd.concat([df_future_games, add_frame])
+            
+            if not df_future_games.empty:
+                df_future_games = pd.concat([df_future_games, add_frame])
+            else:
+                df_future_games = add_frame
             
             print('Manual double:', this_gw, home_team, away_team)
         
@@ -650,6 +724,9 @@ for df_name in slim_elements_df.iterrows():
 
                 new_row['transfers_in'] = elements_df.iloc[df_name[0]].transfers_in_event/sum_transfers
                 new_row['transfers_out'] = elements_df.iloc[df_name[0]].transfers_out_event/sum_transfers
+            else:
+                new_row['transfers_in'] = np.nan
+                new_row['transfers_out'] = np.nan
 
 
             predicting_df = pd.concat([predicting_df, new_row], ignore_index = True, axis=0)
@@ -791,7 +868,7 @@ for df_name in slim_elements_df.iterrows():
         
         #make sure all categories in pred is present in train. to avoid predictions outside of feature space
         for column in predicting_df.columns:
-            if pd.api.types.is_categorical_dtype(predicting_df[column]):
+            if isinstance(predicting_df[column].dtype, pd.CategoricalDtype):
                 # Get the values in the current column of val_X
                 val_values = predicting_df[column]
                 
@@ -843,7 +920,12 @@ for df_name in slim_elements_df.iterrows():
                     
                 if game_idx == 0:
                     print('Including because of low price:', df_name[1].web_name)
-            
+                    
+            #exclude the cheap forwards
+            if df_name[1]['element_type'] == 4 and df_name[1]['now_cost'] <= forward_price_limit*10:
+                estimated = 0
+            elif  df_name[1]['element_type'] == 3 and df_name[1]['now_cost'] <= midfield_price_limit*10:
+                estimated = 0
             
             elif (gw in manual_blanks.keys()) and (df_name[1]['web_name'] in manual_blanks[gw]):
                 estimated = 0
@@ -927,7 +1009,18 @@ slim_elements_df['original_player'] = False
 num_position = np.zeros([4, 1])
 num_team = np.zeros([20, 1])
 
-
+#insert element into my_players
+my_players = pd.DataFrame(my_players)
+my_element = []
+for k in my_players.iterrows():
+    s = (slim_elements_df.web_name == k[1].web_name) & (slim_elements_df.element_type == k[1].element_type)
+    if not sum(s) == 1:
+        print('More than one possible my player')
+        
+    my_element.append(slim_elements_df.loc[s, 'id'].values[0])
+    
+my_players['element'] = my_element
+      
 
 # decorrect own players
 my_players_df = pd.DataFrame()
@@ -1036,11 +1129,14 @@ for j in range(player_iteration):
         transfers = []
         probability = []
         probability_hit = []
-
+        
+        #this counts the number of picked players we have assessed
         ind_next = 0
 
         #loop transfers
         for player_out in slim_elements_df.iterrows():
+            # ind = 543
+            # player_out = (ind, slim_elements_df.iloc[ind])
             
             #check if picked
             if player_out[1]['picked']:
@@ -1049,27 +1145,45 @@ for j in range(player_iteration):
                     continue
 
                 for player_in in slim_elements_df.iterrows():
+                    # ind = 289
+                    # player_in = (ind, slim_elements_df.iloc[ind])
 
                     #check if not picked, not same the other player, any predictions >0 and same element
                     if (not player_in[1]['picked']) and sum(player_in[1].prediction) > 0 and (any(player_in[1].prediction > player_out[1].prediction) or player_in[1].now_cost < player_out[1].now_cost) and  player_in[1].element_type == player_out[1].element_type:                        
                         
                         transfers.append([player_out[0], player_in[0]])
                         
+                        #skip if free hit
                         if free_hit[i]:
                             probability.append(np.nan)
                             probability_hit.append(np.nan)
                             continue
-
+                        
+                        #print(j, ind_next)
+                        #the ind_next makes sure that in each column only one player is transfered out
                         if unlimited_transfers and j is not ind_next:
+                            # if player_out[0] == 543:
+                            #     if player_out[0] == 543:                                
+                            #         print(player_in[0], j, ind_next)
                             probability.append(np.nan)
                             probability_hit.append(np.nan)
                             continue
+                        
+                        # if player_out[0] == 543:
+                        #     if player_in[0] == 289:                                
+                        #         print(player_in[0], j, ind_next)
 
                         #if more expensive and less gain
-                        if player_in[1].prediction[i] <= player_out[1].prediction[i] and (player_in[1].now_cost >= player_out[1].now_cost):
-                            probability.append(np.nan)
-                            probability_hit.append(np.nan)
-                            continue
+                        if not unlimited_transfers:
+                            if player_in[1].prediction[i] <= player_out[1].prediction[i] and (player_in[1].now_cost >= player_out[1].now_cost):
+                                probability.append(np.nan)
+                                probability_hit.append(np.nan)
+                                continue
+                        else:
+                            if sum(player_in[1].prediction > player_out[1].prediction) == 0 and (player_in[1].now_cost >= player_out[1].now_cost):
+                                probability.append(np.nan)
+                                probability_hit.append(np.nan)
+                                continue 
 
 
                         preds = np.cumsum((predictions[player_in[0]] - predictions[player_out[0]])[::-1])[::-1]
@@ -1078,17 +1192,18 @@ for j in range(player_iteration):
 
 
                         #for hit we cannot accept lower score and we need a cumulative 4 point increase at somepoint during the run
-                        if (player_in[1].prediction[i] < player_out[1].prediction[i]):
-                            probability_hit.append(np.nan)
+                        if not unlimited_transfers:                            
+                            if (player_in[1].prediction[i] < player_out[1].prediction[i]):
+                                probability_hit.append(np.nan)
+                            else:
+                                probability_hit.append(preds[i])
                         else:
-                            probability_hit.append(preds[i])
-
-                        # #for hits we need at least 4 points increase, and we need increas in current round
-                        # if ((i == rounds_to_value-1 and preds[i] >= transfer_cost) or (i < rounds_to_value-1 and any(preds[i:] >= transfer_cost))) and player_in[1].prediction[i] > player_out[1].prediction[i]:
-                        #     probability_hit.append(preds[i])
-                        # else:
-                        #     probability_hit.append(np.nan)
-
+                            if sum(player_in[1].prediction > player_out[1].prediction) == 0:
+                                probability_hit.append(np.nan)
+                            else:
+                                probability_hit.append(preds[i])
+                        
+                #add one for each player out
                 ind_next += 1
 
 
@@ -1280,8 +1395,14 @@ def objective(check_transfers, free_transfers):
 
 
         #print(sum(team_points))
-
-
+    
+    #subtract points if we haven't saved transfers
+    if free_transfers < save_transfers_for_later:
+        deduct_transfers = save_transfers_for_later - free_transfers
+        deduct_points = deduct_transfers*-4
+        team_points.append(deduct_points)
+        all_points.append(all_points)
+        
     return sum(team_points), max_price, sum(all_points)
 
 
@@ -1301,7 +1422,7 @@ def check_random_transfers(i):
 
     for j in range(batch_size):
         
-        print(j)
+        #print(j)
 
         #loop to get a transfer combination
         random_transfer_ind = []
@@ -1535,26 +1656,73 @@ no_transfers = []
 for i in range(len(point_diff)):
     no_transfers.append([np.nan, np.nan])
 
-baseline, baseline_price, baseline_all_point = objective(no_transfers, free_transfers)
+#check current team
+baseline_point, baseline_price, baseline_all_point = objective(no_transfers, free_transfers)
+
+
+best_points = baseline_point
+best_all_points = baseline_all_point
+best_price = baseline_price
+counts = np.ones((len(no_transfers), len(probabilities[0])), dtype='uint32')
+best_transfer = [len(transfers)-1 for _ in range(15)]
+#all_evaluated_transfers = [no_transfers]
+
+p = ((probabilities.T - np.nanmin(probabilities, axis=1)).T / counts)**2 + 1e-6
+prob = (p.T) / np.nansum((p.T), axis=0)
+selected = np.isnan(prob)
+prob[selected] = 0
+
+check_guided = True
+while check_guided:
+    check_guided = False
+    #do guided search on 
+    random_order = list(range(prob.shape[1]))
+    random.shuffle(random_order)
+    
+    #guided part. exhange one transfer
+    for k in random_order:
+        
+        #if there are more than one transfer to choose from
+        if sum(prob[:, k] > 0) < 2:
+            continue
+        
+        guided_points, guided_prices, guided_all_points, guided_evaluated_transfers, guided_sum_points, guided_counts = check_guided_transfers(k, best_transfer, best_points)
+    
+        #max points
+        #random variables now includes both
+        guided_max_value = np.nanmax(guided_points)
+        #lowest price
+        guided_indices_with_max_value = [i for i, value in enumerate(guided_points) if value == guided_max_value]
+        guided_min_value_other_list = min(guided_prices[i] for i in guided_indices_with_max_value)
+        guided_best_ind = next(i for i in guided_indices_with_max_value if guided_prices[i] == guided_min_value_other_list)
+    
+        guided_best_price = guided_prices[guided_best_ind]
+    
+        #highest total points
+        guided_best_point = 0
+        for i in range(len(guided_all_points)):
+            if guided_points[i] == guided_max_value and guided_prices[i] == guided_best_price and guided_all_points[i] > guided_best_point:
+                guided_best_point = guided_all_points[i]
+                guided_best_ind = i
+        
+        if guided_max_value > best_points or (guided_max_value == best_points and guided_best_price < best_price) or (guided_max_value == best_points and guided_best_price == best_price and  guided_best_point > best_all_points):
+            
+            check_guided = True
+            best_points = guided_points[guided_best_ind].copy()
+            best_price = guided_best_price
+            best_all_points = guided_best_point.copy()
+            best_transfer = guided_evaluated_transfers[guided_best_ind].copy()
+
+
+counter = 0
+best_counter = 0
+old_num_teams = 0
+
 
 if rounds_to_value == 1:
     batch_size = 1
 else:
     batch_size = 100000
-
-best_points = baseline
-
-best_all_points = baseline_all_point
-
-best_price = baseline_price
-
-counts = np.ones((len(no_transfers), len(probabilities[0])), dtype='uint32')
-
-counter = 0
-best_counter = 0
-best_transfer = no_transfer
-all_evaluated_transfers = [no_transfer]
-old_num_teams = 0
 
 import time
 
@@ -1562,54 +1730,54 @@ while True:
 
     #all_evaluated_transfers = []
 
-
-    print('Start')
-
-    p = ((probabilities.T - np.nanmin(probabilities, axis=1)).T / counts)**2 + 1e-6
-    prob = (p.T) / np.nansum((p.T), axis=0)
-    selected = np.isnan(prob)
-    prob[selected] = 0
-
-    #guessing part. try random combination followed up by a targeted selection
-    print('Getting  teams')
-    t1_start = time.time()
-    parallel_results = Parallel(n_jobs=-1)(delayed(check_random_transfers)(i) for i in range(counter, counter+6))
-    t1_stop = time.time()
-    print("Elapsed time:", t1_stop - t1_start)
-    print('Interpreting results')
-
-
-    #store data for later
-    #organize_output
-    for par in parallel_results:
-        if np.nanmax(par[0]) > best_points or (np.nanmax(par[0]) == best_points and par[1] < best_price) or (np.nanmax(par[0]) == best_points and par[1] == best_price and par[2] >  best_all_points):
-            best_points =  np.nanmax(par[0])
-            best_transfer = par[3][np.nanargmax(par[0])]
-            best_counter = counter
-            best_price = par[1]
-            best_all_points = par[2]
-
-        # all_evaluated_transfers = all_evaluated_transfers + par[3]
-
-        # #the first prob of each week is different than the others
-        # k = 0
-        # for w in range(rounds_to_value):
-        #     for t_res in range(trans_per_week):
-        #         #if first transfer
-        #         if t_res == 0:
-        #             probabilities[k, :] += par[4][k, :]
-        #             counts[k, :] += par[5][k, :]
-
-        #         else:
-        #             #loop through all transfer of that week
-        #             for t_com in range(w*trans_per_week, w*trans_per_week+rounds_to_value-1):
-        #                 #if not first transfer
-        #                 if t_com > w*trans_per_week:
-        #                     probabilities[t_com, :] += par[4][k, :]
-        #                     counts[t_com, :] += par[5][k, :]
-
-        #         #add one to progress
-        #         k += 1
+    if counter > 0:
+        print('Start')
+    
+        p = ((probabilities.T - np.nanmin(probabilities, axis=1)).T / counts)**2 + 1e-6
+        prob = (p.T) / np.nansum((p.T), axis=0)
+        selected = np.isnan(prob)
+        prob[selected] = 0
+    
+        #guessing part. try random combination followed up by a targeted selection
+        print('Getting  teams')
+        t1_start = time.time()
+        parallel_results = Parallel(n_jobs=-1)(delayed(check_random_transfers)(i) for i in range(counter, counter+6))
+        t1_stop = time.time()
+        print("Elapsed time:", t1_stop - t1_start)
+        print('Interpreting results')
+    
+    
+        #store data for later
+        #organize_output
+        for par in parallel_results:
+            if np.nanmax(par[0]) > best_points or (np.nanmax(par[0]) == best_points and par[1] < best_price) or (np.nanmax(par[0]) == best_points and par[1] == best_price and par[2] >  best_all_points):
+                best_points =  np.nanmax(par[0])
+                best_transfer = par[3][np.nanargmax(par[0])]
+                best_counter = counter
+                best_price = par[1]
+                best_all_points = par[2]
+    
+            # all_evaluated_transfers = all_evaluated_transfers + par[3]
+    
+            # #the first prob of each week is different than the others
+            # k = 0
+            # for w in range(rounds_to_value):
+            #     for t_res in range(trans_per_week):
+            #         #if first transfer
+            #         if t_res == 0:
+            #             probabilities[k, :] += par[4][k, :]
+            #             counts[k, :] += par[5][k, :]
+    
+            #         else:
+            #             #loop through all transfer of that week
+            #             for t_com in range(w*trans_per_week, w*trans_per_week+rounds_to_value-1):
+            #                 #if not first transfer
+            #                 if t_com > w*trans_per_week:
+            #                     probabilities[t_com, :] += par[4][k, :]
+            #                     counts[t_com, :] += par[5][k, :]
+    
+            #         #add one to progress
+            #         k += 1
 
 
         counter += len(par[0])
@@ -1624,7 +1792,8 @@ while True:
 
     # print(len(all_evaluated_transfers), 'unique teams')
 
-
+    counter = 1
+    
     if len(best_transfer) == 0:
         print('No acceptable teams')
         continue
@@ -1708,3 +1877,4 @@ for ind in max_ind:
 
 # for ind in sorted_list:
 #     print(print_str[ind] + str(diff_points[ind].astype(int)) + '/100 points')
+

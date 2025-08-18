@@ -24,6 +24,7 @@ from hyperopt.early_stop import no_progress_loss
 from pandas.api.types import CategoricalDtype
 import time
 
+import difflib
 
 directories = r'C:\Users\jorgels\Documents\GitHub\Fantasy-Premier-League\data'
 try:
@@ -38,9 +39,13 @@ except:
 
 
 optimize = False
-continue_optimize = False
+continue_optimize = True
 
-if optimize:
+
+season_start = True
+
+#includes data if csvs are not updated...
+if optimize or season_start:
     check_last_data = False
 else:
     check_last_data = True
@@ -48,9 +53,9 @@ else:
 
 #add 2. one because threshold is bounded upwards. and one because last week is only partly encoded (dynamic features)
 #+1. e.g 28 here means 29 later.
-temporal_window = 30
+temporal_window = 12
 
-season_start = True
+
 
 method = 'xgboost'
 
@@ -58,7 +63,7 @@ season_dfs = []
 
 season_count = 0
 
-print('HARD CODED short names for HULL, MIDlesborough. DOUBLE CHECK IF PROMOTED')
+print('HARD CODED short names for HULl and MIDlesborough. DOUBLE CHECK IF PROMOTED')
 
 
 # Function to correct string_team based on the majority
@@ -72,11 +77,15 @@ def correct_string_team(group):
 
 
 #get each season
+
+cbirt_folders = ['2016-17', '2017-18', '2018-19']
+fbref_folders = ['2019-20', '2020-21', '2021-22', '2022-23', '2023-24']
+
 for folder in folders:
     
 
     directory = os.path.join(directories, folder)
-    fixture_data = os.path.join(directory, 'fixtures.csv')
+    fixture_csv = os.path.join(directory, 'fixtures.csv')
     gws_data = os.path.join(directory, 'gws')
     team_path = os.path.join(directory, "teams.csv")
 
@@ -102,7 +111,25 @@ for folder in folders:
                 #delete: gameweek, GS, A, CS, GC, 
             elif folder == '2024-25':
                 season_data = pd.read_csv(directory + '/fpl-data-stats-2024-25.csv')
+            elif folder in fbref_folders:
+            
+                season_data = pd.read_csv(directory + '\\fbref/' + folder[:-2] + '20' + folder[-2:] + '_player_data.csv')
+                fixture_data = pd.read_csv(directory + '\\fbref/'  + folder[:-2] + '20' + folder[-2:] + '_fixture_data.csv')
+         
+
+                #correct assign  game_id. Assume they are ordered
+                for id, ind in enumerate(np.unique(fixture_data.game_id)):
+                    selected_id = fixture_data.game_id == ind
+                    fixture_data.loc[selected_id, 'game_id'] = id
                 
+                
+                fixture_data['kickoff_time'] = pd.to_datetime(fixture_data['Date'] + ' ' + fixture_data['Time'])
+                   
+                season_data = pd.merge(season_data, fixture_data.loc[:, ['Wk', 'game_id', 'kickoff_time']], on='game_id', how='left')
+                season_data.rename(columns={'Wk': 'gameweek'}, inplace=True)
+                
+                print('Season_data range from', min(season_data.gameweek), max(season_data.gameweek))
+
                 
 
             #get id so it can be matched with position
@@ -136,9 +163,10 @@ for folder in folders:
                     else:
                         gw = pd.read_csv(gw_path)
                     
-                    #add to accomodate new 2025-26 rules. miss data from 2019-2025
-                    cbirt_folders = ['2016-17', '2017-18', '2018-19']
+                    #add to accomodate new 2025-26 rules
+                    
                     if folder in cbirt_folders:
+                        
                         if 'tackles' in gw.keys() and 'clearances_blocks_interceptions' in gw.keys():
                             cbit = gw.tackles + gw.clearances_blocks_interceptions
                             gw_selected = np.argwhere((cbit >= 10).values)
@@ -166,9 +194,11 @@ for folder in folders:
                                         if position.iloc[0] > 2:
                                             gw.loc[p[0], 'total_points'] += 2  
                                             
-                    if folder == '2024-25':
+                    elif folder == '2024-25':
                         
                         gw_num = int(re.findall(r'\d+', gw_csv)[0])
+                        
+
                     
                         
                         for el in gw.iterrows():
@@ -208,6 +238,98 @@ for folder in folders:
                                     gw.loc[el[0], 'total_points'] += 2
                                     if not sum(selected == 1):
                                         print('Possible error: more than one matched match')
+                                        
+                    elif folder in fbref_folders:
+                        
+                        gw_num = int(re.findall(r'\d+', gw_csv)[0])
+                        
+                        #covid weeks
+                        if gw_num > 38:
+                            gw_num = gw_num - 9
+                    
+                        
+                        for el in gw.iterrows():
+                            
+                            if el[1].minutes == 0:
+                                continue
+                            
+                            num_adds = 0
+                            
+                            selected = (season_data.gameweek == gw_num) 
+                            
+                            name_split = el[1]['name'].split('_')
+                            name_string = name_split[0]
+                            for k in name_split[1:-1]:
+                                name_string = name_string + ' ' + k
+                            #match the name strings
+                            closest_match = difflib.get_close_matches(name_string, season_data.loc[selected, 'Player'], n=1)
+                            #try with first name
+                            if not closest_match:
+                                closest_match = difflib.get_close_matches(name_split[0], season_data.loc[selected, 'Player'], n=1)
+                   
+                                
+                            if not closest_match:
+                                #print('GW:', gw_num, 'Not matched', el)
+                                not_matched = el
+                                
+                                #a = jhfkhfka
+                                continue
+                            
+                            selected = (season_data.gameweek == gw_num) & (season_data.Player.values == closest_match)
+                            
+                            
+                            
+                            if sum(selected) == 0:
+                                print('No player matched in fbref', el[1]['name'])
+                                a = jhfkhfka
+                            #also use xGC to acocmodate multiple matches
+                            if sum(selected) > 1:
+                                utc_time = pd.to_datetime(el[1].kickoff_time)   
+                                london_time = utc_time.tz_convert('Europe/London')
+                                selected = (season_data.kickoff_time == london_time.tz_localize(None)) & (season_data.gameweek == gw_num) & (season_data.Player.values == closest_match)
+                                
+                                #check if there are two. then merge
+                                if sum(selected) == 2:
+                                   
+                                    indices = season_data[selected].index
+                                    
+                                    print('Duplicate recordings for', name_string, indices, 'Merge!')
+                                    
+                                    
+                                    season_data.iloc[indices[0]] = season_data.iloc[indices[0]].fillna(season_data.iloc[indices[1]])
+                                    season_data.iloc[indices[1]] = season_data.iloc[indices[1]].fillna(season_data.iloc[indices[0]])
+                                    
+                                    if season_data.iloc[indices[0]].Min > season_data.iloc[indices[1]].Min:
+                                        selected = season_data.index == indices[0]
+                                    else:
+                                        selected = season_data.index == indices[1]
+                                
+                                if not sum(selected) == 1:
+                                    a = gjjdjkd
+                            
+                            #find position
+                            element = el[1].element
+                            player_selected =  df_player.element == element
+                            position = df_player.loc[player_selected].element_type.iloc[0]
+                            
+                            if position == 2:
+                                cbit = season_data.loc[selected, ['Clr', 'Blocks',
+                                'Int', 'Tkl']].sum(axis=1).iloc[0]
+                                
+                                if cbit >= 10:
+                                    gw.loc[el[0], 'total_points'] += 2
+                                    if not sum(selected == 1):
+                                        print('Possible error: more than one matched match')                                   
+                          
+                            elif not position == 1:
+                                cbirt = season_data.loc[selected, ['Clr', 'Blocks',
+                                'Int', 'Tkl', 'Recov']].sum(axis=1).iloc[0]
+                                
+                                if cbirt >= 12:
+                                    gw.loc[el[0], 'total_points'] += 2
+                                    if not sum(selected == 1):
+                                        print('Possible error: more than one matched match')
+
 
 
 
@@ -244,9 +366,10 @@ for folder in folders:
                     if 'position' in gw.keys():
                         gw = gw.loc[gw['position'] != 'AM']
                     
-                    sum_transfers = sum(gw.transfers_in)
-
-                    if sum_transfers == 0 or season_start:
+                    sum_transfers = sum(gw.transfers_in) +  sum(np.abs(gw.transfers_out))
+                    
+                    #turn to percentage of all transfers
+                    if sum_transfers == 0:
                         gw[['transfers_in', 'transfers_out']] = np.nan
                     else:
                         gw[['transfers_in', 'transfers_out']] = gw[['transfers_in', 'transfers_out']]/sum_transfers
@@ -261,6 +384,10 @@ for folder in folders:
                     else:
                         print(gw_csv)
                         dfs_gw.append(gw)
+                        
+                if sum_transfers == 0:
+                    print(gw_csv, 'no transfers')
+                    
 
             df_gw = pd.concat(dfs_gw)
 
@@ -341,7 +468,7 @@ for folder in folders:
                 season_df[["team_a_difficulty", "team_h_difficulty"]] = np.nan
             else:
                 #get fixture difficulty difference for each datapoint
-                fixture_df = pd.read_csv(fixture_data)
+                fixture_df = pd.read_csv(fixture_csv)
                 
                 #rename befor merge
                 fixture_df = fixture_df.rename(columns={"id": "fixture"})
@@ -562,8 +689,8 @@ new_names = all_names.copy()
 #not that dangerous to merge previous players, but avoid to merge into current player
 #loop through the most recent players first
 for name_ind, name in enumerate(all_names[:-1]):
-    if 'Matheus' in name:
-        print(name, name_ind)
+    # if 'Matheus' in name:
+    #     print(name, name_ind)
 
     #where in list to check to avoid merges in the same season
     check_ind = np.max([len(current_names), name_ind+1])
@@ -1075,23 +1202,22 @@ def objective_xgboost(space):
     # interaction_constraints = get_interaction_constraints(objective_X.columns)
     # pars['interaction_constraints'] = str(interaction_constraints)       
     # Step 2: Calculate 20% of the unique integers
-    num_to_select = max(1, int(len(train_sample) * space['eval_fraction']))  # Ensure at least one is selected
-
-    # Step 3: Randomly select 20% of the unique integers
-    random.seed(42)
-    eval_sample = random.sample(train_sample, num_to_select, )
-    evals = [x in eval_sample for x in match_ind[cvs]]
-    fits = [x not in eval_sample for x in match_ind[cvs]]
-
-    fit_X = objective_X.loc[fits].copy()
-    eval_X =  objective_X.loc[evals].copy()
-    fit_y =  cv_y.loc[fits].copy()
-    eval_y = cv_y.loc[evals].copy()
-    # fit_sample_weights =  cv_sample_weights[fits].copy()
-    # eval_sample_weights = cv_sample_weights[evals].copy()
     
-
+    # Step 2: Calculate 20% of the unique integers
+    eval_num_to_select = max(1, int(len(cvs_match_integers) * space['eval_fraction']))  # Ensure at least one is selected
     
+    random.seed(44)
+    
+    eval_sample = random.sample(cvs_match_integers, eval_num_to_select)
+            
+    evals_mask = pd.Series(match_ind_df[cvs_mask]).isin(eval_sample)  # Mask for cross-validation sample
+    fits_mask = ~evals_mask  # Mask for validation, simply the inverse of cvs_mask
+    
+    fit_X = objective_X.iloc[fits_mask.values].copy()
+    eval_X =  objective_X.loc[evals_mask.values].copy()
+    fit_y =  cv_y.loc[fits_mask.values].copy()
+    eval_y = cv_y.loc[evals_mask.values].copy()
+
     #make sure all categories in val_x is present in cv_x
     for column in eval_X.columns:
         if pd.api.types.is_categorical_dtype(eval_X[column]):
@@ -1228,7 +1354,7 @@ def objective_linear_svr(space):
 
     #print(space)
 
-    model = LinearSVR(**space, fit_intercept=False, dual="auto")
+    model = LinearSVR(**space, dual="auto")
     
     model.fit(scaled_cv_X, log_cv_y)
 
@@ -1323,30 +1449,41 @@ for column in categorical_columns:
     
 unique_integers = list(set(match_ind))
 
-
 # Step 2: Calculate 20% of the unique integers
 num_to_select = max(1, int(len(unique_integers) * 0.80))  # Ensure at least one is selected
 
 # Step 3: Randomly select 20% of the unique integers
 if optimize:
+    #9.38
     random.seed(42)
 else:
     random.seed(43)
-    
-train_sample = random.sample(unique_integers, num_to_select, )
-vals = [x not in train_sample for x in match_ind]
-cvs = [x in train_sample for x in match_ind]
 
+train_sample = random.sample(unique_integers, num_to_select)
 
-cv_X = train_X.iloc[cvs].copy()
-val_X =  train_X.loc[vals].copy()
-cv_y =  train_y.loc[cvs].copy()
-val_y = train_y.loc[vals].copy()
+match_ind_df = pd.Series(match_ind) 
+
+# vals = [x not in train_sample for x in match_ind_df]
+# cvs = [x in train_sample for x in match_ind_df]
+
+cvs_mask = pd.Series(match_ind_df).isin(train_sample)  # Mask for cross-validation sample
+vals_mask = ~cvs_mask  # Mask for validation, simply the inverse of cvs_mask
+
+cvs_match_integers = list(set(match_ind_df[cvs_mask]))
+
+cv_X = train_X.loc[cvs_mask.values].copy()
+val_X =  train_X.loc[vals_mask.values].copy()
+cv_y =  train_y.loc[cvs_mask.values].copy()
+val_y = train_y.loc[vals_mask.values].copy()
+
+#transform y to normal distribution
+min_val = np.min(cv_y)
+log_cv_y = np.log(cv_y - min_val + 1)   
 
 if method == 'linear_reg':
-    #8.82 with hyperparams tested on val data. temp win = 0
-    #8.80 with hyperparams tested on val data. temp win = 1
-    #8.82 with hyperparams tested on val data. temp win = 2
+    #9.04 with hyperparams tested on val data. temp win = 0
+    #9.02 with hyperparams tested on val data. temp win = 1
+    #9.04 with hyperparams tested on val data. temp win = 2
     
     from sklearn.linear_model import LinearRegression, Ridge, Lasso
     from sklearn.preprocessing import StandardScaler
@@ -1400,9 +1537,8 @@ if method == 'linear_reg':
     best_hyperparams = fmin(fn = objective_linear_reg,
                     space = space,
                     algo = tpe.suggest,
-                    early_stop_fn=no_progress_loss(1000),
+                    early_stop_fn=no_progress_loss(500),
                     trials = trials)
-
 
     # model.fit(cv_filled_mean, cv_y)
 
@@ -1497,14 +1633,15 @@ elif method == 'svr':
 
 elif method == 'linear_svr':
     
-    #totally off. not even close... (90isj)
+    #window 0: 9.07
+    #windiw 1: 9.06
 
     from sklearn.svm import LinearSVR
     from sklearn.preprocessing import StandardScaler
     
     
     #do not keep historical data
-    threshold = 0
+    threshold = 1
 
     # Filter the columns based on the defined function
     columns_to_keep = [col for col in cv_X.columns if should_keep_column(col, threshold)]
@@ -1541,9 +1678,7 @@ elif method == 'linear_svr':
     scaled_cv_X = pd.DataFrame(scaled_cv_X, columns=cv_filled_mean.columns)
     scaled_val_X =  pd.DataFrame(scaler.transform(val_filled_mean), columns=cv_filled_mean.columns)
     
-    #transform y to normal distribution
-    min_val = np.min(cv_y)
-    log_cv_y = np.log(cv_y - min_val + 1)   
+
 
     space = {'C': hp.loguniform('C_linear', -3, 3),
              'epsilon': hp.loguniform('epsilon_linear', -2, 2),
@@ -1798,43 +1933,6 @@ elif method == 'mixedLM':
 
 elif method == 'xgboost':
 
-    
-    #get an validation set for fitting
-    #cv_X, val_X, cv_y, val_y, cv_sample_weights, val_sample_weights, cv_stratify, _= train_test_split(train_X, train_y, sample_weights, stratify, test_size=0.20, stratify=stratify, random_state=42)
-    #use half of the current seasons's data as test set   
-    
-    #20% for testing
-    #get match indices
-        
-    # match_ind = pd.factorize(
-    #     train_X[['string_team', 'was_home', 'string_opp_team', 'season']]
-    #     .apply(lambda row: '-'.join(row.astype(str)), axis=1)
-    # )[0]
-        
-    # #get 20% of those matches
-    # # Step 1: Get unique integers using a set
-    # unique_integers = list(set(match_ind))
-    
-    # # Step 2: Calculate 20% of the unique integers
-    # num_to_select = max(1, int(len(unique_integers) * 0.20))  # Ensure at least one is selected
-    
-    # # Step 3: Randomly select 20% of the unique integers
-    # random.seed(42)
-    # random_sample = random.sample(unique_integers, num_to_select, )
-    # vals = [x not in random_sample for x in match_ind]
-    # cvs = [x in random_sample for x in match_ind]
-    
-    
-    #val_ind = int(train_X.shape[0]*0.2)
-    
-    # cv_X = train_X.loc[cvs].copy()
-    # val_X =  train_X.loc[vals].copy()
-    # cv_y =  train_y.loc[cvs].copy()
-    # val_y = train_y.loc[vals].copy()
-    # cv_sample_weights =  sample_weights[cvs].copy()
-    # val_sample_weights = sample_weights[vals].copy()
-    # cv_stratify = stratify[cvs].copy()
-    
     #make sure all categories in val_x is present in cv_x
     for column in val_X.columns:
         if pd.api.types.is_categorical_dtype(val_X[column]):
@@ -1865,9 +1963,9 @@ elif method == 'xgboost':
     min_eval_fraction = 1/(len(unique_integers) * 0.80)#len(np.unique(cv_stratify))/cv_X.shape[0]
     
 
-    space={'max_depth': hp.quniform("max_depth", 1, 1400, 1),
-            'min_split_loss': hp.uniform('min_split_loss', 0, 150), #log?
-            'reg_lambda' : hp.uniform('reg_lambda', 0, 250),
+    space={'max_depth': hp.quniform("max_depth", 1, 1500, 1),
+            'min_split_loss': hp.uniform('min_split_loss', 0, 175), #log?
+            'reg_lambda' : hp.uniform('reg_lambda', 0, 275),
             'reg_alpha': hp.uniform('reg_alpha', 0.01, 400),
             'min_child_weight' : hp.uniform('min_child_weight', 0, 700),
             'learning_rate': hp.uniform('learning_rate', 0, 0.05),
@@ -1877,7 +1975,7 @@ elif method == 'xgboost':
             'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
             'early_stopping_rounds': hp.quniform("early_stopping_rounds", 10, 2500, 1),
             'eval_fraction': hp.uniform('eval_fraction', min_eval_fraction, 0.2),
-            'n_estimators': hp.quniform('n_estimators', 2, 19000, 1),
+            'n_estimators': hp.quniform('n_estimators', 2, 20000, 1),
             'max_delta_step': hp.uniform('max_delta_step', 0, 40),
             'grow_policy': hp.choice('grow_policy', grow_policy), #111
             'max_leaves': hp.quniform('max_leaves', 0, 1400, 1),
@@ -2058,23 +2156,25 @@ elif method == 'xgboost':
         # Step 2: Calculate 20% of the unique integers
         num_to_select = int(len(unique_integers) * space['eval_fraction'])
         
+        
+        
         # Step 3: Randomly select 20% of the unique integers
         eval_sample = random.sample(unique_integers, num_to_select)
-        fits = [x not in eval_sample for x in match_ind]
-        evals = [x in eval_sample for x in match_ind]
         
+        match_ind_df = pd.Series(match_ind) 
         
-        #val_ind = int(train_X.shape[0]*0.2)
+        evals_mask = match_ind_df.isin(eval_sample)  # Mask for cross-validation sample
+        fits_mask = ~evals_mask  # Mask for validation, simply the inverse of cvs_mask
         
-        fit_X = objective_X.loc[fits].copy()
-        eval_X =  objective_X.loc[evals].copy()
-        fit_y =  train_y.loc[fits].copy()
-        eval_y = train_y.loc[evals].copy()
-
+        fit_X = objective_X.iloc[fits_mask.values].copy()
+        eval_X =  objective_X.loc[evals_mask.values].copy()
+        fit_y =  train_y.loc[fits_mask.values].copy()
+        eval_y = train_y.loc[evals_mask.values].copy()
         
         #make sure all categories in val_x is present in cv_x
         for column in eval_X.columns:
-            if pd.api.types.is_categorical_dtype(eval_X[column]):
+            
+            if isinstance(eval_X[column].dtype, pd.CategoricalDtype):
                 # Get the values in the current column of val_X
                 val_values = eval_X[column]
                 
@@ -2109,10 +2209,7 @@ elif method == 'xgboost':
                         max_num_features=20, show_values=False)
         plt.show()
         
-        
-        
         data =  model.get_score()
-
 
         # Dictionary to hold summed values and counts
         summed_values = {}
