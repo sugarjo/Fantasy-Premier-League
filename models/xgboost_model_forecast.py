@@ -25,6 +25,7 @@ from pandas.api.types import CategoricalDtype
 import time
 
 import difflib
+from difflib import SequenceMatcher
 
 directories = r'C:\Users\jorgels\Documents\GitHub\Fantasy-Premier-League\data'
 try:
@@ -75,15 +76,36 @@ def correct_string_team(group):
     group['string_team'] = majority_team
     return group
 
+def sequence_matcher_similarity(s1, s2):
+    similarity = SequenceMatcher(None, ' '.join(sorted(s1.split())), ' '.join(sorted(s2.split()))).ratio()
+    first_name_similarity = SequenceMatcher(None, s1.split()[0], s2.split()[0]).ratio()
+    if len(s1.split()) > 1 and len(s2.split()) > 1:
+        second_name_similarity = SequenceMatcher(None, s1.split()[1], s2.split()[1]).ratio()
+    else:
+        second_name_similarity = np.nan
+
+    return similarity, first_name_similarity, second_name_similarity
+
+import re
+
+def clean_string(input_string):
+    # Replace underscores with spaces
+    cleaned_string = input_string.replace('_', ' ')
+    cleaned_string = input_string.replace("'", "")
+    # Remove all numbers
+    cleaned_string = re.sub(r'\d+', '', cleaned_string)
+    return cleaned_string.strip()  # Optional: strip leading/trailing spaces
+
 
 #get each season
 
-cbirt_folders = ['2016-17', '2017-18', '2018-19']
-fbref_folders = ['2019-20', '2020-21', '2021-22', '2022-23', '2023-24']
+#cbirt_folders = ['2016-17', '2017-18', '2018-19']
 
 for folder in folders:
+    if folder in ['2016-17', '2017-18', '2018-19', '2019-20', '2020-21', '2021-22', '2022-23', '2023-24']:
+        continue
     
-
+    #get data from vastaav
     directory = os.path.join(directories, folder)
     fixture_csv = os.path.join(directory, 'fixtures.csv')
     gws_data = os.path.join(directory, 'gws')
@@ -96,41 +118,23 @@ for folder in folders:
         if folder[-4] != '.':
 
             print('\n', folder)   
-            
-            if folder == '2014-15':
-                
-                continue 
-                season_data = pd.read_excel(os.path.join(directory, 'season_data.xlsx'))
-                
-                season_data.rename(columns={'PID': 'element'}, inplace=True)
-                season_data.rename(columns={'Name': 'web_name'}, inplace=True)
-                season_data.rename(columns={'Team': 'string_team'}, inplace=True)
-                season_data.rename(columns={'Fixture/Score': 'string_opp_team'}, inplace=True)
-                season_data['string_opp_team'] = season_data['string_opp_team'].str[:3]
-                season_data.rename(columns={'Mins': 'minutes'}, inplace=True)
-                #delete: gameweek, GS, A, CS, GC, 
-            elif folder == '2024-25':
-                season_data = pd.read_csv(directory + '/fpl-data-stats-2024-25.csv')
-            elif folder in fbref_folders:
-            
-                season_data = pd.read_csv(directory + '\\fbref/' + folder[:-2] + '20' + folder[-2:] + '_player_data.csv')
-                fixture_data = pd.read_csv(directory + '\\fbref/'  + folder[:-2] + '20' + folder[-2:] + '_fixture_data.csv')
-         
 
-                #correct assign  game_id. Assume they are ordered
-                for id, ind in enumerate(np.unique(fixture_data.game_id)):
-                    selected_id = fixture_data.game_id == ind
-                    fixture_data.loc[selected_id, 'game_id'] = id
-                
-                
-                fixture_data['kickoff_time'] = pd.to_datetime(fixture_data['Date'] + ' ' + fixture_data['Time'])
-                   
-                season_data = pd.merge(season_data, fixture_data.loc[:, ['Wk', 'game_id', 'kickoff_time']], on='game_id', how='left')
-                season_data.rename(columns={'Wk': 'gameweek'}, inplace=True)
-                
-                print('Season_data range from', min(season_data.gameweek), max(season_data.gameweek))
+            season_data = pd.read_csv(directory + '\\fbref/' + folder[:-2] + '20' + folder[-2:] + '_player_data.csv')
+            fixture_data = pd.read_csv(directory + '\\fbref/'  + folder[:-2] + '20' + folder[-2:] + '_fixture_data.csv')
+     
 
-                
+            #correct assign  game_id. Assume they are ordered
+            for id, ind in enumerate(np.unique(fixture_data.game_id)):
+                selected_id = fixture_data.game_id == ind
+                fixture_data.loc[selected_id, 'game_id'] = id
+            
+            
+            fixture_data['kickoff_time'] = pd.to_datetime(fixture_data['Date'] + ' ' + fixture_data['Time'])
+               
+            season_data = pd.merge(season_data, fixture_data.loc[:, ['Wk', 'game_id', 'kickoff_time']], on='game_id', how='left')
+            season_data.rename(columns={'Wk': 'gameweek'}, inplace=True)
+            
+            print('Season_data range from', min(season_data.gameweek), max(season_data.gameweek))
 
             #get id so it can be matched with position
             player_path = directory + '/players_raw.csv'
@@ -162,206 +166,168 @@ for folder in folders:
                         gw = pd.read_csv(gw_path, encoding='latin1')
                     else:
                         gw = pd.read_csv(gw_path)
+                        
+                    gw_num = int(re.findall(r'\d+', gw_csv)[0])
                     
-                    #add to accomodate new 2025-26 rules
+                    #allocate rows
+                    if folder in ['2016-17', '2017-18', '2018-19', '2019-20', '2020-21', '2021-22']:
+                        gw['expected_goals'] = np.nan
+                        gw['expected_assists'] = np.nan
+                        gw['expected_goals_conceded'] = np.nan
                     
-                    if folder in cbirt_folders:
-                        
-                        if 'tackles' in gw.keys() and 'clearances_blocks_interceptions' in gw.keys():
-                            cbit = gw.tackles + gw.clearances_blocks_interceptions
-                            gw_selected = np.argwhere((cbit >= 10).values)
-                            
-                            for p in gw_selected:
-                                element = gw.iloc[p[0]].element
-                                player_selected = df_player.element == element
-                                position = df_player.loc[player_selected].element_type
-                                
-                                #if defender add two points
-                                if position.iloc[0] == 2:
-                                    gw.loc[p[0], 'total_points'] += 2
-                                    
-                            #add to accomodate new 2025-26 rules
-                            if 'recoveries' in gw.keys():
-                                    cbirt = cbit + gw.recoveries
-                                    gw_selected = np.argwhere((cbit >= 12).values)
-                                    
-                                    for p in gw_selected:
-                                        element = gw.iloc[p[0]].element
-                                        player_selected = df_player.element == element
-                                        position = df_player.loc[player_selected].element_type
-                                        
-                                        #if mid or fw add two points
-                                        if position.iloc[0] > 2:
-                                            gw.loc[p[0], 'total_points'] += 2  
-                                            
-                    elif folder == '2024-25':
-                        
-                        gw_num = int(re.findall(r'\d+', gw_csv)[0])
-                        
+                    gw['expected_goal_assists'] = np.nan
+                    gw['defcon'] = np.nan
+                    gw['SoT'] = np.nan
+                    
+                    
 
                     
-                        
-                        for el in gw.iterrows():
-                            
-                            if el[1].minutes == 0:
-                                continue
-                            
-                            num_adds = 0
-                            
-                            
-                            selected = (season_data.gameweek == gw_num) & (season_data.id == el[1].element) & (season_data.minutes == el[1].minutes)
-                            
-                            #also use xGC to acocmodate multiple matches
-                            if sum(selected) > 1:
-                                diff_xGC = np.abs(season_data.loc[selected, 'xGC'] - el[1].expected_goals_conceded)
-                                ind_min = np.argmin(diff_xGC)
-                                
-                                xGC_use = season_data.loc[selected, 'xGC'].iloc[ind_min]
-                                
-                                selected = (season_data.gameweek == gw_num) & (season_data.id == el[1].element) & (season_data.minutes == el[1].minutes) & (season_data.xGC == xGC_use)
-                            
-                            
-                            if el[1].position == 'DEF':
-                                cbit = season_data.loc[selected, ['clearances', 'shot_blocks',
-                                'interceptions', 'tackles']].sum(axis=1).iloc[0]
-                                
-                                if cbit >= 10:
-                                    gw.loc[el[0], 'total_points'] += 2
-                                    if not sum(selected == 1):
-                                        print('Possible error: more than one matched match')                                   
-                          
-                            elif not el[1].position == 'GK':
-                                cbirt = season_data.loc[selected, ['clearances', 'shot_blocks',
-                                'interceptions', 'recoveries', 'tackles']].sum(axis=1).iloc[0]
-                                
-                                if cbirt >= 12:
-                                    gw.loc[el[0], 'total_points'] += 2
-                                    if not sum(selected == 1):
-                                        print('Possible error: more than one matched match')
-                                        
-                    elif folder in fbref_folders:
-                        
-                        gw_num = int(re.findall(r'\d+', gw_csv)[0])
-                        
-                        #covid weeks
-                        if gw_num > 38:
-                            gw_num = gw_num - 9
+                    #covid weeks
+                    if gw_num > 38:
+                        gw_num = gw_num - 9
+                
                     
+                    for el in gw.iterrows():
                         
-                        for el in gw.iterrows():
+                        if el[1].minutes == 0:
+                            continue
+                        
+                        num_adds = 0
+                        
+                        name_string = clean_string(el[1]['name']) 
+                        
+                        results = [sequence_matcher_similarity(prev_name, name_string) for prev_name in np.unique(season_data['Player'])]
+                        max_val = -1
+                        for ind, k in enumerate(results):
+                            if k[0] > max_val:
+                                max_val =  k[0]
+                                max_ind = ind
+                        
+                        if max_val > 0.77:
+                            closest_match = [np.unique(season_data['Player'])[max_ind]]
+                        else:
+                            closest_match = difflib.get_close_matches(name_string, season_data['Player'], n=1)
+
+                        #manually change some names:
+                        change_from_names = ['Rodrigo Rodri Hernandez', 'Vitor de Oliveira Nunes dos Reis', 'Welington Damascena Santos', 'Felipe Rodrigues da Silva', 'André Trindade da Costa Neto', 'Francisco Evanilson de Lima Barbosa', 'João Pedro Ferreira Silva', 'Igor Thiago Nascimento Rodrigues', 'Sávio Savinho Moreira de Oliveira', 'Norberto Bercique Gomes Betuncal', 'Anssumane Fati Vieira', 'Victor da Silva', 'Manuel Benson Hedilazio', 'Igor Julio dos Santos de Paulo', 'Murillo Santiago Costa dos Santos', 'Felipe Augusto de Almeida Monteiro', 'Mateus Cardoso Lemos Martins', 'João Victor Gomes da Silva', 'Danilo dos Santos de Oliveira', 'Alexandre Moreno Lopera', 'Carlos Ribeiro Dias', 'Matheus Santos Carneiro Da Cunha', 'Renan Augusto Lodi dos Santos', 'Lyanco Silveira Neves Vojnovic', 'Willian Borges da Silva', 'Carlos Henrique Casimiro', 'Norberto Murara Neto', 'Antony Matheus dos Santos', 'Lucas Tolentino Coelho de Lima', 'Diogo Teixeira da Silva','Fábio Freitas Gouveia Carvalho', 'Emerson Leite de Souza Junior', 'Bernardo Veiga de Carvalho e Silva', 'Francisco Jorge Tomás Oliveira', 'Samir Caetano de Souza Santos', 'Lyanco Evangelista Silveira Neves Vojnovic', 'Emerson Aparecido Leite de Souza Junior', 'Juan Camilo Hernández Suárez', 'José Malheiro de Sá', 'Francisco Machado Mota de Castro Trincão', 'Francisco Casilla Cortés', 'Rúben Santos Gato Alves Dias', 'Raphael Dias Belloli', 'Vitor Ferreira', 'Oluwasemilogo Adesewo Ibidapo Ajayi', 'Ivan Ricardo Neves Abreu Cavaleiro', 'Hélder Wander Sousa de Azevedo e Costa', 'Allan Marques Loureiro', 'Bruno André Cavaco Jordao', 'João Pedro Junqueira de Jesus', 'Borja González Tomás', 'José Reina', 'Roberto Jimenez Gago', 'José Ángel Esmorís Tasende', 'Rodrigo Hernandez', 'Mahmoud Ahmed Ibrahim Hassan', 'José Ignacio Peleteiro Romallo', 'Joelinton Cássio Apolinário de Lira', 'Alexandre Nascimento Costa Silva', 'Fabio Henrique Tavares', 'Bernard Anício Caldeira Duarte', 'André Filipe Tavares Gomes', 'André Filipe Tavares', 'Rúben Gonçalo Silva Nascimento Vinagre', 'Rúben Diogo da Silva Neves', 'Rui Pedro dos Santos Patrício', 'João Filipe Iria Santos Moutinho', 'Jorge Luiz Frello Filho', 'Frederico Rodrigues de Paula Santos', 'Fabricio Agosto Ramírez', 'Bonatini Lohner Maia Bonatini', 'Bernardo Fernandes da Silva Junior', 'Alisson Ramses Becker', 'Olayinka Fredrick Oladotun Ladapo', 'Lucas Rodrigues Moura da Silva', 'João Mário Naval Costa Eduardo', 'Adrien Sebastian Perruchet Silva', 'Danilo Luiz da Silva', 'Jesé Rodríguez Ruiz', 'Jose Luis Mato Sanmartín', 'Ederson Santana de Moraes', 'Bruno Saltor Grau', 'Bernardo Mota Veiga de Carvalho e Silva', 'Robert Kenedy Nunes do Nascimento', 'Gabriel Armando de Abreu', 'Fabio Pereira da Silva', 'Fernando Francisco Reges', 'David Luiz Moreira Marinho', 'Willian Borges Da Silva', 'Pedro Rodríguez Ledesma', 'Oscar dos Santos Emboaba Junior', 'Manuel Agudo Durán', 'Fernando Luiz Rosa', 'Adrián San Miguel del Castillo']
+                        change_to_names = ['Rodri', 'Vitor Reis', 'Welington', 'Morato', 'André', 'Evanilson', 'Jota Silva', 'Thiago', 'Sávio', 'Beto', 'Ansu Fati', 'Vitinho', 'Benson Manuel', 'Igor', 'Murillo', 'Felipe', 'Tetê', 'João Gomes', 'Danilo', 'Álex Moreno', 'Cafú', 'Matheus Cunha', 'Renan Lodi', 'Lyanco', 'Willian', 'Casemiro', 'Neto', 'Antony', 'Lucas Paquetá', 'Diogo Jota', 'Fabio Carvalho', 'Emerson', 'Bernardo Silva', 'Chiquinho', 'Samir Santos', 'Lyanco', 'Emerson', 'Cucho', 'José Sá', 'Francisco Trincão', 'Kiko Casilla', 'Rúben Dias', 'Raphinha', 'Vitinha', 'Semi Ajayi', 'Ivan Cavaleiro', 'Hélder Costa', 'Allan', 'Bruno Jordão', 'João Pedro', 'Borja Bastón', 'Pepe Reina', 'Roberto', 'Angeliño', 'Rodri', 'Trézéguet', 'Jota', 'Joelinton', 'Xande Silva', 'Fabinho', 'Bernard', 'André Gomes', 'André Gomes', 'Rúben Vinagre', 'Rúben Neves', 'Rui Patrício', 'João Moutinho', 'Jorginho', 'Fred', 'Fabricio', 'Léo Bonatini', 'Bernardo', 'Alisson', 'Freddie Ladapo', 'Lucas Moura', 'João Mário', 'Adrien Silva', 'Danilo', 'Jesé', 'Joselu', 'Ederson', 'Bruno', 'Bernardo Silva', 'Kenedy', 'Gabriel Paulista', 'Fábio', 'Fernando', 'David Luiz', 'Willian', 'Pedro', 'Oscar', 'Nolito', 'Fernandinho', 'Adrián']
+                        
+                        if name_string in change_from_names:
+                            name_selected = [k == name_string for k in change_from_names]
+                            name_string =  [value for value, flag in zip(change_to_names, name_selected) if flag][0]
+                            closest_match = [name_string]
+
+
+                        if not closest_match:
+                            print('No player matched in fbref', name_string)  
+                            continue
+                        
+                        
+                        #use names from fbref. same across seasons
+                        #use names from fbref. same name across seasons
+                        gw.loc[el[0], 'name'] = closest_match[0]
+                        
+                        #gameweek doesn't work for double rounds. use date instead
+                        utc_time = pd.to_datetime(el[1].kickoff_time)   
+                        london_time = utc_time.tz_convert('Europe/London')
+                        player_selected = season_data.Player.values == closest_match
+                        
+                        #find_minimum time
+                        player_data = season_data[player_selected]
+
+                        # Calculate the absolute time differences for that player
+                        time_differences = (player_data['kickoff_time'] - london_time.tz_localize(None)).abs()
+                        
+                        # Find the index of the minimum difference
+                        closest_index = time_differences.idxmin()
+                        
+                        # Create a boolean index for the whole original DataFrame
+                        fbref_selected  = (player_selected) & (season_data['kickoff_time'] == season_data.loc[closest_index, 'kickoff_time'])
+                        if min(time_differences) >  pd.Timedelta(minutes=30):
+                            print('Time difference is', min(time_differences), el[0], gw.loc[el[0], 'name'], name_string)
+                        #fbref_selected = (season_data.kickoff_time == london_time.tz_localize(None)) & (season_data.Player.values == closest_match)
+                        #fbref_selected = (season_data.gameweek == gw_num) & (season_data.Player.values == closest_match)
+                        
+                        
+                        
+                        if sum(fbref_selected) == 0:
+                            print('No fbref games for player', name_string)
+                            continue
+                        # #also use kickofftime to acocmodate multiple matches
+                        # if sum(fbref_selected) > 1:
+                        #     utc_time = pd.to_datetime(el[1].kickoff_time)   
+                        #     london_time = utc_time.tz_convert('Europe/London')
+                        #     fbref_selected = (season_data.kickoff_time == london_time.tz_localize(None)) & (season_data.gameweek == gw_num) & (season_data.Player.values == closest_match)
                             
-                            if el[1].minutes == 0:
-                                continue
+                        #check if there are two. then merge
+                        if sum(fbref_selected) == 2:
+                           
+                            indices = season_data[fbref_selected].index
                             
-                            num_adds = 0
-                            
-                            selected = (season_data.gameweek == gw_num) 
-                            
-                            name_split = el[1]['name'].split('_')
-                            name_string = name_split[0]
-                            for k in name_split[1:-1]:
-                                name_string = name_string + ' ' + k
-                            #match the name strings
-                            closest_match = difflib.get_close_matches(name_string, season_data.loc[selected, 'Player'], n=1)
-                            #try with first name
-                            if not closest_match:
-                                closest_match = difflib.get_close_matches(name_split[0], season_data.loc[selected, 'Player'], n=1)
-                   
-                                
-                            if not closest_match:
-                                #print('GW:', gw_num, 'Not matched', el)
-                                not_matched = el
-                                
-                                #a = jhfkhfka
-                                continue
-                            
-                            selected = (season_data.gameweek == gw_num) & (season_data.Player.values == closest_match)
+                            print('Duplicate recordings for', name_string, indices, 'Merge!')
                             
                             
+                            season_data.iloc[indices[0]] = season_data.iloc[indices[0]].fillna(season_data.iloc[indices[1]])
+                            season_data.iloc[indices[1]] = season_data.iloc[indices[1]].fillna(season_data.iloc[indices[0]])
                             
-                            if sum(selected) == 0:
-                                print('No player matched in fbref', el[1]['name'])
-                                a = jhfkhfka
-                            #also use xGC to acocmodate multiple matches
-                            if sum(selected) > 1:
-                                utc_time = pd.to_datetime(el[1].kickoff_time)   
-                                london_time = utc_time.tz_convert('Europe/London')
-                                selected = (season_data.kickoff_time == london_time.tz_localize(None)) & (season_data.gameweek == gw_num) & (season_data.Player.values == closest_match)
-                                
-                                #check if there are two. then merge
-                                if sum(selected) == 2:
-                                   
-                                    indices = season_data[selected].index
-                                    
-                                    print('Duplicate recordings for', name_string, indices, 'Merge!')
-                                    
-                                    
-                                    season_data.iloc[indices[0]] = season_data.iloc[indices[0]].fillna(season_data.iloc[indices[1]])
-                                    season_data.iloc[indices[1]] = season_data.iloc[indices[1]].fillna(season_data.iloc[indices[0]])
-                                    
-                                    if season_data.iloc[indices[0]].Min > season_data.iloc[indices[1]].Min:
-                                        selected = season_data.index == indices[0]
-                                    else:
-                                        selected = season_data.index == indices[1]
-                                
-                                if not sum(selected) == 1:
-                                    a = gjjdjkd
-                            
-                            #find position
-                            element = el[1].element
-                            player_selected =  df_player.element == element
-                            position = df_player.loc[player_selected].element_type.iloc[0]
-                            
+                            if season_data.iloc[indices[0]].Min > season_data.iloc[indices[1]].Min:
+                                fbref_selected = season_data.index == indices[0]
+                            else:
+                                fbref_selected = season_data.index == indices[1]
+                        
+                        if not sum(fbref_selected) == 1:
+                            a = gjjdjkd
+                    
+                        #add cbirt points and cbirt data to previous seasons
+                        #find position
+                        element = el[1].element
+                        player_selected =  df_player.element == element
+                        position = df_player.loc[player_selected].element_type.iloc[0]
+                        
+                        #get cbirt scores
+                        if folder == '2016-17':
                             if position == 2:
-                                cbit = season_data.loc[selected, ['Clr', 'Blocks',
-                                'Int', 'Tkl']].sum(axis=1).iloc[0]
-                                
-                                if cbit >= 10:
-                                    gw.loc[el[0], 'total_points'] += 2
-                                    if not sum(selected == 1):
-                                        print('Possible error: more than one matched match')                                   
-                          
+                                cbirt = sum(gw.loc[el[0], ['clearances_blocks_interceptions', 'tackles']])
                             elif not position == 1:
-                                cbirt = season_data.loc[selected, ['Clr', 'Blocks',
+                                cbirt = sum(gw.loc[el[0], ['clearances_blocks_interceptions', 'tackles', 'recoveries']])
+                            else:
+                                cbirt = gw.loc[el[0], 'saves']
+                        else:
+                            if position == 2:
+                                cbirt = season_data.loc[fbref_selected, ['Clr', 'Blocks',
+                                'Int', 'Tkl']].sum(axis=1).iloc[0]
+                            elif not position == 1:
+                                cbirt = season_data.loc[fbref_selected, ['Clr', 'Blocks',
                                 'Int', 'Tkl', 'Recov']].sum(axis=1).iloc[0]
-                                
-                                if cbirt >= 12:
-                                    gw.loc[el[0], 'total_points'] += 2
-                                    if not sum(selected == 1):
-                                        print('Possible error: more than one matched match')
-
-
-
-
-
-                                            
-                    # cbirt_understat = ['2021-22', '2022-23', '2023-24', '2024-25']
-                    # if folder in cbirt_understat:
-                    #     understat_path =  directory + '/id_dict.csv'
+                            else:
+                                cbirt = season_data.loc[fbref_selected, ['Saves']].sum(axis=1).iloc[0]
                         
-                    #     df_understat = pd.read_csv(understat_path)
-                    #     df_understat.columns = df_understat.columns.str.replace(' ', '')
-                    #     df_understat.rename(columns={'FPL_ID': 'element'}, inplace=True)
-                    #     gw = pd.merge(gw, df_understat, on = "element", how='left')
-                    #     gw['Understat_ID'].fillna(-1, inplace=True)
-                    #     gw['Understat_ID'] = gw['Understat_ID'].astype(int)
+                        #add defcon to the stats
+                        gw.loc[el[0], 'defcon'] = cbirt
                         
-                    #     from understatapi import UnderstatClient
-                    #     understat = UnderstatClient()
-                        
-                    #     league_player_data = understat.league(league="EPL").get_player_data(season="2021")
-                        
-                        
-                    #     player_shot_data = understat.player(player=player_id).get_match_data()
-                        
-                    #     #Change Season to 2022 when the season starts on 5th August
-                    #     league_player_data = understat.league(league="EPL").get_player_data(season="2021")
-                        
-                    #     # convert to pandas dataframe
-                    #     league_player_data = pd.DataFrame(league_player_data)
-                    #     league_player_data.columns
-
+                        #add points for previous seasons
+                        if not folder == '2025-26':
+                            if position == 2 and cbirt >= 10:
+                                gw.loc[el[0], 'total_points'] += 2
+                          
+                            elif not position == 1 and cbirt >= 12:
+                                gw.loc[el[0], 'total_points'] += 2
                     
+                        #insert statistics from fbref
+                        if not folder == '2016-17':                         
+                            gw.loc[el[0], 'expected_goals'] = season_data.loc[fbref_selected, 'xG'].iloc[0]
+                            gw.loc[el[0], 'expected_goal_assists'] = season_data.loc[fbref_selected, 'xAG'].iloc[0]
+                            gw.loc[el[0], 'expected_assists'] = season_data.loc[fbref_selected, 'xA'].iloc[0]
+                        
+                        #insert xGI
+                        if folder in ['2016-17', '2017-18', '2018-19', '2019-20', '2020-21', '2021-22']:
+                            #the season data is only correct for players who played 90 min
+                            if gw.loc[el[0]].minutes == 90:
+                                gw.loc[el[0], 'expected_goals_conceded']  = season_data.loc[fbref_selected, 'xGC'].iloc[0]
+                        
+                        gw.loc[el[0], 'SoT'] = season_data.loc[fbref_selected, 'SoT'].iloc[0]
+                    
+
                     #remove assistant manager
                     if 'position' in gw.keys():
                         gw = gw.loc[gw['position'] != 'AM']
@@ -395,12 +361,6 @@ for folder in folders:
             df_gw = df_gw.sort_values(by='kickoff_time')
 
             df_gw.reset_index(inplace=True)
-
-            if  folder == '2016-17' or folder == '2017-18' or folder == '2018-19' or folder == '2019-20':
-                df_gw['xP'] = np.nan
-                
-            if  folder == '2016-17' or folder == '2017-18' or folder == '2018-19' or folder == '2019-20' or folder == '2020-21' or folder == '2021-22':
-                df_gw[['expected_goals', 'expected_assists', 'expected_goal_involvements', 'expected_goals_conceded']] = np.nan
 
 
             #variables I calculate myself
@@ -462,7 +422,7 @@ for folder in folders:
     
                 
                 
-            season_df = df_gw[['minutes', 'string_opp_team', 'transfers_in', 'transfers_out', 'ict_index', 'influence', 'threat', 'creativity', 'bps', 'element', 'fixture', 'total_points', 'round', 'was_home', 'kickoff_time', 'xP', 'expected_goals', 'expected_assists', 'expected_goal_involvements', 'expected_goals_conceded', 'points_per_game', 'points_per_played_game']]#, 'own_team_points', 'own_wins', 'own_element_points']]
+            season_df = df_gw[['minutes', 'string_opp_team', 'transfers_in', 'transfers_out', 'ict_index', 'influence', 'threat', 'creativity', 'bps', 'element', 'fixture', 'total_points', 'round', 'was_home', 'kickoff_time', 'expected_goals', 'expected_assists', 'expected_goal_assists', 'expected_goals_conceded', 'SoT', 'defcon', 'points_per_game', 'points_per_played_game']]#, 'own_team_points', 'own_wins', 'own_element_points']]
             
             if  folder == '2016-17' or folder == '2017-18':
                 season_df[["team_a_difficulty", "team_h_difficulty"]] = np.nan
@@ -508,126 +468,126 @@ if check_last_data:
     
     downloaded_fixtures = False
     
+    #loop players
     for element in js["elements"]:
         
         # if element["web_name"] == 'Pickford':
         #     k = element
         
 
-        if np.double(element["form"]) > 0:
-            matched = 0
+        matched = 0
+        
+        for name_xls in np.unique(current_season["web_name"]):
             
-            for name_xls in np.unique(current_season["web_name"]):
+           
+            #get last match from excel sheet
+            selected = current_season["web_name"] == element["web_name"]
+            
+            
+            if sum(selected) > 0:
+                xls_matches = current_season.loc[selected]
+            # else: 
+            #     last_xls_match =  datetime.now() - timedelta(days=365)
+            
+            if element["web_name"] == name_xls:
                 
-               
-                #get last match from excel sheet
-                selected = current_season["web_name"] == element["web_name"]
+                matched += 1
                 
+                player_id =  element["id"]
                 
-                if sum(selected) > 0:
-                    xls_matches = current_season.loc[selected]
-                # else: 
-                #     last_xls_match =  datetime.now() - timedelta(days=365)
+                downloaded = False
+                while not downloaded:
+                    try:
+                        url = 'https://fantasy.premierleague.com/api/element-summary/' + str(player_id)
+                        r = requests.get(url)
+                        player = r.json()
+                        downloaded = True
+                    except:
+                        print('Error in download')
+                        time.sleep(30)     
                 
-                if element["web_name"] == name_xls:
-                    
-                    matched += 1
-                    
-                    player_id =  element["id"]
-                    
-                    downloaded = False
-                    while not downloaded:
-                        try:
-                            url = 'https://fantasy.premierleague.com/api/element-summary/' + str(player_id)
-                            r = requests.get(url)
-                            player = r.json()
-                            downloaded = True
-                        except:
-                            print('Error in download')
-                            time.sleep(30)     
-                    
-                    for history in player["history"]:
-                    
-                        if history["minutes"] > 0:
-                            kick_off = history["kickoff_time"]
-                            kickoff_timestamp = datetime.fromisoformat(kick_off.replace('Z', '+00:00')).astimezone(pytz.UTC) 
-                            kickoff_timestamp = kickoff_timestamp.replace(tzinfo=None)    
-                            
-                            # Convert this datetime to a pandas.Timestamp
-                            kickoff_timestamp = pd.Timestamp(kickoff_timestamp)
-                            
-                            time_diffs = kickoff_timestamp - xls_matches.kickoff_time
-                            
-                            #check last match
-                            if np.min(np.abs(time_diffs)) > pd.Timedelta(0):
+                for history in player["history"]:
+                
+                    if history["minutes"] > 0:
+                        kick_off = history["kickoff_time"]
+                        kickoff_timestamp = datetime.fromisoformat(kick_off.replace('Z', '+00:00')).astimezone(pytz.UTC) 
+                        kickoff_timestamp = kickoff_timestamp.replace(tzinfo=None)    
+                        
+                        # Convert this datetime to a pandas.Timestamp
+                        kickoff_timestamp = pd.Timestamp(kickoff_timestamp)
+                        
+                        time_diffs = kickoff_timestamp - xls_matches.kickoff_time
+                        
+                        #check last match
+                        if np.min(np.abs(time_diffs)) > pd.Timedelta(0):
 
-                                
-                                fixture = history["fixture"]
-                                
-                                if not downloaded_fixtures:
-                                    url = 'https://fantasy.premierleague.com/api/fixtures' + '?event=' + str(history["round"])
-                                    r = requests.get(url)
-                                    gw = r.json()
-                                    downloaded_fixtures = True
-                                    
-                                for g in gw:
-                                    if g["id"] == fixture:
-                                        #print(g)
-                                        team_h_difficulty = g['team_h_difficulty']
-                                        team_a_difficulty = g['team_a_difficulty']
-                                        
-                                    
-                                string_opp_team = js["teams"][history["opponent_team"]-1]["short_name"]
-                                string_team = js["teams"][element["team"]-1]["short_name"]
-                                
-                                #insert data
-                                print('Insert live data for',  kickoff_timestamp, string_team, element["web_name"])
-                                
-                                element_type = element["element_type"]
-                                
-                                new_row = {
-                                        'index': [season_df.index[-1]+1],
-                                        'minutes': history["minutes"],          
-                                        'string_opp_team': string_opp_team,
-                                        'transfers_in': history["transfers_in"],    # Replace with actual value
-                                        'transfers_out': history["transfers_out"],    # Replace with actual value
-                                        'ict_index': history["ict_index"],       # Replace with actual value
-                                        'influence': history["influence"],       # Replace with actual value
-                                        'threat': history["threat"],          # Replace with actual value
-                                        'creativity': history["creativity"],      # Replace with actual value
-                                        'bps': history["bps"],   
-                                        'element': history["element"],   
-                                        'fixture': fixture,       
-                                        'total_points': history["total_points"],      
-                                        'round': history["round"], 
-                                        'was_home': history["was_home"], 
-                                        'kickoff_time': pd.Timestamp(kickoff_timestamp),
-                                        'xP': np.nan, 
-                                        'expected_goals': history["expected_goals"], 
-                                        'expected_assists': history["expected_assists"], 
-                                        'expected_goal_involvements': history["expected_goal_involvements"], 
-                                        'expected_goals_conceded': history["expected_goals_conceded"], 
-                                        'points_per_game': np.float64(element["points_per_game"]), 
-                                        'points_per_played_game': np.nan, 
-                                        'team_a_difficulty': team_a_difficulty, 
-                                        'team_h_difficulty': team_h_difficulty, 
-                                        'element_type': element["element_type"],  
-                                        'first_name': element["first_name"],  
-                                        'second_name': element["second_name"],
-                                        'web_name': element["web_name"],
-                                        'string_team': string_team,
-                                        'season': season_df.season.iloc[-1],
-                                        'names': element["first_name"] + ' ' + element["second_name"],
-                                    }
-                                
-                                season_df = pd.concat([season_df, pd.DataFrame(new_row)], ignore_index=True)
-                                
-                                
                             
-            if matched > 1:
-                print('Matched too many', element["web_name"])
-            if matched == 0:
-                print('Matched too few', element["web_name"])
+                            fixture = history["fixture"]
+                            
+                            if not downloaded_fixtures:
+                                url = 'https://fantasy.premierleague.com/api/fixtures' + '?event=' + str(history["round"])
+                                r = requests.get(url)
+                                gw = r.json()
+                                downloaded_fixtures = True
+                                
+                            for g in gw:
+                                if g["id"] == fixture:
+                                    #print(g)
+                                    team_h_difficulty = g['team_h_difficulty']
+                                    team_a_difficulty = g['team_a_difficulty']
+                                    
+                                
+                            string_opp_team = js["teams"][history["opponent_team"]-1]["short_name"]
+                            string_team = js["teams"][element["team"]-1]["short_name"]
+                            
+                            #insert data
+                            print('Insert live data for',  kickoff_timestamp, string_team, element["web_name"])
+                            
+                            element_type = element["element_type"]
+                            
+                            new_row = {
+                                    'index': [season_df.index[-1]+1],
+                                    'minutes': history["minutes"],          
+                                    'string_opp_team': string_opp_team,
+                                    'transfers_in': history["transfers_in"],    # Replace with actual value
+                                    'transfers_out': history["transfers_out"],    # Replace with actual value
+                                    'ict_index': history["ict_index"],       # Replace with actual value
+                                    'influence': history["influence"],       # Replace with actual value
+                                    'threat': history["threat"],          # Replace with actual value
+                                    'creativity': history["creativity"],      # Replace with actual value
+                                    'bps': history["bps"],   
+                                    'element': history["element"],   
+                                    'fixture': fixture,       
+                                    'total_points': history["total_points"],      
+                                    'round': history["round"], 
+                                    'was_home': history["was_home"], 
+                                    'kickoff_time': pd.Timestamp(kickoff_timestamp),
+                                    'xP': np.nan, 
+                                    'expected_goals': history["expected_goals"], 
+                                    'expected_assists': history["expected_assists"], 
+                                    'expected_goal_involvements': history["expected_goal_involvements"], 
+                                    'expected_goals_conceded': history["expected_goals_conceded"], 
+                                    'points_per_game': np.float64(element["points_per_game"]), 
+                                    'points_per_played_game': np.nan, 
+                                    'team_a_difficulty': team_a_difficulty, 
+                                    'team_h_difficulty': team_h_difficulty, 
+                                    'element_type': element["element_type"],  
+                                    'first_name': element["first_name"],  
+                                    'second_name': element["second_name"],
+                                    'web_name': element["web_name"],
+                                    'string_team': string_team,
+                                    'season': season_df.season.iloc[-1],
+                                    'names': element["first_name"] + ' ' + element["second_name"],
+                                }
+                            
+                            season_df = pd.concat([season_df, pd.DataFrame(new_row)], ignore_index=True)
+                            
+                            
+                        
+        if matched > 1:
+            print('Matched too many', element["web_name"])
+        if matched == 0:
+            print('Matched too few', element["web_name"])
                     
 
 season_df = season_df.reset_index()
@@ -674,14 +634,7 @@ sorted_indices = np.sort(indices)
 all_names = names[sorted_indices]
 all_positions = positions[sorted_indices]
 
-from difflib import SequenceMatcher
 
-def sequence_matcher_similarity(s1, s2):
-    similarity = SequenceMatcher(None, ' '.join(sorted(s1.split())), ' '.join(sorted(s2.split()))).ratio()
-    first_name_similarity = SequenceMatcher(None, s1.split()[0], s2.split()[0]).ratio()
-    second_name_similarity = SequenceMatcher(None, s1.split()[1], s2.split()[1]).ratio()
-
-    return similarity, first_name_similarity, second_name_similarity
 
 #make list that keep tracks of the changed names
 new_names = all_names.copy()
