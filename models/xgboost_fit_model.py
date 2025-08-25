@@ -39,18 +39,8 @@ except:
     main_directory = r'C:\Users\jorgels\Git\Fantasy-Premier-League'
 
 
-optimize = False
-continue_optimize = True
-
-
-season_start = True
-
-#includes data if csvs are not updated...
-if optimize or season_start:
-    check_last_data = False
-else:
-    check_last_data = True
-    
+optimize = True
+continue_optimize = False
 
 #add 2. one because threshold is bounded upwards. and one because last week is only partly encoded (dynamic features)
 #+1. e.g 28 here means 29 later.
@@ -59,6 +49,10 @@ temporal_window = 30
 
 
 method = 'xgboost'
+
+season_dfs = []
+
+season_count = 0
 
 # Function to correct string_team based on the majority
 def correct_string_team(group):
@@ -164,7 +158,6 @@ def objective_xgboost(space):
         'disable_default_eval_metric': 1
         }
     
-    #print(space)
 
     #remove weaks that we don't need.
     # Define the threshold
@@ -173,6 +166,13 @@ def objective_xgboost(space):
     # Filter the columns based on the defined function
     columns_to_keep = [col for col in cv_X.columns if should_keep_column(col, threshold)]
     objective_X = cv_X[columns_to_keep]   
+    
+    #remove features
+    for feat in check_features:
+        if feat in space.keys(:)
+            if not space[feat][0]:        
+                columns_to_keep = [col for col in objective_X.columns if not feat == re.sub(r'\d+', '', col)]
+                objective_X = objective_X[columns_to_keep]  
     
     # interaction_constraints = get_interaction_constraints(objective_X.columns)
     # pars['interaction_constraints'] = str(interaction_constraints)       
@@ -195,7 +195,7 @@ def objective_xgboost(space):
 
     #make sure all categories in val_x is present in cv_x
     for column in eval_X.columns:
-        if pd.api.types.is_categorical_dtype(eval_X[column]):
+        if isinstance(eval_X[column].dtype, pd.CategoricalDtype):
             # Get the values in the current column of val_X
             val_values = eval_X[column]
             
@@ -342,12 +342,75 @@ def objective_linear_svr(space):
     return {'loss': val_error, 'status': STATUS_OK }
 
 
-
-train = pd.read_csv(r'C:\Users\jorgels\Git\Fantasy-Premier-League\models\model_data.csv')
-
-
+with open(r'C:\Users\jorgels\Git\Fantasy-Premier-League\models\model_data.pkl', 'rb') as file:
+    train_data = pickle.load(file)                
 
 
+selected = train_data["minutes"] >= 60
+train_data = train_data.loc[selected]
+train_data = train_data.drop(['minutes'], axis=1)                
+
+
+#remove players with few matches
+unique_names = train_data.name.unique()
+
+n_tresh = 3
+
+for unique_ind, name in enumerate(unique_names):
+    selected = (train_data.name == name)
+
+    if sum(selected) < n_tresh:
+        train_data.loc[selected, 'name'] = np.nan
+                
+
+                
+                
+    # #weight samples for time
+    # # last_year = season_df['kickoff_time'].iloc[-1] - season_df['kickoff_time']
+    # # selected = last_year < timedelta(365)
+    # # sample_weights = np.ones(selected.shape)
+    # # sample_weights[selected] = 4
+    
+    # #season_df.replace(to_replace=[None], value=np.nan, inplace=True)
+    
+    # #train model. no changes of catgeories in train_X after this point!
+    # train_X = train.drop(['total_points'], axis=1)
+    # train_y = train['total_points'].astype(int)
+    
+    # # Identify categorical columns
+    # #categorical_columns = train_X.select_dtypes(['category']).columns
+    # #categories for dtype
+    
+    # categorical_variables = ['element_type', 'string_team', 'season', 'name']
+    # dynamic_categorical_variables = ['string_opp_team', 'own_difficulty',
+    #         'other_difficulty'] #'difficulty',
+    
+    # season_df[categorical_variables] = season_df[categorical_variables].astype('category')
+    # # #add nan categories
+    # # dynamic_categorical_variables = ['string_opp_team', 'own_difficulty',
+    # #         'other_difficulty'] #'difficulty',
+    
+    # # int_variables = ['minutes', 'total_points', 'was_home', 'bps', 'own_team_points', 'defcon', 'SoT']
+    # # season_df[int_variables] = season_df[int_variables].astype('Int64')
+    
+    # # float_variables = ['transfers_in', 'transfers_out', 'threat', 'own_element_points',  'expected_goals', 'expected_assists',
+    # # 'expected_goal_assists', 'expected_goals_conceded', 'creativity', 'ict_index', 'influence']
+    # # season_df[float_variables] = season_df[float_variables].astype('float')
+    
+    # # Reset categories for each categorical column
+    # season_df[categorical_variables] = season_df[categorical_variables].astype('category')
+    
+    # # Reset categories for each categorical column
+    # for column in categorical_columns:
+    #     train_X[column] = train_X[column].cat.remove_unused_categories()
+        
+        
+    # for column_X in train_X.keys():
+    #     for column_cat in dynamic_categorical_variables:
+    #         if column_cat in column_X:
+    #             print('Set to categorical', column_X)
+    #             train_X[column_X] = train_X[column_X].astype('category')
+    #             train_X[column_X] = train_X[column_X].cat.remove_unused_categories()
 
 #weight samples for time
 # last_year = season_df['kickoff_time'].iloc[-1] - season_df['kickoff_time']
@@ -358,43 +421,15 @@ train = pd.read_csv(r'C:\Users\jorgels\Git\Fantasy-Premier-League\models\model_d
 #season_df.replace(to_replace=[None], value=np.nan, inplace=True)
 
 #train model. no changes of catgeories in train_X after this point!
-train_X = train.drop(['total_points'], axis=1)
-train_y = train['total_points'].astype(int)
+train_X = train_data.drop(['total_points'], axis=1)
+train_y = train_data['total_points'].astype(int)
 
 # Identify categorical columns
-#categorical_columns = train_X.select_dtypes(['category']).columns
-#categories for dtype
-
-categorical_variables = ['element_type', 'string_team', 'season', 'name']
-dynamic_categorical_variables = ['string_opp_team', 'own_difficulty',
-        'other_difficulty'] #'difficulty',
-
-season_df[categorical_variables] = season_df[categorical_variables].astype('category')
-# #add nan categories
-# dynamic_categorical_variables = ['string_opp_team', 'own_difficulty',
-#         'other_difficulty'] #'difficulty',
-
-# int_variables = ['minutes', 'total_points', 'was_home', 'bps', 'own_team_points', 'defcon', 'SoT']
-# season_df[int_variables] = season_df[int_variables].astype('Int64')
-
-# float_variables = ['transfers_in', 'transfers_out', 'threat', 'own_element_points',  'expected_goals', 'expected_assists',
-# 'expected_goal_assists', 'expected_goals_conceded', 'creativity', 'ict_index', 'influence']
-# season_df[float_variables] = season_df[float_variables].astype('float')
-
-# Reset categories for each categorical column
-season_df[categorical_variables] = season_df[categorical_variables].astype('category')
+categorical_columns = train_X.select_dtypes(['category']).columns
 
 # Reset categories for each categorical column
 for column in categorical_columns:
     train_X[column] = train_X[column].cat.remove_unused_categories()
-    
-    
-for column_X in train_X.keys():
-    for column_cat in dynamic_categorical_variables:
-        if column_cat in column_X:
-            print('Set to categorical', column_X)
-            train_X[column_X] = train_X[column_X].astype('category')
-            train_X[column_X] = train_X[column_X].cat.remove_unused_categories()
 
 # # Define the number of quantiles/bins
 # num_bins = 100
@@ -438,9 +473,8 @@ for ind in unique_integers:
             
             selected = (train_X['string_opp_team'] == team_a) & (train_X['string_team'] == team_b) & (train_X['kickoff_time'] == kick_off) & (train_X['was_home']==0)
             
-            match_ind[selected.values] = ind
+            match_ind[selected.values.to_numpy(dtype=bool)] = ind
             
-            #print if less than 6 players
             if sum(selected) < 6:
                 print(ind, sum(selected), kick_off, team_b, team_a)
             elif sum(selected) > 11:
@@ -946,7 +980,7 @@ elif method == 'xgboost':
 
     #make sure all categories in val_x is present in cv_x
     for column in val_X.columns:
-        if pd.api.types.is_categorical_dtype(val_X[column]):
+        if isinstance(val_X[column].dtype, pd.CategoricalDtype):
             # Get the values in the current column of val_X
             val_values = val_X[column]
             
@@ -972,7 +1006,6 @@ elif method == 'xgboost':
     
     
     min_eval_fraction = 1/(len(unique_integers) * 0.80)#len(np.unique(cv_stratify))/cv_X.shape[0]
-    
 
     space={'max_depth': hp.quniform("max_depth", 1, 1500, 1),
             'min_split_loss': hp.uniform('min_split_loss', 0, 175), #log?
@@ -993,7 +1026,17 @@ elif method == 'xgboost':
             'max_bin':  hp.qloguniform('max_bin', np.log(2), np.log(125), 1),
             'temporal_window': hp.quniform('temporal_window', 0, temporal_window+1, 1),
         }
+    
+    #include feature search in the hyperparams
+    check_features = ['transfers_in', 'transfers_out', 'minutes', 'ict_index', 'influence', 'threat', 'creativity', 'bps',
+            'total_points', 'expected_goals', 'expected_assists', 'points_per_played_game', 'was_home',
+            'expected_goal_assists', 'expected_goals_conceded', 'own_team_points', 'own_element_points', 'SoT', 'defcon', 'name', 'points_per_game']#, 'difficulty']
 
+    
+    for feature in check_features:
+        # Add a new entry in the dictionary with the feature as the key
+        # and hp.quniform('n_estimators', 0, 2, 1) as the value
+        space[feature] = hp.choice(feature, [True, False]), #111
 
     mean_cv = np.mean(cv_y)
     train_error = np.mean(np.abs((cv_y - mean_cv)**2))
@@ -1024,8 +1067,9 @@ elif method == 'xgboost':
     
     old_hyperparams["grow_policy"] = grow_policy[old_hyperparams["grow_policy"]]
     
-    loss = objective_xgboost(old_hyperparams)
-    old_loss = loss['loss']
+    #loss = objective_xgboost(old_hyperparams)
+    #old_loss = loss['loss']
+    old_loss = 1
     
     print('Old loss: ', old_loss)
         
@@ -1152,6 +1196,13 @@ elif method == 'xgboost':
         # Filter the columns based on the defined function
         columns_to_keep = [col for col in train_X.columns if should_keep_column(col, threshold)]
         objective_X = train_X[columns_to_keep]
+        
+        #remove features
+        for feat in check_features:
+            if feat in space.keys():
+                if not space[feat][0]:        
+                    columns_to_keep = [col for col in objective_X.columns if not feat == re.sub(r'\d+', '', col)]
+                    objective_X = objective_X[columns_to_keep]  
     
         #fit_X, eval_X, fit_y, eval_y, fit_sample_weights, eval_sample_weights = train_test_split(objective_X, train_y, sample_weights, test_size=space['eval_fraction'], stratify=stratify, random_state=42)
         
@@ -1212,7 +1263,7 @@ elif method == 'xgboost':
         verbose_eval=False  # Set to True if you want to see detailed logging
             )
     
-        summary = {'model': model, 'train_features': train_X, 'hyperparameters': space, 'all_rows': original_df}
+        summary = {'model': model, 'train_features': objective_X, 'hyperparameters': space}#, 'all_rows': original_df}
     
         pickle.dump(summary, open(model_path, 'wb'))
     

@@ -15,7 +15,7 @@ my_players = [
     {'web_name': 'Sarr', 'selling_price': 65, 'element_type': 3},
     
     {'web_name': 'Watkins', 'selling_price': 90, 'element_type': 4},
-    {'web_name': 'Füllkrug', 'selling_price': 60, 'element_type': 4},
+    {'web_name': 'Thiago', 'selling_price': 60, 'element_type': 4},
     {'web_name': 'Mateta', 'selling_price': 75, 'element_type': 4},
 ]
 #281.9
@@ -43,59 +43,39 @@ my_players = [
 
 
 bank = 0
+free_transfers = 1
 
-minutes_thisyear_treshold = -1
+minutes_thisyear_treshold = 60
 form_treshold = -1
 points_per_game_treshold = -1
-running_minutes_threshold = -1
+running_minutes_threshold = 45
 
 #ARS 1, BOU 3, BRE 4, CPL 7, EVE 8, FUL 9, IPS 10, LEI 11, LIV 12, UTD 14, SOTON 17, SPURS 18, WHU 19, WOL 20
 exclude_team = []
 
-exclude_players = ['G.Jesus', 'Arrizabalaga', 'Hein', 'Trossard', 'Kabia', 'Zinchenko', 'Setford', 'Nelson', 'Kacurri', #Arsenal
-                   'Adu-Adjei', 'Christie', 'Sinisterra', 'Philip', 'Brooks', 'Enes Ünal',  #Bournmouth
-                   'Morgan', 'Ji-soo', 'Wissa', 'Pinnock', 'Cox', 'Balcombe', 'Jensen', #Brentford
-                   'Son',  'Scarlett', 'Davies', 'Austin', 'Richarlison', 'Olusesi', 'Bryan', #Spurs
-                   'Nallo', 'Tsimikas', 'R.Williams', 'Danns', 'Doak', 'Elliott', 'Woodman', 'Darwin', 'Bradley', 'Robertson', 'Mac Allister', 'Joe Gomez', 'Bajcetic', 'Ramsay', 'McConnell', 'Nyoni', #Liverpool
-                   'Ashley Barnes', 'A.Ramsey', 'Broja', 'Foster', 'Amdouni', #Burnley
-                    'Bailey', 'Barkley', 'Alex Moreno', 'Buendía', 'Mings', #AV 
-                     'March', 'Welbeck', #Brigthon
-                     'Boly', #NF
-                     'Foden', 'Gündoğan', 'Bettinelli', #MCI
-                     'Awoniyi', 'Gunn',  #Forest
-                     'Cornet', 'Callum Wilson', #WHU
-                     'Nketiah', 'Hughes', 'Esse', 'Lerma',  #Palace.  consider Esse if Eze leaves
-                     'Bamford', 'Harrison', 'Nmecha', #Leeds
-                     'Obi', 'Heaton', 'Wheatley', #UTD,
-                     'Keane', 'Sherif', 'Y.Chermiti', 'Beto', #Everton
-                     'Raúl', 'Muniz', 'King', 'Cairney', # FUlham check muniz/raul
-                     'Neave', 'Osula', 'Lascelles', 'Willock', 'Botman', #Newcastle
-                     'Fábio Silva', 'Kalajdžić', #Wolves
-                     'Mudryk', #Chelsea
-                     'Holding', 'Ferguson', 'Mateo Joseph']
+exclude_players = ['Eze', 'Amad', 'Doku']
 include_players = []
 #tarkowski
-do_not_exclude_players = ['Frimpong', 'Wirtz', 'Matheus N.', 'Cunha', 'Kilman', 'Ekitiké', 'E.Le Fee', 'Stach', 'Baleba' ,'Sesko', 'Diouf']
+do_not_exclude_players = ['Tosin', 'Frimpong', 'Wirtz', 'Matheus N.', 'Cunha', 'Kilman', 'Ekitiké', 'E.Le Fee', 'Stach', 'Baleba' ,'Sesko', 'Diouf']
 
-forward_price_limit = 5.5
-midfield_price_limit = 4.5
+forward_price_limit = -1 #in millions
+midfield_price_limit = -1
 
 do_not_transfer_out = []
 
 rounds_to_value = 5
 #transfer to evaluate per week
 trans_per_week = 3
-save_transfers_for_later = 0
+save_transfers_for_later = 2
 jump_rounds = 0
 #if you also want to evaluate players on the bench. in case of uncertain starters.
 number_players_eval = 11
 
-wildcard = True
-
+wildcard = False
 skip_gw = []
 
-benchboost_gw = 38 #schar, milenkovic, wood, watkins
-tripple_captain_gw = 24
+benchboost_gw = 100 
+tripple_captain_gw = 100
 
 #assistant manager in 2024-25 season
 assistant_manager_gw = 100
@@ -325,7 +305,7 @@ def get_team():
 #transfers = my_team_json["transfers"]
 #transfers['bank']
 
-if wildcard or transfers['status'] == 'unlimited':
+if wildcard: #or transfers['status'] == 'unlimited':
     free_transfers = 15
     unlimited_transfers = True
     print('Free transfers: ', 15)
@@ -522,9 +502,12 @@ hyperparamaters = summary["hyperparameters"]
 temporal_window = int(hyperparamaters["temporal_window"])
 
 train_X = summary["train_features"]
-all_rows = summary["all_rows"]
+#all_rows = summary["all_rows"]
 
-min_y = np.min(train_X['0total_points'])
+with open(r'C:\Users\jorgels\Git\Fantasy-Premier-League\models\model_data.pkl', 'rb') as file:
+    all_rows = pickle.load(file) 
+
+#min_y = np.min(train_X['0total_points'])
 
 predictions = []
 
@@ -533,22 +516,22 @@ predictions = []
 dynamic_categorical_variables = ['string_opp_team', 'own_difficulty',
        'other_difficulty'] #'difficulty',
 
-int_variables = ['minutes', 'total_points', 'was_home', 'bps', 'own_team_points']
+int_variables = ['minutes', 'total_points', 'was_home', 'bps', 'own_team_points', 'defcon', 'SoT']
 
 float_variables = ['transfers_in', 'transfers_out', 'threat']
 
 #features that I don't have access to in advance.
 #opp_team_points included because it already calculate in model
 temporal_features = ['minutes', 'ict_index', 'influence', 'threat', 'creativity', 'bps',
-       'total_points', 'xP', 'expected_goals', 'expected_assists',
-       'expected_goal_involvements', 'expected_goals_conceded', 'own_team_points', 'own_element_points']
+       'total_points', 'expected_goals', 'expected_assists',
+       'expected_goal_assists', 'expected_goals_conceded', 'own_team_points', 'own_element_points']
        #'points_per_game', 'points_per_played_game']
 
 temporal_single_features = ['points_per_game', 'points_per_played_game']
 
 
 #total_points, minutes, kickoff time not for prediction
-fixed_features = ['element_type', 'string_team', 'season', 'names']
+fixed_features = ['element_type', 'string_team', 'season', 'name']
 
 dynamic_features = ['string_opp_team', 'transfers_in', 'transfers_out',
        'was_home', 'own_difficulty', 'other_difficulty']#, 'difficulty']
@@ -643,15 +626,16 @@ for df_name in slim_elements_df.iterrows():
         selected_matches = np.logical_or(df_future_games.team_h == team, df_future_games.team_a == team)
         gws = df_future_games[selected_matches]
                 
-        #check if player does not exist in df_gw database. use data from slim
+        #cif there is no historical data for player. use data from slim
         #or if there are no matches
-        if sum(all_rows.names == name) == 0 or len(gws)==0:
+        if sum(all_rows.name == name) == 0 or len(gws)==0:
 
             selected_ind = np.where(elements_df.id == player_id)[0][-1]
 
             #at beginnig of season data contains season sums
-            if sum(all_rows.names == name) == 0:
+            if sum(all_rows.name == name) == 0:
                 print(name, ': seto to zero. Does not exist in game database. Have no historical data')
+                
             is_estimated = True
             #just take some random data to make the script work
             predicting_df = all_rows.iloc[-(temporal_window+1+rounds_to_value):]
@@ -660,7 +644,7 @@ for df_name in slim_elements_df.iterrows():
 
         else:
             is_estimated = False
-            selected = all_rows.names == name
+            selected = all_rows.name == name
             predicting_df = all_rows.loc[selected]
             predicting_df = predicting_df.iloc[-(temporal_window+1+rounds_to_value):]
 
@@ -846,6 +830,7 @@ for df_name in slim_elements_df.iterrows():
 
 
         #total_points, minutes, kickoff time not for prediction
+        #pick the last rows
         predicting_df = predicting_df.iloc[-(game_idx+1):]
 
         #keep_rows = predicting_df.shape[0]
@@ -856,6 +841,7 @@ for df_name in slim_elements_df.iterrows():
 
         for cat in predicting_df.keys():
             if isinstance(train_X[cat].dtype, pd.CategoricalDtype):
+                #get_categories
                 train_cats = train_X[cat].cat.categories
                 cats = CategoricalDtype(categories=train_cats, ordered=False)
                 predicting_df[cat] = predicting_df[cat].astype(cats)
@@ -941,7 +927,7 @@ for df_name in slim_elements_df.iterrows():
                 if gw_idx==0 and gw_idx+jump_rounds == 0 and df_name[1]['chance_of_playing_next_round'] < 75:
                     estimated = 0
     
-                if sum(all_rows.names == name) == 0 and (game_idx == 0):
+                if sum(all_rows.name == name) == 0 and (game_idx == 0):
                     if should_have_trainingdata:
                         print(name + ': does not exist in training data. Shoul dbe predicted without name')
                     #estimated = 0
@@ -1289,7 +1275,7 @@ def objective(check_transfers, free_transfers):
                     #check if players are already transfered
                     if team[transfer[0]] == False or team[transfer[1]] == True:
                         print('I think this never happens 1', check_transfers, gw*trans_per_week + gw_trans, transfer)
-                        return np.nan, np.nan, np.nan
+                        #return np.nan, np.nan, np.nan
 
                     team[transfer[0]] = False
                     team[transfer[1]] = True
@@ -1320,7 +1306,7 @@ def objective(check_transfers, free_transfers):
             #     print('team')
             # if sum(team) != 15:
             #     print('overlap')
-
+            a=1
             return np.nan, np.nan, np.nan
 
     team = slim_elements_df['picked'].values.copy()
@@ -1401,7 +1387,7 @@ def objective(check_transfers, free_transfers):
         deduct_transfers = save_transfers_for_later - free_transfers
         deduct_points = deduct_transfers*-4
         team_points.append(deduct_points)
-        all_points.append(all_points)
+        all_points.append(deduct_points)
         
     return sum(team_points), max_price, sum(all_points)
 
@@ -1750,7 +1736,8 @@ while True:
         #store data for later
         #organize_output
         for par in parallel_results:
-            if np.nanmax(par[0]) > best_points or (np.nanmax(par[0]) == best_points and par[1] < best_price) or (np.nanmax(par[0]) == best_points and par[1] == best_price and par[2] >  best_all_points):
+            ind_max = np.nanargmax(par[0])
+            if par[0][ind_max] > best_points or (par[0][ind_max] == best_points and par[1][ind_max] < best_price) or (par[0][ind_max] == best_points and par[1][ind_max] == best_price and par[2][ind_max] >  best_all_points):
                 best_points =  np.nanmax(par[0])
                 best_transfer = par[3][np.nanargmax(par[0])]
                 best_counter = counter
