@@ -1,16 +1,12 @@
 import os
 import re
 import pickle
-import requests
 import random
 
 import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta
-import pytz
 
 from sklearn.model_selection import train_test_split
-from sklearn.utils.class_weight import compute_class_weight
 from sklearn.metrics import mean_squared_error
 
 from matplotlib import pyplot as plt
@@ -21,10 +17,6 @@ import statsmodels.api as sm
 from hyperopt import STATUS_OK, Trials, fmin, hp, tpe
 from hyperopt.early_stop import no_progress_loss
 
-from pandas.api.types import CategoricalDtype
-import time
-
-import difflib
 from difflib import SequenceMatcher
 
 directories = r'C:\Users\jorgels\Documents\GitHub\Fantasy-Premier-League\data'
@@ -40,7 +32,7 @@ except:
 
 
 optimize = True
-continue_optimize = False
+continue_optimize = True
 
 #add 2. one because threshold is bounded upwards. and one because last week is only partly encoded (dynamic features)
 #+1. e.g 28 here means 29 later.
@@ -158,7 +150,6 @@ def objective_xgboost(space):
         'disable_default_eval_metric': 1
         }
     
-
     #remove weaks that we don't need.
     # Define the threshold
     threshold = int(space['temporal_window'])
@@ -169,10 +160,16 @@ def objective_xgboost(space):
     
     #remove features
     for feat in check_features:
-        if feat in space.keys(:)
-            if not space[feat][0]:        
-                columns_to_keep = [col for col in objective_X.columns if not feat == re.sub(r'\d+', '', col)]
-                objective_X = objective_X[columns_to_keep]  
+        if feat in space.keys():
+            if not space[feat][0]:     
+                columns_to_keep = []
+                for col in objective_X.columns:
+                    if col == feat and col in do_remove_features:
+                        continue
+                    if (not feat == re.sub(r'\d+', '', col) or not col[0].isdigit()):
+                        columns_to_keep.append(col)
+                    
+                objective_X = objective_X[columns_to_keep]
     
     # interaction_constraints = get_interaction_constraints(objective_X.columns)
     # pars['interaction_constraints'] = str(interaction_constraints)       
@@ -1008,8 +1005,8 @@ elif method == 'xgboost':
     min_eval_fraction = 1/(len(unique_integers) * 0.80)#len(np.unique(cv_stratify))/cv_X.shape[0]
 
     space={'max_depth': hp.quniform("max_depth", 1, 1500, 1),
-            'min_split_loss': hp.uniform('min_split_loss', 0, 175), #log?
-            'reg_lambda' : hp.uniform('reg_lambda', 0, 275),
+            'min_split_loss': hp.uniform('min_split_loss', 0, 200), #log?
+            'reg_lambda' : hp.uniform('reg_lambda', 0, 300),
             'reg_alpha': hp.uniform('reg_alpha', 0.01, 400),
             'min_child_weight' : hp.uniform('min_child_weight', 0, 700),
             'learning_rate': hp.uniform('learning_rate', 0, 0.05),
@@ -1017,21 +1014,22 @@ elif method == 'xgboost':
             'colsample_bytree': hp.uniform('colsample_bytree', 0.1, 1),
             'colsample_bylevel': hp.uniform('colsample_bylevel', 0.1, 1),
             'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
-            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 10, 2500, 1),
-            'eval_fraction': hp.uniform('eval_fraction', min_eval_fraction, 0.2),
-            'n_estimators': hp.quniform('n_estimators', 2, 20000, 1),
-            'max_delta_step': hp.uniform('max_delta_step', 0, 40),
+            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 10, 4000, 1),
+            'eval_fraction': hp.uniform('eval_fraction', min_eval_fraction, 0.25),
+            'n_estimators': hp.quniform('n_estimators', 2, 25000, 1),
+            'max_delta_step': hp.uniform('max_delta_step', 0, 45),
             'grow_policy': hp.choice('grow_policy', grow_policy), #111
-            'max_leaves': hp.quniform('max_leaves', 0, 1400, 1),
+            'max_leaves': hp.quniform('max_leaves', 0, 2250, 1),
             'max_bin':  hp.qloguniform('max_bin', np.log(2), np.log(125), 1),
             'temporal_window': hp.quniform('temporal_window', 0, temporal_window+1, 1),
         }
     
     #include feature search in the hyperparams
     check_features = ['transfers_in', 'transfers_out', 'minutes', 'ict_index', 'influence', 'threat', 'creativity', 'bps',
-            'total_points', 'expected_goals', 'expected_assists', 'points_per_played_game', 'was_home',
-            'expected_goal_assists', 'expected_goals_conceded', 'own_team_points', 'own_element_points', 'SoT', 'defcon', 'name', 'points_per_game']#, 'difficulty']
+            'total_points', 'expected_goals', 'expected_assists', 'points_per_played_game', 'was_home', 'season',
+            'expected_goals_conceded', 'own_team_points', 'own_element_points', 'defcon', 'name', 'points_per_game', 'string_opp_team', 'own_difficulty', 'other_difficulty'] #, 'difficulty']
 
+    do_remove_features= ['names', 'points_per_game', 'points_per_played_game', 'season']
     
     for feature in check_features:
         # Add a new entry in the dictionary with the feature as the key
@@ -1067,9 +1065,9 @@ elif method == 'xgboost':
     
     old_hyperparams["grow_policy"] = grow_policy[old_hyperparams["grow_policy"]]
     
-    #loss = objective_xgboost(old_hyperparams)
-    #old_loss = loss['loss']
-    old_loss = 1
+    loss = objective_xgboost(old_hyperparams)
+    old_loss = loss['loss']
+    #old_loss = 1
     
     print('Old loss: ', old_loss)
         
@@ -1118,6 +1116,13 @@ elif method == 'xgboost':
             new_hyperparams[field] = val[0]
             
         new_hyperparams["grow_policy"] = grow_policy[new_hyperparams["grow_policy"]]
+        
+        #remove features
+        for feat in check_features:
+            if feat in new_hyperparams:
+                new_hyperparams[feat] = [new_hyperparams[feat]]
+                    
+                    
             
         # new_trials = generate_trials_to_calculate([new_hyperparams])
 
@@ -1200,10 +1205,18 @@ elif method == 'xgboost':
         #remove features
         for feat in check_features:
             if feat in space.keys():
-                if not space[feat][0]:        
-                    columns_to_keep = [col for col in objective_X.columns if not feat == re.sub(r'\d+', '', col)]
-                    objective_X = objective_X[columns_to_keep]  
-    
+                if not space[feat]:     
+                    columns_to_keep = []
+                    for col in objective_X.columns:
+                        if col == feat and col in do_remove_features:
+                            continue
+                        if (not feat == re.sub(r'\d+', '', col) or not col[0].isdigit()):
+                            columns_to_keep.append(col)
+                        
+                    objective_X = objective_X[columns_to_keep]
+                    
+                    
+                    
         #fit_X, eval_X, fit_y, eval_y, fit_sample_weights, eval_sample_weights = train_test_split(objective_X, train_y, sample_weights, test_size=space['eval_fraction'], stratify=stratify, random_state=42)
         
         match_ind = pd.factorize(
