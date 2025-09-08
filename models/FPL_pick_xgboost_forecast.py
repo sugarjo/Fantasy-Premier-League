@@ -8,21 +8,21 @@ my_players = [
     {'web_name': 'Virgil', 'selling_price': 60, 'element_type': 2},
     {'web_name': 'Trippier', 'selling_price': 50, 'element_type': 2},
     
-    {'web_name': 'Palmer', 'selling_price': 105, 'element_type': 3},
+    {'web_name': 'Kudus', 'selling_price': 66, 'element_type': 3},
     {'web_name': 'Wharton', 'selling_price': 50, 'element_type': 3},
     {'web_name': 'M.Salah', 'selling_price': 145, 'element_type': 3},
     {'web_name': 'Barnes', 'selling_price': 65, 'element_type': 3},
     {'web_name': 'Sarr', 'selling_price': 65, 'element_type': 3},
     
-    {'web_name': 'Watkins', 'selling_price': 90, 'element_type': 4},
+    {'web_name': 'Watkins', 'selling_price': 89, 'element_type': 4},
     {'web_name': 'Thiago', 'selling_price': 60, 'element_type': 4},
     {'web_name': 'Mateta', 'selling_price': 75, 'element_type': 4},
 ]
 
 
-bank = 0
+bank = 38
 free_transfers = 1
-save_transfers_for_later = 1
+save_transfers_for_later = 1 #transfers left at end of last round
 
 
 minutes_thisyear_treshold = 60
@@ -30,13 +30,13 @@ form_treshold = -1
 points_per_game_treshold = -1
 running_minutes_threshold = -1
 
-#ARS 1, BOU 3, BRE 4, CPL 7, EVE 8, FUL 9, IPS 10, LEI 11, LIV 12, UTD 14, SOTON 17, SPURS 18, WHU 19, WOL 20
+#
 exclude_team = []
 
-exclude_players = ['Eze', 'Amad', 'Doku', 'Welbeck', 'Richarlison', 'Gordon', 'Devenny', 'Bernardo', 'M.Bizot', 'Raúl', 'Acheampong', 'Beto', 'Palmer']
+exclude_players = ['Nmecha', 'Botman', 'Osula', 'M.Bizot', 'Bowen', 'Raúl', 'Muniz', 'Maatsen', 'Richarlison', 'Eze', 'Doku', 'Welbeck', 'Devenny', 'Bernardo', 'Acheampong', 'Beto', 'Palmer', 'Aït-Nouri', 'Amad', 'Martinelli', 'Aké', 'Marmoush', 'Saliba']
 include_players = []
 #tarkowski
-do_not_exclude_players = ['Tosin', 'Frimpong', 'Wirtz', 'Matheus N.', 'Cunha', 'Kilman', 'Ekitiké', 'E.Le Fee', 'Stach', 'Baleba' ,'Sesko', 'Diouf']
+do_not_exclude_players = []
 
 
 
@@ -50,7 +50,7 @@ jump_rounds = 0
 number_players_eval = 11
 
 wildcard = False
-skip_gw = [6]
+skip_gw = [66]
 
 benchboost_gw = 7
 tripple_captain_gw = 100
@@ -71,7 +71,7 @@ force_90 = []
 manual_pred = 1
 
 #players
-manual_blanks = {38: ['']} #nothing:  Spence for Burn, Marmoush for Wood. Isak: Isak for Wood. Robertson: Robertson for Kayode. Robertson and Isak: Robertson for Burn, Isak for Wood. All three: wood, schar and burn
+manual_blanks = {4: ['Gordon'], 5: ['Gordon']} #nothing:  Spence for Burn, Marmoush for Wood. Isak: Isak for Wood. Robertson: Robertson for Kayode. Robertson and Isak: Robertson for Burn, Isak for Wood. All three: wood, schar and burn
 
 
 #GW               
@@ -1942,19 +1942,19 @@ while True:
             price.append(slim_elements_df.loc[transfer[1], 'now_cost'])
 
             if not unlimited_transfers:
-                print( slim_elements_df.loc[transfer[0], 'web_name'], 'for', slim_elements_df.loc[transfer[1], 'web_name'], np.round(prob[transfer_ind, gw_ind], 3))
+                print( slim_elements_df.loc[transfer[0], 'web_name'], 'for', slim_elements_df.loc[transfer[1], 'web_name'], np.round(prob[transfer_ind, gw_ind], 4))
                 print( np.round(predictions[transfer[0], :], decimals=1))
                 print( np.round(predictions[transfer[1], :], decimals=1))
                 #print(prob[transfer_ind, gw_ind])
             else:
-                print(int(gw_ind), slim_elements_df.loc[transfer[1], 'web_name'], np.round(predictions[transfer[1], :], 1),  np.round(prob[transfer_ind, gw_ind], 3))
+                print(int(gw_ind), slim_elements_df.loc[transfer[1], 'web_name'], np.round(predictions[transfer[1], :], 1),  np.round(prob[transfer_ind, gw_ind], 4))
 
 
         else:
             if unlimited_transfers:
                 max_ind = np.nanargmax(p[gw_ind, :-1])
                 transfer = transfers[max_ind]
-                print(int(gw_ind), slim_elements_df.loc[transfer[0], 'web_name'], np.round(predictions[transfer[0], :], 1), np.round(prob[transfer_ind, gw_ind], 3))
+                print(int(gw_ind), slim_elements_df.loc[transfer[0], 'web_name'], np.round(predictions[transfer[0], :], 1), np.round(prob[transfer_ind, gw_ind], 4))
                 price.append(slim_elements_df.loc[transfer[0], 'now_cost'])
         
     print('points: ', np.round(sum(best_pitch), decimals=1), '. diff: ',  np.round(best_points-sum(baseline_point), decimals=1), '. price: ', sum(price))
