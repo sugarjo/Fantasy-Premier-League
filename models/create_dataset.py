@@ -17,12 +17,10 @@ from difflib import SequenceMatcher
 directories = r'C:\Users\jorgels\Documents\GitHub\Fantasy-Premier-League\data'
 try:
     folders = os.listdir(directories)
-    model_path = r"\\platon.uio.no\med-imb-u1\jorgels\model.sav"
     main_directory = r'C:\Users\jorgels\Documents\GitHub\Fantasy-Premier-League'
 except:
     directories = r'C:\Users\jorgels\Git\Fantasy-Premier-League\data'
     folders = os.listdir(directories)
-    model_path = r"M:\model.sav"
     main_directory = r'C:\Users\jorgels\Git\Fantasy-Premier-League'
 
 
@@ -1040,4 +1038,4 @@ train_data = pd.concat([train, temp_train], axis=1)
 
 
  
-train_data.to_pickle(r'C:\Users\jorgels\Git\Fantasy-Premier-League\models\model_data.pkl')  # Set index=False to not include row indices
+train_data.to_pickle(r'M:\model_data.pkl')  # Set index=False to not include row indices

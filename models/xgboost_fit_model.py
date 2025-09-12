@@ -19,15 +19,12 @@ from hyperopt.early_stop import no_progress_loss
 
 from difflib import SequenceMatcher
 
-directories = r'C:\Users\jorgels\Documents\GitHub\Fantasy-Premier-League\data'
+directories = r'C:\Users\jorgels\Github\Fantasy-Premier-League\data'
+model_path = r"M:\model.sav"
 try:
     folders = os.listdir(directories)
-    model_path = r"\\platon.uio.no\med-imb-u1\jorgels\model.sav"
-    main_directory = r'C:\Users\jorgels\Documents\GitHub\Fantasy-Premier-League'
+    main_directory = r'C:\Users\jorgels\Github\Fantasy-Premier-League'
 except:
-    directories = r'C:\Users\jorgels\Git\Fantasy-Premier-League\data'
-    folders = os.listdir(directories)
-    model_path = r"M:\model.sav"
     main_directory = r'C:\Users\jorgels\Git\Fantasy-Premier-League'
 
 
@@ -131,6 +128,8 @@ def should_keep_column(column_name, threshold):
 
 #optimize hyperparameters
 def objective_xgboost(space):
+    #print(space)
+    
     pars = {
         'max_depth': int(space['max_depth']),
         'min_split_loss': space['min_split_loss'],
@@ -161,11 +160,13 @@ def objective_xgboost(space):
     #remove features
     for feat in check_features:
         if feat in space.keys():
+            #if remove
             if not space[feat][0]:     
                 columns_to_keep = []
                 for col in objective_X.columns:
                     if col == feat and col in do_remove_features:
                         continue
+                    #keep if it foes not have a number in front or first is not a digit (i.e. the fixed features)
                     if (not feat == re.sub(r'\d+', '', col) or not col[0].isdigit()):
                         columns_to_keep.append(col)
                     
@@ -339,7 +340,7 @@ def objective_linear_svr(space):
     return {'loss': val_error, 'status': STATUS_OK }
 
 
-with open(r'C:\Users\jorgels\Git\Fantasy-Premier-League\models\model_data.pkl', 'rb') as file:
+with open(r'M:\model_data.pkl', 'rb') as file:
     train_data = pickle.load(file)                
 
 
@@ -1005,7 +1006,7 @@ elif method == 'xgboost':
     min_eval_fraction = 1/(len(unique_integers) * 0.80)#len(np.unique(cv_stratify))/cv_X.shape[0]
 
     space={'max_depth': hp.quniform("max_depth", 1, 2000, 1),
-            'min_split_loss': hp.uniform('min_split_loss', 0, 250), #log?
+            'min_split_loss': hp.uniform('min_split_loss', 0, 300), #log?
             'reg_lambda' : hp.uniform('reg_lambda', 0, 350),
             'reg_alpha': hp.uniform('reg_alpha', 0.01, 400),
             'min_child_weight' : hp.uniform('min_child_weight', 0, 700),
@@ -1016,8 +1017,8 @@ elif method == 'xgboost':
             'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
             'early_stopping_rounds': hp.quniform("early_stopping_rounds", 10, 4000, 1),
             'eval_fraction': hp.uniform('eval_fraction', min_eval_fraction, 0.25),
-            'n_estimators': hp.quniform('n_estimators', 2, 27500, 1),
-            'max_delta_step': hp.uniform('max_delta_step', 0, 50),
+            'n_estimators': hp.quniform('n_estimators', 2, 32500, 1),
+            'max_delta_step': hp.uniform('max_delta_step', 0, 75),
             'grow_policy': hp.choice('grow_policy', grow_policy), #111
             'max_leaves': hp.quniform('max_leaves', 0, 2250, 1),
             'max_bin':  hp.qloguniform('max_bin', np.log(2), np.log(125), 1),
