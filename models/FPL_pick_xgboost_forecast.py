@@ -52,7 +52,7 @@ number_players_eval = 11
 wildcard = False
 skip_gw = [66]
 
-benchboost_gw = 7
+benchboost_gw = 77
 tripple_captain_gw = 100
 
 
@@ -71,7 +71,7 @@ force_90 = []
 manual_pred = 1
 
 #players
-manual_blanks = {4: ['Gordon'], 5: ['Gordon']} #nothing:  Spence for Burn, Marmoush for Wood. Isak: Isak for Wood. Robertson: Robertson for Kayode. Robertson and Isak: Robertson for Burn, Isak for Wood. All three: wood, schar and burn
+manual_blanks = {4: ['Gordon', 'Sarr', 'Wharton'], 5: ['Gordon']} #nothing:  Spence for Burn, Marmoush for Wood. Isak: Isak for Wood. Robertson: Robertson for Kayode. Robertson and Isak: Robertson for Burn, Isak for Wood. All three: wood, schar and burn
 
 
 #GW               
