@@ -9,7 +9,7 @@ my_players = [
     {'web_name': 'Trippier', 'selling_price': 50, 'element_type': 2},
     
     {'web_name': 'Kudus', 'selling_price': 66, 'element_type': 3},
-    {'web_name': 'Wharton', 'selling_price': 50, 'element_type': 3},
+    {'web_name': 'Tielemans', 'selling_price': 59, 'element_type': 3},
     {'web_name': 'M.Salah', 'selling_price': 145, 'element_type': 3},
     {'web_name': 'Barnes', 'selling_price': 65, 'element_type': 3},
     {'web_name': 'Sarr', 'selling_price': 65, 'element_type': 3},
@@ -20,9 +20,9 @@ my_players = [
 ]
 
 
-bank = 38
+bank = 29
 free_transfers = 1
-save_transfers_for_later = 1 #transfers left at end of last round
+save_transfers_for_later = 2 #transfers left at end of last round
 
 
 minutes_thisyear_treshold = 60
@@ -33,7 +33,7 @@ running_minutes_threshold = -1
 #
 exclude_team = []
 
-exclude_players = ['Nmecha', 'Botman', 'Osula', 'M.Bizot', 'Bowen', 'Raúl', 'Muniz', 'Maatsen', 'Richarlison', 'Eze', 'Doku', 'Welbeck', 'Devenny', 'Bernardo', 'Acheampong', 'Beto', 'Palmer', 'Aït-Nouri', 'Amad', 'Martinelli', 'Aké', 'Marmoush', 'Saliba']
+exclude_players = ['Foden', 'Cunha', 'Harrison', 'Doherty', 'Saka', 'J.Palhinha', 'Trafford', 'Mac Allister', 'L.Miley', 'Mykolenko', 'Wilson', 'Nmecha', 'Botman', 'Osula', 'M.Bizot',  'Raúl',  'Maatsen', 'Richarlison',  'Doku', 'Welbeck', 'Devenny', 'Acheampong', 'Aït-Nouri', 'Martinelli', 'Aké', 'Marmoush', 'Saliba']
 include_players = []
 #tarkowski
 do_not_exclude_players = []
@@ -71,7 +71,7 @@ force_90 = []
 manual_pred = 1
 
 #players
-manual_blanks = {4: ['Gordon', 'Sarr', 'Wharton'], 5: ['Gordon']} #nothing:  Spence for Burn, Marmoush for Wood. Isak: Isak for Wood. Robertson: Robertson for Kayode. Robertson and Isak: Robertson for Burn, Isak for Wood. All three: wood, schar and burn
+manual_blanks = { 5: ['Gordon', 'Sarr', 'Perri'], 6: ['Darlow']} #nothing:  Spence for Burn, Marmoush for Wood. Isak: Isak for Wood. Robertson: Robertson for Kayode. Robertson and Isak: Robertson for Burn, Isak for Wood. All three: wood, schar and burn
 
 
 #GW               
@@ -88,7 +88,6 @@ skip_free_hit_calc = False
 import requests
 import pandas as pd
 import numpy as np
-import json
 import pickle
 from datetime import datetime, timedelta
 from joblib import Parallel, delayed
@@ -103,7 +102,7 @@ from pandas.api.types import CategoricalDtype
 directory = r'C:\Users\jorgels\Git\Fantasy-Premier-League\data' + '/' + season
 prev_season_directory = r'C:\Users\jorgels\Git\Fantasy-Premier-League\data' + '/' + previous_season
 team_path = directory + "/teams.csv"
-model_path= r'M:\model.sav'
+model_path = r"\\platon.uio.no\med-imb-u1\jorgels\model.sav"
 
 try:
     df_teams = pd.read_csv(team_path)
@@ -113,7 +112,7 @@ except:
     directory = r'C:\Users\jorgels\Documents\GitHub\Fantasy-Premier-League\data' + '/' + season
     prev_season_directory = r'C:\Users\jorgels\Documents\GitHub\Fantasy-Premier-League\data' + '/' + previous_season
     team_path = directory + "/teams.csv"
-    model_path = r"\\platon.uio.no\med-imb-u1\jorgels\model.sav"
+    
 
     df_teams = pd.read_csv(team_path)
 
@@ -335,7 +334,7 @@ events_df = pd.DataFrame(statistics['events'])
 i=0
 
 
-while pd.to_datetime(events_df.deadline_time[i], format='%Y-%m-%dT%H:%M:%SZ') < datetime.now() - timedelta(hours=12):
+while pd.to_datetime(events_df.deadline_time[i], format='%Y-%m-%dT%H:%M:%SZ') < datetime.now() - timedelta(hours=2):
     i = i + 1
 
 current_gameweek = i + 1
@@ -491,7 +490,7 @@ temporal_window = int(hyperparamaters["temporal_window"])
 train_X = summary["train_features"]
 #all_rows = summary["all_rows"]
 
-with open(r'C:\Users\jorgels\Git\Fantasy-Premier-League\models\model_data.pkl', 'rb') as file:
+with open(r'\\platon.uio.no\med-imb-u1\jorgels\model_data.pkl', 'rb') as file:
     all_rows = pickle.load(file) 
 
 #min_y = np.min(train_X['0total_points'])
@@ -957,6 +956,9 @@ for df_name in slim_elements_df.iterrows():
 
 
 
+del all_rows
+
+
 
 slim_elements_df['points_1st_gw'] = predicted_values_1st_gw
 
@@ -1159,7 +1161,7 @@ def objective(check_transfers, unlimited_transfers, free_transfers):
             #     print('team')
             # if sum(team) != 15:
             #     print('overlap')
-            a=1
+            #a=1
             return [np.nan], [np.nan], [np.nan]
 
     team = slim_elements_df['picked'].values.copy()
@@ -1212,8 +1214,10 @@ def objective(check_transfers, unlimited_transfers, free_transfers):
                 team_positions = slim_elements_df.loc[team, 'element_type'].values
 
                 estimated_points = find_team_points(team_positions, gw_prediction, benchboost[gw], tripple_captain[gw])
-
-                all_points.append(np.sum(gw_prediction))
+                
+                captain_bonus = np.max(gw_prediction)
+                
+                all_points.append(np.sum(gw_prediction)+captain_bonus)
 
             team_points.append(estimated_points)
 
@@ -1242,7 +1246,9 @@ def objective(check_transfers, unlimited_transfers, free_transfers):
 
                 team_points.append(estimated_points)
 
-                all_points.append(np.sum(gw_prediction))
+                captain_bonus = np.max(gw_prediction)
+                
+                all_points.append(np.sum(gw_prediction)+captain_bonus)
 
 
         #print(sum(team_points))
@@ -1305,8 +1311,8 @@ def check_random_transfers(i, unlimited_transfers, free_transfers):
 
 
         random_point, random_price, random_all_point = objective(random_putative_transfers, unlimited_transfers, free_transfers)
-
-
+            
+            
         random_points.append(random_point)
         random_prices.append(random_price)
         random_all_points.append(random_all_point)
@@ -1550,8 +1556,12 @@ for i in range(gw_iteration):
                     # player_in = (ind, slim_elements_df.iloc[ind])
 
                     #check if not picked, not same the other player, any predictions >0 and same element
-                    if (not player_in[1]['picked']) and sum(player_in[1].prediction) > 0 and (any(player_in[1].prediction > player_out[1].prediction) or player_in[1].now_cost < player_out[1].now_cost) and  player_in[1].element_type == player_out[1].element_type:                        
+                    if (not player_in[1]['picked']) and sum(player_in[1].prediction) > 0 and (any(player_in[1].prediction > player_out[1].prediction) or player_in[1].now_cost < player_out[1].now_cost) and player_in[1].element_type == player_out[1].element_type:                        
                         
+                        if not player_in[1].element_type == player_out[1].element_type:
+                            print('Different position should not happen')
+                            a=djdjdjdj
+                            
                         transfers.append([player_out[0], player_in[0]])
                         
                         #print(j, ind_next)
@@ -1598,14 +1608,16 @@ for i in range(gw_iteration):
     batch_size = 1000
     baseline_point = 0
     predictions = all_gws_predictions[:, i]
-    parallel_results = Parallel(n_jobs=-1)(delayed(check_random_transfers)(i, True, free_transfers) for i in range(counter, counter+6))
+    #need threading for parallel because of subprocess module not found
+    parallel_results = Parallel(n_jobs=-1, backend='threading')(delayed(check_random_transfers)(i, True, free_transfers) for i in range(counter, counter+6))
     
     best_points = -np.inf
     best_price = np.inf
     best_all_points = -np.inf
     #store data for later
-    #organize_output
-    for par in parallel_results:
+    #organize_output    
+    for par in parallel_results:           
+            
         #to get the last most positive
         sum_points = [np.sum(inner_list) for inner_list in par[0]]
         
@@ -1630,9 +1642,9 @@ for i in range(gw_iteration):
     for ind, k in enumerate(best_transfer):
         trans = transfers[k]
         if np.isnan(trans[1]):
-            print(slim_elements_df.loc[selected, 'web_name'].iloc[ind])
+            print(slim_elements_df.loc[selected, 'web_name'].iloc[ind], slim_elements_df.loc[selected, 'element_type'].iloc[ind])
         else:
-            print(slim_elements_df.iloc[trans[1]]['web_name'])
+            print(slim_elements_df.iloc[trans[1]]['web_name'], slim_elements_df.iloc[trans[1]]['element_type'])
             
     free_hit_points.append(best_points)
 
@@ -1862,7 +1874,7 @@ while True:
         #guessing part. try random combination followed up by a targeted selection
         print('Getting  teams')
         t1_start = time.time()
-        parallel_results = Parallel(n_jobs=-1)(delayed(check_random_transfers)(i, unlimited_transfers, free_transfers) for i in range(counter, counter+6))
+        parallel_results = Parallel(n_jobs=-1, backend='threading')(delayed(check_random_transfers)(i, unlimited_transfers, free_transfers) for i in range(counter, counter+6))
         t1_stop = time.time()
         print("Elapsed time:", t1_stop - t1_start)
         print('Interpreting results')
@@ -1870,7 +1882,18 @@ while True:
     
         #store data for later
         #organize_output
+        
+        len_par = 0
+                    
+                    
         for par in parallel_results:
+            
+            for k in par[0]:
+                if len(k) > len_par:
+                    len_par = len(k)
+                    print(len_par)
+                    
+                    
             #to get the last most positive
             sum_points = [np.sum(inner_list) for inner_list in par[0]]
             
