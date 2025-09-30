@@ -28,16 +28,11 @@ except:
     main_directory = r'C:\Users\jorgels\Git\Fantasy-Premier-League'
 
 
-optimize = True
-continue_optimize = True
-
-#add 2. one because threshold is bounded upwards. and one because last week is only partly encoded (dynamic features)
-#+1. e.g 28 here means 29 later.
-temporal_window = 30
-
-
+optimize = False
+continue_optimize = False
 
 method = 'xgboost'
+temporal_window = 20
 
 season_dfs = []
 
@@ -1005,7 +1000,7 @@ elif method == 'xgboost':
     
     min_eval_fraction = 1/(len(unique_integers) * 0.80)#len(np.unique(cv_stratify))/cv_X.shape[0]
 
-    space={'max_depth': hp.quniform("max_depth", 1, 2000, 1),
+    space={'max_depth': hp.quniform("max_depth", 1, 2250, 1),
             'min_split_loss': hp.uniform('min_split_loss', 0, 300), #log?
             'reg_lambda' : hp.uniform('reg_lambda', 0, 350),
             'reg_alpha': hp.uniform('reg_alpha', 0.01, 400),
@@ -1017,11 +1012,11 @@ elif method == 'xgboost':
             'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
             'early_stopping_rounds': hp.quniform("early_stopping_rounds", 10, 4000, 1),
             'eval_fraction': hp.uniform('eval_fraction', min_eval_fraction, 0.25),
-            'n_estimators': hp.quniform('n_estimators', 2, 32500, 1),
-            'max_delta_step': hp.uniform('max_delta_step', 0, 75),
+            'n_estimators': hp.quniform('n_estimators', 2, 35000, 1),
+            'max_delta_step': hp.uniform('max_delta_step', 0, 100),
             'grow_policy': hp.choice('grow_policy', grow_policy), #111
             'max_leaves': hp.quniform('max_leaves', 0, 2250, 1),
-            'max_bin':  hp.qloguniform('max_bin', np.log(2), np.log(125), 1),
+            'max_bin':  hp.qloguniform('max_bin', np.log(2), np.log(150), 1),
             'temporal_window': hp.quniform('temporal_window', 0, temporal_window+1, 1),
         }
     
@@ -1122,7 +1117,6 @@ elif method == 'xgboost':
         for feat in check_features:
             if feat in new_hyperparams:
                 new_hyperparams[feat] = [new_hyperparams[feat]]
-                    
                     
             
         # new_trials = generate_trials_to_calculate([new_hyperparams])
