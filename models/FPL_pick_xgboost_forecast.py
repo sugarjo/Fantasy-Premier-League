@@ -1,14 +1,14 @@
 my_players = [
-    {'web_name': 'A.Becker', 'selling_price': 55, 'element_type': 1},
+    {'web_name': 'A.Becker', 'selling_price': 54, 'element_type': 1},
     {'web_name': 'Dúbravka', 'selling_price': 40, 'element_type': 1},
     
-    {'web_name': 'J.Timber', 'selling_price': 57, 'element_type': 2},
+    {'web_name': 'J.Timber', 'selling_price': 58, 'element_type': 2},
     {'web_name': 'Mings', 'selling_price': 45, 'element_type': 2},
-    {'web_name': 'Chalobah', 'selling_price': 51, 'element_type': 2},
+    {'web_name': 'Chalobah', 'selling_price': 50, 'element_type': 2},
     {'web_name': 'Virgil', 'selling_price': 60, 'element_type': 2},
     {'web_name': 'Livramento', 'selling_price': 51, 'element_type': 2},
     
-    {'web_name': 'Mitoma', 'selling_price': 64, 'element_type': 3},
+    {'web_name': 'Mitoma', 'selling_price': 63, 'element_type': 3},
     {'web_name': 'Kudus', 'selling_price': 66, 'element_type': 3},
     {'web_name': 'Eze', 'selling_price': 75, 'element_type': 3},
     {'web_name': 'Bobb', 'selling_price': 55, 'element_type': 3},
@@ -16,7 +16,7 @@ my_players = [
     
     {'web_name': 'Foster', 'selling_price': 50, 'element_type': 4},
     {'web_name': 'Haaland', 'selling_price': 143, 'element_type': 4},
-    {'web_name': 'João Pedro', 'selling_price': 78, 'element_type': 4},
+    {'web_name': 'João Pedro', 'selling_price': 77, 'element_type': 4},
 ]
 
 
@@ -33,7 +33,7 @@ running_minutes_threshold = -1
 #
 exclude_team = []
 
-exclude_players = ['Mings', 'Livramento', 'Seelt', 'James', 'Tanaka', 'Jensen', 'Hermansen', 'Areola', 'Baleba', 'Mainoo', 'Andrey Santos', 'Johnson', 'Kluivert', 'Perri', 'Palmer', 'Delap', 'Barnes', 'Trossard', 'Bogarde', 'Hill', 'Trippier', 'Hoever', 'Darlow', 'Piroe', 'Bowen', 'Harrison', 'Doherty', 'Trafford', 'L.Miley', 'Mykolenko', 'Callum Wilson', 'Nmecha', 'Osula', 'M.Bizot',  'Raúl',  'Maatsen', 'Welbeck', 'Devenny', 'Acheampong', 'Aït-Nouri', 'Martinelli', 'Aké', 'Marmoush']
+exclude_players = ['A.Becker', 'Livramento', 'Seelt', 'Tanaka', 'Jensen', 'Hermansen', 'Areola', 'Baleba', 'Mainoo', 'Andrey Santos', 'Johnson', 'Kluivert', 'Perri', 'Palmer', 'Delap', 'Barnes', 'Bogarde', 'Hill', 'Hoever', 'Darlow', 'Piroe', 'Harrison', 'Doherty', 'Trafford', 'L.Miley','Callum Wilson', 'Nmecha', 'Osula', 'M.Bizot',  'Raúl',  'Maatsen', 'Welbeck', 'Devenny', 'Acheampong', 'Aït-Nouri', 'Martinelli', 'Aké', 'Marmoush']
 include_players = []
 #tarkowski
 do_not_exclude_players = []
@@ -50,9 +50,9 @@ jump_rounds = 0
 number_players_eval = 11
 
 wildcard = False
-skip_gw = [10]
+skip_gw = [100]
 
-benchboost_gw = 9
+benchboost_gw = 90
 tripple_captain_gw = 100
 
 
@@ -71,7 +71,7 @@ force_90 = []
 manual_pred = 1
 
 #players
-manual_blanks = {7: ['Reinildo'], 8: ['Reinildo']} #nothing:  Spence for Burn, Marmoush for Wood. Isak: Isak for Wood. Robertson: Robertson for Kayode. Robertson and Isak: Robertson for Burn, Isak for Wood. All three: wood, schar and burn
+manual_blanks = {7: ['Reinildo', 'Mings', 'Mitoma'], 8: ['Reinildo']} #nothing:  Spence for Burn, Marmoush for Wood. Isak: Isak for Wood. Robertson: Robertson for Kayode. Robertson and Isak: Robertson for Burn, Isak for Wood. All three: wood, schar and burn
 
 
 #GW               
@@ -1797,6 +1797,11 @@ no_transfers = []
 for i in range(len(point_diff)):
     no_transfers.append([np.nan, np.nan])
 
+
+
+print('Check baseline')
+
+
 #check current team
 baseline_point, baseline_price, baseline_all_point = objective(no_transfers, unlimited_transfers, free_transfers)
 
@@ -1811,6 +1816,7 @@ best_pitch = baseline_point.copy()
 best_bench = [a - b for a, b in zip(baseline_all_point, baseline_point)]
 
 try:
+    print('Check saved transfers')
     #load saved_transfers
     with open(r'M:\best_transfers.pkl', 'rb') as file:
         saved_transfers = pickle.load(file)
@@ -1839,6 +1845,8 @@ p = ((probabilities.T - np.nanmin(probabilities, axis=1)).T / counts)**2 + 1e-6
 prob = (p.T) / np.nansum((p.T), axis=0)
 selected = np.isnan(prob)
 prob[selected] = 0
+
+print('Check guided transfers')
 
 check_guided = True
 while check_guided:
@@ -1903,7 +1911,7 @@ while True:
     all_evaluated_transfers = []
 
     if counter > 0:
-        print('Start')
+        print('Start random selections')
     
         p = ((probabilities.T - np.nanmin(probabilities, axis=1)).T / counts)**2 + 1e-6
         prob = (p.T) / np.nansum((p.T), axis=0)
@@ -2013,7 +2021,7 @@ while True:
                     print( np.round(predictions[transfer[1], :], decimals=1), file=file)
                     #print(prob[transfer_ind, gw_ind])
                 else:
-                    print(int(gw_ind), slim_elements_df.loc[transfer[1], 'web_name'], np.round(predictions[transfer[1], :], 1),  np.round(prob[transfer_ind, gw_ind], 4))
+                    print(int(gw_ind), slim_elements_df.loc[transfer[1], 'web_name'], np.round(predictions[transfer[1], :], 1),  np.round(prob[transfer_ind, gw_ind], 4), file=file)
                 
                 if not unlimited_transfers:
                     print( slim_elements_df.loc[transfer[0], 'web_name'], 'for', slim_elements_df.loc[transfer[1], 'web_name'], np.round(prob[transfer_ind, gw_ind], 4))
@@ -2030,9 +2038,11 @@ while True:
                         max_ind = np.nanargmax(p[gw_ind, :-1])
                         transfer = transfers[max_ind]
                         print(int(gw_ind), slim_elements_df.loc[transfer[0], 'web_name'], np.round(predictions[transfer[0], :], 1), np.round(prob[transfer_ind, gw_ind], 4))
+                        print(int(gw_ind), slim_elements_df.loc[transfer[0], 'web_name'], np.round(predictions[transfer[0], :], 1), np.round(prob[transfer_ind, gw_ind], 4), file=file)
                         price.append(slim_elements_df.loc[transfer[0], 'now_cost'])
                     except:
                         print('Not able to print')
+                        print('Not able to print', file=file)
                             
                 
         print('points: ', np.round(sum(best_pitch), decimals=1), '. diff: ',  np.round(best_points-sum(baseline_point), decimals=1), '. price: ', sum(price))

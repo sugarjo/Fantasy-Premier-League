@@ -29,8 +29,8 @@ except:
     main_directory = r'C:\Users\jorgels\Git\Fantasy-Premier-League'
 
 
-build_from_scratch = False
-check_last_data = True
+build_from_scratch = True
+check_last_data = False
 
 
 temporal_window = 20
@@ -305,8 +305,11 @@ for folder in folders:
                     fixture_data_fantasy  = pd.DataFrame()
 
             #rename befor merge
-            df_player = df_player.rename(columns={"id": "element"})   
-            df_player["string_team"] = string_names[df_player["team"]-1]            
+            df_player = df_player.rename(columns={"id": "element"}) 
+            #remove players that haven't played
+            df_player = df_player.rename(columns={"minutes": "season_minutes"})  
+            df_player["string_team"] = string_names[df_player["team"]-1] 
+            
             
 
             dfs_gw = []
@@ -368,33 +371,29 @@ for folder in folders:
                     
                     #gw['SoT'] = np.nan
                     
-                    #remove players that haven't played
-                    df_player = df_player.rename(columns={"minutes": "season_minutes"})                        
+                      
                     gw = pd.merge(gw, df_player.loc[:, ['season_minutes', 'element', 'element_type']], on='element')
                     gw = gw.loc[gw.season_minutes > 0].reset_index(drop=True)
                     
                     #add cbirts to those where we do not have fantasy statistics
                     if folder in ['2019-20', '2020-21', '2021-22', '2022-23', '2023-24', '2024-25']:  
-                        #enter later
+                        #enter later from fbfref
                         gw['defcon'] = np.nan
 
                         
                         
                     else:
+                            
                         gw['defcon'] = 0
                         
                         defenders = gw.element_type == 2
                         gw.loc[defenders, 'defcon'] = gw.loc[defenders, ['clearances_blocks_interceptions', 'tackles']].sum(axis=1)
 
-                        
-                        
                         attackers = (gw.element_type == 3) | (gw.element_type == 4)                    
                         gw.loc[attackers, 'defcon'] = gw.loc[attackers, ['clearances_blocks_interceptions', 'tackles', 'recoveries']].sum(axis=1)
                         
                         gk = (gw.element_type == 1)          
                         gw.loc[gk, 'defcon'] = gw.loc[gk, 'saves']
-
-
                          
                         if folder in ['2016-17', '2017-18', '2018-19', '2019-20', '2020-21', '2021-22', '2022-23', '2023-24', '2024-25']:
                         
@@ -417,7 +416,8 @@ for folder in folders:
                                   
                     for el in gw.iterrows():
                         
-                        # if 'Marc Guiu' in  el[1]['name']:
+                        # if 'William Saliba' in  el[1]['name']:
+                        #     a=dhdhdhdhd
                         #     print(el[0], el[1].element, el[1]['name'])
                         element = el[1].element
                         el_selected =  df_player.element == element
@@ -466,9 +466,9 @@ for folder in folders:
                                     
                             #player_name change DURING season
                             
-                            if name_string == 'Nicolás González':
-                                a = fjhkfhf
-                                print(name_string)
+                            # if name_string == 'Nicolás González':
+                            #     a = fjhkfhf
+                            #     print(name_string)
 
                                 
                             if not closest_match:
@@ -559,44 +559,60 @@ for folder in folders:
                     
                             #add cbirt points and cbirt data to previous seasons
                             
-                            #get cbirt scores
-                            if folder in ['2019-20', '2020-21', '2021-22', '2022-23', '2023-24', '2024-25']:
+                            # #get cbirt scores
+                            # if folder in ['2019-20', '2020-21', '2021-22', '2022-23', '2023-24', '2024-25']:
                                 
-                                #find position
-                                position = df_player.loc[el_selected].element_type.iloc[0]
+                            #     #find position
+                            #     position = df_player.loc[el_selected].element_type.iloc[0]
                                 
-                                if position == 2:
-                                    cbirt = season_data.loc[fbref_selected, ['Clr', 'Blocks',
-                                    'Int', 'Tkl']].sum(axis=1).iloc[0]
+                            #     #defender
+                            #     if position == 2:
+                            #         cbirt = season_data.loc[fbref_selected, ['Clr', 'Blocks',
+                            #         'Int', 'Tkl']].sum(axis=1).iloc[0]
                                     
-                                    if cbirt >= 10:
-                                        gw.loc[el[0], 'total_points'] += 2
-                                               
-                                elif not position == 1:
-                                    cbirt = season_data.loc[fbref_selected, ['Clr', 'Blocks',
-                                    'Int', 'Tkl', 'Recov']].sum(axis=1).iloc[0]
-                                    
-                                    if cbirt >= 12:
-                                        gw.loc[el[0], 'total_points'] += 2
+                            #         #error in data file :(
+                            #         # if cbirt > 23:
+                            #         #     cbirt = season_data.loc[fbref_selected, ['Blocks',
+                            #         #     'Int', 'Tkl']].sum(axis=1).iloc[0] /3*4
                                         
-                                else:
-                                    cbirt = season_data.loc[fbref_selected, ['Saves']].sum(axis=1).iloc[0] 
                                     
-                                #add defcon to the stats
-                                gw.loc[el[0], 'defcon'] = cbirt     
+                            #         if cbirt >= 10:
+                            #             gw.loc[el[0], 'total_points'] += 2
+                                               
+                            #     elif not position == 1:
+                            #         cbirt = season_data.loc[fbref_selected, ['Clr', 'Blocks',
+                            #         'Int', 'Tkl', 'Recov']].sum(axis=1).iloc[0]
                                     
-                            if folder in ['2017-18', '2018-19', '2019-20', '2020-21', '2021-22']:
-                                gw.loc[el[0], 'expected_goals'] = season_data.loc[fbref_selected, 'xG'].iloc[0]
-                                #gw.loc[el[0], 'expected_goal_assists'] = season_data.loc[fbref_selected, 'xAG'].iloc[0]
-                                gw.loc[el[0], 'expected_assists'] = season_data.loc[fbref_selected, 'xA'].iloc[0]
+                            #         #error in data file :(
+                            #         # if cbirt > 23:
+                            #         #     cbirt = season_data.loc[fbref_selected, ['Blocks',
+                            #         #     'Int', 'Tkl']].sum(axis=1).iloc[0]/3*5
+                                    
+                            #         if cbirt >= 12:
+                            #             gw.loc[el[0], 'total_points'] += 2
+                                        
+                            #     else:
+                            #         cbirt = season_data.loc[fbref_selected, ['Saves']].sum(axis=1).iloc[0]
+                                    
+                            #     #add defcon to the stats
+                            #     gw.loc[el[0], 'defcon'] = cbirt.copy()   
+                                    
+                            # if folder in ['2017-18', '2018-19', '2019-20', '2020-21', '2021-22']:
+                            #     xG = season_data.loc[fbref_selected, 'xG'].iloc[0]
+                            #     xA = season_data.loc[fbref_selected, 'xA'].iloc[0]
+                            #     xGC = season_data.loc[fbref_selected, 'xGC'].iloc[0]
+                                
+                            #     gw.loc[el[0], 'expected_goals'] = xG.copy()
+                            #     #gw.loc[el[0], 'expected_goal_assists'] = season_data.loc[fbref_selected, 'xAG'].iloc[0]
+                            #     gw.loc[el[0], 'expected_assists'] = xA.copy()
                             
-                                #insert xGI
-                                #the season data is only correct for players who played 90 min
-                                if gw.loc[el[0]].minutes == 90:
-                                    gw.loc[el[0], 'expected_goals_conceded']  = season_data.loc[fbref_selected, 'xGC'].iloc[0]
+                            #     #insert xGI
+                            #     #the season data is only correct for players who played 90 min
+                            #     if gw.loc[el[0]].minutes == 90:
+                            #         gw.loc[el[0], 'expected_goals_conceded']  = xGC.copy()
                             
-                            #mulig denne kan gå ut hvis ikke i fantasy
-                            #gw.loc[el[0], 'SoT'] = season_data.loc[fbref_selected, 'SoT'].iloc[0]
+                            # #mulig denne kan gå ut hvis ikke i fantasy
+                            # #gw.loc[el[0], 'SoT'] = season_data.loc[fbref_selected, 'SoT'].iloc[0]
                         
                         
                     #check
@@ -789,12 +805,6 @@ matched_inds = []
 
 for name_string in np.unique(season_df.loc[selected_season, 'name']):   
     
-    # if name_string == 'El Hadji Malick Diouf':
-    #     a = jkfjfjkfj
-        
-    # if name_string == 'El Hadji Diouf':
-    #     a = jkfjfjkfj
-
     if name_string in fbref_manual_names:
         name_selected = [k == name_string for k in fbref_manual_names]
         manual_ind =  np.where(name_selected)[0][0]
@@ -826,12 +836,16 @@ for name_string in np.unique(season_df.loc[selected_season, 'name']):
         continue
     
 
+    if closest_match == ['Benoît Badiashile Mukinayi']:
+        print(name_string, closest_match, ['Benoît Badiashile Mukinayi'])
+
         
     matched_ind = np.where(closest_match[0] == fantasy_names.values)[0][0]        
         
     if matched_ind in matched_inds:
         print('Double matched for', name_string, closest_match)
-        # a = fjjfjjf
+    
+    
         
         
         
