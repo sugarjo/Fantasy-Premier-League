@@ -1,28 +1,28 @@
 my_players = [
-    {'web_name': 'A.Becker', 'selling_price': 54, 'element_type': 1},
+    {'web_name': 'Pope', 'selling_price': 52, 'element_type': 1},
     {'web_name': 'Dúbravka', 'selling_price': 40, 'element_type': 1},
     
-    {'web_name': 'J.Timber', 'selling_price': 58, 'element_type': 2},
-    {'web_name': 'Mings', 'selling_price': 45, 'element_type': 2},
+    {'web_name': 'J.Timber', 'selling_price': 59, 'element_type': 2},
+    {'web_name': 'Mings', 'selling_price': 44, 'element_type': 2},
     {'web_name': 'Chalobah', 'selling_price': 50, 'element_type': 2},
     {'web_name': 'Virgil', 'selling_price': 60, 'element_type': 2},
-    {'web_name': 'Livramento', 'selling_price': 51, 'element_type': 2},
+    {'web_name': 'Calafiori', 'selling_price': 57, 'element_type': 2},
     
-    {'web_name': 'Mitoma', 'selling_price': 63, 'element_type': 3},
+    {'web_name': 'B.Fernandes', 'selling_price': 89, 'element_type': 3},
     {'web_name': 'Kudus', 'selling_price': 66, 'element_type': 3},
     {'web_name': 'Eze', 'selling_price': 75, 'element_type': 3},
-    {'web_name': 'Bobb', 'selling_price': 55, 'element_type': 3},
+    {'web_name': 'Bobb', 'selling_price': 54, 'element_type': 3},
     {'web_name': 'Amad', 'selling_price': 63, 'element_type': 3},
     
     {'web_name': 'Foster', 'selling_price': 50, 'element_type': 4},
-    {'web_name': 'Haaland', 'selling_price': 143, 'element_type': 4},
-    {'web_name': 'João Pedro', 'selling_price': 77, 'element_type': 4},
+    {'web_name': 'Haaland', 'selling_price': 145, 'element_type': 4},
+    {'web_name': 'João Pedro', 'selling_price': 74, 'element_type': 4},
 ]
 
 
-bank = 45
+bank = 14
 free_transfers = 1
-save_transfers_for_later = 2 #transfers left at end of last round
+save_transfers_for_later = 0 #transfers left at end of last round
 
 
 minutes_thisyear_treshold = 60
@@ -33,10 +33,10 @@ running_minutes_threshold = -1
 #
 exclude_team = []
 
-exclude_players = ['A.Becker', 'Livramento', 'Seelt', 'Tanaka', 'Jensen', 'Hermansen', 'Areola', 'Baleba', 'Mainoo', 'Andrey Santos', 'Johnson', 'Kluivert', 'Perri', 'Palmer', 'Delap', 'Barnes', 'Bogarde', 'Hill', 'Hoever', 'Darlow', 'Piroe', 'Harrison', 'Doherty', 'Trafford', 'L.Miley','Callum Wilson', 'Nmecha', 'Osula', 'M.Bizot',  'Raúl',  'Maatsen', 'Welbeck', 'Devenny', 'Acheampong', 'Aït-Nouri', 'Martinelli', 'Aké', 'Marmoush']
+exclude_players = ['Reijnders', 'J.Murphy', 'Bernardo', 'Schär', 'Rodrigo', 'Richarlison', 'Doku', 'Mac Allister', 'Nketiah', 'Casemiro', 'Awoniyi', 'Bradley', 'Marc Guiu', 'Robertson', 'Kroupi.Jr', 'Trippier', 'Mings', 'Foster', 'Mamardashvili', 'A.Becker', 'Tanaka', 'Jensen', 'Baleba', 'Mainoo', 'Andrey Santos', 'Johnson', 'Kluivert', 'Barnes', 'Bogarde', 'Hill', 'Hoever', 'Piroe', 'Harrison', 'Doherty', 'L.Miley','Callum Wilson', 'Nmecha', 'Osula', 'Raúl', 'Devenny', 'Acheampong', 'Aït-Nouri', 'Martinelli', 'Aké', 'Marmoush']
 include_players = []
 #tarkowski
-do_not_exclude_players = []
+do_not_exclude_players = ['Delap']
 
 
 
@@ -52,11 +52,11 @@ number_players_eval = 11
 wildcard = False
 skip_gw = [100]
 
-benchboost_gw = 90
+benchboost_gw = 14
 tripple_captain_gw = 100
 
 
-forward_price_limit = -1 #in millions
+forward_price_limit = 6.1 #in millions
 midfield_price_limit = -1
 
 
@@ -71,7 +71,7 @@ force_90 = []
 manual_pred = 1
 
 #players
-manual_blanks = {7: ['Reinildo', 'Mings', 'Mitoma'], 8: ['Reinildo']} #nothing:  Spence for Burn, Marmoush for Wood. Isak: Isak for Wood. Robertson: Robertson for Kayode. Robertson and Isak: Robertson for Burn, Isak for Wood. All three: wood, schar and burn
+manual_blanks = {13: ['Bobb'], 14: ['Bobb'], 15: ['Bobb']} #nothing:  Spence for Burn, Marmoush for Wood. Isak: Isak9for Wood. Robertson: Robertson for Kayode. Robertson and Isak: Robertson for Burn, Isak for Wood. All three: wood, schar and burn
 
 
 #GW               
@@ -1186,6 +1186,7 @@ def objective(check_transfers, unlimited_transfers, free_transfers):
 
                 all_points.append(0)
             else:
+                #add one for the gw
                 free_transfers +=1
                 
                 #print('GW:', gw, free_transfers + 5)
@@ -1199,6 +1200,7 @@ def objective(check_transfers, unlimited_transfers, free_transfers):
                     if not np.isnan(transfer[0]):
                         team[transfer[0]] = False
                         team[transfer[1]] = True
+                        #subtract one for the transfer
                         free_transfers -=1
                     
                         #pay if negative
@@ -1531,8 +1533,10 @@ gw_iteration = rounds_to_value
 #loop players
 #loop gws
 free_hit_points = []
-if unlimited_transfers:
-    free_hit_points.append(0)
+
+if True: #unlimited_transfers:
+    for i in range(gw_iteration):
+        free_hit_points.append(0)
 else:
     
     for i in range(gw_iteration):

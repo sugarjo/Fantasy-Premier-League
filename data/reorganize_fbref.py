@@ -12,7 +12,7 @@ import numpy as np
 #folder = '2023-24'
 
 
-for folder in ['2024-25', '2023-24', '2022-23', '2021-22', '2020-21', '2019-20', '2018-19', '2017-18', '2016-17']:
+for folder in ['2024-25', '2023-24', '2022-23', '2021-22', '2020-21', '2019-20', '2018-19', '2017-18']:#
     print(folder)
     #old office PC
     directories = r'C:\Users\jorgels\GitHub\Fantasy-Premier-League\data'
@@ -31,16 +31,31 @@ for folder in ['2024-25', '2023-24', '2022-23', '2021-22', '2020-21', '2019-20',
     directory = os.path.join(directories, folder)
     fixture_csv = os.path.join(directory, 'fixtures.csv')
     
-    season_data = pd.read_csv(directory + '\\fbref/' + folder[:-2] + '20' + folder[-2:] + '_player_data.csv')
+    season_data = pd.read_csv(directory + '\\fbref/' + folder[:-2] + '20' + folder[-2:] + '_player_data - Copy.csv')
     fixture_data_fbref = pd.read_csv(directory + '\\fbref/'  + folder[:-2] + '20' + folder[-2:] + '_fixture_data.csv')
     
-    selected = np.where((pd.isna(season_data.Pos)) & (~pd.isna(season_data.Nation)))[0]
+    selected_left_table = np.where((pd.isna(season_data.Pos)) & (~pd.isna(season_data.Nation)))[0]
     
-    if len(selected) > 0:
+    right_table = season_data[['Clr', 'Recov', 'xA']].copy()
+    
+    if len(selected_left_table) > 0:
         #checked for 2016-2024
         print('Remove players beacuse they played both as keeper and outfield. Double check!')
         
-    season_data = season_data.drop(selected)   
+    season_data = season_data.drop(selected_left_table)  
+    
+    
+    #remove from right table
+    selected_right_table = np.where((pd.isna(right_table.Recov)))[0]
+    right_table = right_table.drop(selected_right_table)  
+    
+    season_data[['Clr', 'Recov', 'xA']] = right_table[['Clr', 'Recov', 'xA']].values
+    
+    
+    if not len(selected_left_table) == len(selected_right_table):
+        a = fhhhfhf
+    
+    season_keys = season_data.keys()
     
       
     #correct assign  game_id. Assume they are ordered
@@ -141,8 +156,14 @@ for folder in ['2024-25', '2023-24', '2022-23', '2021-22', '2020-21', '2019-20',
                 out_iloc_ind = poss_out[np.argmin(pos_dists)]
                 out_ind = int(group_sorted.index[out_iloc_ind])
                 
+                # if out_ind == 7250:
+                #     fjfjjf
                 
-                group_sorted.loc[group_ind, 'sub_in_for'] = out_ind
+                #if keeper subed for an outfield is likely the outfield going out
+                if not group_sorted.loc[group_ind, 'Pos'] == 'GK' and group_sorted.loc[out_ind, 'Pos'] == 'GK':
+                    group_sorted.loc[out_ind, 'sub_in_for'] = group_ind
+                else:
+                    group_sorted.loc[group_ind, 'sub_in_for'] = out_ind
                 
         return group_sorted
     
@@ -550,6 +571,10 @@ for folder in ['2024-25', '2023-24', '2022-23', '2021-22', '2020-21', '2019-20',
     # Group by teams and sort each group
     team_groups = []
     for team, group in df.groupby((df['Player'].str.contains('Players')).cumsum()):
+        
+        # if group.kickoff_time.iloc[0] == pd.to_datetime('2023-02-18 17:30:00') and 'Elliot Anderson' in group.Player.values:
+        #     a=hdhhd
+            
         group_sub = identify_subs(group)
         unique_pos = remove_unique_pos(group_sub)
         
@@ -559,16 +584,18 @@ for folder in ['2024-25', '2023-24', '2022-23', '2021-22', '2020-21', '2019-20',
     
     # Concatenate all the sorted groups back into a single DataFrame
     sorted_df = pd.concat(team_groups, ignore_index=True)
-    sorted_df = sorted_df.drop(columns=['Sorted_Pos'])
+
     
     sorted_df[['Clr', 'Recov', 'xA', 'xGC']] = df[['Clr', 'Recov', 'xA', 'xGC']]
-    
+
     
     #correct xGC
     selected = sorted_df.Nation == 'NaN'
     sorted_df.loc[~selected, 'xGC'] = sorted_df.loc[~selected, 'xGC'].copy() /2
     
-    sorted_df.to_csv(directory + '\\fbref/' + folder[:-2] + '20' + folder[-2:] + '_player_data.csv', index=False)
+    to_save_df = sorted_df[season_keys]
+    
+    to_save_df.to_csv(directory + '\\fbref/' + folder[:-2] + '20' + folder[-2:] + '_player_data.csv', index=False)
     
     
     
