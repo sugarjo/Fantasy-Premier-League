@@ -32,7 +32,7 @@ except:
 build_from_scratch = False
 check_last_data = True
 
-temporal_window = 20
+temporal_window = 11
     
 
 # Function to correct string_team based on the majority
@@ -404,8 +404,8 @@ for folder in folders:
                         
                     
                     #manually change some names:
-                    fantasy_manual_names = ['Jair Paula da Cunha Filho', 'Yéremy Pino Santos', 'Manuel Ugarte Ribeiro', 'Sávio Moreira de Oliveira', 'Kevin Santos Lopes de Macedo', 'Mateus Gonçalo Espanha Fernandes', 'Nico González Iglesias', 'Marc Guiu Paz', 'Marcus Oliveira Alencar', "Rodrigo 'Rodri' Hernandez Cascante", 'Solomon March', 'Rodrigo Moreno', 'Josh Sims', 'Bernardo Mota Veiga de Carvalho e Silva', 'Andrey Nascimento dos Santos', 'Alisson Becker', 'João Maria Lobo Alves Palhares Costa Palhinha Gonçalves', 'Igor Jesus Maciel da Cruz', 'João Pedro Ferreira da Silva', 'Murillo Costa dos Santos', 'Matheus Santos Carneiro da Cunha', 'Rúben dos Santos Gato Alves Dias', 'Estêvão Almeida de Oliveira Gonçalves', "Rodrigo 'Rodri' Hernandez", 'Vitor de Oliveira Nunes dos Reis', 'Welington Damascena Santos', 'Felipe Rodrigues da Silva', 'André Trindade da Costa Neto', 'Francisco Evanilson de Lima Barbosa', 'João Pedro Ferreira Silva', 'Igor Thiago Nascimento Rodrigues', "Sávio 'Savinho' Moreira de Oliveira", 'Norberto Bercique Gomes Betuncal', 'Anssumane Fati Vieira', 'Victor da Silva', 'Manuel Benson Hedilazio', 'Igor Julio dos Santos de Paulo', 'Murillo Santiago Costa dos Santos', 'Felipe Augusto de Almeida Monteiro', 'Mateus Cardoso Lemos Martins', 'João Victor Gomes da Silva', 'Danilo dos Santos de Oliveira', 'Alexandre Moreno Lopera', 'Carlos Ribeiro Dias', 'Matheus Santos Carneiro Da Cunha', 'Renan Augusto Lodi dos Santos', 'Lyanco Silveira Neves Vojnovic', 'Willian Borges da Silva', 'Carlos Henrique Casimiro', 'Norberto Murara Neto', 'Antony Matheus dos Santos', 'Lucas Tolentino Coelho de Lima', 'Diogo Teixeira da Silva','Fábio Freitas Gouveia Carvalho', 'Emerson Leite de Souza Junior', 'Bernardo Veiga de Carvalho e Silva', 'Francisco Jorge Tomás Oliveira', 'Samir Caetano de Souza Santos', 'Lyanco Evangelista Silveira Neves Vojnovic', 'Emerson Aparecido Leite de Souza Junior', 'Juan Camilo Hernández Suárez', 'José Malheiro de Sá', 'Francisco Machado Mota de Castro Trincão', 'Francisco Casilla Cortés', 'Rúben Santos Gato Alves Dias', 'Raphael Dias Belloli', 'Vitor Ferreira', 'Oluwasemilogo Adesewo Ibidapo Ajayi', 'Ivan Ricardo Neves Abreu Cavaleiro', 'Hélder Wander Sousa de Azevedo e Costa', 'Allan Marques Loureiro', 'Bruno André Cavaco Jordao', 'João Pedro Junqueira de Jesus', 'Borja González Tomás', 'José Reina', 'Roberto Jimenez Gago', 'José Ángel Esmorís Tasende', 'Rodrigo Hernandez', 'Mahmoud Ahmed Ibrahim Hassan', 'José Ignacio Peleteiro Romallo', 'Joelinton Cássio Apolinário de Lira', 'Alexandre Nascimento Costa Silva', 'Fabio Henrique Tavares', 'Bernard Anício Caldeira Duarte', 'André Filipe Tavares Gomes', 'André Filipe Tavares', 'Rúben Gonçalo Silva Nascimento Vinagre', 'Rúben Diogo da Silva Neves', 'Rui Pedro dos Santos Patrício', 'João Filipe Iria Santos Moutinho', 'Jorge Luiz Frello Filho', 'Frederico Rodrigues de Paula Santos', 'Fabricio Agosto Ramírez', 'Bonatini Lohner Maia Bonatini', 'Bernardo Fernandes da Silva Junior', 'Alisson Ramses Becker', 'Olayinka Fredrick Oladotun Ladapo', 'Lucas Rodrigues Moura da Silva', 'João Mário Naval Costa Eduardo', 'Adrien Sebastian Perruchet Silva', 'Danilo Luiz da Silva', 'Jesé Rodríguez Ruiz', 'Jose Luis Mato Sanmartín', 'Ederson Santana de Moraes', 'Bruno Saltor Grau', 'Bernardo Mota Veiga de Carvalho e Silva', 'Robert Kenedy Nunes do Nascimento', 'Gabriel Armando de Abreu', 'Fabio Pereira da Silva', 'Fernando Francisco Reges', 'David Luiz Moreira Marinho', 'Willian Borges Da Silva', 'Pedro Rodríguez Ledesma', 'Oscar dos Santos Emboaba Junior', 'Manuel Agudo Durán', 'Fernando Luiz Rosa', 'Adrián San Miguel del Castillo']
-                    fbref_manual_names = ['Jair Cunha', 'Yeremi Pino', 'Manuel Ugarte', 'Sávio', 'Kevin', 'Mateus Fernandes', 'Nicolás González', 'Marc Guiu', 'Marquinhos', 'Rodri', 'Solly March', 'Rodrigo', 'Josh Sims', 'Bernardo Silva', 'Andrey Santos', 'Alisson', 'João Palhinha', 'Igor Jesus', 'Jota Silva', 'Murillo', 'Matheus Cunha', 'Rúben Dias', 'Estêvão Willian', 'Rodri', 'Vitor Reis', 'Welington', 'Morato', 'André', 'Evanilson', 'Jota Silva', 'Thiago', 'Sávio', 'Beto', 'Ansu Fati', 'Vitinho', 'Benson Manuel', 'Igor', 'Murillo', 'Felipe', 'Tetê', 'João Gomes', 'Danilo', 'Álex Moreno', 'Cafú', 'Matheus Cunha', 'Renan Lodi', 'Lyanco', 'Willian', 'Casemiro', 'Neto', 'Antony', 'Lucas Paquetá', 'Diogo Jota', 'Fabio Carvalho', 'Emerson', 'Bernardo Silva', 'Chiquinho', 'Samir Santos', 'Lyanco', 'Emerson', 'Cucho', 'José Sá', 'Francisco Trincão', 'Kiko Casilla', 'Rúben Dias', 'Raphinha', 'Vitinha', 'Semi Ajayi', 'Ivan Cavaleiro', 'Hélder Costa', 'Allan', 'Bruno Jordão', 'João Pedro', 'Borja Bastón', 'Pepe Reina', 'Roberto', 'Angeliño', 'Rodri', 'Trézéguet', 'Jota', 'Joelinton', 'Xande Silva', 'Fabinho', 'Bernard', 'André Gomes', 'André Gomes', 'Rúben Vinagre', 'Rúben Neves', 'Rui Patrício', 'João Moutinho', 'Jorginho', 'Fred', 'Fabricio', 'Léo Bonatini', 'Bernardo', 'Alisson', 'Freddie Ladapo', 'Lucas Moura', 'João Mário', 'Adrien Silva', 'Danilo', 'Jesé', 'Joselu', 'Ederson', 'Bruno', 'Bernardo Silva', 'Kenedy', 'Gabriel Paulista', 'Fábio', 'Fernando', 'David Luiz', 'Willian', 'Pedro', 'Oscar', 'Nolito', 'Fernandinho', 'Adrián']
+                    fantasy_manual_names = ['Pablo Felipe Pereira de Jesus', 'John Victor Maciel Furtado', 'Lucas Pires Silva', 'Jair Paula da Cunha Filho', 'Yéremy Pino Santos', 'Manuel Ugarte Ribeiro', 'Sávio Moreira de Oliveira', 'Kevin Santos Lopes de Macedo', 'Mateus Gonçalo Espanha Fernandes', 'Nico González Iglesias', 'Marc Guiu Paz', 'Marcus Oliveira Alencar', "Rodrigo 'Rodri' Hernandez Cascante", 'Rodrigo Moreno', 'Josh Sims', 'Bernardo Mota Veiga de Carvalho e Silva', 'Andrey Nascimento dos Santos', 'Alisson Becker', 'João Maria Lobo Alves Palhares Costa Palhinha Gonçalves', 'Igor Jesus Maciel da Cruz', 'João Pedro Ferreira da Silva', 'Murillo Costa dos Santos', 'Matheus Santos Carneiro da Cunha', 'Rúben dos Santos Gato Alves Dias', 'Estêvão Almeida de Oliveira Gonçalves', "Rodrigo 'Rodri' Hernandez", 'Vitor de Oliveira Nunes dos Reis', 'Welington Damascena Santos', 'Felipe Rodrigues da Silva', 'André Trindade da Costa Neto', 'Francisco Evanilson de Lima Barbosa', 'João Pedro Ferreira Silva', 'Igor Thiago Nascimento Rodrigues', "Sávio 'Savinho' Moreira de Oliveira", 'Norberto Bercique Gomes Betuncal', 'Anssumane Fati Vieira', 'Victor da Silva', 'Manuel Benson Hedilazio', 'Igor Julio dos Santos de Paulo', 'Murillo Santiago Costa dos Santos', 'Felipe Augusto de Almeida Monteiro', 'Mateus Cardoso Lemos Martins', 'João Victor Gomes da Silva', 'Danilo dos Santos de Oliveira', 'Alexandre Moreno Lopera', 'Carlos Ribeiro Dias', 'Matheus Santos Carneiro Da Cunha', 'Renan Augusto Lodi dos Santos', 'Lyanco Silveira Neves Vojnovic', 'Willian Borges da Silva', 'Carlos Henrique Casimiro', 'Norberto Murara Neto', 'Antony Matheus dos Santos', 'Lucas Tolentino Coelho de Lima', 'Diogo Teixeira da Silva','Fábio Freitas Gouveia Carvalho', 'Emerson Leite de Souza Junior', 'Bernardo Veiga de Carvalho e Silva', 'Francisco Jorge Tomás Oliveira', 'Samir Caetano de Souza Santos', 'Lyanco Evangelista Silveira Neves Vojnovic', 'Emerson Aparecido Leite de Souza Junior', 'Juan Camilo Hernández Suárez', 'José Malheiro de Sá', 'Francisco Machado Mota de Castro Trincão', 'Francisco Casilla Cortés', 'Rúben Santos Gato Alves Dias', 'Raphael Dias Belloli', 'Vitor Ferreira', 'Oluwasemilogo Adesewo Ibidapo Ajayi', 'Ivan Ricardo Neves Abreu Cavaleiro', 'Hélder Wander Sousa de Azevedo e Costa', 'Allan Marques Loureiro', 'Bruno André Cavaco Jordao', 'João Pedro Junqueira de Jesus', 'Borja González Tomás', 'José Reina', 'Roberto Jimenez Gago', 'José Ángel Esmorís Tasende', 'Rodrigo Hernandez', 'Mahmoud Ahmed Ibrahim Hassan', 'José Ignacio Peleteiro Romallo', 'Joelinton Cássio Apolinário de Lira', 'Alexandre Nascimento Costa Silva', 'Fabio Henrique Tavares', 'Bernard Anício Caldeira Duarte', 'André Filipe Tavares Gomes', 'André Filipe Tavares', 'Rúben Gonçalo Silva Nascimento Vinagre', 'Rúben Diogo da Silva Neves', 'Rui Pedro dos Santos Patrício', 'João Filipe Iria Santos Moutinho', 'Jorge Luiz Frello Filho', 'Frederico Rodrigues de Paula Santos', 'Fabricio Agosto Ramírez', 'Bonatini Lohner Maia Bonatini', 'Bernardo Fernandes da Silva Junior', 'Alisson Ramses Becker', 'Olayinka Fredrick Oladotun Ladapo', 'Lucas Rodrigues Moura da Silva', 'João Mário Naval Costa Eduardo', 'Adrien Sebastian Perruchet Silva', 'Danilo Luiz da Silva', 'Jesé Rodríguez Ruiz', 'Jose Luis Mato Sanmartín', 'Ederson Santana de Moraes', 'Bruno Saltor Grau', 'Bernardo Mota Veiga de Carvalho e Silva', 'Robert Kenedy Nunes do Nascimento', 'Gabriel Armando de Abreu', 'Fabio Pereira da Silva', 'Fernando Francisco Reges', 'David Luiz Moreira Marinho', 'Willian Borges Da Silva', 'Pedro Rodríguez Ledesma', 'Oscar dos Santos Emboaba Junior', 'Manuel Agudo Durán', 'Fernando Luiz Rosa', 'Adrián San Miguel del Castillo']
+                    fbref_manual_names = ['Pablo', 'John', 'Lucas', 'Jair Cunha', 'Yeremi Pino', 'Manuel Ugarte', 'Sávio', 'Kevin', 'Mateus Fernandes', 'Nicolás González', 'Marc Guiu', 'Marquinhos', 'Rodri', 'Rodrigo', 'Josh Sims', 'Bernardo Silva', 'Andrey Santos', 'Alisson', 'João Palhinha', 'Igor Jesus', 'Jota Silva', 'Murillo', 'Matheus Cunha', 'Rúben Dias', 'Estêvão Willian', 'Rodri', 'Vitor Reis', 'Welington', 'Morato', 'André', 'Evanilson', 'Jota Silva', 'Thiago', 'Sávio', 'Beto', 'Ansu Fati', 'Vitinho', 'Benson Manuel', 'Igor', 'Murillo', 'Felipe', 'Tetê', 'João Gomes', 'Danilo', 'Álex Moreno', 'Cafú', 'Matheus Cunha', 'Renan Lodi', 'Lyanco', 'Willian', 'Casemiro', 'Neto', 'Antony', 'Lucas Paquetá', 'Diogo Jota', 'Fabio Carvalho', 'Emerson', 'Bernardo Silva', 'Chiquinho', 'Samir Santos', 'Lyanco', 'Emerson', 'Cucho', 'José Sá', 'Francisco Trincão', 'Kiko Casilla', 'Rúben Dias', 'Raphinha', 'Vitinha', 'Semi Ajayi', 'Ivan Cavaleiro', 'Hélder Costa', 'Allan', 'Bruno Jordão', 'João Pedro', 'Borja Bastón', 'Pepe Reina', 'Roberto', 'Angeliño', 'Rodri', 'Trézéguet', 'Jota', 'Joelinton', 'Xande Silva', 'Fabinho', 'Bernard', 'André Gomes', 'André Gomes', 'Rúben Vinagre', 'Rúben Neves', 'Rui Patrício', 'João Moutinho', 'Jorginho', 'Fred', 'Fabricio', 'Léo Bonatini', 'Bernardo', 'Alisson', 'Freddie Ladapo', 'Lucas Moura', 'João Mário', 'Adrien Silva', 'Danilo', 'Jesé', 'Joselu', 'Ederson', 'Bruno', 'Bernardo Silva', 'Kenedy', 'Gabriel Paulista', 'Fábio', 'Fernando', 'David Luiz', 'Willian', 'Pedro', 'Oscar', 'Nolito', 'Fernandinho', 'Adrián']
                 
                     #covid weeks
                     if gw_num > 38:
@@ -556,9 +556,10 @@ for folder in folders:
                                     fbref_selected = season_data.index == indices[1]
     
                     
-                            #add cbirt points and cbirt data to previous seasons
+                            #add cbirt points and cbirt data to previous seasons                            
                             
-                            #get cbirt scores
+                            
+                            
                             if folder in ['2019-20', '2020-21', '2021-22', '2022-23', '2023-24', '2024-25']:
                                 
                                 #find position
@@ -590,12 +591,13 @@ for folder in folders:
                                     if cbirt >= 12:
                                         gw.loc[el[0], 'total_points'] += 2
                                         
-                                else:
+                                else: #keeper
                                     cbirt = season_data.loc[fbref_selected, ['Saves']].sum(axis=1).iloc[0]
                                     
                                 #add defcon to the stats
                                 gw.loc[el[0], 'defcon'] = cbirt.copy()   
                                     
+                            #from fbref
                             if folder in ['2017-18', '2018-19', '2019-20', '2020-21', '2021-22']:
                                 xG = season_data.loc[fbref_selected, 'xG'].iloc[0]
                                 xA = season_data.loc[fbref_selected, 'xA'].iloc[0]
@@ -630,7 +632,8 @@ for folder in folders:
                         duplicate_players = gw.loc[gw['name'] == name, 'element']
                         
                         if len(np.unique(duplicate_players)) != 1:
-                            print('Check double gameweek for', name, n,  duplicate_players.to_list())                       
+                            print('Check double gameweek for', name, n,  duplicate_players.to_list())    
+                            a = hfhfhfhh
 
                     
                         # # Extract all involved teams in one go using merge
@@ -665,7 +668,7 @@ for folder in folders:
                     if gw.shape[0] == 0:
                         print(gw_csv, 'is empty')
                     else:
-                        print(gw_csv)
+                        print(gw_csv, 'added')
                         dfs_gw.append(gw)
                         #print('Number of gw player games:', len(gw))
                         
@@ -723,11 +726,6 @@ for folder in folders:
                     result = np.zeros(len(player_df['total_points'])+1)  # initialize result array
                     last_games = 0  # initialize last_vplayer_df['total_points']alue to 0
                     last_point = 0
-                    
-                    own_team_points = []
-                    own_element_points = []
-                    wins = []
-    
     
                     for i in range(len(player_df['total_points'])):
     
@@ -740,9 +738,6 @@ for folder in folders:
     
                     df_gw.loc[selected_ind, 'points_per_game'] = points_per_game.values.copy()
                     df_gw.loc[selected_ind, 'points_per_played_game'] = result[:-1].copy()
-                    # df_gw.loc[selected_ind, 'own_team_points'] = own_team_points.copy()
-                    # df_gw.loc[selected_ind, 'own_wins'] = wins.copy()
-                    # df_gw.loc[selected_ind, 'own_element_points'] = wins.copy()
         
                     
                     
@@ -835,8 +830,8 @@ for name_string in np.unique(season_df.loc[selected_season, 'name']):
         continue
     
 
-    if closest_match == ['Jair Paula da Cunha Filho']:
-        print(name_string, closest_match, ['Jair Paula da Cunha Filho'])
+    # if closest_match == ['Jair Paula da Cunha Filho']:
+    #     print(name_string, closest_match, ['Jair Paula da Cunha Filho'])
 
         
     matched_ind = np.where(closest_match[0] == fantasy_names.values)[0][0]        
@@ -862,9 +857,9 @@ for team in np.unique(season_df.string_team):
     
     team_df = season_df.loc[season_df.string_team == team]
     
-    for match in np.unique(team_df.kickoff_time):
+    for match_time in np.unique(team_df.kickoff_time):
         
-        match_df = team_df.loc[team_df.kickoff_time == match]
+        match_df = team_df.loc[team_df.kickoff_time == match_time]
         
         temp_season.loc[match_df.index, "own_team_points"] = np.sum(match_df.total_points)       
         
@@ -889,10 +884,10 @@ season_df.loc[home, 'difficulty'] = -season_df.loc[home, 'difficulty']
 
 #for all away matches
 season_df['own_difficulty'] = season_df["team_a_difficulty"].copy()
-season_df['other_difficulty'] = season_df["team_h_difficulty"].copy()
+season_df['opp_difficulty'] = season_df["team_h_difficulty"].copy()
 #correct home matches
 season_df.loc[home, 'own_difficulty'] = season_df.loc[home, "team_h_difficulty"]
-season_df.loc[home, 'other_difficulty'] = season_df.loc[home, "team_a_difficulty"]
+season_df.loc[home, 'opp_difficulty'] = season_df.loc[home, "team_a_difficulty"]
 
 # #how variables are included
 # #always included. also for current weak
@@ -916,31 +911,35 @@ season_df = season_df.sort_values(by='kickoff_time')
 #how variables are includedvariables
 #always included. also for current weak
 dynamic_features = ['string_opp_team', 'transfers_in', 'transfers_out',
-        'was_home', 'own_difficulty', 'other_difficulty']#, 'difficulty']
+        'was_home', 'own_difficulty', 'opp_difficulty']#, 'difficulty']
 
 #features that I don't have access to in advance.
 #included for all windows, but not current
 temporal_features = ['minutes', 'ict_index', 'influence', 'threat', 'creativity', 'bps',
         'total_points', 'expected_goals', 'expected_assists',
-        'expected_goals_conceded', 'own_team_points', 'own_element_points','defcon']
+        'expected_goals_conceded', 'own_team_points', 'own_element_points','defcon']#, 'opp_element_points']#, 'opp_team_points']
 #included once
 temporal_single_features = ['points_per_game', 'points_per_played_game']
 #total_points, minutes, kickoff time not for prediction
 #included once
-fixed_features = ['total_points', 'minutes', 'kickoff_time', 'element_type', 'string_team', 'season', 'name']
+fixed_features = ['kickoff_time', 'element_type', 'string_team', 'season', 'name']
 
 #categories for dtype
 categorical_variables = ['element_type', 'string_team', 'season', 'name']
 season_df[categorical_variables] = season_df[categorical_variables].astype('category')
+
+
 #add nan categories
 dynamic_categorical_variables = ['string_opp_team', 'own_difficulty',
-        'other_difficulty'] #'difficulty',
+        'opp_difficulty'] #'difficulty',
 
-int_variables = ['minutes', 'total_points', 'was_home', 'bps', 'own_team_points', 'defcon']
+season_df[['own_difficulty', 'opp_difficulty', 'difficulty']] = season_df[['own_difficulty', 'opp_difficulty', 'difficulty']].astype('Int64')
+
+int_variables = ['minutes', 'total_points', 'was_home', 'bps', 'own_team_points', 'defcon'] #, 'opp_team_points']
 season_df[int_variables] = season_df[int_variables].astype('Int64')
 
 float_variables = ['transfers_in', 'transfers_out', 'threat', 'own_element_points',  'expected_goals', 'expected_assists',
-'expected_goals_conceded', 'creativity', 'ict_index', 'influence']
+'expected_goals_conceded', 'creativity', 'ict_index', 'influence'] #, 'opp_element_points']
 season_df[float_variables] = season_df[float_variables].astype('float')
 
 
@@ -948,7 +947,7 @@ season_df[float_variables] = season_df[float_variables].astype('float')
 # If you want to sort the DataFrame in descending order
 # df_sorted = df.sort_values(by='date', ascending=False)
 
-train = pd.DataFrame(season_df[fixed_features])
+train = pd.DataFrame(season_df[fixed_features + temporal_features])
     
 
 #for each week iteration
@@ -1021,21 +1020,28 @@ for k in range(temporal_window):
         train[opponent_feature] = train[opponent_feature].astype(opp_cats)
   
 #add in data about the opponent   
-opponent_point_names = [str(k) + 'opp_team_points' for k in range(temporal_window)]  
-opponent_element_names = [str(k) + 'opp_element_points' for k in range(temporal_window)]  
+opponent_point_names = ['opp_team_points'] + [str(k) + 'opp_team_points' for k in range(temporal_window)]  
+opponent_element_names = ['opp_element_points'] + [str(k) + 'opp_element_points' for k in range(temporal_window)]  
 
 temp_train = pd.DataFrame(index=train.index, columns=opponent_point_names + opponent_element_names)
      
 
+club_ind = 1
+len_clubs = len(season_df.string_opp_team.unique())
+
 for opponent_club in season_df.string_opp_team.unique():
     
+    print(opponent_club, club_ind, '/', len_clubs)
+    club_ind += 1
+    
+    #all that played against this club
     opp_selected = season_df.string_opp_team == opponent_club
     
-    #loop through all matches 
+    #loop through all matches of these matches
     for kickoff in np.unique(season_df.loc[opp_selected, 'kickoff_time']):
         
         #find all matches of the opponent before the current match
-        opp_match_selected =  opp_selected & (season_df['kickoff_time'] < kickoff)
+        opp_match_selected =  opp_selected & (season_df['kickoff_time'] <= kickoff)
             
         #find the unique kickoff times
         first_indices = season_df.loc[opp_match_selected].drop_duplicates(subset='kickoff_time', keep='first').index
@@ -1053,13 +1059,15 @@ for opponent_club in season_df.string_opp_team.unique():
         
         for element_type in range(1,5):       
             #find all matches of the opponent before the current match
-            opp_elem_selected =  opp_selected & (season_df['kickoff_time'] < kickoff) & (season_df['element_type'] == element_type)
+            opp_elem_selected =  opp_selected & (season_df['kickoff_time'] <= kickoff) & (season_df['element_type'] == element_type)
                 
             #find the unique kickoff times
             first_indices = season_df.loc[opp_elem_selected].drop_duplicates(subset='kickoff_time', keep='first').index
             
+            #initate
             full_oooep = [np.nan] * len(opponent_element_names)
             
+            #get the own points of the opponent for the last X matches
             opponents_of_opponents_elements = season_df.loc[first_indices[-temporal_window:], "own_element_points"]
             
             if len(opponents_of_opponents_points):
@@ -1067,7 +1075,9 @@ for opponent_club in season_df.string_opp_team.unique():
             
             relevant_elements =  opp_selected & (season_df['kickoff_time'] == kickoff) & (season_df['element_type'] == element_type)
             temp_train.loc[relevant_elements, opponent_element_names] = full_oooep[::-1]
-
+            
+            # if np.isnan(full_oooep[0]) and kickoff > np.datetime64('2025-08-20T11:30:00.000000000'):
+            #     a = djjdjdjdjjd
 
 #set dtype
 for col in opponent_point_names:

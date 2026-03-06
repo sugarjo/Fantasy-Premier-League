@@ -1,62 +1,72 @@
+import time
+
+#time.sleep(60*60)
+
+
 my_players = [
-    {'web_name': 'Pope', 'selling_price': 52, 'element_type': 1},
+    {'web_name': 'Raya', 'selling_price': 59, 'element_type': 1},
     {'web_name': 'Dúbravka', 'selling_price': 40, 'element_type': 1},
     
-    {'web_name': 'J.Timber', 'selling_price': 59, 'element_type': 2},
-    {'web_name': 'Mings', 'selling_price': 44, 'element_type': 2},
-    {'web_name': 'Chalobah', 'selling_price': 50, 'element_type': 2},
-    {'web_name': 'Virgil', 'selling_price': 60, 'element_type': 2},
-    {'web_name': 'Calafiori', 'selling_price': 57, 'element_type': 2},
+    {'web_name': 'Keane', 'selling_price': 46, 'element_type': 2},
+    {'web_name': 'Mings', 'selling_price': 43, 'element_type': 2},
+    {'web_name': 'Chalobah', 'selling_price': 53, 'element_type': 2},
+    {'web_name': 'Virgil', 'selling_price': 61, 'element_type': 2},
+    {'web_name': "Gabriel", 'selling_price': 71, 'element_type': 2},
     
-    {'web_name': 'B.Fernandes', 'selling_price': 89, 'element_type': 3},
-    {'web_name': 'Kudus', 'selling_price': 66, 'element_type': 3},
-    {'web_name': 'Eze', 'selling_price': 75, 'element_type': 3},
-    {'web_name': 'Bobb', 'selling_price': 54, 'element_type': 3},
-    {'web_name': 'Amad', 'selling_price': 63, 'element_type': 3},
+    {'web_name': 'Semenyo', 'selling_price': 79, 'element_type': 3},
+    {'web_name': 'Mac Allister', 'selling_price': 62, 'element_type': 3},
+    {'web_name': 'M.Salah', 'selling_price': 140, 'element_type': 3},
+    {'web_name': 'B.Fernandes', 'selling_price': 99, 'element_type': 3},
+    {'web_name': 'Wilson', 'selling_price': 58, 'element_type': 3},
     
-    {'web_name': 'Foster', 'selling_price': 50, 'element_type': 4},
-    {'web_name': 'Haaland', 'selling_price': 145, 'element_type': 4},
-    {'web_name': 'João Pedro', 'selling_price': 74, 'element_type': 4},
+    {'web_name': 'Bowen', 'selling_price': 75, 'element_type': 4},
+    {'web_name': 'Raúl', 'selling_price': 62, 'element_type': 4},
+    {'web_name': 'Tolu', 'selling_price': 54, 'element_type': 4},
 ]
 
 
-bank = 14
-free_transfers = 1
-save_transfers_for_later = 0 #transfers left at end of last round
 
+bank = 7 #in 10ths of M
+free_transfers = 1
+save_transfers_for_later = 0 #transfers left at end of last round (no need to put higher than 4)
+
+forward_price_limit = -1 #in millions
 
 minutes_thisyear_treshold = 60
-form_treshold = -1
-points_per_game_treshold = -1
+form_treshold = 0.1
+points_per_game_treshold = 0.1
 running_minutes_threshold = -1
 
-#
-exclude_team = []
+#1: ARS, 8: CRY, 13:MCI, 20: WOL
+exclude_team = [1, 8, 13, 20]
 
-exclude_players = ['Reijnders', 'J.Murphy', 'Bernardo', 'Schär', 'Rodrigo', 'Richarlison', 'Doku', 'Mac Allister', 'Nketiah', 'Casemiro', 'Awoniyi', 'Bradley', 'Marc Guiu', 'Robertson', 'Kroupi.Jr', 'Trippier', 'Mings', 'Foster', 'Mamardashvili', 'A.Becker', 'Tanaka', 'Jensen', 'Baleba', 'Mainoo', 'Andrey Santos', 'Johnson', 'Kluivert', 'Barnes', 'Bogarde', 'Hill', 'Hoever', 'Piroe', 'Harrison', 'Doherty', 'L.Miley','Callum Wilson', 'Nmecha', 'Osula', 'Raúl', 'Devenny', 'Acheampong', 'Aït-Nouri', 'Martinelli', 'Aké', 'Marmoush']
+exclude_players = ['Keane', 'Collins', 'Bruno G.', 'Havertz', 'M.Bizot', 'Robertson', 'Trossard', 'Jörgensen', 'Gvardiol', 'Digne', 'G.Jesus', 'Foden', 'Merino', 'Estêvão', 'Richarlison', 'Ashley Barnes', 'Nketiah', 'Kostoulas', 'Foster', 'Piroe', 'Nmecha', 'Beto', 'Flemming', 'Awoniyi', 'Callum Wilson', 'Acheampong', 'White', 'Cherki']
+
 include_players = []
-#tarkowski
-do_not_exclude_players = ['Delap']
+
+do_not_exclude_players = ["Semenyo", "Gabriel", "Raya", "Tolu"]
 
 
 
-do_not_transfer_out = []
-rounds_to_value = 5
+do_not_transfer_out = ['Mings', 'Keane', 'Wilson']
+rounds_to_value = 2
 #transfer to evaluate per week
-trans_per_week = 3
+trans_per_week = 2
 
 jump_rounds = 0
 #if you also want to evaluate players on the bench. in case of uncertain starters.
 number_players_eval = 11
 
 wildcard = False
+benchboost = False
 skip_gw = [100]
 
-benchboost_gw = 14
 tripple_captain_gw = 100
 
+iterations = 20
 
-forward_price_limit = 6.1 #in millions
+
+
 midfield_price_limit = -1
 
 
@@ -65,18 +75,23 @@ assistant_manager_gw = 100
 assistant_manager_team = 'CRY'
 assistant_manager_price = 0.8 #in millions
 
+addition_of_5_afcon_transfers = 166
+
 
 force_90 = []
 
 manual_pred = 1
 
 #players
-manual_blanks = {13: ['Bobb'], 14: ['Bobb'], 15: ['Bobb']} #nothing:  Spence for Burn, Marmoush for Wood. Isak: Isak9for Wood. Robertson: Robertson for Kayode. Robertson and Isak: Robertson for Burn, Isak for Wood. All three: wood, schar and burn
-
+#
+#afcon_players = ['Foster', 'Ouattara', 'Agbadou', 'M.Salah', 'Sarr', 'Doucouré', 'Ndіaye', 'Gueye', 'Iwobi', 'Bassey', 'Mbeumo', 'Mazraoui', 'Amad', 'Wissa', 'Aina', 'Boly', 'Sangaré', 'P.M.Sarr', 'Traoré', 'Diouf', 'Wan-Bissaka']
+afcon_players = []
+manual_blanks = {29: ['Rice', 'Wilson']}
 
 #GW               
-manual_blank = {}
+manual_blank = {} #{31: {'MCI': ['CRY']}}
 manual_double = {}
+#manual_double = {26: {'WOL': ['ARS', 4, 2]}}
 
 
 season = '2025-26'
@@ -93,9 +108,11 @@ from datetime import datetime, timedelta
 from joblib import Parallel, delayed
 import random
 import xgboost as xgb
-import time
 import os
 from pandas.api.types import CategoricalDtype
+import re
+
+num_jobs = 4
 
 
 #insert string for team
@@ -339,6 +356,11 @@ while pd.to_datetime(events_df.deadline_time[i], format='%Y-%m-%dT%H:%M:%SZ') < 
 current_gameweek = i + 1
 
 print('previous:')
+
+
+
+
+
 #get statistics for the past gameweeks
 #df_past_games = pd.DataFrame(columns=['gameweek', 'team_h', 'team_a', 'difficulty_diff'])
 for this_gw in range(1, current_gameweek):
@@ -350,18 +372,30 @@ for this_gw in range(1, current_gameweek):
     #for game in gw:
         #add_frame = pd.DataFrame({'gameweek': this_gw, 'team_h': int(game['team_h']), 'team_a': int(game['team_a']), 'difficulty_diff': int(game['team_h_difficulty']) - int(game['team_a_difficulty'])}, index = [0])
         #df_past_games = pd.concat([df_past_games, add_frame])
+        
+    
 
 print('current gameweek: ' + str(current_gameweek))
 
 print('predicting:')
 #get statistics for the x next gameweeks
 df_future_games = pd.DataFrame(columns=['gameweek', 'team_h', 'team_a', 'difficulty_diff', 'kickoff_time'])
-benchboost = []
+
 tripple_captain = []
 assistant_manager = []
 free_hit = []
+add_afcon_transfers= []
+
+if benchboost:
+    benchboost_gws = []
+else:
+    benchboost_gws = [-1]
+    
 for i in range(jump_rounds, rounds_to_value+jump_rounds):
     this_gw = i + current_gameweek
+    
+    if benchboost:
+        benchboost_gws.append(this_gw)
     
     if this_gw in skip_gw:
         free_hit.append(True)
@@ -370,10 +404,6 @@ for i in range(jump_rounds, rounds_to_value+jump_rounds):
         print(this_gw)
         free_hit.append(False)
 
-    if benchboost_gw == this_gw:
-        benchboost.append(True)
-    else:
-        benchboost.append(False)
         
     if tripple_captain_gw == this_gw:
         tripple_captain.append(True)
@@ -384,6 +414,12 @@ for i in range(jump_rounds, rounds_to_value+jump_rounds):
         assistant_manager.append(True)
     else:
         assistant_manager.append(False)
+    
+    #this will top up the transfers in this week
+    if this_gw == addition_of_5_afcon_transfers:
+        add_afcon_transfers.append(5)
+    else:
+        add_afcon_transfers.append(0)
 
     # if any(np.array(skip_gw) == this_gw):
     #     continue
@@ -497,49 +533,84 @@ with open(r'\\platon.uio.no\med-imb-u1\jorgels\model_data.pkl', 'rb') as file:
 predictions = []
 
 
-#add nan categories
-dynamic_categorical_variables = ['string_opp_team', 'own_difficulty',
-       'other_difficulty'] #'difficulty',
+# #add nan categories
+# dynamic_categorical_variables = ['string_opp_team', 'own_difficulty',
+#        'other_difficulty'] #'difficulty',
 
-int_variables = ['minutes', 'total_points', 'was_home', 'bps', 'own_team_points', 'defcon', 'SoT']
+# int_variables = ['minutes', 'total_points', 'was_home', 'bps', 'own_team_points', 'defcon', 'SoT']
 
-float_variables = ['transfers_in', 'transfers_out', 'threat']
+# float_variables = ['transfers_in', 'transfers_out', 'threat']
 
-#features that I don't have access to in advance.
-#opp_team_points included because it already calculate in model
-temporal_features = ['minutes', 'ict_index', 'influence', 'threat', 'creativity', 'bps',
-       'total_points', 'expected_goals', 'expected_assists',
-       'expected_goal_assists', 'expected_goals_conceded', 'own_team_points', 'own_element_points']
-       #'points_per_game', 'points_per_played_game']
+# #features that I don't have access to in advance.
+# #opp_team_points included because it already calculate in model
+# temporal_features = ['minutes', 'ict_index', 'influence', 'threat', 'creativity', 'bps',
+#        'total_points', 'expected_goals', 'expected_assists',
+#        'expected_goal_assists', 'expected_goals_conceded', 'own_team_points', 'own_element_points']
+#        #'points_per_game', 'points_per_played_game']
 
-temporal_single_features = ['points_per_game', 'points_per_played_game']
+# temporal_single_features = ['points_per_game', 'points_per_played_game']
 
 
-#total_points, minutes, kickoff time not for prediction
-fixed_features = ['element_type', 'string_team', 'season', 'name']
+# #total_points, minutes, kickoff time not for prediction
+# fixed_features = ['element_type', 'string_team', 'season', 'name']
+
+
+
+
+
+
 
 dynamic_features = ['string_opp_team', 'transfers_in', 'transfers_out',
-       'was_home', 'own_difficulty', 'other_difficulty']#, 'difficulty']
+        'was_home', 'own_difficulty', 'other_difficulty']#, 'difficulty']
+
+#features that I don't have access to in advance.
+#included for all windows, but not current
+temporal_features = ['minutes', 'ict_index', 'influence', 'threat', 'creativity', 'bps',
+        'total_points', 'expected_goals', 'expected_assists',
+        'expected_goals_conceded', 'own_team_points', 'own_element_points','defcon', 'opp_element_points', 'opp_team_points']
+#included once
+temporal_single_features = ['points_per_game', 'points_per_played_game']
+#total_points, minutes, kickoff time not for prediction
+#included once
+fixed_features = ['kickoff_time', 'element_type', 'string_team', 'season', 'name']
+
+#categories for dtype
+categorical_variables = ['element_type', 'string_team', 'season', 'name']
+#season_df[categorical_variables] = season_df[categorical_variables].astype('category')
+#add nan categories
+dynamic_categorical_variables = ['string_opp_team', 'own_difficulty',
+        'other_difficulty'] #'difficulty',
+
+int_variables = ['minutes', 'total_points', 'was_home', 'bps', 'own_team_points', 'defcon', 'opp_team_points']
+#season_df[int_variables] = season_df[int_variables].astype('Int64')
+
+float_variables = ['transfers_in', 'transfers_out', 'threat', 'own_element_points',  'expected_goals', 'expected_assists',
+'expected_goals_conceded', 'creativity', 'ict_index', 'influence', 'opp_element_points']
+#season_df[float_variables] = season_df[float_variables].astype('float')
+
+
+
 
 
 
 
 #free hit
 keep_ind = []
-if rounds_to_value == 1 and wildcard:
-    for el in [1, 2, 3, 4]:
-        selected = slim_elements_df.element_type == el
-        min_keeper_price = np.min(slim_elements_df.loc[selected, 'now_cost'])
-        keep_ind.append(np.where((slim_elements_df['now_cost']==min_keeper_price) & (slim_elements_df.element_type == el))[0][0])
-        
-        if len(np.where((slim_elements_df['now_cost']==min_keeper_price) & (slim_elements_df.element_type == el))[0]) > 1 and el > 1:  
-            keep_ind.append(np.where((slim_elements_df['now_cost']==min_keeper_price) & (slim_elements_df.element_type == el))[0][1])
-    
-else:
-    selected = slim_elements_df.element_type == 1
+#if rounds_to_value == 1 and wildcard:
+for el in [1, 2, 3, 4]:
+    selected = slim_elements_df.element_type == el
     min_keeper_price = np.min(slim_elements_df.loc[selected, 'now_cost'])
+    keep_ind.append(np.where((slim_elements_df['now_cost']==min_keeper_price) & (slim_elements_df.element_type == el))[0][0])
+    selected_players.iloc[keep_ind[-1]] = False
     
-    keep_ind.append(np.where((slim_elements_df['now_cost']==min_keeper_price) & (slim_elements_df.element_type == 1))[0][0])
+    # if len(np.where((slim_elements_df['now_cost']==min_keeper_price) & (slim_elements_df.element_type == el))[0]) > 1 and el > 1:  
+    #     keep_ind.append(np.where((slim_elements_df['now_cost']==min_keeper_price) & (slim_elements_df.element_type == el))[0][1])
+    
+# else:
+#     selected = slim_elements_df.element_type == 1
+#     min_keeper_price = np.min(slim_elements_df.loc[selected, 'now_cost'])
+    
+#     keep_ind.append(np.where((slim_elements_df['now_cost']==min_keeper_price) & (slim_elements_df.element_type == 1))[0][0])
               
     
 # keep_ind = []
@@ -572,17 +643,16 @@ for df_name in slim_elements_df.iterrows():
         second_name = df_name[1].second_name
         name = first_name + ' ' + second_name
         player_id =  df_name[1].id
-        element_type = df_name[1].element_type  
 
-        url = 'https://fantasy.premierleague.com/api/element-summary/' + str(player_id)
-        downloaded = False
-        while not downloaded:
-            try:
-                r = requests.get(url)
-                player = r.json()
-                downloaded = True
-            except:
-                time.sleep(30)
+        # url = 'https://fantasy.premierleague.com/api/element-summary/' + str(player_id)
+        # downloaded = False
+        # while not downloaded:
+        #     try:
+        #         r = requests.get(url)
+        #         player = r.json()
+        #         downloaded = True
+        #     except:
+        #         time.sleep(30)
 
         # player_games = pd.DataFrame(player['history'])
 
@@ -590,21 +660,21 @@ for df_name in slim_elements_df.iterrows():
         # player_games = player_games.sort_values(by='kickoff_time')
         # player_games.set_index('kickoff_time', inplace=True)
 
-        fixtures = pd.DataFrame(player['fixtures'])
-        fixtures['kickoff_time'] =  pd.to_datetime(fixtures['kickoff_time'], format='%Y-%m-%dT%H:%M:%SZ')
-        fixtures = fixtures.sort_values(by='kickoff_time')
+        # fixtures = pd.DataFrame(player['fixtures'])
+        # fixtures['kickoff_time'] =  pd.to_datetime(fixtures['kickoff_time'], format='%Y-%m-%dT%H:%M:%SZ')
+        # fixtures = fixtures.sort_values(by='kickoff_time')
 
-        should_have_trainingdata = True
-        should_have_database = False
-        past_history  = player["history_past"]
-        if past_history == []:
-            should_have_trainingdata = False
+        # should_have_trainingdata = True
+        # should_have_database = False
+        # past_history  = player["history_past"]
+        # if past_history == []:
+        #     should_have_trainingdata = False
 
-        else:
-            last_history = past_history[-1]['season_name']
+        # else:
+            # last_history = past_history[-1]['season_name']
 
-            if last_history[:4] == previous_season[:4]:
-                should_have_database = True
+            # if last_history[:4] == previous_season[:4]:
+            #     should_have_database = True
                 
         #build prediction_matrix
         #matches with team
@@ -652,6 +722,8 @@ for df_name in slim_elements_df.iterrows():
         gws = gws.reset_index()
 
         minutes = np.nanmean(predicting_df.iloc[-2:]['minutes'])
+        
+        last_known_row = predicting_df.iloc[-1].copy()
 
         for game in gws.iterrows():
 
@@ -659,7 +731,11 @@ for df_name in slim_elements_df.iterrows():
             new_row = pd.DataFrame({col: pd.Series(dtype=dt) for col, dt in predicting_df.dtypes.items()})
 
             #add fixed
+            #only if we want to rotate the features
             new_row.loc[0, fixed_features] = predicting_df[fixed_features].iloc[-1]
+            new_row.loc[0, 'points_per_game'] = predicting_df['points_per_game'].iloc[-1]
+            new_row.loc[0, 'points_per_played_game'] = predicting_df['points_per_played_game'].iloc[-1]
+            #new_row.loc[0] = predicting_df.iloc[-1]
 
             #add dynamic
 
@@ -684,8 +760,9 @@ for df_name in slim_elements_df.iterrows():
                 new_row['was_home'] = 0
 
                 new_row['string_team'] = string_names[game[1].team_a-1]
+                    
 
-            new_row['difficulty'] = diff_difficulty[game_idx]
+            #new_row['difficulty'] = diff_difficulty[game_idx]
             new_row['kickoff_time'] = game[1]['kickoff_time']
 
             sum_transfers = sum(elements_df.transfers_in_event)
@@ -704,52 +781,96 @@ for df_name in slim_elements_df.iterrows():
         #for each week iteration
         category_names  = [fixed_features]
         
-        if temporal_window > 0:
-            for k in range(int(temporal_window)):
-    
-    
-                temporal_names = [str(k) + s for s in temporal_features]
-                dynamic_names = [str(k) + s for s in dynamic_features]
-    
-                # Create an empty DataFrame with the specified columns
-                if k==0:
-                    temporal_single_names = [str(k) + s for s in temporal_single_features]
-                    col_names = temporal_names + dynamic_names + temporal_single_names
-    
-                else:
-                    col_names = temporal_names + dynamic_names
-    
-                temp_train = pd.DataFrame(index=predicting_df.index, columns=col_names)
-    
-                temporal_data = predicting_df[temporal_features].shift(k+1)
-                dynamic_data = predicting_df[dynamic_features].shift(k)
-    
-                temp_train[temporal_names] = temporal_data.values
-                temp_train[dynamic_names] = dynamic_data.values
-    
-                if k==0:
-                    temporal_single_data = predicting_df[temporal_single_features].shift(k+1)
-                    temp_train[temporal_single_names] = temporal_single_data.values
-    
-    
-                #set dtype
-                for col in temp_train.columns:
-    
-                    col_stem = ''.join([char for char in col if not char.isdigit()])
-    
-                    if col_stem in dynamic_categorical_variables:
-                        temp_train[col] = temp_train[col].astype('category')
-                    elif col_stem in int_variables:
-                        temp_train[col] = temp_train[col].astype('Int64')
-                    elif col_stem in temporal_features or col_stem in float_variables or col_stem in temporal_single_features:
-                        temp_train[col] = temp_train[col].astype('float')
-                    else:
-                        print('CHECK', col)
-    
-                predicting_df = pd.concat([predicting_df, temp_train], axis=1)
+        #since we will not add more data we can loop the columns!
+        for match_row in predicting_df.iterrows():
+            for feat in predicting_df.keys():
                 
+                if match_row[0] > 0:
                 
+                    #split the feat in integer and string
+                    m = re.match(r"^(\d+)(.*)$", feat)
+                    if m:
+                        num = int(m.group(1))   # 20
+                        rest = m.group(2)
+                        
+                        if rest == 'opp_team_points' or rest == 'opp_element_points' or num >= temporal_window:
+                            continue
+                        
+                        #all temporal features is the last one + 1
+                        if num == 0:
+                            last_match_feat  = rest     
+                        else:
+                            last_match_feat  = str(num-1) + rest
+                        
+                        #print(feat, 'Change', predicting_df.loc[match_row[0], feat], 'with', predicting_df.loc[match_row[0]-1, last_match_feat])
+                        
+                        #the match we look at is the previous match and a column with one less digit as name.
+                        #gives nan for matches that are not yet played
+                        #predicting_df.loc[match_row[0], feat] = predicting_df.loc[match_row[0]-1, last_match_feat]
+                        
+                        #if we want the last played match to be used as the starting point
+                        predicting_df.loc[match_row[0], feat] = last_known_row[last_match_feat]
+                        
+                             
                 
+            
+            
+            
+            
+    
+        
+        # if temporal_window > 0:
+        #     for k in range(int(temporal_window)):
+    
+    
+        #         temporal_names = [str(k) + s for s in temporal_features]
+    
+        #         if k==0:
+                    
+        #             dynamic_names = [s for s in dynamic_features]        
+        #             temporal_single_names = [s for s in temporal_single_features]
+                    
+        #             col_names = temporal_single_names + dynamic_names + temporal_names 
+
+        #         else:
+        #             dynamic_names = [str(k-1) + s for s in dynamic_features] 
+                    
+        #             col_names = dynamic_names + temporal_names
+                    
+        #         #add in empty data
+        #         temp_train = pd.DataFrame(index=predicting_df.index, columns=col_names)
+                
+        #         #loop all data
+                
+        #         if k==0:
+        #             temporal_single_data = predicting_df[temporal_single_features].shift(k+1)
+        #             temp_train[temporal_single_names] = temporal_single_data.values
+                   
+                
+    
+        #         temporal_data = predicting_df[temporal_features].shift(k+1)
+        #         dynamic_data = predicting_df[dynamic_features].shift(k)
+    
+        #         temp_train.loc[temporal_names] = temporal_data.values
+        #         temp_train.loc[dynamic_names] = dynamic_data.values
+    
+        #         #set dtype
+        #         for col in temp_train.columns:
+    
+        #             col_stem = ''.join([char for char in col if not char.isdigit()])
+    
+        #             if col_stem in dynamic_categorical_variables:
+        #                 temp_train[col] = temp_train[col].astype('category')
+        #             elif col_stem in int_variables:
+        #                 temp_train[col] = temp_train[col].astype('Int64')
+        #             elif col_stem in temporal_features or col_stem in float_variables or col_stem in temporal_single_features:
+        #                 temp_train[col] = temp_train[col].astype('float')
+        #             else:
+        #                 print('CHECK', col)
+    
+        #         predicting_df = pd.concat([predicting_df, temp_train], axis=1)
+        
+        if temporal_window > 0:        
             #add in data about the opponent   
             opponent_point_names = [str(k) + 'opp_team_points' for k in range(temporal_window)]  
             opponent_element_names = [str(k) + 'opp_element_points' for k in range(temporal_window)]  
@@ -777,10 +898,9 @@ for df_name in slim_elements_df.iterrows():
                 opponents_of_opponents_points = all_rows.loc[first_indices[-temporal_window:], "own_team_points"]
                 opponents_of_opponents_points = opponents_of_opponents_points.shift(-ind)
                 if len(opponents_of_opponents_points):
-                    full_ooop[-len(opponents_of_opponents_points):] = opponents_of_opponents_points
+                    full_ooop[-len(opponents_of_opponents_points):] = opponents_of_opponents_points.values
     
-                temp_train.loc[index, opponent_point_names] = full_ooop[::-1]
-                
+                temp_train.loc[index, opponent_point_names] = full_ooop[::-1].to_list()
                 
                 opp_elem_selected =  opp_selected & (all_rows['element_type'] == element_type)
                       
@@ -803,11 +923,25 @@ for df_name in slim_elements_df.iterrows():
                 for col in opponent_element_names:
                     temp_train[col] = temp_train[col].astype('float')
                     
+                predicting_df.loc[game[0], temp_train.keys()] = temp_train.values[0].copy()
                     
-                    
-                        
-            predicting_df = pd.concat([predicting_df, temp_train], axis=1)   
-            
+                
+            #set dtype
+            for col in predicting_df.columns:
+    
+                col_stem = ''.join([char for char in col if not char.isdigit()])
+    
+                if col_stem in dynamic_categorical_variables:
+                    predicting_df[col] = predicting_df[col].astype('category')
+                elif col_stem in int_variables:
+                    predicting_df[col] = predicting_df[col].astype('Int64')
+                elif col_stem in temporal_features or col_stem in float_variables or col_stem in temporal_single_features:
+                    predicting_df[col] = predicting_df[col].astype('float')
+                # else:
+                #     print('CHECK', col)
+                
+                
+        
         #include also train_X to maintain categories. use inner to not get too many columns
         #predicting_df = pd.concat([train_X, predicting_df], ignore_index = True, join='inner')
         common_columns = train_X.columns.intersection(predicting_df.columns)
@@ -882,15 +1016,6 @@ for df_name in slim_elements_df.iterrows():
                     
             if df_name[1]['web_name'] in include_players:
                 estimated = 100*random.random()
-            
-            
-            #keep a budget keeper
-            if df_name[0] in keep_ind:
-                if estimated < 0.1:
-                    estimated = 0.1
-                    
-                if game_idx == 0:
-                    print('Including because of low price:', df_name[1].web_name)
                     
             #exclude the cheap forwards
             if df_name[1]['element_type'] == 4 and df_name[1]['now_cost'] <= forward_price_limit*10:
@@ -912,11 +1037,11 @@ for df_name in slim_elements_df.iterrows():
                 if gw_idx==0 and gw_idx+jump_rounds == 0 and df_name[1]['chance_of_playing_next_round'] < 75:
                     estimated = 0
     
-                if sum(all_rows.name == name) == 0 and (game_idx == 0):
-                    if should_have_trainingdata:
-                        print(name + ': does not exist in training data. Shoul dbe predicted without name')
-                    #estimated = 0
-                elif game_idx == 0:
+                # if sum(all_rows.name == name) == 0 and (game_idx == 0):
+                #     if should_have_trainingdata:
+                #         print(name + ': does not exist in training data. Shoul dbe predicted without name')
+                #     #estimated = 0
+                if game_idx == 0:
                     #check that categorical is the same!
                     # Identify categorical columns
                     categorical_columns = predicting_df.select_dtypes(['category']).columns
@@ -937,6 +1062,15 @@ for df_name in slim_elements_df.iterrows():
                         
                 if is_estimated and df_name[1]['web_name'] not in do_not_exclude_players:
                     estimated = 0
+                    
+                    
+                #keep a budget player
+                if df_name[0] in keep_ind:
+                    if estimated < 0.1:
+                        estimated = 0.1
+                        
+                    if game_idx == 0:
+                        print('Including because of low price:', df_name[1].web_name)
 
             pred_score[gw_idx] = pred_score[gw_idx] + estimated
             total_matches = total_matches + 1
@@ -1177,6 +1311,11 @@ def objective(check_transfers, unlimited_transfers, free_transfers):
             team_points.append(0)
             all_points.append(0)
             continue
+        
+        #add transfers
+        if add_afcon_transfers[gw] > 0:
+            #subtract one since 1 will be added soon
+            free_transfers = add_afcon_transfers[gw] - 1 
 
         if not unlimited_transfers:
 
@@ -1623,7 +1762,8 @@ else:
         baseline_point = 0
         predictions = all_gws_predictions[:, i]
         #need threading for parallel because of subprocess module not found
-        parallel_results = Parallel(n_jobs=-1)(delayed(check_random_transfers)(i, True, free_transfers) for i in range(counter, counter+6))
+        
+        parallel_results = Parallel(n_jobs=num_jobs)(delayed(check_random_transfers)(i, True, free_transfers) for i in range(counter, counter+num_jobs))
         
         best_points = -np.inf
         best_price = np.inf
@@ -1801,278 +1941,277 @@ no_transfers = []
 for i in range(len(point_diff)):
     no_transfers.append([np.nan, np.nan])
 
-
-
-print('Check baseline')
-
-
-#check current team
-baseline_point, baseline_price, baseline_all_point = objective(no_transfers, unlimited_transfers, free_transfers)
-
-
-best_points = sum(baseline_point)
-best_all_points = sum(baseline_all_point)
-best_price = baseline_price
-counts = np.ones((len(no_transfers), len(probabilities[0])), dtype='uint32')
-best_transfer = [len(transfers)-1 for _ in range(15)]
-
-best_pitch = baseline_point.copy()
-best_bench = [a - b for a, b in zip(baseline_all_point, baseline_point)]
-
-try:
-    print('Check saved transfers')
-    #load saved_transfers
-    with open(r'M:\best_transfers.pkl', 'rb') as file:
-        saved_transfers = pickle.load(file)
-        
-    check_transfers = []
-    for k in saved_transfers:
-        check_transfers.append(transfers[k])
-                            
-    saved_point, saved_price, saved_all_points = objective(check_transfers, unlimited_transfers, free_transfers)
     
-    if np.sum(saved_point) > best_points or (np.sum(saved_point) == best_points and saved_price < best_price) or (np.sum(saved_point) == best_points and saved_price == best_price and np.sum(saved_all_point) > best_all_points):
-        best_point = saved_point 
-        best_price = saved_price
-        best_all_points = saved_all_points
-        best_transfer = saved_transfers
+for benchboost_gw in benchboost_gws[::-1]:
+    
+    benchboost = []
+    
+    for i in range(jump_rounds, rounds_to_value+jump_rounds):
+        this_gw = i + current_gameweek
         
-        best_pitch = best_point.copy()
-        best_bench = [a - b for a, b in zip(best_all_points, best_point)]
-except:
-    print('Saved transfers did not work')
+        if benchboost_gw == this_gw:
+            benchboost.append(True)
+            print('Benchboost', benchboost_gw)
+        else:
+            benchboost.append(False)
+
+
+    print('Check baseline')
+    
+    
+    #check current team
+    baseline_point, baseline_price, baseline_all_point = objective(no_transfers, unlimited_transfers, free_transfers)
+    
+    
+    best_points = sum(baseline_point)
+    best_all_points = sum(baseline_all_point)
+    best_price = baseline_price
+    counts = np.ones((len(no_transfers), len(probabilities[0])), dtype='uint32')
+    best_transfer = [len(transfers)-1 for _ in range(15)]
+    
+    best_pitch = baseline_point.copy()
+    best_bench = [a - b for a, b in zip(baseline_all_point, baseline_point)]
+
+
+
+
+
+    try:
+        print('Check saved transfers')
+        #load saved_transfers
+        with open(r'M:\best_transfers.pkl', 'rb') as file:
+            saved_transfers = pickle.load(file)
             
-
-all_evaluated_transfers = [no_transfers]
-
-p = ((probabilities.T - np.nanmin(probabilities, axis=1)).T / counts)**2 + 1e-6
-prob = (p.T) / np.nansum((p.T), axis=0)
-selected = np.isnan(prob)
-prob[selected] = 0
-
-print('Check guided transfers')
-
-check_guided = True
-while check_guided:
-    check_guided = False
-    #do guided search on 
-    random_order = list(range(prob.shape[1]))
-    random.shuffle(random_order)
-    
-    #guided part. exhange one transfer
-    for k in random_order:
+        check_transfers = []
+        for k in saved_transfers:
+            check_transfers.append(transfers[k])
+                                
+        saved_point, saved_price, saved_all_points = objective(check_transfers, unlimited_transfers, free_transfers)
         
-        #if there are more than one transfer to choose from
-        if sum(prob[:, k] > 0) < 2:
+        if np.sum(saved_point) > best_points or (np.sum(saved_point) == best_points and saved_price < best_price) or (np.sum(saved_point) == best_points and saved_price == best_price and np.sum(saved_all_point) > best_all_points):
+            best_point = saved_point 
+            best_price = saved_price
+            best_all_points = saved_all_points
+            best_transfer = saved_transfers
+            
+            best_pitch = best_point.copy()
+            best_bench = [a - b for a, b in zip(best_all_points, best_point)]
+    except:
+        print('Saved transfers did not work')
+                
+    
+    all_evaluated_transfers = [no_transfers]
+    
+    p = ((probabilities.T - np.nanmin(probabilities, axis=1)).T / counts)**2 + 1e-6
+    prob = (p.T) / np.nansum((p.T), axis=0)
+    selected = np.isnan(prob)
+    prob[selected] = 0
+    
+    print('Check guided transfers')
+    
+    check_guided = True
+    
+    try:
+        while check_guided:
+            check_guided = False
+            #do guided search on 
+            random_order = list(range(prob.shape[1]))
+            random.shuffle(random_order)
+            
+            #guided part. exhange one transfer
+            for k in random_order:
+                
+                #if there are more than one transfer to choose from
+                if sum(prob[:, k] > 0) < 2:
+                    continue
+                
+                guided_points, guided_prices, guided_all_points, guided_evaluated_transfers, guided_sum_points, guided_counts = check_guided_transfers(k, best_transfer, best_points, unlimited_transfers, free_transfers)
+            
+                #max points
+                #random variables now includes both
+                guided_max_value = np.nanmax([np.nansum(inner_list) for inner_list in guided_points])
+                #lowest price
+                guided_indices_with_max_value = [i for i, value in enumerate(guided_points) if np.nansum(value) == guided_max_value]
+                guided_min_value_other_list = min(guided_prices[i] for i in guided_indices_with_max_value)
+                guided_best_ind = next(i for i in guided_indices_with_max_value if guided_prices[i] == guided_min_value_other_list)
+            
+                guided_best_price = guided_prices[guided_best_ind]
+            
+                #highest total points
+                guided_best_point = 0
+                for i in range(len(guided_all_points)):
+                    if np.nansum(guided_points[i]) == guided_max_value and guided_prices[i] == guided_best_price and np.nansum(guided_all_points[i]) > guided_best_point:
+                        guided_best_point = sum(guided_all_points[i])
+                        guided_best_ind = i
+                
+                if guided_max_value > best_points or (guided_max_value == best_points and guided_best_price < best_price) or (guided_max_value == best_points and guided_best_price == best_price and  guided_best_point > best_all_points):
+                    
+                    check_guided = True
+                    best_points = sum(guided_points[guided_best_ind])
+                    best_price = guided_best_price
+                    best_all_points = guided_best_point.copy()
+                    best_transfer = guided_evaluated_transfers[guided_best_ind].copy()
+                    
+                    best_pitch = guided_points[guided_best_ind].copy()
+                    best_bench = [a - b for a, b in zip(guided_all_points[guided_best_ind], guided_points[guided_best_ind])]
+    except:
+        print('Not able to guide best transfers')
+    
+    
+    counter = 0
+    old_num_teams = 0
+    
+    
+    if rounds_to_value == 1:
+        batch_size = 1
+    else:
+        batch_size = 100000
+    
+    import time
+    
+    while counter < iterations:
+    
+        all_evaluated_transfers = []
+    
+        if counter > 0:
+            print('Start random selections')
+        
+            p = ((probabilities.T - np.nanmin(probabilities, axis=1)).T / counts)**2 + 1e-6
+            prob = (p.T) / np.nansum((p.T), axis=0)
+            selected = np.isnan(prob)
+            prob[selected] = 0
+        
+            #guessing part. try random combination followed up by a targeted selection
+            print('Getting  teams')
+            t1_start = time.time()
+            
+            parallel_results = Parallel(n_jobs=num_jobs)(delayed(check_random_transfers)(i, unlimited_transfers, free_transfers) for i in range(counter, counter+num_jobs))
+            t1_stop = time.time()
+            print("Elapsed time:", t1_stop - t1_start)
+            print('Interpreting results')
+        
+        
+            #store data for later
+            #organize_output                   
+            for par in parallel_results:
+                                   
+                        
+                #to get the last most positive
+                sum_points = [np.sum(inner_list) for inner_list in par[0]]
+                
+                max_points = np.nanmax(sum_points)
+                
+                max_indices = np.where(sum_points == max_points)[0]
+                
+                #loop_those in reverse order (because of delayed transfer)
+                for ind_max in max_indices[::-1]:
+                    if max_points > best_points or (max_points == best_points and par[1][ind_max] < best_price) or (max_points == best_points and par[1][ind_max] == best_price and sum(par[2][ind_max]) >  best_all_points):
+                        best_points =  max_points
+                        best_transfer = par[3][ind_max]
+                        best_price = par[1][ind_max]
+                        best_all_points = sum(par[2][ind_max])
+                        
+                        best_pitch = par[0][ind_max].copy()
+                        best_bench = [a - b for a, b in zip(par[2][ind_max], best_pitch)]
+                        
+                        counter = 0
+                        
+                        
+                        #save transfers
+                        with open(r'M:\best_transfers.pkl', 'wb') as file:
+                            pickle.dump(best_transfer, file)
+                        
+                    
+        
+                all_evaluated_transfers = all_evaluated_transfers + par[3]
+                
+                #the first prob of each week is different than the others
+                k = 0
+                for w in range(rounds_to_value):
+                    for t_res in range(trans_per_week):
+                        index = w*trans_per_week + t_res
+        
+                        probabilities[index, :] += par[4][index, :]
+                        counts[index, :] += par[5][index, :]
+    
+    
+            
+    
+        # print('Checked', len(all_evaluated_transfers)-old_num_teams, 'teams')
+        # old_num_teams = len(all_evaluated_transfers)
+    
+        # # Convert each list to a tuple
+        # unique_tuples = set(tuple(x) for x in all_evaluated_transfers)
+        # # Convert the tuples back to lists
+        # all_evaluated_transfers = [list(x) for x in unique_tuples]
+    
+        # print(len(all_evaluated_transfers), 'unique teams')
+    
+        counter += 1
+        
+        if len(best_transfer) == 0:
+            print('No acceptable teams')
             continue
-        
-        guided_points, guided_prices, guided_all_points, guided_evaluated_transfers, guided_sum_points, guided_counts = check_guided_transfers(k, best_transfer, best_points, unlimited_transfers, free_transfers)
     
-        #max points
-        #random variables now includes both
-        guided_max_value = np.nanmax([np.nansum(inner_list) for inner_list in guided_points])
-        #lowest price
-        guided_indices_with_max_value = [i for i, value in enumerate(guided_points) if np.nansum(value) == guided_max_value]
-        guided_min_value_other_list = min(guided_prices[i] for i in guided_indices_with_max_value)
-        guided_best_ind = next(i for i in guided_indices_with_max_value if guided_prices[i] == guided_min_value_other_list)
-    
-        guided_best_price = guided_prices[guided_best_ind]
-    
-        #highest total points
-        guided_best_point = 0
-        for i in range(len(guided_all_points)):
-            if np.nansum(guided_points[i]) == guided_max_value and guided_prices[i] == guided_best_price and np.nansum(guided_all_points[i]) > guided_best_point:
-                guided_best_point = sum(guided_all_points[i])
-                guided_best_ind = i
-        
-        if guided_max_value > best_points or (guided_max_value == best_points and guided_best_price < best_price) or (guided_max_value == best_points and guided_best_price == best_price and  guided_best_point > best_all_points):
+        #print results
+        price = []
+        last_gw = 0
+        try:
+            with open(r"M:\best_transfers" + str(benchboost_gw) + ".txt", 'w') as file:
             
-            check_guided = True
-            best_points = sum(guided_points[guided_best_ind])
-            best_price = guided_best_price
-            best_all_points = guided_best_point.copy()
-            best_transfer = guided_evaluated_transfers[guided_best_ind].copy()
-            
-            best_pitch = guided_points[guided_best_ind].copy()
-            best_bench = [a - b for a, b in zip(guided_all_points[guided_best_ind], guided_points[guided_best_ind])]
-            
-
-
-counter = 0
-best_counter = 0
-old_num_teams = 0
-
-
-if rounds_to_value == 1:
-    batch_size = 1
-else:
-    batch_size = 100000
-
-import time
-
-while True:
-
-    all_evaluated_transfers = []
-
-    if counter > 0:
-        print('Start random selections')
-    
-        p = ((probabilities.T - np.nanmin(probabilities, axis=1)).T / counts)**2 + 1e-6
-        prob = (p.T) / np.nansum((p.T), axis=0)
-        selected = np.isnan(prob)
-        prob[selected] = 0
-    
-        #guessing part. try random combination followed up by a targeted selection
-        print('Getting  teams')
-        t1_start = time.time()
-        parallel_results = Parallel(n_jobs=-1)(delayed(check_random_transfers)(i, unlimited_transfers, free_transfers) for i in range(counter, counter+6))
-        t1_stop = time.time()
-        print("Elapsed time:", t1_stop - t1_start)
-        print('Interpreting results')
-    
-    
-        #store data for later
-        #organize_output                   
-        for par in parallel_results:
-                               
-                    
-            #to get the last most positive
-            sum_points = [np.sum(inner_list) for inner_list in par[0]]
-            
-            max_points = np.nanmax(sum_points)
-            
-            max_indices = np.where(sum_points == max_points)[0]
-            
-            #loop_those in reverse order (because of delayed transfer)
-            for ind_max in max_indices[::-1]:
-                if max_points > best_points or (max_points == best_points and par[1][ind_max] < best_price) or (max_points == best_points and par[1][ind_max] == best_price and sum(par[2][ind_max]) >  best_all_points):
-                    best_points =  max_points
-                    best_transfer = par[3][ind_max]
-                    best_counter = counter
-                    best_price = par[1][ind_max]
-                    best_all_points = sum(par[2][ind_max])
-                    
-                    best_pitch = par[0][ind_max].copy()
-                    best_bench = [a - b for a, b in zip(par[2][ind_max], best_pitch)]
-                    
-                    
-                    #save transfers
-                    with open(r'M:\best_transfers.pkl', 'wb') as file:
-                        pickle.dump(best_transfer, file)
-                    
+                print('gw', 'free_hit', 'bench', file=file)
+                print('gw', 'free_hit', 'bench')
                 
-    
-            all_evaluated_transfers = all_evaluated_transfers + par[3]
+                for gw_ind, transfer_ind in enumerate(best_transfer):
             
-            #the first prob of each week is different than the others
-            k = 0
-            for w in range(rounds_to_value):
-                for t_res in range(trans_per_week):
-                    index = w*3 + t_res
-    
-                    probabilities[index, :] += par[4][index, :]
-                    counts[index, :] += par[5][index, :]
-
-
-        counter += len(par[0])
-
-    # print('Checked', len(all_evaluated_transfers)-old_num_teams, 'teams')
-    # old_num_teams = len(all_evaluated_transfers)
-
-    # # Convert each list to a tuple
-    # unique_tuples = set(tuple(x) for x in all_evaluated_transfers)
-    # # Convert the tuples back to lists
-    # all_evaluated_transfers = [list(x) for x in unique_tuples]
-
-    # print(len(all_evaluated_transfers), 'unique teams')
-
-    counter = 1
-    
-    if len(best_transfer) == 0:
-        print('No acceptable teams')
-        continue
-
-    #print results
-    price = []
-    last_gw = 0
-    
-    with open(r"M:\best_transfers.txt", 'w') as file:
-    
-        print('gw', 'free_hit', 'bench', file=file)
-        print('gw', 'free_hit', 'bench')
-        
-        for gw_ind, transfer_ind in enumerate(best_transfer):
-    
-            transfer = transfers[transfer_ind]
+                    transfer = transfers[transfer_ind]
+                    
+                    gw = int(1+gw_ind/trans_per_week)
+                    
+                    if not gw == last_gw and not unlimited_transfers:
+                        #print('\n')
+                        print('GW', gw, np.round(free_hit_points[gw-1] - best_pitch[gw-1], decimals=1), np.round(best_bench[gw-1], decimals=1), file=file)
+                        print('GW', gw, np.round(free_hit_points[gw-1] - best_pitch[gw-1], decimals=1), np.round(best_bench[gw-1], decimals=1))
+                        
+                        last_gw = gw
+                        if np.round(best_bench[gw-1], decimals=1) < 0:
+                            a = hfhfhfff
             
-            gw = int(1+gw_ind/trans_per_week)
+                    if not transfer == [np.nan, np.nan]:
+                        price.append(slim_elements_df.loc[transfer[1], 'now_cost'])
             
-            if not gw == last_gw and not unlimited_transfers:
-                #print('\n')
-                print('GW', gw, np.round(free_hit_points[gw-1] - best_pitch[gw-1], decimals=1), np.round(best_bench[gw-1], decimals=1), file=file)
-                print('GW', gw, np.round(free_hit_points[gw-1] - best_pitch[gw-1], decimals=1), np.round(best_bench[gw-1], decimals=1))
-                
-                last_gw = gw
-                if np.round(best_bench[gw-1], decimals=1) < 0:
-                    a = hfhfhfff
-    
-            if not transfer == [np.nan, np.nan]:
-                price.append(slim_elements_df.loc[transfer[1], 'now_cost'])
-    
-                if not unlimited_transfers:
-                    print( slim_elements_df.loc[transfer[0], 'web_name'], 'for', slim_elements_df.loc[transfer[1], 'web_name'], np.round(prob[transfer_ind, gw_ind], 4), file=file)
-                    print( np.round(predictions[transfer[0], :], decimals=1), file=file)
-                    print( np.round(predictions[transfer[1], :], decimals=1), file=file)
-                    #print(prob[transfer_ind, gw_ind])
-                else:
-                    print(int(gw_ind), slim_elements_df.loc[transfer[1], 'web_name'], np.round(predictions[transfer[1], :], 1),  np.round(prob[transfer_ind, gw_ind], 4), file=file)
-                
-                if not unlimited_transfers:
-                    print( slim_elements_df.loc[transfer[0], 'web_name'], 'for', slim_elements_df.loc[transfer[1], 'web_name'], np.round(prob[transfer_ind, gw_ind], 4))
-                    print( np.round(predictions[transfer[0], :], decimals=1))
-                    print( np.round(predictions[transfer[1], :], decimals=1))
-                    #print(prob[transfer_ind, gw_ind])
-                else:
-                    print(int(gw_ind), slim_elements_df.loc[transfer[1], 'web_name'], np.round(predictions[transfer[1], :], 1),  np.round(prob[transfer_ind, gw_ind], 4))
-    
-    
-            else:
-                if unlimited_transfers:
-                    try:
-                        max_ind = np.nanargmax(p[gw_ind, :-1])
-                        transfer = transfers[max_ind]
-                        print(int(gw_ind), slim_elements_df.loc[transfer[0], 'web_name'], np.round(predictions[transfer[0], :], 1), np.round(prob[transfer_ind, gw_ind], 4))
-                        print(int(gw_ind), slim_elements_df.loc[transfer[0], 'web_name'], np.round(predictions[transfer[0], :], 1), np.round(prob[transfer_ind, gw_ind], 4), file=file)
-                        price.append(slim_elements_df.loc[transfer[0], 'now_cost'])
-                    except:
-                        print('Not able to print')
-                        print('Not able to print', file=file)
-                            
-                
-        print('points: ', np.round(sum(best_pitch), decimals=1), '. diff: ',  np.round(best_points-sum(baseline_point), decimals=1), '. price: ', sum(price))
-        print('\n')
-
-
-#print original team
-sort_list = np.argsort(my_players_df['points_1st_gw'])
-print(my_players_df.iloc[sort_list][{'web_name', 'points_1st_gw', 'yellow_cards'}])
-
-
-max_points = np.nanmax(checked_points)
-max_ind = np.where(checked_points == max_points)[0]
-
-for ind in max_ind:
-    best_transfer =  checked_transfers[ind]
-    for gw_ind, transfer_ind in enumerate(best_transfer):
-
-        transfer = transfers[transfer_ind]
-
-
-        if not transfer == [np.nan, np.nan]:
-
-            print('GW', np.floor(gw_ind/3), slim_elements_df.loc[transfer[0], 'web_name'], 'for', slim_elements_df.loc[transfer[1], 'web_name'], 'yellow cards: ', slim_elements_df.loc[transfer[1], 'yellow_cards'], 'price: ', slim_elements_df.loc[transfer[1], 'yellow_cards'])
-            print(predictions[transfer[0], :])
-            print(predictions[transfer[1], :])
-
-    print('points: ', checked_points[best_ind]-baseline_point)
-    print('\n')
+                        if not unlimited_transfers:
+                            print( slim_elements_df.loc[transfer[0], 'web_name'], 'for', slim_elements_df.loc[transfer[1], 'web_name'], np.round(prob[transfer_ind, gw_ind], 4), file=file)
+                            print( np.round(predictions[transfer[0], :], decimals=1), file=file)
+                            print( np.round(predictions[transfer[1], :], decimals=1), file=file)
+                            #print(prob[transfer_ind, gw_ind])
+                        else:
+                            print(int(gw_ind), slim_elements_df.loc[transfer[1], 'web_name'], np.round(predictions[transfer[1], :], 1),  np.round(prob[transfer_ind, gw_ind], 4), file=file)
+                        
+                        if not unlimited_transfers:
+                            print( slim_elements_df.loc[transfer[0], 'web_name'], 'for', slim_elements_df.loc[transfer[1], 'web_name'], np.round(prob[transfer_ind, gw_ind], 4))
+                            print( np.round(predictions[transfer[0], :], decimals=1))
+                            print( np.round(predictions[transfer[1], :], decimals=1))
+                            #print(prob[transfer_ind, gw_ind])
+                        else:
+                            print(int(gw_ind), slim_elements_df.loc[transfer[1], 'web_name'], np.round(predictions[transfer[1], :], 1),  np.round(prob[transfer_ind, gw_ind], 4))
+            
+            
+                    else:
+                        if unlimited_transfers:
+                            try:
+                                max_ind = np.nanargmax(p[gw_ind, :-1])
+                                transfer = transfers[max_ind]
+                                print(int(gw_ind), slim_elements_df.loc[transfer[0], 'web_name'], np.round(predictions[transfer[0], :], 1), np.round(prob[transfer_ind, gw_ind], 4))
+                                print(int(gw_ind), slim_elements_df.loc[transfer[0], 'web_name'], np.round(predictions[transfer[0], :], 1), np.round(prob[transfer_ind, gw_ind], 4), file=file)
+                                price.append(slim_elements_df.loc[transfer[0], 'now_cost'])
+                            except:
+                                print('Not able to print')
+                                print('Not able to print', file=file)
+                                    
+                        
+                print('points: ', np.round(sum(best_pitch), decimals=1), '. diff: ',  np.round(best_points-sum(baseline_point), decimals=1), '. price: ', sum(price), file=file)
+                print('points: ', np.round(sum(best_pitch), decimals=1), '. diff: ',  np.round(best_points-sum(baseline_point), decimals=1), '. price: ', sum(price))
+                print('\n')
+        except:
+            print('Not able to open file')

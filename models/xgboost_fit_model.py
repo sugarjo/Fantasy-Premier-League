@@ -2,9 +2,14 @@ import os
 import re
 import pickle
 import random
+import math
 
 import pandas as pd
 import numpy as np
+
+#to make hyperopt work
+import warnings
+np.warnings = warnings
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
@@ -12,10 +17,11 @@ from sklearn.metrics import mean_squared_error
 from matplotlib import pyplot as plt
 
 import xgboost as xgb
-import statsmodels.api as sm
 
-from hyperopt import STATUS_OK, Trials, fmin, hp, tpe
+
+from hyperopt import STATUS_OK, Trials, fmin, hp, atpe, tpe
 from hyperopt.early_stop import no_progress_loss
+from hyperopt.fmin import generate_trials_to_calculate
 
 from difflib import SequenceMatcher
 
@@ -32,11 +38,9 @@ optimize = True
 continue_optimize = False
 
 method = 'xgboost'
-temporal_window = 20
+temporal_window = 11 # less than what is used...
 
 season_dfs = []
-
-season_count = 0
 
 # Function to correct string_team based on the majority
 def correct_string_team(group):
@@ -123,7 +127,10 @@ def should_keep_column(column_name, threshold):
 
 #optimize hyperparameters
 def objective_xgboost(space):
+    
     #print(space)
+    
+    space["grow_policy"] = grow_policy[space["grow_policy"]]
     
     pars = {
         'max_depth': int(space['max_depth']),
@@ -147,39 +154,61 @@ def objective_xgboost(space):
     #remove weaks that we don't need.
     # Define the threshold
     threshold = int(space['temporal_window'])
+    
+    
 
     # Filter the columns based on the defined function
     columns_to_keep = [col for col in cv_X.columns if should_keep_column(col, threshold)]
     objective_X = cv_X[columns_to_keep]   
+        
+    # interaction_constraints = get_interaction_constraints(objective_X.columns)
+    # pars['interaction_constraints'] = str(interaction_constraints)       
+    # Step 2: Calculate 20% of the unique integers
+    
+    # Step 2: Calculate X% of the unique integers
+    # eval_num_to_select = max(1, int(len(cvs_match_integers) * space['eval_fraction']))  # Ensure at least one is selected
+    
+    # random.seed(44)
+    
+    # eval_sample = random.sample(cvs_match_integers, eval_num_to_select)
+    
+
+    
+    # Get the 80% of the first matches every season...
+    objective_copy = objective_X.copy()
+    objective_copy = objective_copy.reset_index(drop=True)
+    objective_copy['match_ind'] = pd.Series(match_ind[cvs_mask])
+
+    
+    # groupby seasons and aggregate into a dictionary: season -> set(of chosen match_inds)
+    season_selection = (objective_copy.groupby('season', observed=False)['match_ind']
+                          .agg(lambda s: first_Xpct_unique(s.tolist(), 1-space['eval_fraction']))
+                          .to_dict())
+    
+    # If you want a single flat list of all chosen match_inds (unique across seasons or duplicates kept):
+    # option 1: Unique across all seasons:
+    fit_sample = list(set().union(*season_selection.values()))
+    
+    
+    fits_mask =  pd.Series(match_ind_df[cvs_mask]).isin(fit_sample)  # Mask for cross-validation sample
+    evals_mask = ~fits_mask  # Mask for validation, simply the inverse of cvs_mask
     
     #remove features
     for feat in check_features:
         if feat in space.keys():
             #if remove
-            if not space[feat][0]:     
+            if not space[feat]:     
                 columns_to_keep = []
                 for col in objective_X.columns:
-                    if col == feat and col in do_remove_features:
+                    if col == feat: # and col in do_remove_features:
                         continue
                     #keep if it foes not have a number in front or first is not a digit (i.e. the fixed features)
                     if (not feat == re.sub(r'\d+', '', col) or not col[0].isdigit()):
                         columns_to_keep.append(col)
                     
                 objective_X = objective_X[columns_to_keep]
-    
-    # interaction_constraints = get_interaction_constraints(objective_X.columns)
-    # pars['interaction_constraints'] = str(interaction_constraints)       
-    # Step 2: Calculate 20% of the unique integers
-    
-    # Step 2: Calculate 20% of the unique integers
-    eval_num_to_select = max(1, int(len(cvs_match_integers) * space['eval_fraction']))  # Ensure at least one is selected
-    
-    random.seed(44)
-    
-    eval_sample = random.sample(cvs_match_integers, eval_num_to_select)
-            
-    evals_mask = pd.Series(match_ind_df[cvs_mask]).isin(eval_sample)  # Mask for cross-validation sample
-    fits_mask = ~evals_mask  # Mask for validation, simply the inverse of cvs_mask
+                
+
     
     fit_X = objective_X.iloc[fits_mask.values].copy()
     eval_X =  objective_X.loc[evals_mask.values].copy()
@@ -221,6 +250,8 @@ def objective_xgboost(space):
     
     val_error = mean_squared_error(val_y,  val_pred)
     #val_error = mean_squared_error(val_y,  (10**val_pred) - 1 + min_y)
+    
+    #print('done', val_error)
 
     return {'loss': val_error, 'status': STATUS_OK }
 
@@ -339,10 +370,10 @@ with open(r'M:\model_data.pkl', 'rb') as file:
     train_data = pickle.load(file)                
 
 
+
+
 selected = train_data["minutes"] >= 60
 train_data = train_data.loc[selected]
-train_data = train_data.drop(['minutes'], axis=1)                
-
 
 #remove players with few matches
 unique_names = train_data.name.unique()
@@ -354,6 +385,15 @@ for unique_ind, name in enumerate(unique_names):
 
     if sum(selected) < n_tresh:
         train_data.loc[selected, 'name'] = np.nan
+
+
+#included for all windows, but not current
+temporal_features = ['minutes', 'ict_index', 'influence', 'threat', 'creativity', 'bps',
+        'total_points', 'expected_goals', 'expected_assists',
+        'expected_goals_conceded', 'own_team_points', 'own_element_points', 'opp_team_points', 'opp_element_points', 'defcon']
+
+train_y = train_data['total_points'].astype(int)
+train_X = train_data.drop(columns=temporal_features)
                 
 
                 
@@ -413,10 +453,6 @@ for unique_ind, name in enumerate(unique_names):
 
 #season_df.replace(to_replace=[None], value=np.nan, inplace=True)
 
-#train model. no changes of catgeories in train_X after this point!
-train_X = train_data.drop(['total_points'], axis=1)
-train_y = train_data['total_points'].astype(int)
-
 # Identify categorical columns
 categorical_columns = train_X.select_dtypes(['category']).columns
 
@@ -448,7 +484,7 @@ match_ind = pd.factorize(
     .apply(lambda row: '-'.join(row.astype(str)), axis=1)
 )[0]
    
-#get 20% of those matches
+#get 20% of the last matches for each season (to avoid leakage of data from points per game etc)
 # Step 1: Get unique integers using a set
 unique_integers = list(set(match_ind))
 
@@ -464,6 +500,7 @@ for ind in unique_integers:
             team_a = df_match['string_team']
             team_b = df_match['string_opp_team']
             
+            #find the opponent team (same match)
             selected = (train_X['string_opp_team'] == team_a) & (train_X['string_team'] == team_b) & (train_X['kickoff_time'] == kick_off) & (train_X['was_home']==0)
             
             match_ind[selected.values.to_numpy(dtype=bool)] = ind
@@ -485,10 +522,42 @@ for column in categorical_columns:
     train_X[column] = train_X[column].cat.remove_unused_categories()
     
     
-unique_integers = list(set(match_ind))
+
+
+
+# Get the 80% of the first matches every season...
+train_copy = train_X.copy()
+train_copy = train_copy.reset_index(drop=True)
+train_copy['match_ind'] = pd.Series(match_ind)
+match_ind_df = pd.Series(match_ind) 
+
+# define a helper that returns the first 80% (by first-appearance order) of unique match_ind
+def first_Xpct_unique(seq, X):
+    # preserve order of first appearance
+    seen = {}
+    uniq_in_order = []
+    for v in seq:
+        if v not in seen:
+            seen[v] = True
+            uniq_in_order.append(v)
+    n_keep = math.ceil(X * len(uniq_in_order))  # use ceil to keep at least one for small groups
+    return set(uniq_in_order[:n_keep])
+
+# groupby seasons and aggregate into a dictionary: season -> set(of chosen match_inds)
+season_selection = (train_copy.groupby('season', observed=False)['match_ind']
+                      .agg(lambda s: first_Xpct_unique(s.tolist(), 0.8))
+                      .to_dict())
+
+# If you want a single flat list of all chosen match_inds (unique across seasons or duplicates kept):
+# option 1: Unique across all seasons:
+train_sample = list(set().union(*season_selection.values()))
+
 
 # Step 2: Calculate 20% of the unique integers
-num_to_select = max(1, int(len(unique_integers) * 0.80))  # Ensure at least one is selected
+
+# unique_integers = list(set(match_ind))
+
+# num_to_select = max(1, int(len(unique_integers) * 0.80))  # Ensure at least one is selected
 
 # Step 3: Randomly select 20% of the unique integers
 if optimize:
@@ -497,9 +566,7 @@ if optimize:
 else:
     random.seed(1)
 
-train_sample = random.sample(unique_integers, num_to_select)
-
-match_ind_df = pd.Series(match_ind) 
+# train_sample = random.sample(unique_integers, num_to_select)
 
 # vals = [x not in train_sample for x in match_ind_df]
 # cvs = [x in train_sample for x in match_ind_df]
@@ -508,6 +575,7 @@ cvs_mask = pd.Series(match_ind_df).isin(train_sample)  # Mask for cross-validati
 vals_mask = ~cvs_mask  # Mask for validation, simply the inverse of cvs_mask
 
 cvs_match_integers = list(set(match_ind_df[cvs_mask]))
+
 
 cv_X = train_X.loc[cvs_mask.values].copy()
 val_X =  train_X.loc[vals_mask.values].copy()
@@ -574,7 +642,7 @@ if method == 'linear_reg':
 
     best_hyperparams = fmin(fn = objective_linear_reg,
                     space = space,
-                    algo = tpe.suggest,
+                    algo = atpe.suggest,
                     early_stop_fn=no_progress_loss(500),
                     trials = trials)
 
@@ -938,7 +1006,7 @@ elif method == 'mixedLM':
     #necessary to avoid singular matrix
     # Remove rows that contain 'unknown' in any column
     #cv_filled_mean = cv_filled_mean[~cv_filled_mean.isin(['unknown']).any(axis=1)]
-
+    import statsmodels.api as sm
     model = sm.MixedLM.from_formula(fit_string, groups='names', data=cv_filled_mean)
     result = model.fit()
 
@@ -982,56 +1050,9 @@ elif method == 'xgboost':
             
             # Set values that are not present in cv_X[column] to NaN
             val_X.loc[~mask, column] = np.nan
-    
-    grow_policy = ['depthwise', 'lossguide']
-    
-    
-    # #make sure that there will be data left for evaluation in the final model
-    # cv_season =  cv_X.iloc[-1].season
-    # selected_cv =  cv_X.season == cv_season
-    # cv_fraction = sum(selected_cv) / cv_X.shape[0]   
-    
-    # current_season =  train_X.iloc[-1].season
-    # selected_test =  train_X.season == current_season
-    # current_fraction = sum(selected_test) / train_X.shape[0]   
-    
-    #max_eval_fraction = np.min([cv_fraction, current_fraction])
-    
-    
-    min_eval_fraction = 1/(len(unique_integers) * 0.80)#len(np.unique(cv_stratify))/cv_X.shape[0]
-
-    space={'max_depth': hp.quniform("max_depth", 1, 2750, 1),
-            'min_split_loss': hp.uniform('min_split_loss', 0, 350), #log?
-            'reg_lambda' : hp.uniform('reg_lambda', 0, 400),
-            'reg_alpha': hp.uniform('reg_alpha', 0.01, 400),
-            'min_child_weight' : hp.uniform('min_child_weight', 0, 700),
-            'learning_rate': hp.uniform('learning_rate', 0, 0.05),
-            'subsample': hp.uniform('subsample', 0.1, 1),
-            'colsample_bytree': hp.uniform('colsample_bytree', 0.1, 1),
-            'colsample_bylevel': hp.uniform('colsample_bylevel', 0.1, 1),
-            'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
-            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 10, 5000, 1),
-            'eval_fraction': hp.uniform('eval_fraction', min_eval_fraction, 0.25),
-            'n_estimators': hp.quniform('n_estimators', 2, 45000, 1),
-            'max_delta_step': hp.uniform('max_delta_step', 0, 100),
-            'grow_policy': hp.choice('grow_policy', grow_policy), #1
-            'max_leaves': hp.quniform('max_leaves', 0, 2250, 1),
-            'max_bin':  hp.qloguniform('max_bin', np.log(2), np.log(150), 1),
-            'temporal_window': hp.quniform('temporal_window', 0, temporal_window+1, 1),
-        }
-    
-    #include feature search in the hyperparams
-    check_features = ['transfers_in', 'transfers_out', 'minutes', 'ict_index', 'influence', 'threat', 'creativity', 'bps',
-            'total_points', 'expected_goals', 'expected_assists', 'points_per_played_game', 'was_home', 'season',
-            'expected_goals_conceded', 'own_team_points', 'own_element_points', 'defcon', 'name', 'points_per_game', 'string_opp_team', 'own_difficulty', 'other_difficulty'] #, 'difficulty']
-
-    do_remove_features= ['names', 'points_per_game', 'points_per_played_game', 'season']
-    
-    for feature in check_features:
-        # Add a new entry in the dictionary with the feature as the key
-        # and hp.quniform('n_estimators', 0, 2, 1) as the value
-        space[feature] = hp.choice(feature, [True, False]), #111
-
+        
+        
+        
     mean_cv = np.mean(cv_y)
     train_error = np.mean(np.abs((cv_y - mean_cv)**2))
     validation_error = np.mean(np.abs((val_y - mean_cv)**2))
@@ -1059,13 +1080,69 @@ elif method == 'xgboost':
         
     # old_loss = old_trials.best_trial["result"]["loss"]
     
-    old_hyperparams["grow_policy"] = grow_policy[old_hyperparams["grow_policy"]]
     
+    grow_policy = ['depthwise', 'lossguide']
+    #include feature search in the hyperparams
+    check_features = ['transfers_in', 'transfers_out', 'minutes', 'ict_index', 'influence', 'threat', 'creativity', 'bps',
+            'total_points', 'expected_goals', 'expected_assists', 'points_per_played_game', 'was_home', 'season',
+            'expected_goals_conceded', 'own_team_points', 'own_element_points', 'opp_team_points', 'opp_element_points', 'defcon', 'name', 'points_per_game', 'string_opp_team', 'own_difficulty', 'opp_difficulty'] #, 'difficulty']
+
+    do_remove_features= ['names', 'points_per_game', 'points_per_played_game', 'season']
+    
+    
+    
+    #old_hyperparams["grow_policy"] = grow_policy[old_hyperparams["grow_policy"]]
+
     loss = objective_xgboost(old_hyperparams)
     old_loss = loss['loss']
-    #old_loss = 1
+
     
     print('Old loss: ', old_loss)
+        
+    
+    # #make sure that there will be data left for evaluation in the final model
+    # cv_season =  cv_X.iloc[-1].season
+    # selected_cv =  cv_X.season == cv_season
+    # cv_fraction = sum(selected_cv) / cv_X.shape[0]   
+    
+    # current_season =  train_X.iloc[-1].season
+    # selected_test =  train_X.season == current_season
+    # current_fraction = sum(selected_test) / train_X.shape[0]   
+    
+    #max_eval_fraction = np.min([cv_fraction, current_fraction])
+    
+    
+    #min_eval_fraction = 1/(len(unique_integers) * 0.80)#len(np.unique(cv_stratify))/cv_X.shape[0]
+    #we need at least one match every season
+    min_eval_fraction = 1/(380*0.8)
+    
+    
+    space={'max_depth': hp.quniform("max_depth", 1, 6000, 1),
+            'min_split_loss': hp.uniform('min_split_loss', 0, 350), #log?
+            'reg_lambda' : hp.uniform('reg_lambda', 0, 700),
+            'reg_alpha': hp.uniform('reg_alpha', 0.01, 400),
+            'min_child_weight' : hp.uniform('min_child_weight', 0, 700),
+            'learning_rate': hp.uniform('learning_rate', 0, 0.05),
+            'subsample': hp.uniform('subsample', 0.1, 1),
+            'colsample_bytree': hp.uniform('colsample_bytree', 0.1, 1),
+            'colsample_bylevel': hp.uniform('colsample_bylevel', 0.1, 1),
+            'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
+            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 10, 6000, 1),
+            'eval_fraction': hp.uniform('eval_fraction', min_eval_fraction, 0.25),
+            'n_estimators': hp.quniform('n_estimators', 2, 90000, 1),
+            'max_delta_step': hp.uniform('max_delta_step', 0, 150),
+            'grow_policy': hp.choice('grow_policy', [0, 1]), #1
+            'max_leaves': hp.quniform('max_leaves', 0, 3000, 1),
+            'max_bin':  hp.qloguniform('max_bin', np.log(2), np.log(150), 1),
+            'temporal_window': hp.quniform('temporal_window', 1, temporal_window+1, 1),
+        }
+    
+
+    for feature in check_features:
+        # Add a new entry in the dictionary with the feature as the key
+        # and hp.quniform('n_estimators', 0, 2, 1) as the value
+        space[feature] = hp.choice(feature, [True, False]), #111
+
         
     #optimize and iteratively get hyperparamaters
     batch_size = 100
@@ -1088,7 +1165,7 @@ elif method == 'xgboost':
             #optmimize hyperparameters. use all training data
             best_hyperparams = fmin(fn = objective_xgboost,
                             space = space,
-                            algo = tpe.suggest,
+                            algo = atpe.suggest,
                             max_evals = i,
                             trials = trials)
 
@@ -1111,13 +1188,8 @@ elif method == 'xgboost':
         for field, val in hyperparams.items():
             new_hyperparams[field] = val[0]
             
-        new_hyperparams["grow_policy"] = grow_policy[new_hyperparams["grow_policy"]]
-        
-        #remove features
-        for feat in check_features:
-            if feat in new_hyperparams:
-                new_hyperparams[feat] = [new_hyperparams[feat]]
-                    
+        #new_hyperparams["grow_policy"] = grow_policy[new_hyperparams["grow_policy"]]
+                           
             
         # new_trials = generate_trials_to_calculate([new_hyperparams])
 
@@ -1128,7 +1200,7 @@ elif method == 'xgboost':
         #                 trials = new_trials)    
 
         # new_loss =  new_trials.best_trial["result"]["loss"]
-        
+
         loss = objective_xgboost(new_hyperparams)
         new_loss = loss['loss']
         
@@ -1142,6 +1214,7 @@ elif method == 'xgboost':
             
             print(new_hyperparams)
         else:
+            print('Keep old loss')
             trials = old_trials
             print(old_hyperparams)
         
@@ -1197,44 +1270,74 @@ elif method == 'xgboost':
         columns_to_keep = [col for col in train_X.columns if should_keep_column(col, threshold)]
         objective_X = train_X[columns_to_keep]
         
-        #remove features
-        for feat in check_features:
-            if feat in space.keys():
-                if not space[feat]:     
-                    columns_to_keep = []
-                    for col in objective_X.columns:
-                        if col == feat and col in do_remove_features:
-                            continue
-                        if (not feat == re.sub(r'\d+', '', col) or not col[0].isdigit()):
-                            columns_to_keep.append(col)
-                        
-                    objective_X = objective_X[columns_to_keep]
-                    
-                    
-                    
+
         #fit_X, eval_X, fit_y, eval_y, fit_sample_weights, eval_sample_weights = train_test_split(objective_X, train_y, sample_weights, test_size=space['eval_fraction'], stratify=stratify, random_state=42)
         
-        match_ind = pd.factorize(
-            objective_X[['string_team', 'was_home', 'string_opp_team', 'season']]
-            .apply(lambda row: '-'.join(row.astype(str)), axis=1)
-        )[0]
+        # match_ind = pd.factorize(
+        #     objective_X[['string_team', 'was_home', 'string_opp_team', 'season']]
+        #     .apply(lambda row: '-'.join(row.astype(str)), axis=1)
+        # )[0]
             
-        #get 20% of those matches
-        # Step 1: Get unique integers using a set
-        unique_integers = list(set(match_ind))
         
-        # Step 2: Calculate 20% of the unique integers
-        num_to_select = int(len(unique_integers) * space['eval_fraction'])
+        # #get 20% of those matches
+        # # Step 1: Get unique integers using a set
+        # unique_integers = list(set(match_ind))
+        
+        # # Step 2: Calculate 20% of the unique integers
+        # num_to_select = int(len(unique_integers) * space['eval_fraction'])
         
         
         
         # Step 3: Randomly select 20% of the unique integers
-        eval_sample = random.sample(unique_integers, num_to_select)
+        # eval_sample = random.sample(unique_integers, num_to_select)
         
-        match_ind_df = pd.Series(match_ind) 
+        # match_ind_df = pd.Series(match_ind) 
         
-        evals_mask = match_ind_df.isin(eval_sample)  # Mask for cross-validation sample
-        fits_mask = ~evals_mask  # Mask for validation, simply the inverse of cvs_mask
+        # evals_mask = match_ind_df.isin(eval_sample)  # Mask for cross-validation sample
+        # fits_mask = ~evals_mask  # Mask for validation, simply the inverse of cvs_mask
+        
+        
+        # Get the 80% of the first matches every season...
+        objective_copy = objective_X.copy()
+        objective_copy = objective_copy.reset_index(drop=True)
+        objective_copy['match_ind'] = pd.Series(match_ind)
+
+        
+        # groupby seasons and aggregate into a dictionary: season -> set(of chosen match_inds)
+        season_selection = (objective_copy.groupby('season', observed=False)['match_ind']
+                              .agg(lambda s: first_Xpct_unique(s.tolist(), 1-space['eval_fraction']))
+                              .to_dict())
+        
+        # If you want a single flat list of all chosen match_inds (unique across seasons or duplicates kept):
+        # option 1: Unique across all seasons:
+        fit_sample = list(set().union(*season_selection.values()))
+        
+        
+        fits_mask =  pd.Series(match_ind_df).isin(fit_sample)  # Mask for cross-validation sample
+        evals_mask = ~fits_mask  # Mask for validation, simply the inverse of cvs_mask
+        
+        
+        
+        
+        #remove features
+        for feat in check_features:
+            
+            if feat in space.keys():
+                
+                #if remove
+                if not space[feat]:  
+                    
+                    columns_to_keep = []
+                    
+                    for col in objective_X.columns:
+                        
+                        if col == feat: # and col in do_remove_features:
+                            continue
+                        #keep if it foes not have a number in front or first is not a digit (i.e. the fixed features)
+                        if (not feat == re.sub(r'\d+', '', col) or not col[0].isdigit()):
+                            columns_to_keep.append(col)
+                        
+                    objective_X = objective_X[columns_to_keep]
         
         fit_X = objective_X.iloc[fits_mask.values].copy()
         eval_X =  objective_X.loc[evals_mask.values].copy()
