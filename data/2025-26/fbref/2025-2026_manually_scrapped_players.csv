@@ -1,553 +1,561 @@
 ﻿Rk;Player;Nation;Squad;Age;Born;MP;Starts;Min;90s;Gls;Ast;G+A;G-PK;PK;PKatt;CrdY;CrdR;Gls;Ast;G+A;G-PK;G+A-PK;Matches
-1;Brenden Aaronson;us USA;Leeds United;25-131;2000;27;21;1,79;19.sep;4;3;7;4;0;0;1;0;0.20;0.15;0.35;0.20;0.35;Matches
-2;Zach Abbott;eng ENG;Nottingham Forest;19-293;2006;2;1;120;01.mar;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-3;Tammy Abraham;eng ENG;Aston Villa;28-151;1997;5;1;148;01.jun;1;0;1;1;0;0;0;0;0.61;0.00;0.61;0.61;0.61;Matches
-4;Joshua Acheampong;eng ENG;Chelsea;19-301;2006;12;7;573;06.apr;1;0;1;1;0;0;1;0;0.16;0.00;0.16;0.16;0.16;Matches
-5;Tyler Adams;us USA;Bournemouth;27-016;1999;17;17;1,321;14.jul;2;1;3;2;0;0;6;0;0.14;0.07;0.20;0.14;0.20;Matches
-6;Tosin Adarabioyo;eng ENG;Chelsea;28-159;1997;13;7;725;08.jan;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
-7;Simon Adingra;ci CIV;Sunderland;24-060;2002;14;9;653;07.mar;1;0;1;1;0;0;2;0;0.14;0.00;0.14;0.14;0.14;Matches
-8;Amine Adli;ma MAR;Bournemouth;25-296;2000;24;9;921;10.feb;3;1;4;3;0;0;2;0;0.29;0.10;0.39;0.29;0.39;Matches
-9;Emmanuel Agbadou;ci CIV;Wolves;28-258;1997;14;12;1,101;12.feb;0;0;0;0;0;0;1;1;0.00;0.00;0.00;0.00;0.00;Matches
-10;Nayef Aguerd;ma MAR;West Ham United;29-337;1996;2;2;180;2.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-11;Ola Aina;ng NGA;Nottingham Forest;29-145;1996;12;12;1,049;11.jul;0;0;0;0;0;0;3;0;0.00;0.00;0.00;0.00;0.00;Matches
-12;Rayan Aït-Nouri;dz ALG;Manchester City;24-269;2001;11;8;644;07.feb;0;1;1;0;0;0;2;0;0.00;0.14;0.14;0.00;0.14;Matches
-13;Kristoffer Ajer;no NOR;Brentford;27-319;1998;22;18;1,539;17.jan;0;1;1;0;0;0;2;0;0.00;0.06;0.06;0.00;0.06;Matches
-14;Nathan Aké;nl NED;Manchester City;31-012;1995;14;4;495;05.mai;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
-15;Carlos Alcaraz;ar ARG;Everton;23-092;2002;16;6;675;07.mai;0;1;1;0;0;0;3;0;0.00;0.13;0.13;0.00;0.13;Matches
-16;Omar Alderete;py PAR;Sunderland;29-066;1996;24;23;2,084;23.feb;1;1;2;1;0;0;4;0;0.04;0.04;0.09;0.04;0.09;Matches
-17;Alisson;br BRA;Liverpool;33-151;1992;23;23;2,07;23.0;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
-18;Max Alleyne;eng ENG;Manchester City;20-224;2005;2;2;135;01.mai;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-19;Jaydon Amauri Banel;nl NED;Burnley;21-134;2004;1;0;10;0.1;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-20;Ethan Ampadu;wls WAL;Leeds United;25-169;2000;25;25;2,219;24.jul;1;1;2;1;0;0;7;0;0.04;0.04;0.08;0.04;0.08;Matches
-21;Joachim Andersen;dk DEN;Fulham;29-275;1996;26;26;2,291;25.mai;0;1;1;0;0;0;6;0;0.00;0.04;0.04;0.00;0.04;Matches
-22;Elliot Anderson;eng ENG;Nottingham Forest;23-116;2002;28;28;2,506;27.aug;1;2;3;0;1;1;5;0;0.04;0.07;0.11;0.00;0.07;Matches
-23;André;br BRA;Wolves;24-229;2001;26;21;1,952;21.jul;0;0;0;0;0;0;9;0;0.00;0.00;0.00;0.00;0.00;Matches
-24;Nilson Angulo;ec ECU;Sunderland;22-256;2003;4;2;169;01.sep;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-25;Jaidon Anthony;eng ENG;Burnley;26-091;1999;27;22;1,844;20.mai;7;1;8;7;0;0;4;0;0.34;0.05;0.39;0.34;0.39;Matches
+1;Brenden Aaronson;us USA;Leeds United;25-183;2000;33;27;2,22;24.jul;4;5;9;4;0;0;2;0;0.16;0.20;0.36;0.16;0.36;Matches
+2;Zach Abbott;eng ENG;Nottingham Forest;19-345;2006;2;1;120;01.mar;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+3;Tammy Abraham;eng ENG;Aston Villa;28-203;1997;10;1;217;02.apr;2;0;2;2;0;0;0;0;0.83;0.00;0.83;0.83;0.83;Matches
+4;Joshua Acheampong;eng ENG;Chelsea;19-353;2006;15;7;587;06.mai;1;0;1;1;0;0;1;0;0.15;0.00;0.15;0.15;0.15;Matches
+5;Tyler Adams;us USA;Bournemouth;27-068;1999;21;18;1,476;16.apr;2;2;4;2;0;0;7;0;0.12;0.12;0.24;0.12;0.24;Matches
+6;Tosin Adarabioyo;eng ENG;Chelsea;28-211;1997;15;7;750;08.mar;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
+7;Simon Adingra;ci CIV;Sunderland;24-112;2002;14;9;653;07.mar;1;0;1;1;0;0;2;0;0.14;0.00;0.14;0.14;0.14;Matches
+8;Amine Adli;ma MAR;Bournemouth;25-348;2000;28;10;1,058;11.aug;3;1;4;3;0;0;2;0;0.26;0.09;0.34;0.26;0.34;Matches
+9;Emmanuel Agbadou;ci CIV;Wolves;28-310;1997;14;12;1,101;12.feb;0;0;0;0;0;0;1;1;0.00;0.00;0.00;0.00;0.00;Matches
+10;Nayef Aguerd;ma MAR;West Ham United;30-024;1996;2;2;180;2.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+11;Ola Aina;ng NGA;Nottingham Forest;29-197;1996;17;17;1,498;16.jun;0;0;0;0;0;0;3;0;0.00;0.00;0.00;0.00;0.00;Matches
+12;Rayan Aït-Nouri;dz ALG;Manchester City;24-321;2001;15;11;870;09.jul;0;2;2;0;0;0;2;0;0.00;0.21;0.21;0.00;0.21;Matches
+13;Kristoffer Ajer;no NOR;Brentford;28-006;1998;24;18;1,628;18.jan;0;1;1;0;0;0;3;0;0.00;0.06;0.06;0.00;0.06;Matches
+14;Nathan Aké;nl NED;Manchester City;31-064;1995;15;4;496;05.mai;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+15;Carlos Alcaraz;ar ARG;Everton;23-144;2002;16;6;675;07.mai;0;1;1;0;0;0;3;0;0.00;0.13;0.13;0.00;0.13;Matches
+16;Omar Alderete;py PAR;Sunderland;29-118;1996;29;28;2,506;27.aug;1;1;2;1;0;0;6;0;0.04;0.04;0.07;0.04;0.07;Matches
+17;Alisson;br BRA;Liverpool;33-203;1992;25;25;2,25;25.0;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+18;Max Alleyne;eng ENG;Manchester City;20-276;2005;2;2;135;01.mai;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+19;Jaydon Amauri Banel;nl NED;Burnley;21-186;2004;1;0;10;0.1;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+20;Ethan Ampadu;wls WAL;Leeds United;25-221;2000;31;31;2,759;30.jul;1;1;2;1;0;0;8;0;0.03;0.03;0.07;0.03;0.07;Matches
+21;Joachim Andersen;dk DEN;Fulham;29-327;1996;30;30;2,651;29.mai;0;1;1;0;0;0;7;0;0.00;0.03;0.03;0.00;0.03;Matches
+22;Elliot Anderson;eng ENG;Nottingham Forest;23-168;2002;33;33;2,952;32.8;2;2;4;1;1;1;6;0;0.06;0.06;0.12;0.03;0.09;Matches
+23;André;br BRA;Wolves;24-281;2001;30;25;2,312;25.jul;1;0;1;1;0;0;9;0;0.04;0.00;0.04;0.04;0.04;Matches
+24;Nilson Angulo;ec ECU;Sunderland;22-308;2003;5;3;256;02.aug;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+25;Jaidon Anthony;eng ENG;Burnley;26-143;1999;33;28;2,372;26.apr;7;1;8;7;0;0;4;0;0.27;0.04;0.30;0.27;0.30;Matches
 Rk;Player;Nation;Squad;Age;Born;MP;Starts;Min;90s;Gls;Ast;G+A;G-PK;PK;PKatt;CrdY;CrdR;Gls;Ast;G+A;G-PK;G+A-PK;Matches
-26;Alphonse Areola;fr FRA;West Ham United;33-003;1993;20;20;1,8;20.0;0;1;1;0;0;0;0;0;0.00;0.05;0.05;0.00;0.05;Matches
-27;Jhon Arias;co COL;Wolves;28-162;1997;23;14;1,124;12.mai;1;0;1;1;0;0;1;0;0.08;0.00;0.08;0.08;0.08;Matches
-28;Adam Armstrong;eng ENG;Wolves;29-020;1997;5;5;421;04.jul;0;2;2;0;0;0;2;0;0.00;0.43;0.43;0.00;0.43;Matches
-29;Harrison Armstrong;eng ENG;Everton;19-042;2007;10;6;494;05.mai;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-30;Tolu Arokodare;ng NGA;Wolves;25-099;2000;25;12;1,196;13.mar;2;0;2;2;0;1;1;0;0.15;0.00;0.15;0.15;0.15;Matches
-31;Taiwo Awoniyi;ng NGA;Nottingham Forest;28-202;1997;9;1;218;02.apr;1;0;1;1;0;0;0;0;0.41;0.00;0.41;0.41;0.41;Matches
-32;Yasin Ayari;se SWE;Brighton;22-147;2003;21;18;1,701;18.sep;3;2;5;3;0;0;0;0;0.16;0.11;0.26;0.16;0.26;Matches
-33;Benoît Badiashile;fr FRA;Chelsea;24-341;2001;8;6;471;05.feb;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
-34;Leon Bailey;jm JAM;Aston Villa;28-205;1997;6;1;224;02.mai;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
-35;Dilane Bakwa;fr FRA;Nottingham Forest;23-188;2002;10;3;345;03.aug;0;1;1;0;0;0;1;0;0.00;0.26;0.26;0.00;0.26;Matches
-36;Carlos Baleba;cm CMR;Brighton;22-058;2004;23;18;1,188;13.feb;0;0;0;0;0;0;5;0;0.00;0.00;0.00;0.00;0.00;Matches
-37;Daniel Ballard;nir NIR;Sunderland;26-161;1999;24;20;1,855;20.jun;2;0;2;2;0;0;3;0;0.10;0.00;0.10;0.10;0.10;Matches
-38;Ross Barkley;eng ENG;Aston Villa;32-087;1993;11;0;227;02.mai;1;0;1;1;0;0;0;0;0.40;0.00;0.40;0.40;0.40;Matches
-39;Ashley Barnes;eng ENG;Burnley;36-123;1989;4;0;19;0.2;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
-40;Harvey Barnes;eng ENG;Newcastle United;28-083;1997;27;14;1,449;16.jan;5;0;5;5;0;0;1;0;0.31;0.00;0.31;0.31;0.31;Matches
-41;Thierno Barry;fr FRA;Everton;23-132;2002;28;19;1,6;17.aug;6;0;6;6;0;0;3;0;0.34;0.00;0.34;0.34;0.34;Matches
-42;Calvin Bassey;ng NGA;Fulham;26-061;1999;20;18;1,634;18.feb;1;0;1;1;0;0;4;0;0.06;0.00;0.06;0.06;0.06;Matches
-43;Altay Bayındır;tr TUR;Manchester Utd;27-322;1998;6;6;540;6.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-44;Jean-Ricner Bellegarde;ht HAI;Wolves;27-248;1998;20;12;982;10.sep;1;0;1;1;0;0;4;0;0.09;0.00;0.09;0.09;0.09;Matches
-45;Rodrigo Bentancur;uy URU;Tottenham Hotspur;28-250;1997;20;17;1,41;15.jul;1;1;2;1;0;0;5;0;0.06;0.06;0.13;0.06;0.13;Matches
-46;Sander Berge;no NOR;Fulham;28-016;1998;28;27;2,342;26.0;0;1;1;0;0;0;4;0;0.00;0.04;0.04;0.00;0.04;Matches
-47;Lucas Bergvall;se SWE;Tottenham Hotspur;20-028;2006;17;10;805;08.sep;1;2;3;1;0;0;2;0;0.11;0.22;0.34;0.11;0.34;Matches
-48;Beto;gw GNB;Everton;28-030;1998;28;9;982;10.sep;4;0;4;4;0;0;2;0;0.37;0.00;0.37;0.37;0.37;Matches
-49;Jaka Bijol;si SVN;Leeds United;27-025;1999;15;12;1,121;12.mai;1;1;2;1;0;0;2;0;0.08;0.08;0.16;0.08;0.16;Matches
-50;Yves Bissouma;ml MLI;Tottenham Hotspur;29-184;1996;7;5;414;04.jun;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
+26;Alphonse Areola;fr FRA;West Ham United;33-055;1993;20;20;1,8;20.0;0;1;1;0;0;0;0;0;0.00;0.05;0.05;0.00;0.05;Matches
+27;Jhon Arias;co COL;Wolves;28-214;1997;23;14;1,124;12.mai;1;0;1;1;0;0;1;0;0.08;0.00;0.08;0.08;0.08;Matches
+28;Adam Armstrong;eng ENG;Wolves;29-072;1997;9;9;726;08.jan;1;2;3;1;0;0;3;0;0.12;0.25;0.37;0.12;0.37;Matches
+29;Harrison Armstrong;eng ENG;Everton;19-094;2007;11;6;499;05.mai;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+30;Tolu Arokodare;ng NGA;Wolves;25-151;2000;28;12;1,264;14.0;3;1;4;3;0;1;1;0;0.21;0.07;0.28;0.21;0.28;Matches
+31;Taiwo Awoniyi;ng NGA;Nottingham Forest;28-254;1997;12;1;279;03.jan;2;0;2;2;0;0;1;0;0.65;0.00;0.65;0.65;0.65;Matches
+32;Yasin Ayari;se SWE;Brighton;22-199;2003;27;20;1,906;21.feb;3;3;6;3;0;0;1;0;0.14;0.14;0.28;0.14;0.28;Matches
+33;Benoît Badiashile;fr FRA;Chelsea;25-028;2001;8;6;471;05.feb;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
+34;Leon Bailey;jm JAM;Aston Villa;28-257;1997;9;2;340;03.aug;0;1;1;0;0;0;1;0;0.00;0.26;0.26;0.00;0.26;Matches
+35;Dilane Bakwa;fr FRA;Nottingham Forest;23-240;2002;11;4;390;04.mar;0;1;1;0;0;0;1;0;0.00;0.23;0.23;0.00;0.23;Matches
+36;Carlos Baleba;cm CMR;Brighton;22-110;2004;27;20;1,385;15.apr;0;0;0;0;0;0;5;0;0.00;0.00;0.00;0.00;0.00;Matches
+37;Daniel Ballard;nir NIR;Sunderland;26-213;1999;27;22;2,036;22.jun;2;0;2;2;0;0;4;0;0.09;0.00;0.09;0.09;0.09;Matches
+38;Ross Barkley;eng ENG;Aston Villa;32-139;1993;16;4;547;06.jan;2;0;2;2;0;0;0;0;0.33;0.00;0.33;0.33;0.33;Matches
+39;Ashley Barnes;eng ENG;Burnley;36-175;1989;6;0;40;0.4;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+40;Harvey Barnes;eng ENG;Newcastle United;28-135;1997;32;18;1,769;19.jul;5;0;5;5;0;0;1;0;0.25;0.00;0.25;0.25;0.25;Matches
+41;Thierno Barry;fr FRA;Everton;23-184;2002;33;19;1,675;18.jun;6;0;6;6;0;0;3;0;0.32;0.00;0.32;0.32;0.32;Matches
+42;Calvin Bassey;ng NGA;Fulham;26-113;1999;25;23;2,084;23.feb;1;0;1;1;0;0;5;0;0.04;0.00;0.04;0.04;0.04;Matches
+43;Altay Bayındır;tr TUR;Manchester Utd;28-009;1998;6;6;540;6.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+44;Jean-Ricner Bellegarde;ht HAI;Wolves;27-300;1998;24;15;1,212;13.mai;1;1;2;1;0;0;5;0;0.07;0.07;0.15;0.07;0.15;Matches
+45;Walter Benítez;ar ARG;Crystal Palace;33-094;1993;1;1;90;1.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+46;Rodrigo Bentancur;uy URU;Tottenham Hotspur;28-302;1997;21;18;1,476;16.apr;1;1;2;1;0;0;5;0;0.06;0.06;0.12;0.06;0.12;Matches
+47;Daniel Bentley;eng ENG;Wolves;32-284;1993;1;1;90;1.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+48;Sander Berge;no NOR;Fulham;28-068;1998;32;31;2,68;29.aug;0;1;1;0;0;0;5;0;0.00;0.03;0.03;0.00;0.03;Matches
+49;Lucas Bergvall;se SWE;Tottenham Hotspur;20-080;2006;20;11;926;10.mar;1;3;4;1;0;0;2;0;0.10;0.29;0.39;0.10;0.39;Matches
+50;Beto;gw GNB;Everton;28-082;1998;33;14;1,357;15.jan;8;1;9;8;0;0;2;0;0.53;0.07;0.60;0.53;0.60;Matches
 Rk;Player;Nation;Squad;Age;Born;MP;Starts;Min;90s;Gls;Ast;G+A;G-PK;PK;PKatt;CrdY;CrdR;Gls;Ast;G+A;G-PK;G+A-PK;Matches
-51;Marco Bizot;nl NED;Aston Villa;34-357;1991;5;4;405;04.mai;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
-52;Oscar Bobb;no NOR;Manchester City;22-233;2003;9;5;468;05.feb;0;1;1;0;0;0;1;0;0.00;0.19;0.19;0.00;0.19;Matches
-53;Oscar Bobb;no NOR;Fulham;22-233;2003;4;1;147;01.jun;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-54;Lamare Bogarde;nl NED;Aston Villa;22-056;2004;22;7;672;07.mai;0;0;0;0;0;0;5;0;0.00;0.00;0.00;0.00;0.00;Matches
-55;Jayden Bogle;eng ENG;Leeds United;25-218;2000;26;25;2,184;24.mar;1;1;2;1;0;0;5;0;0.04;0.04;0.08;0.04;0.08;Matches
-56;Sebastiaan Bornauw;be BEL;Leeds United;26-345;1999;9;4;304;03.apr;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
-57;Olivier Boscagli;fr FRA;Brighton;28-104;1997;7;4;352;03.sep;0;1;1;0;0;0;1;0;0.00;0.26;0.26;0.00;0.26;Matches
-58;Sven Botman;nl NED;Newcastle United;26-049;2000;15;12;1,061;11.aug;1;1;2;1;0;0;1;0;0.08;0.08;0.17;0.08;0.17;Matches
-59;Jarrod Bowen;eng ENG;West Ham United;29-072;1996;28;28;2,508;27.sep;8;4;12;7;1;1;3;0;0.29;0.14;0.43;0.25;0.39;Matches
-60;Conor Bradley;nir NIR;Liverpool;22-236;2003;15;12;929;10.mar;0;1;1;0;0;0;5;0;0.00;0.10;0.10;0.00;0.10;Matches
-61;Jarrad Branthwaite;eng ENG;Everton;23-248;2002;6;4;409;04.mai;1;0;1;1;0;0;1;0;0.22;0.00;0.22;0.22;0.22;Matches
-62;Brian Brobbey;nl NED;Sunderland;24-029;2002;22;13;1,202;13.apr;5;1;6;5;0;0;3;0;0.37;0.07;0.45;0.37;0.45;Matches
-63;Armando Broja;al ALB;Burnley;24-173;2001;19;8;816;09.jan;1;1;2;1;0;0;0;0;0.11;0.11;0.22;0.11;0.22;Matches
-64;David Brooks;wls WAL;Bournemouth;28-237;1997;23;12;1,022;11.apr;1;2;3;1;0;0;7;0;0.09;0.18;0.26;0.09;0.26;Matches
-65;Jacob Bruun Larsen;dk DEN;Burnley;27-164;1998;23;10;972;10.aug;0;1;1;0;0;0;0;0;0.00;0.09;0.09;0.00;0.09;Matches
-66;Emi Buendía;ar ARG;Aston Villa;29-067;1996;26;16;1,29;14.mar;5;2;7;5;0;0;5;0;0.35;0.14;0.49;0.35;0.49;Matches
-67;Hugo Bueno;es ESP;Wolves;23-165;2002;26;20;1,85;20.jun;1;1;2;1;0;0;1;0;0.05;0.05;0.10;0.05;0.10;Matches
-68;Santiago Bueno;uy URU;Wolves;27-113;1998;20;19;1,743;19.apr;2;1;3;2;0;0;3;0;0.10;0.05;0.15;0.10;0.15;Matches
-69;Facundo Buonanotte;ar ARG;Leeds United;21-069;2004;2;0;26;0.3;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
-70;Facundo Buonanotte;ar ARG;Chelsea;21-069;2004;1;1;45;0.5;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-71;Dan Burn;eng ENG;Newcastle United;33-297;1992;20;19;1,619;18.0;0;2;2;0;0;0;9;1;0.00;0.11;0.11;0.00;0.11;Matches
-72;Bradley Burrowes;eng ENG;Aston Villa;17-363;2008;1;0;17;0.2;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-73;Jun'ai Byfield;eng ENG;Tottenham Hotspur;17-086;2008;1;0;1;0.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-74;Sam Byram;eng ENG;Leeds United;32-167;1993;1;0;8;0.1;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-75;Moisés Caicedo;ec ECU;Chelsea;24-120;2001;23;22;1,954;21.jul;3;1;4;3;0;0;8;1;0.14;0.05;0.18;0.14;0.18;Matches
+51;Jaka Bijol;si SVN;Leeds United;27-077;1999;21;17;1,551;17.feb;1;1;2;1;0;0;3;0;0.06;0.06;0.12;0.06;0.12;Matches
+52;Yves Bissouma;ml MLI;Tottenham Hotspur;29-236;1996;9;6;518;05.aug;0;0;0;0;0;0;4;0;0.00;0.00;0.00;0.00;0.00;Matches
+53;Marco Bizot;nl NED;Aston Villa;35-044;1991;6;5;495;05.mai;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
+54;Oscar Bobb;no NOR;Manchester City;22-285;2003;9;5;468;05.feb;0;1;1;0;0;0;1;0;0.00;0.19;0.19;0.00;0.19;Matches
+55;Oscar Bobb;no NOR;Fulham;22-285;2003;9;4;351;03.sep;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+56;Lamare Bogarde;nl NED;Aston Villa;22-108;2004;24;8;807;9.0;0;0;0;0;0;0;5;0;0.00;0.00;0.00;0.00;0.00;Matches
+57;Jayden Bogle;eng ENG;Leeds United;25-270;2000;32;30;2,627;29.2;1;1;2;1;0;0;6;0;0.03;0.03;0.07;0.03;0.07;Matches
+58;Sebastiaan Bornauw;be BEL;Leeds United;27-032;1999;9;4;304;03.apr;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+59;Olivier Boscagli;fr FRA;Brighton;28-156;1997;11;8;712;07.sep;0;1;1;0;0;0;2;0;0.00;0.13;0.13;0.00;0.13;Matches
+60;Sven Botman;nl NED;Newcastle United;26-101;2000;20;16;1,385;15.apr;1;1;2;1;0;0;2;0;0.06;0.06;0.13;0.06;0.13;Matches
+61;Jarrod Bowen;eng ENG;West Ham United;29-124;1996;33;33;2,957;32.9;8;8;16;7;1;1;4;0;0.24;0.24;0.49;0.21;0.46;Matches
+62;Conor Bradley;nir NIR;Liverpool;22-288;2003;15;12;929;10.mar;0;1;1;0;0;0;5;0;0.00;0.10;0.10;0.00;0.10;Matches
+63;Jarrad Branthwaite;eng ENG;Everton;23-300;2002;10;7;680;07.jun;1;0;1;1;0;0;1;0;0.13;0.00;0.13;0.13;0.13;Matches
+64;Brian Brobbey;nl NED;Sunderland;24-081;2002;26;17;1,54;17.jan;6;1;7;6;0;0;5;0;0.35;0.06;0.41;0.35;0.41;Matches
+65;Armando Broja;al ALB;Burnley;24-225;2001;23;8;845;09.apr;1;1;2;1;0;0;0;0;0.11;0.11;0.21;0.11;0.21;Matches
+66;David Brooks;wls WAL;Bournemouth;28-289;1997;28;13;1,164;12.sep;1;2;3;1;0;0;7;0;0.08;0.15;0.23;0.08;0.23;Matches
+67;Jacob Bruun Larsen;dk DEN;Burnley;27-216;1998;25;10;1,011;11.feb;0;1;1;0;0;0;0;0;0.00;0.09;0.09;0.00;0.09;Matches
+68;Emi Buendía;ar ARG;Aston Villa;29-119;1996;31;18;1,485;16.mai;5;2;7;5;0;0;6;0;0.30;0.12;0.42;0.30;0.42;Matches
+69;Hugo Bueno;es ESP;Wolves;23-217;2002;30;23;2,132;23.jul;1;1;2;1;0;0;2;0;0.04;0.04;0.08;0.04;0.08;Matches
+70;Santiago Bueno;uy URU;Wolves;27-165;1998;24;23;2,103;23.apr;2;1;3;2;0;0;4;0;0.09;0.04;0.13;0.09;0.13;Matches
+71;Facundo Buonanotte;ar ARG;Chelsea;21-121;2004;1;1;45;0.5;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+72;Facundo Buonanotte;ar ARG;Leeds United;21-121;2004;2;0;26;0.3;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+73;Dan Burn;eng ENG;Newcastle United;33-349;1992;24;21;1,83;20.mar;0;2;2;0;0;0;9;1;0.00;0.10;0.10;0.00;0.10;Matches
+74;Bradley Burrowes;eng ENG;Aston Villa;18-050;2008;1;0;17;0.2;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+75;Jun'ai Byfield;eng ENG;Tottenham Hotspur;17-138;2008;1;0;1;0.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
 Rk;Player;Nation;Squad;Age;Born;MP;Starts;Min;90s;Gls;Ast;G+A;G-PK;PK;PKatt;CrdY;CrdR;Gls;Ast;G+A;G-PK;G+A-PK;Matches
-76;Tom Cairney;sct SCO;Fulham;35-041;1991;18;3;489;05.apr;1;0;1;1;0;0;3;0;0.18;0.00;0.18;0.18;0.18;Matches
-77;Riccardo Calafiori;it ITA;Arsenal;23-287;2002;20;17;1,348;15.0;1;2;3;1;0;0;5;0;0.07;0.13;0.20;0.07;0.20;Matches
-78;Dominic Calvert-Lewin;eng ENG;Leeds United;28-351;1997;25;20;1,845;20.mai;10;1;11;8;2;2;1;0;0.49;0.05;0.54;0.39;0.44;Matches
-79;Jaydee Canvot;fr FRA;Crystal Palace;19-216;2006;11;5;537;6.0;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
-80;Fabio Carvalho;pt POR;Brentford;23-184;2002;6;1;102;01.jan;1;0;1;1;0;0;0;0;0.88;0.00;0.88;0.88;0.88;Matches
-81;Casemiro;br BRA;Manchester Utd;34-007;1992;26;25;1,901;21.jan;5;2;7;5;0;0;8;1;0.24;0.09;0.33;0.24;0.33;Matches
-82;Matty Cash;pl POL;Aston Villa;28-207;1997;26;26;2,306;25.jun;3;2;5;3;0;0;6;0;0.12;0.08;0.20;0.12;0.20;Matches
-83;Timothy Castagne;be BEL;Fulham;30-087;1995;21;12;1,124;12.mai;0;0;0;0;0;0;3;0;0.00;0.00;0.00;0.00;0.00;Matches
-84;Valentín Castellanos;ar ARG;West Ham United;27-150;1998;8;8;654;07.mar;2;0;2;2;0;0;2;0;0.28;0.00;0.28;0.28;0.28;Matches
-85;Trevoh Chalobah;eng ENG;Chelsea;26-240;1999;27;27;2,37;26.mar;3;0;3;3;0;0;3;1;0.11;0.00;0.11;0.11;0.11;Matches
-86;Rayan Cherki;fr FRA;Manchester City;22-197;2003;23;13;1,196;13.mar;3;7;10;3;0;0;1;0;0.23;0.53;0.75;0.23;0.75;Matches
-87;Federico Chiesa;it ITA;Liverpool;28-128;1997;20;1;269;3.0;2;1;3;2;0;0;2;0;0.67;0.33;1.00;0.67;1.00;Matches
-88;Tawanda Chirewa;zw ZIM;Wolves;22-142;2003;2;0;27;0.3;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-89;Ryan Christie;sct SCO;Bournemouth;31-008;1995;18;2;522;05.aug;1;0;1;1;0;0;2;0;0.17;0.00;0.17;0.17;0.17;Matches
-90;Samuel Chukwueze;ng NGA;Fulham;26-284;1999;14;6;660;07.mar;3;4;7;3;0;0;0;0;0.41;0.55;0.95;0.41;0.95;Matches
-91;Dennis Cirkin;eng ENG;Sunderland;23-330;2002;6;3;298;03.mar;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
-92;Nathaniel Clyne;eng ENG;Crystal Palace;34-331;1991;7;6;418;04.jun;0;1;1;0;0;0;0;0;0.00;0.22;0.22;0.00;0.22;Matches
-93;Séamus Coleman;ie IRL;Everton;37-142;1988;3;1;11;0.1;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-94;Nathan Collins;ie IRL;Brentford;24-306;2001;25;22;2,075;23.jan;1;2;3;1;0;0;4;0;0.04;0.09;0.13;0.04;0.13;Matches
-95;Lewis Cook;eng ENG;Bournemouth;29-027;1997;16;8;872;09.jul;0;1;1;0;0;0;1;1;0.00;0.10;0.10;0.00;0.10;Matches
-96;Diego Coppola;it ITA;Brighton;22-064;2003;5;2;194;02.feb;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
-97;Marc Cucurella;es ESP;Chelsea;27-223;1998;24;22;1,885;20.sep;1;3;4;1;0;0;5;1;0.05;0.14;0.19;0.05;0.19;Matches
-98;Jorge Cuenca;es ESP;Fulham;26-105;1999;14;11;933;10.apr;0;0;0;0;0;0;5;0;0.00;0.00;0.00;0.00;0.00;Matches
-99;Josh Cullen;ie IRL;Burnley;29-329;1996;18;18;1,514;16.aug;2;2;4;2;0;0;2;0;0.12;0.12;0.24;0.12;0.24;Matches
-100;Jair Cunha;br BRA;Nottingham Forest;20-360;2005;2;1;125;01.apr;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+76;Sam Byram;eng ENG;Leeds United;32-219;1993;1;0;8;0.1;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+77;Moisés Caicedo;ec ECU;Chelsea;24-172;2001;29;28;2,441;27.jan;3;1;4;3;0;0;9;1;0.11;0.04;0.15;0.11;0.15;Matches
+78;Tom Cairney;sct SCO;Fulham;35-093;1991;21;5;642;07.jan;1;0;1;1;0;0;3;0;0.14;0.00;0.14;0.14;0.14;Matches
+79;Riccardo Calafiori;it ITA;Arsenal;23-339;2002;22;18;1,448;16.jan;1;2;3;1;0;0;5;0;0.06;0.12;0.19;0.06;0.19;Matches
+80;Dominic Calvert-Lewin;eng ENG;Leeds United;29-038;1997;31;26;2,384;26.mai;11;1;12;8;3;4;1;0;0.42;0.04;0.45;0.30;0.34;Matches
+81;Jaydee Canvot;fr FRA;Crystal Palace;19-268;2006;15;9;886;09.aug;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
+82;Fabio Carvalho;pt POR;Brentford;23-236;2002;6;1;102;01.jan;1;0;1;1;0;0;0;0;0.88;0.00;0.88;0.88;0.88;Matches
+83;Casemiro;br BRA;Manchester Utd;34-059;1992;31;30;2,311;25.jul;8;2;10;8;0;0;10;1;0.31;0.08;0.39;0.31;0.39;Matches
+84;Matty Cash;pl POL;Aston Villa;28-259;1997;30;30;2,62;29.jan;3;2;5;3;0;0;8;0;0.10;0.07;0.17;0.10;0.17;Matches
+85;Timothy Castagne;be BEL;Fulham;30-139;1995;25;15;1,403;15.jun;0;0;0;0;0;0;3;0;0.00;0.00;0.00;0.00;0.00;Matches
+86;Valentín Castellanos;ar ARG;West Ham United;27-202;1998;13;13;1,024;11.apr;4;0;4;4;0;0;3;0;0.35;0.00;0.35;0.35;0.35;Matches
+87;Trevoh Chalobah;eng ENG;Chelsea;26-292;1999;31;30;2,65;29.apr;3;0;3;3;0;0;3;1;0.10;0.00;0.10;0.10;0.10;Matches
+88;Rayan Cherki;fr FRA;Manchester City;22-249;2003;28;17;1,557;17.mar;4;10;14;4;0;0;1;0;0.23;0.58;0.81;0.23;0.81;Matches
+89;Federico Chiesa;it ITA;Liverpool;28-180;1997;23;1;296;03.mar;2;1;3;2;0;0;3;0;0.61;0.30;0.91;0.61;0.91;Matches
+90;Tawanda Chirewa;zw ZIM;Wolves;22-193;2003;2;0;27;0.3;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+91;Ryan Christie;sct SCO;Bournemouth;31-060;1995;24;8;932;10.apr;2;0;2;2;0;0;3;0;0.19;0.00;0.19;0.19;0.19;Matches
+92;Samuel Chukwueze;ng NGA;Fulham;26-336;1999;19;7;868;09.jun;3;4;7;3;0;0;0;0;0.31;0.41;0.73;0.31;0.73;Matches
+93;Dennis Cirkin;lv LVA;Sunderland;24-017;2002;7;3;304;03.apr;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+94;Nathaniel Clyne;eng ENG;Crystal Palace;35-018;1991;8;6;495;05.mai;0;1;1;0;0;0;1;0;0.00;0.18;0.18;0.00;0.18;Matches
+95;Séamus Coleman;ie IRL;Everton;37-194;1988;3;1;11;0.1;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+96;Nathan Collins;ie IRL;Brentford;24-358;2001;30;27;2,525;28.jan;1;2;3;1;0;0;5;0;0.04;0.07;0.11;0.04;0.11;Matches
+97;Lewis Cook;eng ENG;Bournemouth;29-079;1997;16;8;872;09.jul;0;1;1;0;0;0;1;1;0.00;0.10;0.10;0.00;0.10;Matches
+98;Diego Coppola;it ITA;Brighton;22-116;2003;5;2;194;02.feb;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
+99;Marc Cucurella;es ESP;Chelsea;27-275;1998;30;27;2,347;26.jan;1;3;4;1;0;0;6;1;0.04;0.12;0.15;0.04;0.15;Matches
+100;Jorge Cuenca;es ESP;Fulham;26-157;1999;14;11;933;10.apr;0;0;0;0;0;0;5;0;0.00;0.00;0.00;0.00;0.00;Matches
 Rk;Player;Nation;Squad;Age;Born;MP;Starts;Min;90s;Gls;Ast;G+A;G-PK;PK;PKatt;CrdY;CrdR;Gls;Ast;G+A;G-PK;G+A-PK;Matches
-101;Matheus Cunha;br BRA;Manchester Utd;26-279;1999;25;21;1,808;20.jan;6;2;8;6;0;0;1;0;0.30;0.10;0.40;0.30;0.40;Matches
-102;Diogo Dalot;pt POR;Manchester Utd;26-349;1999;26;23;2,023;22.mai;1;3;4;1;0;0;5;0;0.04;0.13;0.18;0.04;0.18;Matches
-103;Mikkel Damsgaard;dk DEN;Brentford;25-242;2000;24;16;1,414;15.jul;3;4;7;3;0;0;0;0;0.19;0.25;0.45;0.19;0.45;Matches
-104;Kevin Danso;at AUT;Tottenham Hotspur;27-164;1998;14;8;663;07.apr;0;0;0;0;0;0;4;0;0.00;0.00;0.00;0.00;0.00;Matches
-105;Karl Darlow;wls WAL;Leeds United;35-145;1990;12;12;1,08;12.0;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
-106;Ben Davies;wls WAL;Tottenham Hotspur;32-312;1993;3;2;137;01.mai;1;0;1;1;0;0;1;0;0.66;0.00;0.66;0.66;0.66;Matches
-107;Maxim De Cuyper;be BEL;Brighton;25-070;2000;23;14;1,137;12.jun;2;0;2;2;0;0;2;0;0.16;0.00;0.16;0.16;0.16;Matches
-108;Liam Delap;eng ENG;Chelsea;23-022;2003;19;9;732;08.jan;1;0;1;1;0;0;2;0;0.12;0.00;0.12;0.12;0.12;Matches
-109;Sepp van den Berg;nl NED;Brentford;24-072;2001;23;22;2,034;22.jun;0;1;1;0;0;0;1;0;0.00;0.04;0.04;0.00;0.04;Matches
-110;Justin Devenny;nir NIR;Crystal Palace;22-142;2003;18;5;603;06.jul;1;0;1;0;1;1;0;0;0.15;0.00;0.15;0.00;0.00;Matches
-111;Kiernan Dewsbury-Hall;eng ENG;Everton;27-177;1998;21;20;1,737;19.mar;5;3;8;5;0;0;6;0;0.26;0.16;0.41;0.26;0.41;Matches
-112;Bafodé Diakité;fr FRA;Bournemouth;25-055;2001;18;15;1,277;14.feb;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
-113;Amad Diallo;ci CIV;Manchester Utd;23-234;2002;22;20;1,723;19.jan;2;2;4;2;0;0;2;0;0.10;0.10;0.21;0.10;0.21;Matches
-114;Habib Diarra;sn SEN;Sunderland;22-058;2004;11;9;834;09.mar;1;0;1;1;0;0;3;0;0.11;0.00;0.11;0.11;0.11;Matches
-115;Rúben Dias;pt POR;Manchester City;28-292;1997;24;22;1,961;21.aug;2;0;2;2;0;0;3;0;0.09;0.00;0.09;0.09;0.09;Matches
-116;Tyler Dibling;eng ENG;Everton;19-355;2006;13;4;357;4.0;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
-117;Lucas Digne;fr FRA;Aston Villa;32-225;1993;24;16;1,386;15.apr;0;4;4;0;0;0;3;0;0.00;0.26;0.26;0.00;0.26;Matches
-118;Issa Diop;fr FRA;Fulham;29-052;1997;9;5;506;05.jun;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
-119;El Hadji Malick Diouf;sn SEN;West Ham United;21-064;2004;22;20;1,824;20.mar;0;5;5;0;0;0;4;0;0.00;0.25;0.25;0.00;0.25;Matches
-120;Axel Disasi;fr FRA;West Ham United;27-356;1998;4;4;360;4.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-121;Matt Doherty;ie IRL;Wolves;34-045;1992;9;9;643;07.jan;0;0;0;0;0;0;4;0;0.00;0.00;0.00;0.00;0.00;Matches
-122;Jeremy Doku;be BEL;Manchester City;23-279;2002;20;13;1,186;13.feb;1;4;5;1;0;0;0;0;0.08;0.30;0.38;0.08;0.38;Matches
-123;Nicolás Domínguez;ar ARG;Nottingham Forest;27-247;1998;17;12;827;09.feb;1;0;1;1;0;0;2;0;0.11;0.00;0.11;0.11;0.11;Matches
-124;Gianluigi Donnarumma;it ITA;Manchester City;27-005;1999;25;25;2,25;25.0;0;0;0;0;0;0;6;0;0.00;0.00;0.00;0.00;0.00;Matches
-125;Romelle Donovan;eng ENG;Brentford;19-092;2006;4;0;41;0.5;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+101;Josh Cullen;ie IRL;Burnley;30-016;1996;18;18;1,514;16.aug;2;2;4;2;0;0;2;0;0.12;0.12;0.24;0.12;0.24;Matches
+102;Jair Cunha;br BRA;Nottingham Forest;21-047;2005;4;2;264;02.sep;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+103;Matheus Cunha;br BRA;Manchester Utd;26-331;1999;30;26;2,239;24.sep;8;2;10;8;0;0;3;0;0.32;0.08;0.40;0.32;0.40;Matches
+104;Diogo Dalot;pt POR;Manchester Utd;27-036;1999;31;26;2,344;26.0;1;3;4;1;0;0;5;0;0.04;0.12;0.15;0.04;0.15;Matches
+105;Mikkel Damsgaard;dk DEN;Brentford;25-294;2000;28;20;1,71;19.0;3;4;7;3;0;0;0;0;0.16;0.21;0.37;0.16;0.37;Matches
+106;Kevin Danso;at AUT;Tottenham Hotspur;27-216;1998;19;12;1,044;11.jun;0;0;0;0;0;0;5;0;0.00;0.00;0.00;0.00;0.00;Matches
+107;Karl Darlow;wls WAL;Leeds United;35-197;1990;18;18;1,62;18.0;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+108;Ben Davies;wls WAL;Tottenham Hotspur;32-364;1993;3;2;137;01.mai;1;0;1;1;0;0;1;0;0.66;0.00;0.66;0.66;0.66;Matches
+109;Maxim De Cuyper;be BEL;Brighton;25-122;2000;26;14;1,182;13.jan;2;1;3;2;0;0;2;0;0.15;0.08;0.23;0.15;0.23;Matches
+110;Liam Delap;eng ENG;Chelsea;23-074;2003;25;11;967;10.jul;1;0;1;1;0;0;2;0;0.09;0.00;0.09;0.09;0.09;Matches
+111;Sepp van den Berg;nl NED;Brentford;24-124;2001;28;27;2,484;27.jun;0;1;1;0;0;0;1;0;0.00;0.04;0.04;0.00;0.04;Matches
+112;Justin Devenny;nir NIR;Crystal Palace;22-194;2003;19;5;616;06.aug;1;0;1;0;1;1;0;0;0.15;0.00;0.15;0.00;0.00;Matches
+113;Kiernan Dewsbury-Hall;eng ENG;Everton;27-229;1998;26;25;2,185;24.mar;7;4;11;7;0;0;6;0;0.29;0.16;0.45;0.29;0.45;Matches
+114;Bafodé Diakité;fr FRA;Bournemouth;25-107;2001;18;15;1,277;14.feb;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+115;Amad Diallo;ci CIV;Manchester Utd;23-286;2002;27;23;1,997;22.feb;2;2;4;2;0;0;2;0;0.09;0.09;0.18;0.09;0.18;Matches
+116;Habib Diarra;sn SEN;Sunderland;22-110;2004;16;14;1,278;14.feb;2;1;3;1;1;1;4;0;0.14;0.07;0.21;0.07;0.14;Matches
+117;Rúben Dias;pt POR;Manchester City;28-344;1997;25;23;2,051;22.aug;2;0;2;2;0;0;3;0;0.09;0.00;0.09;0.09;0.09;Matches
+118;Tyler Dibling;eng ENG;Everton;20-042;2006;14;4;358;4.0;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
+119;Lucas Digne;fr FRA;Aston Villa;32-277;1993;28;19;1,655;18.apr;0;5;5;0;0;0;3;0;0.00;0.27;0.27;0.00;0.27;Matches
+120;Issa Diop;ma MAR;Fulham;29-104;1997;10;6;596;06.jun;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
+121;El Hadji Malick Diouf;sn SEN;West Ham United;21-116;2004;27;25;2,274;25.mar;0;5;5;0;0;0;5;0;0.00;0.20;0.20;0.00;0.20;Matches
+122;Axel Disasi;fr FRA;West Ham United;28-043;1998;9;9;810;9.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+123;Matt Doherty;ie IRL;Wolves;34-097;1992;10;10;702;07.aug;0;0;0;0;0;0;4;0;0.00;0.00;0.00;0.00;0.00;Matches
+124;Jeremy Doku;be BEL;Manchester City;23-331;2002;25;16;1,483;16.mai;2;5;7;2;0;0;0;0;0.12;0.30;0.42;0.12;0.42;Matches
+125;Nicolás Domínguez;ar ARG;Nottingham Forest;27-299;1998;22;14;945;10.mai;1;1;2;1;0;0;2;0;0.10;0.10;0.19;0.10;0.19;Matches
 Rk;Player;Nation;Squad;Age;Born;MP;Starts;Min;90s;Gls;Ast;G+A;G-PK;PK;PKatt;CrdY;CrdR;Gls;Ast;G+A;G-PK;G+A-PK;Matches
-126;Patrick Dorgu;dk DEN;Manchester Utd;21-127;2004;22;14;1,335;14.aug;3;3;6;3;0;0;5;0;0.20;0.20;0.40;0.20;0.40;Matches
-127;Max Dowman;eng ENG;Arsenal;16-061;2009;2;0;29;0.3;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-128;Radu Drăgușin;ro ROU;Tottenham Hotspur;24-027;2002;7;4;425;04.jul;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-129;Joél Drakes-Thomas;eng ENG;Crystal Palace;16-266;2009;2;0;9;0.1;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-130;Martin Dúbravka;sk SVK;Burnley;37-046;1989;28;28;2,52;28.0;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
-131;Lewis Dunk;eng ENG;Brighton;34-101;1991;27;26;2,385;26.mai;0;0;0;0;0;0;9;0;0.00;0.00;0.00;0.00;0.00;Matches
-132;George Earthy;eng ENG;West Ham United;21-178;2004;1;0;9;0.1;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-133;Odsonne Édouard;fr FRA;Crystal Palace;28-045;1998;1;0;3;0.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-134;Tom Edozie;eng ENG;Wolves;19-288;2006;1;0;7;0.1;1;0;1;1;0;0;0;0;des.86;0.00;des.86;des.86;des.86;Matches
-135;Alysson Edward;br BRA;Aston Villa;19-301;2006;2;0;21;0.2;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-136;Marcus Edwards;eng ENG;Burnley;27-089;1998;17;9;872;09.jul;1;3;4;1;0;0;0;0;0.10;0.31;0.41;0.10;0.41;Matches
-137;Hjalmar Ekdal;se SWE;Burnley;27-132;1998;15;13;1,179;13.jan;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-138;Hugo Ekitike;fr FRA;Liverpool;23-255;2002;25;19;1,679;18.jul;11;4;15;11;0;0;0;0;0.59;0.21;0.80;0.59;0.80;Matches
-139;Anthony Elanga;se SWE;Newcastle United;23-309;2002;24;11;1,06;11.aug;0;1;1;0;0;0;0;0;0.00;0.08;0.08;0.00;0.08;Matches
-140;Harvey Elliott;eng ENG;Liverpool;22-332;2003;1;0;1;0.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-141;Harvey Elliott;eng ENG;Aston Villa;22-332;2003;4;1;112;01.feb;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-142;Wataru Endo;jp JPN;Liverpool;33-021;1993;8;1;175;01.sep;0;1;1;0;0;0;1;0;0.00;0.51;0.51;0.00;0.51;Matches
-143;Romain Esse;eng ENG;Crystal Palace;20-293;2005;4;0;44;0.5;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-144;Maxime Estève;fr FRA;Burnley;23-280;2002;25;25;2,148;23.sep;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-145;Evanilson;br BRA;Bournemouth;26-147;1999;26;22;1,935;21.mai;6;0;6;6;0;0;1;0;0.28;0.00;0.28;0.28;0.28;Matches
-146;Eberechi Eze;eng ENG;Arsenal;27-246;1998;23;14;1,239;13.aug;6;2;8;6;0;0;1;0;0.44;0.15;0.58;0.44;0.58;Matches
-147;Eberechi Eze;eng ENG;Crystal Palace;27-246;1998;1;1;83;0.9;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-148;Bruno Fernandes;pt POR;Manchester Utd;31-175;1994;25;25;2,164;24.0;7;13;20;4;3;5;3;0;0.29;0.54;0.83;0.17;0.71;Matches
-149;Mateus Fernandes;pt POR;West Ham United;21-235;2004;26;25;2,123;23.jun;3;3;6;3;0;0;4;0;0.13;0.13;0.25;0.13;0.25;Matches
-150;Enzo Fernández;ar ARG;Chelsea;25-044;2001;27;26;2,32;25.aug;8;2;10;6;2;2;7;0;0.31;0.08;0.39;0.23;0.31;Matches
+126;Gianluigi Donnarumma;it ITA;Manchester City;27-057;1999;30;30;2,7;30.0;0;0;0;0;0;0;6;0;0.00;0.00;0.00;0.00;0.00;Matches
+127;Romelle Donovan;eng ENG;Brentford;19-144;2006;4;0;41;0.5;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+128;Patrick Dorgu;dk DEN;Manchester Utd;21-179;2004;22;14;1,335;14.aug;3;3;6;3;0;0;5;0;0.20;0.20;0.40;0.20;0.40;Matches
+129;Max Dowman;eng ENG;Arsenal;16-113;2009;4;0;83;0.9;1;0;1;1;0;0;0;0;01.aug;0.00;01.aug;01.aug;01.aug;Matches
+130;Radu Drăgușin;ro ROU;Tottenham Hotspur;24-079;2002;8;5;515;05.jul;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+131;Joél Drakes-Thomas;eng ENG;Crystal Palace;16-318;2009;2;0;9;0.1;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+132;Martin Dúbravka;sk SVK;Burnley;37-098;1989;34;34;3,06;34.0;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+133;Lewis Dunk;eng ENG;Brighton;34-153;1991;29;28;2,565;28.mai;0;0;0;0;0;0;10;0;0.00;0.00;0.00;0.00;0.00;Matches
+134;George Earthy;eng ENG;West Ham United;21-230;2004;1;0;9;0.1;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+135;Odsonne Édouard;fr FRA;Crystal Palace;28-097;1998;1;0;3;0.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+136;Tom Edozie;eng ENG;Wolves;19-340;2006;2;0;13;0.1;1;0;1;1;0;0;0;0;jun.92;0.00;jun.92;jun.92;jun.92;Matches
+137;Alysson Edward;br BRA;Aston Villa;19-353;2006;3;0;49;0.5;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+138;Marcus Edwards;eng ENG;Burnley;27-141;1998;22;11;1,051;11.jul;1;3;4;1;0;0;0;0;0.09;0.26;0.34;0.09;0.34;Matches
+139;Hjalmar Ekdal;se SWE;Burnley;27-184;1998;18;16;1,449;16.jan;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+140;Hugo Ekitike;fr FRA;Liverpool;23-307;2002;28;21;1,803;20.0;11;4;15;11;0;0;0;0;0.55;0.20;0.75;0.55;0.75;Matches
+141;Anthony Elanga;se SWE;Newcastle United;23-361;2002;29;14;1,283;14.mar;0;1;1;0;0;0;0;0;0.00;0.07;0.07;0.00;0.07;Matches
+142;Melker Ellborg;se SWE;Sunderland;22-336;2003;3;3;270;3.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+143;Harvey Elliott;eng ENG;Aston Villa;23-019;2003;4;1;112;01.feb;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+144;Harvey Elliott;eng ENG;Liverpool;23-019;2003;1;0;1;0.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+145;Wataru Endo;jp JPN;Liverpool;33-073;1993;8;1;175;01.sep;0;1;1;0;0;0;1;0;0.00;0.51;0.51;0.00;0.51;Matches
+146;Romain Esse;eng ENG;Crystal Palace;20-345;2005;4;0;44;0.5;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+147;Dario Essugo;pt POR;Chelsea;21-040;2005;2;0;28;0.3;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+148;Maxime Estève;fr FRA;Burnley;23-332;2002;31;31;2,671;29.jul;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+149;Evanilson;br BRA;Bournemouth;26-199;1999;32;28;2,461;27.mar;6;1;7;6;0;0;2;0;0.22;0.04;0.26;0.22;0.26;Matches
+150;Eberechi Eze;eng ENG;Arsenal;27-298;1998;27;17;1,529;17.0;6;2;8;6;0;0;1;0;0.35;0.12;0.47;0.35;0.47;Matches
 Rk;Player;Nation;Squad;Age;Born;MP;Starts;Min;90s;Gls;Ast;G+A;G-PK;PK;PKatt;CrdY;CrdR;Gls;Ast;G+A;G-PK;G+A-PK;Matches
-151;Zian Flemming;nl NED;Burnley;27-213;1998;20;12;1,012;11.feb;7;0;7;5;2;2;3;0;0.62;0.00;0.62;0.44;0.44;Matches
-152;Jack Fletcher;eng ENG;Manchester Utd;18-348;2007;3;0;108;01.feb;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-153;Tyler Fletcher;sct SCO;Manchester Utd;18-348;2007;1;0;1;0.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-154;Phil Foden;eng ENG;Manchester City;25-278;2000;24;20;1,719;19.jan;7;3;10;7;0;0;4;0;0.37;0.16;0.52;0.37;0.52;Matches
-155;Wesley Fofana;fr FRA;Chelsea;25-075;2000;16;11;1,027;11.apr;0;1;1;0;0;0;4;1;0.00;0.09;0.09;0.00;0.09;Matches
-156;Lyle Foster;za RSA;Burnley;25-180;2000;20;12;1,071;11.sep;3;1;4;3;0;0;4;0;0.25;0.08;0.34;0.25;0.34;Matches
-157;Tyler Fredricson;eng ENG;Manchester Utd;21-007;2005;1;0;3;0.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-158;Jeremie Frimpong;nl NED;Liverpool;25-082;2000;12;6;556;06.feb;0;1;1;0;0;0;0;0;0.00;0.16;0.16;0.00;0.16;Matches
-159;Niclas Füllkrug;de GER;West Ham United;33-021;1993;8;5;409;04.mai;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-160;Cody Gakpo;nl NED;Liverpool;26-299;1999;26;22;1,909;21.feb;6;3;9;6;0;0;2;0;0.28;0.14;0.42;0.28;0.42;Matches
-161;Conor Gallagher;eng ENG;Tottenham Hotspur;26-024;2000;7;7;530;05.sep;0;1;1;0;0;0;0;0;0.00;0.17;0.17;0.00;0.17;Matches
-162;Idrissa Gana Gueye;sn SEN;Everton;36-157;1989;19;19;1,58;17.jun;2;1;3;2;0;0;1;1;0.11;0.06;0.17;0.11;0.17;Matches
-163;Ben Gannon-Doak;sct SCO;Bournemouth;20-111;2005;4;0;57;0.6;0;1;1;0;0;0;0;0;0.00;jan.58;jan.58;0.00;jan.58;Matches
-164;Andrés García;es ESP;Aston Villa;23-023;2003;3;0;35;0.4;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-165;Alejandro Garnacho;ar ARG;Chelsea;21-244;2004;17;12;897;10.0;1;3;4;1;0;0;1;0;0.10;0.30;0.40;0.10;0.40;Matches
-166;James Garner;eng ENG;Everton;24-354;2001;28;28;2,513;27.sep;2;4;6;2;0;0;7;0;0.07;0.14;0.21;0.07;0.21;Matches
-167;Lutsharel Geertruida;nl NED;Sunderland;25-227;2000;22;11;1,189;13.feb;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-168;Tyrique George;eng ENG;Chelsea;20-026;2006;4;0;145;01.jun;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
-169;Tyrique George;eng ENG;Everton;20-026;2006;3;1;101;01.jan;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-170;Morgan Gibbs-White;eng ENG;Nottingham Forest;26-034;2000;28;27;2,386;26.mai;7;2;9;6;1;1;1;0;0.26;0.08;0.34;0.23;0.30;Matches
-171;Jamie Gittens;eng ENG;Chelsea;21-206;2004;16;5;495;05.mai;0;2;2;0;0;0;0;0;0.00;0.36;0.36;0.00;0.36;Matches
-172;Wilfried Gnonto;it ITA;Leeds United;22-117;2003;15;4;371;04.jan;0;1;1;0;0;0;2;0;0.00;0.24;0.24;0.00;0.24;Matches
-173;Angel Gomes;eng ENG;Wolves;25-183;2000;5;3;180;2.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-174;João Gomes;br BRA;Wolves;25-018;2001;27;24;2,117;23.mai;1;0;1;1;0;0;8;0;0.04;0.00;0.04;0.04;0.04;Matches
-175;Rodrigo Gomes;pt POR;Wolves;22-238;2003;13;6;577;06.apr;2;0;2;2;0;0;0;0;0.31;0.00;0.31;0.31;0.31;Matches
+151;Eberechi Eze;eng ENG;Crystal Palace;27-298;1998;1;1;83;0.9;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+152;Bruno Fernandes;pt POR;Manchester Utd;31-227;1994;30;30;2,614;29.0;8;18;26;4;4;6;4;0;0.28;0.62;0.90;0.14;0.76;Matches
+153;Mateus Fernandes;pt POR;West Ham United;21-287;2004;31;30;2,566;28.mai;3;3;6;3;0;0;7;0;0.11;0.11;0.21;0.11;0.21;Matches
+154;Enzo Fernández;ar ARG;Chelsea;25-096;2001;32;31;2,755;30.jun;8;3;11;6;2;2;8;0;0.26;0.10;0.36;0.20;0.29;Matches
+155;Zian Flemming;nl NED;Burnley;27-265;1998;25;17;1,442;16.0;9;0;9;7;2;2;3;0;0.56;0.00;0.56;0.44;0.44;Matches
+156;Jack Fletcher;eng ENG;Manchester Utd;19-035;2007;3;0;108;01.feb;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+157;Tyler Fletcher;sct SCO;Manchester Utd;19-035;2007;1;0;1;0.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+158;Phil Foden;eng ENG;Manchester City;25-330;2000;28;21;1,832;20.apr;7;3;10;7;0;0;4;0;0.34;0.15;0.49;0.34;0.49;Matches
+159;Wesley Fofana;fr FRA;Chelsea;25-127;2000;22;17;1,491;16.jun;0;1;1;0;0;0;7;1;0.00;0.06;0.06;0.00;0.06;Matches
+160;Lyle Foster;za RSA;Burnley;25-232;2000;25;15;1,349;15.0;3;2;5;3;0;0;4;0;0.20;0.13;0.33;0.20;0.33;Matches
+161;Tyler Fredricson;eng ENG;Manchester Utd;21-059;2005;1;0;3;0.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+162;Jeremie Frimpong;nl NED;Liverpool;25-134;2000;17;10;827;09.feb;0;1;1;0;0;0;1;0;0.00;0.11;0.11;0.00;0.11;Matches
+163;Niclas Füllkrug;de GER;West Ham United;33-073;1993;8;5;409;04.mai;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+164;Cody Gakpo;nl NED;Liverpool;26-351;1999;31;27;2,318;25.aug;6;5;11;6;0;0;2;0;0.23;0.19;0.43;0.23;0.43;Matches
+165;Conor Gallagher;eng ENG;Tottenham Hotspur;26-076;2000;11;9;744;08.mar;0;1;1;0;0;0;0;0;0.00;0.12;0.12;0.00;0.12;Matches
+166;Idrissa Gana Gueye;sn SEN;Everton;36-209;1989;24;24;2,008;22.mar;2;3;5;2;0;0;1;1;0.09;0.13;0.22;0.09;0.22;Matches
+167;Ben Gannon-Doak;sct SCO;Bournemouth;20-163;2005;6;0;74;0.8;0;1;1;0;0;0;0;0;0.00;jan.22;jan.22;0.00;jan.22;Matches
+168;Andrés García;es ESP;Aston Villa;23-075;2003;5;0;41;0.5;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+169;Alejandro Garnacho;ar ARG;Chelsea;21-296;2004;23;14;1,266;14.jan;1;4;5;1;0;0;2;0;0.07;0.28;0.36;0.07;0.36;Matches
+170;James Garner;eng ENG;Everton;25-041;2001;33;33;2,963;32.9;2;6;8;2;0;0;9;0;0.06;0.18;0.24;0.06;0.24;Matches
+171;Lutsharel Geertruida;nl NED;Sunderland;25-279;2000;25;14;1,423;15.aug;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+172;Tyrique George;eng ENG;Chelsea;20-078;2006;4;0;145;01.jun;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
+173;Tyrique George;eng ENG;Everton;20-078;2006;7;1;134;01.mai;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+174;Morgan Gibbs-White;eng ENG;Nottingham Forest;26-086;2000;33;32;2,807;31.2;12;2;14;11;1;1;1;0;0.38;0.06;0.45;0.35;0.42;Matches
+175;Jamie Gittens;eng ENG;Chelsea;21-258;2004;16;5;495;05.mai;0;2;2;0;0;0;0;0;0.00;0.36;0.36;0.00;0.36;Matches
 Rk;Player;Nation;Squad;Age;Born;MP;Starts;Min;90s;Gls;Ast;G+A;G-PK;PK;PKatt;CrdY;CrdR;Gls;Ast;G+A;G-PK;G+A-PK;Matches
-176;Toti Gomes;pt POR;Wolves;27-045;1999;14;13;1,039;11.mai;0;0;0;0;0;0;2;1;0.00;0.00;0.00;0.00;0.00;Matches
-177;Diego Gómez;py PAR;Brighton;22-340;2003;25;20;1,676;18.jun;5;0;5;5;0;0;6;0;0.27;0.00;0.27;0.27;0.27;Matches
-178;Joe Gomez;eng ENG;Liverpool;28-283;1997;14;5;391;04.mar;0;2;2;0;0;0;2;0;0.00;0.46;0.46;0.00;0.46;Matches
-179;Nicolás González;es ESP;Manchester City;24-058;2002;21;15;1,376;15.mar;1;0;1;1;0;0;6;0;0.07;0.00;0.07;0.07;0.07;Matches
-180;Anthony Gordon;eng ENG;Newcastle United;25-006;2001;22;20;1,464;16.mar;3;2;5;1;2;2;3;1;0.18;0.12;0.31;0.06;0.18;Matches
-181;Ryan Gravenberch;nl NED;Liverpool;23-290;2002;26;26;2,293;25.mai;4;3;7;4;0;0;4;0;0.16;0.12;0.27;0.16;0.27;Matches
-182;Archie Gray;eng ENG;Tottenham Hotspur;19-355;2006;18;14;1,111;12.mar;2;1;3;2;0;0;5;0;0.16;0.08;0.24;0.16;0.24;Matches
-183;Jack Grealish;eng ENG;Everton;30-173;1995;20;18;1,627;18.jan;2;6;8;2;0;0;5;1;0.11;0.33;0.44;0.11;0.44;Matches
-184;Pascal Groß;de GER;Brighton;34-260;1991;9;8;736;08.feb;1;1;2;1;0;0;2;0;0.12;0.12;0.24;0.12;0.24;Matches
-185;Brajan Gruda;de GER;Brighton;21-275;2004;18;8;719;8.0;1;1;2;1;0;0;2;0;0.13;0.13;0.25;0.13;0.25;Matches
-186;Ilia Gruev;bg BUL;Leeds United;25-300;2000;19;14;1,186;13.feb;0;3;3;0;0;0;3;0;0.00;0.23;0.23;0.00;0.23;Matches
-187;Gabriel Gudmundsson;se SWE;Leeds United;26-307;1999;27;26;2,235;24.aug;0;0;0;0;0;0;4;0;0.00;0.00;0.00;0.00;0.00;Matches
-188;Marc Guéhi;eng ENG;Crystal Palace;25-232;2000;20;20;1,8;20.0;2;2;4;2;0;0;4;0;0.10;0.10;0.20;0.10;0.20;Matches
-189;Marc Guéhi;eng ENG;Manchester City;25-232;2000;6;6;540;6.0;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
-190;Evann Guessand;ci CIV;Crystal Palace;24-244;2001;4;1;144;01.jun;1;1;2;1;0;0;0;0;0.62;0.62;jan.25;0.62;jan.25;Matches
-191;Evann Guessand;ci CIV;Aston Villa;24-244;2001;13;6;588;06.mai;0;1;1;0;0;0;0;0;0.00;0.15;0.15;0.00;0.15;Matches
-192;Luis Guilherme;br BRA;West Ham United;20-021;2006;5;1;125;01.apr;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-193;Bruno Guimarães;br BRA;Newcastle United;28-106;1997;23;22;2,017;22.apr;9;4;13;7;2;2;5;0;0.40;0.18;0.58;0.31;0.49;Matches
-194;Marc Guiu;es ESP;Sunderland;20-057;2006;2;0;15;0.2;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-195;Marc Guiu;es ESP;Chelsea;20-057;2006;7;1;238;02.jun;0;1;1;0;0;0;1;0;0.00;0.38;0.38;0.00;0.38;Matches
-196;Angus Gunn;sct SCO;Nottingham Forest;30-039;1996;1;0;45;0.5;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-197;Malo Gusto;fr FRA;Chelsea;22-287;2003;25;17;1,577;17.mai;2;2;4;2;0;0;4;1;0.11;0.11;0.23;0.11;0.23;Matches
-198;Joško Gvardiol;hr CRO;Manchester City;24-038;2002;16;15;1,302;14.mai;2;2;4;2;0;0;2;0;0.14;0.14;0.28;0.14;0.28;Matches
-199;Viktor Gyökeres;se SWE;Arsenal;27-271;1998;27;22;1,804;20.0;10;0;10;8;2;2;4;0;0.50;0.00;0.50;0.40;0.40;Matches
-200;Erling Haaland;no NOR;Manchester City;25-224;2000;27;26;2,233;24.aug;22;7;29;19;3;4;1;0;0.89;0.28;jan.17;0.77;01.mai;Matches
+176;Wilfried Gnonto;it ITA;Leeds United;22-169;2003;19;4;455;05.jan;0;1;1;0;0;0;3;0;0.00;0.20;0.20;0.00;0.20;Matches
+177;Angel Gomes;eng ENG;Wolves;25-235;2000;9;6;381;04.feb;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+178;João Gomes;br BRA;Wolves;25-070;2001;31;28;2,471;27.mai;1;1;2;1;0;0;9;0;0.04;0.04;0.07;0.04;0.07;Matches
+179;Rodrigo Gomes;pt POR;Wolves;22-290;2003;17;6;656;07.mar;3;0;3;3;0;0;0;0;0.41;0.00;0.41;0.41;0.41;Matches
+180;Toti Gomes;pt POR;Wolves;27-097;1999;15;14;1,129;12.mai;0;0;0;0;0;0;2;1;0.00;0.00;0.00;0.00;0.00;Matches
+181;Diego Gómez;py PAR;Brighton;23-027;2003;30;25;2,036;22.jun;5;1;6;5;0;0;9;0;0.22;0.04;0.27;0.22;0.27;Matches
+182;Joe Gomez;eng ENG;Liverpool;28-335;1997;17;6;522;05.aug;0;2;2;0;0;0;2;0;0.00;0.34;0.34;0.00;0.34;Matches
+183;Nicolás González;es ESP;Manchester City;24-110;2002;23;15;1,405;15.jun;1;0;1;1;0;0;6;0;0.06;0.00;0.06;0.06;0.06;Matches
+184;Anthony Gordon;eng ENG;Newcastle United;25-058;2001;26;24;1,795;19.sep;6;2;8;3;3;3;3;1;0.30;0.10;0.40;0.15;0.25;Matches
+185;Ryan Gravenberch;nl NED;Liverpool;23-342;2002;31;30;2,653;29.mai;4;3;7;4;0;0;5;0;0.14;0.10;0.24;0.14;0.24;Matches
+186;Archie Gray;eng ENG;Tottenham Hotspur;20-042;2006;23;18;1,469;16.mar;2;2;4;2;0;0;5;0;0.12;0.12;0.25;0.12;0.25;Matches
+187;Jack Grealish;eng ENG;Everton;30-225;1995;20;18;1,627;18.jan;2;6;8;2;0;0;5;1;0.11;0.33;0.44;0.11;0.44;Matches
+188;Pascal Groß;de GER;Brighton;34-312;1991;15;14;1,276;14.feb;1;3;4;1;0;0;2;0;0.07;0.21;0.28;0.07;0.28;Matches
+189;Brajan Gruda;de GER;Brighton;21-327;2004;18;8;719;8.0;1;1;2;1;0;0;2;0;0.13;0.13;0.25;0.13;0.25;Matches
+190;Ilia Gruev;bg BUL;Leeds United;25-352;2000;23;15;1,323;14.jul;0;3;3;0;0;0;3;0;0.00;0.20;0.20;0.00;0.20;Matches
+191;Gabriel Gudmundsson;se SWE;Leeds United;26-359;1999;32;31;2,631;29.2;0;0;0;0;0;0;6;1;0.00;0.00;0.00;0.00;0.00;Matches
+192;Marc Guéhi;eng ENG;Crystal Palace;25-284;2000;20;20;1,8;20.0;2;2;4;2;0;0;4;0;0.10;0.10;0.20;0.10;0.20;Matches
+193;Marc Guéhi;eng ENG;Manchester City;25-284;2000;11;11;990;11.0;1;0;1;1;0;0;2;0;0.09;0.00;0.09;0.09;0.09;Matches
+194;Evann Guessand;ci CIV;Aston Villa;24-296;2001;13;6;588;06.mai;0;1;1;0;0;0;0;0;0.00;0.15;0.15;0.00;0.15;Matches
+195;Evann Guessand;ci CIV;Crystal Palace;24-296;2001;6;3;300;03.mar;1;1;2;1;0;0;0;0;0.30;0.30;0.60;0.30;0.60;Matches
+196;Luis Guilherme;br BRA;West Ham United;20-073;2006;5;1;125;01.apr;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+197;Bruno Guimarães;br BRA;Newcastle United;28-158;1997;24;22;2,046;22.jul;9;4;13;7;2;2;5;0;0.40;0.18;0.57;0.31;0.48;Matches
+198;Marc Guiu;es ESP;Sunderland;20-109;2006;2;0;15;0.2;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+199;Marc Guiu;es ESP;Chelsea;20-109;2006;8;1;257;02.sep;0;1;1;0;0;0;1;0;0.00;0.35;0.35;0.00;0.35;Matches
+200;Angus Gunn;sct SCO;Nottingham Forest;30-091;1996;1;0;45;0.5;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
 Rk;Player;Nation;Squad;Age;Born;MP;Starts;Min;90s;Gls;Ast;G+A;G-PK;PK;PKatt;CrdY;CrdR;Gls;Ast;G+A;G-PK;G+A-PK;Matches
-201;Lewis Hall;eng ENG;Newcastle United;21-175;2004;21;16;1,483;16.mai;1;1;2;1;0;0;2;0;0.06;0.06;0.12;0.06;0.12;Matches
-202;Jack Harrison;eng ENG;Leeds United;29-102;1996;11;1;269;3.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-203;Quilindschy Hartman;nl NED;Burnley;24-108;2001;15;15;1,337;14.sep;0;4;4;0;0;0;1;0;0.00;0.27;0.27;0.00;0.27;Matches
-204;Jorrel Hato;nl NED;Chelsea;19-360;2006;13;4;458;05.jan;0;0;0;0;0;0;4;0;0.00;0.00;0.00;0.00;0.00;Matches
-205;Kai Havertz;de GER;Arsenal;26-264;1999;4;2;172;01.sep;0;1;1;0;0;0;0;0;0.00;0.52;0.52;0.00;0.52;Matches
-206;Ayden Heaven;eng ENG;Manchester Utd;19-161;2006;13;8;645;07.feb;0;1;1;0;0;0;2;0;0.00;0.14;0.14;0.00;0.14;Matches
-207;Jan Paul van Hecke;nl NED;Brighton;25-267;2000;26;26;2,31;25.jul;3;2;5;3;0;0;7;0;0.12;0.08;0.19;0.12;0.19;Matches
-208;Hwang Hee-chan;kr KOR;Wolves;30-035;1996;20;15;1,149;12.aug;2;1;3;1;1;1;3;0;0.16;0.08;0.23;0.08;0.16;Matches
-209;George Hemmings;eng ENG;Aston Villa;18-363;2007;2;0;27;0.3;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-210;Dean Henderson;eng ENG;Crystal Palace;28-355;1997;28;28;2,52;28.0;0;0;0;0;0;0;3;0;0.00;0.00;0.00;0.00;0.00;Matches
-211;Jordan Henderson;eng ENG;Brentford;35-258;1990;26;18;1,579;17.mai;1;3;4;1;0;0;4;0;0.06;0.17;0.23;0.06;0.23;Matches
-212;Rico Henry;jm JAM;Brentford;28-237;1997;24;13;1,308;14.mai;0;1;1;0;0;0;2;0;0.00;0.07;0.07;0.00;0.07;Matches
-213;Mads Hermansen;dk DEN;West Ham United;25-234;2000;8;8;720;8.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-214;Aaron Hickey;sct SCO;Brentford;23-265;2002;18;7;599;06.jul;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
-215;James Hill;eng ENG;Bournemouth;24-051;2002;19;12;1,206;13.apr;0;3;3;0;0;0;2;0;0.00;0.22;0.22;0.00;0.22;Matches
-216;Piero Hincapié;ec ECU;Arsenal;24-052;2002;19;16;1,396;15.mai;1;1;2;1;0;0;2;0;0.06;0.06;0.13;0.06;0.13;Matches
-217;Jack Hinshelwood;eng ENG;Brighton;20-325;2005;17;10;939;10.apr;1;2;3;1;0;0;0;0;0.10;0.19;0.29;0.10;0.29;Matches
-218;Ki-Jana Hoever;nl NED;Wolves;24-043;2002;8;6;425;04.jul;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-219;Harry Howell;eng ENG;Brighton;17-154;2008;2;1;80;0.9;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-220;Callum Hudson-Odoi;eng ENG;Nottingham Forest;25-115;2000;26;18;1,609;17.sep;3;1;4;3;0;0;0;0;0.17;0.06;0.22;0.17;0.22;Matches
-221;Will Hughes;eng ENG;Crystal Palace;30-319;1995;25;14;1,232;13.jul;0;0;0;0;0;0;6;0;0.00;0.00;0.00;0.00;0.00;Matches
-222;Trai Hume;nir NIR;Sunderland;23-349;2002;28;26;2,311;25.jul;0;1;1;0;0;0;7;0;0.00;0.04;0.04;0.00;0.04;Matches
-223;Bashir Humphreys;eng ENG;Burnley;22-352;2003;12;10;972;10.aug;0;0;0;0;0;0;4;0;0.00;0.00;0.00;0.00;0.00;Matches
-224;Omari Hutchinson;eng ENG;Nottingham Forest;22-123;2003;22;11;1,163;12.sep;1;3;4;1;0;0;0;0;0.08;0.23;0.31;0.08;0.31;Matches
-225;Igor;br BRA;West Ham United;28-023;1998;4;1;105;01.feb;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+201;Malo Gusto;fr FRA;Chelsea;22-339;2003;31;23;1,997;22.feb;2;3;5;2;0;0;4;1;0.09;0.14;0.23;0.09;0.23;Matches
+202;Joško Gvardiol;hr CRO;Manchester City;24-090;2002;16;15;1,302;14.mai;2;2;4;2;0;0;2;0;0.14;0.14;0.28;0.14;0.28;Matches
+203;Viktor Gyökeres;se SWE;Arsenal;27-323;1998;31;24;1,988;22.jan;12;0;12;9;3;3;5;0;0.54;0.00;0.54;0.41;0.41;Matches
+204;Erling Haaland;no NOR;Manchester City;25-276;2000;32;31;2,683;29.aug;24;7;31;21;3;4;2;0;0.81;0.23;01.apr;0.70;0.94;Matches
+205;Lewis Hall;eng ENG;Newcastle United;21-227;2004;26;21;1,888;21.0;1;1;2;1;0;0;3;0;0.05;0.05;0.10;0.05;0.10;Matches
+206;Jack Harrison;eng ENG;Leeds United;29-154;1996;11;1;269;3.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+207;Quilindschy Hartman;nl NED;Burnley;24-160;2001;20;20;1,761;19.jun;0;5;5;0;0;0;1;0;0.00;0.26;0.26;0.00;0.26;Matches
+208;Jorrel Hato;nl NED;Chelsea;20-047;2006;19;9;917;10.feb;0;0;0;0;0;0;5;0;0.00;0.00;0.00;0.00;0.00;Matches
+209;Kai Havertz;de GER;Arsenal;26-316;1999;8;5;407;04.mai;1;1;2;1;0;0;0;0;0.22;0.22;0.44;0.22;0.44;Matches
+210;Ayden Heaven;eng ENG;Manchester Utd;19-213;2006;15;9;744;08.mar;0;1;1;0;0;0;2;0;0.00;0.12;0.12;0.00;0.12;Matches
+211;Jan Paul van Hecke;nl NED;Brighton;25-319;2000;32;32;2,85;31.jul;3;3;6;3;0;0;8;0;0.09;0.09;0.19;0.09;0.19;Matches
+212;Hwang Hee-chan;kr KOR;Wolves;30-087;1996;22;15;1,185;13.feb;2;1;3;1;1;1;3;0;0.15;0.08;0.23;0.08;0.15;Matches
+213;George Hemmings;eng ENG;Aston Villa;19-050;2007;2;0;27;0.3;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+214;Dean Henderson;eng ENG;Crystal Palace;29-042;1997;31;31;2,79;31.0;0;0;0;0;0;0;3;0;0.00;0.00;0.00;0.00;0.00;Matches
+215;Jordan Henderson;eng ENG;Brentford;35-310;1990;29;21;1,82;20.feb;1;3;4;1;0;0;4;0;0.05;0.15;0.20;0.05;0.20;Matches
+216;Rico Henry;jm JAM;Brentford;28-289;1997;25;14;1,328;14.aug;0;1;1;0;0;0;2;0;0.00;0.07;0.07;0.00;0.07;Matches
+217;Mads Hermansen;dk DEN;West Ham United;25-286;2000;13;13;1,17;13.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+218;Aaron Hickey;sct SCO;Brentford;23-317;2002;18;7;599;06.jul;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+219;James Hill;eng ENG;Bournemouth;24-103;2002;25;18;1,746;19.apr;0;3;3;0;0;0;3;0;0.00;0.15;0.15;0.00;0.15;Matches
+220;Piero Hincapié;ec ECU;Arsenal;24-104;2002;22;18;1,593;17.jul;1;2;3;1;0;0;2;0;0.06;0.11;0.17;0.06;0.17;Matches
+221;Jack Hinshelwood;eng ENG;Brighton;21-012;2005;23;16;1,413;15.jul;2;3;5;2;0;0;0;0;0.13;0.19;0.32;0.13;0.32;Matches
+222;Ki-Jana Hoever;nl NED;Wolves;24-095;2002;8;6;425;04.jul;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+223;Harry Howell;eng ENG;Brighton;18-003;2008;3;1;94;1.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+224;Callum Hudson-Odoi;eng ENG;Nottingham Forest;25-167;2000;30;21;1,841;20.mai;3;4;7;3;0;0;0;0;0.15;0.20;0.34;0.15;0.34;Matches
+225;Will Hughes;eng ENG;Crystal Palace;31-006;1995;29;17;1,422;15.aug;0;0;0;0;0;0;7;0;0.00;0.00;0.00;0.00;0.00;Matches
 Rk;Player;Nation;Squad;Age;Born;MP;Starts;Min;90s;Gls;Ast;G+A;G-PK;PK;PKatt;CrdY;CrdR;Gls;Ast;G+A;G-PK;G+A-PK;Matches
-226;Tim Iroegbunam;eng ENG;Everton;22-245;2003;20;12;1,019;11.mar;0;2;2;0;0;0;8;0;0.00;0.18;0.18;0.00;0.18;Matches
-227;Andy Irving;sct SCO;West Ham United;25-293;2000;7;2;158;01.aug;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-228;Alexander Isak;se SWE;Liverpool;26-162;1999;10;6;504;05.jun;2;1;3;2;0;0;0;0;0.36;0.18;0.54;0.36;0.54;Matches
-229;Wilson Isidor;fr FRA;Sunderland;25-187;2000;25;11;1,033;11.mai;4;0;4;4;0;0;1;0;0.35;0.00;0.35;0.35;0.35;Matches
-230;Alex Iwobi;ng NGA;Fulham;29-303;1996;22;22;1,861;20.jul;4;3;7;4;0;0;2;0;0.19;0.15;0.34;0.19;0.34;Matches
-231;Daniel James;wls WAL;Leeds United;28-112;1997;13;4;391;04.mar;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-232;Reece James;eng ENG;Chelsea;26-084;1999;25;18;1,716;19.jan;2;4;6;2;0;0;4;0;0.10;0.21;0.31;0.10;0.31;Matches
-233;Vitaly Janelt;de GER;Brentford;27-296;1998;22;13;1,261;14.0;1;4;5;1;0;0;7;0;0.07;0.29;0.36;0.07;0.36;Matches
-234;Mathias Jensen;dk DEN;Brentford;30-060;1996;26;16;1,383;15.apr;2;1;3;2;0;0;2;0;0.13;0.07;0.20;0.13;0.20;Matches
-235;Gabriel Jesus;br BRA;Arsenal;28-333;1997;11;2;313;03.mai;2;0;2;2;0;0;2;0;0.58;0.00;0.58;0.58;0.58;Matches
-236;Igor Jesus;br BRA;Nottingham Forest;25-005;2001;27;19;1,59;17.jul;2;2;4;2;0;0;0;0;0.11;0.11;0.23;0.11;0.23;Matches
-237;Álex Jiménez;es ESP;Bournemouth;20-298;2005;24;20;1,766;19.jun;1;0;1;1;0;0;8;0;0.05;0.00;0.05;0.05;0.05;Matches
-238;Raúl Jiménez;mx MEX;Fulham;34-301;1991;27;23;1,846;20.mai;8;3;11;5;3;3;5;0;0.39;0.15;0.54;0.24;0.39;Matches
-239;Jamaldeen Jimoh;eng ENG;Aston Villa;19-151;2006;1;0;9;0.1;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-240;João Pedro;br BRA;Chelsea;24-157;2001;28;24;2,06;22.sep;11;4;15;11;0;0;3;0;0.48;0.17;0.66;0.48;0.66;Matches
-241;Joelinton;br BRA;Newcastle United;29-200;1996;21;18;1,484;16.mai;2;1;3;2;0;0;7;0;0.12;0.06;0.18;0.12;0.18;Matches
-242;John;br BRA;Nottingham Forest;30-017;1996;5;5;437;04.sep;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
-243;Brennan Johnson;wls WAL;Tottenham Hotspur;24-283;2001;16;6;610;06.aug;2;0;2;2;0;0;2;0;0.30;0.00;0.30;0.30;0.30;Matches
-244;Brennan Johnson;wls WAL;Crystal Palace;24-283;2001;9;6;523;05.aug;0;1;1;0;0;0;2;0;0.00;0.17;0.17;0.00;0.17;Matches
-245;Sam Johnstone;eng ENG;Wolves;32-342;1993;12;12;1,08;12.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-246;Curtis Jones;eng ENG;Liverpool;25-031;2001;24;11;1,201;13.mar;0;1;1;0;0;0;1;0;0.00;0.07;0.07;0.00;0.07;Matches
-247;Eli Junior Kroupi;fr FRA;Bournemouth;19-252;2006;23;13;1,044;11.jun;8;0;8;8;0;0;3;0;0.69;0.00;0.69;0.69;0.69;Matches
-248;Hamed Junior Traorè;ci CIV;Bournemouth;26-014;2000;1;0;17;0.2;0;1;1;0;0;0;0;0;0.00;mai.29;mai.29;0.00;mai.29;Matches
-249;James Justin;eng ENG;Leeds United;28-007;1998;19;11;1,018;11.mar;1;1;2;1;0;0;2;0;0.09;0.09;0.18;0.09;0.18;Matches
-250;Filip Jørgensen;dk DEN;Chelsea;23-320;2002;2;1;174;01.sep;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+226;Trai Hume;nir NIR;Sunderland;24-036;2002;33;29;2,618;29.jan;1;1;2;1;0;0;9;0;0.03;0.03;0.07;0.03;0.07;Matches
+227;Bashir Humphreys;eng ENG;Burnley;23-039;2003;17;15;1,404;15.jun;0;0;0;0;0;0;5;0;0.00;0.00;0.00;0.00;0.00;Matches
+228;Omari Hutchinson;eng ENG;Nottingham Forest;22-175;2003;26;14;1,438;16.0;1;4;5;1;0;0;1;0;0.06;0.25;0.31;0.06;0.31;Matches
+229;Igor;br BRA;West Ham United;28-075;1998;4;1;105;01.feb;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+230;Tim Iroegbunam;eng ENG;Everton;22-297;2003;24;13;1,127;12.mai;0;2;2;0;0;0;8;0;0.00;0.16;0.16;0.00;0.16;Matches
+231;Andy Irving;sct SCO;West Ham United;25-345;2000;7;2;158;01.aug;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+232;Alexander Isak;se SWE;Liverpool;26-214;1999;12;7;597;06.jun;2;1;3;2;0;0;0;0;0.30;0.15;0.45;0.30;0.45;Matches
+233;Wilson Isidor;ht HAI;Sunderland;25-239;2000;28;11;1,076;12.0;5;0;5;5;0;0;1;0;0.42;0.00;0.42;0.42;0.42;Matches
+234;Alex Iwobi;ng NGA;Fulham;29-355;1996;27;27;2,263;25.jan;4;3;7;4;0;0;3;0;0.16;0.12;0.28;0.16;0.28;Matches
+235;Daniel James;wls WAL;Leeds United;28-164;1997;15;4;416;04.jun;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+236;Reece James;eng ENG;Chelsea;26-136;1999;27;20;1,896;21.jan;2;4;6;2;0;0;4;0;0.09;0.19;0.28;0.09;0.28;Matches
+237;Vitaly Janelt;de GER;Brentford;27-348;1998;22;13;1,261;14.0;1;4;5;1;0;0;7;0;0.07;0.29;0.36;0.07;0.36;Matches
+238;Mathias Jensen;dk DEN;Brentford;30-112;1996;31;21;1,833;20.apr;2;1;3;2;0;0;3;0;0.10;0.05;0.15;0.10;0.15;Matches
+239;Gabriel Jesus;br BRA;Arsenal;29-020;1997;12;2;328;03.jun;2;0;2;2;0;0;2;0;0.55;0.00;0.55;0.55;0.55;Matches
+240;Igor Jesus;br BRA;Nottingham Forest;25-057;2001;32;23;1,932;21.mai;4;3;7;4;0;0;0;0;0.19;0.14;0.33;0.19;0.33;Matches
+241;Álex Jiménez;es ESP;Bournemouth;20-350;2005;30;25;2,227;24.jul;1;0;1;1;0;0;10;0;0.04;0.00;0.04;0.04;0.04;Matches
+242;Raúl Jiménez;mx MEX;Fulham;34-353;1991;32;25;2,009;22.mar;9;3;12;5;4;4;5;0;0.40;0.13;0.54;0.22;0.36;Matches
+243;Jamaldeen Jimoh;eng ENG;Aston Villa;19-203;2006;1;0;9;0.1;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+244;João Pedro;br BRA;Chelsea;24-209;2001;32;28;2,391;26.jun;14;5;19;14;0;0;4;0;0.53;0.19;0.72;0.53;0.72;Matches
+245;Joelinton;br BRA;Newcastle United;29-252;1996;25;21;1,771;19.jul;2;1;3;2;0;0;10;0;0.10;0.05;0.15;0.10;0.15;Matches
+246;John;br BRA;Nottingham Forest;30-069;1996;5;5;437;04.sep;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+247;Brennan Johnson;wls WAL;Tottenham Hotspur;24-335;2001;16;6;610;06.aug;2;0;2;2;0;0;2;0;0.30;0.00;0.30;0.30;0.30;Matches
+248;Brennan Johnson;wls WAL;Crystal Palace;24-335;2001;13;9;766;08.mai;0;1;1;0;0;0;4;0;0.00;0.12;0.12;0.00;0.12;Matches
+249;Sam Johnstone;eng ENG;Wolves;33-029;1993;12;12;1,08;12.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+250;Curtis Jones;eng ENG;Liverpool;25-083;2001;29;13;1,491;16.jun;0;1;1;0;0;0;1;0;0.00;0.06;0.06;0.00;0.06;Matches
 Rk;Player;Nation;Squad;Age;Born;MP;Starts;Min;90s;Gls;Ast;G+A;G-PK;PK;PKatt;CrdY;CrdR;Gls;Ast;G+A;G-PK;G+A-PK;Matches
-251;Ferdi Kadioglu;tr TUR;Brighton;26-146;1999;27;24;2,233;24.aug;0;0;0;0;0;0;5;0;0.00;0.00;0.00;0.00;0.00;Matches
-252;Sasa Kalajdzic;at AUT;Wolves;28-238;1997;1;0;15;0.2;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-253;Arnaud Kalimuendo;fr FRA;Nottingham Forest;24-041;2002;9;0;96;01.jan;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-254;Daichi Kamada;jp JPN;Crystal Palace;29-209;1996;18;16;1,378;15.mar;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
-255;Boubacar Kamara;fr FRA;Aston Villa;26-099;1999;18;17;1,411;15.jul;1;3;4;1;0;0;5;0;0.06;0.19;0.26;0.06;0.26;Matches
-256;Mohamadou Kanté;fr FRA;West Ham United;20-163;2005;5;0;27;0.3;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-257;Michael Kayode;it ITA;Brentford;21-235;2004;27;27;2,358;26.feb;0;0;0;0;0;0;6;0;0.00;0.00;0.00;0.00;0.00;Matches
-258;Michael Keane;eng ENG;Everton;33-050;1993;24;22;1,949;21.jul;3;0;3;3;0;0;0;1;0.14;0.00;0.14;0.14;0.14;Matches
-259;Caoimhín Kelleher;ie IRL;Brentford;27-099;1998;27;27;2,43;27.0;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
-260;Milos Kerkez;hu HUN;Liverpool;22-115;2003;26;23;1,889;21.0;1;1;2;1;0;0;4;0;0.05;0.05;0.10;0.05;0.10;Matches
-261;Kevin;br BRA;Fulham;23-057;2003;23;8;908;10.jan;1;1;2;1;0;0;1;0;0.10;0.10;0.20;0.10;0.20;Matches
-262;Abdukodir Khusanov;uz UZB;Manchester City;22-001;2004;13;8;788;08.aug;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
-263;Max Kilman;eng ENG;West Ham United;28-283;1997;21;17;1,561;17.mar;0;0;0;0;0;0;4;0;0.00;0.00;0.00;0.00;0.00;Matches
-264;Joshua King;eng ENG;Fulham;19-058;2007;22;11;935;10.apr;0;1;1;0;0;0;3;0;0.00;0.10;0.10;0.00;0.10;Matches
-265;Justin Kluivert;nl NED;Bournemouth;26-301;1999;18;10;919;10.feb;2;0;2;2;0;0;4;0;0.20;0.00;0.20;0.20;0.20;Matches
-266;Joe Knight;eng ENG;Brighton;20-162;2005;1;0;1;0.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-267;Randal Kolo Muani;fr FRA;Tottenham Hotspur;27-087;1998;20;14;1,149;12.aug;1;0;1;1;0;0;2;0;0.08;0.00;0.08;0.08;0.08;Matches
-268;Ibrahima Konaté;fr FRA;Liverpool;26-281;1999;27;27;2,326;25.aug;1;0;1;1;0;0;5;0;0.04;0.00;0.04;0.04;0.04;Matches
-269;Ezri Konsa;eng ENG;Aston Villa;28-130;1997;27;27;2,405;26.jul;0;0;0;0;0;0;0;1;0.00;0.00;0.00;0.00;0.00;Matches
-270;Charalampos Kostoulas;gr GRE;Brighton;18-276;2007;16;2;305;03.apr;2;1;3;2;0;0;2;0;0.59;0.30;0.89;0.59;0.89;Matches
-271;Mateo Kovačić;hr CRO;Manchester City;31-300;1994;1;0;5;0.1;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-272;Emil Krafth;se SWE;Newcastle United;31-212;1994;1;1;45;0.5;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-273;Ladislav Krejčí;cz CZE;Wolves;26-316;1999;22;21;1,857;20.jun;2;1;3;2;0;0;4;1;0.10;0.05;0.15;0.10;0.15;Matches
-274;Mohammed Kudus;gh GHA;Tottenham Hotspur;25-212;2000;19;19;1,535;17.jan;2;5;7;2;0;0;3;0;0.12;0.29;0.41;0.12;0.41;Matches
-275;Jonah Kusi-Asare;se SWE;Fulham;18-241;2007;5;0;34;0.4;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+251;Eli Junior Kroupi;fr FRA;Bournemouth;19-304;2006;29;17;1,378;15.mar;11;0;11;10;1;1;5;0;0.72;0.00;0.72;0.65;0.65;Matches
+252;Hamed Junior Traorè;ci CIV;Bournemouth;26-066;2000;1;0;17;0.2;0;1;1;0;0;0;0;0;0.00;mai.29;mai.29;0.00;mai.29;Matches
+253;James Justin;eng ENG;Leeds United;28-059;1998;25;17;1,541;17.jan;2;1;3;2;0;0;4;0;0.12;0.06;0.18;0.12;0.18;Matches
+254;Filip Jørgensen;dk DEN;Chelsea;24-007;2002;3;2;264;02.sep;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+255;Ferdi Kadioglu;tr TUR;Brighton;26-198;1999;33;30;2,773;30.aug;1;0;1;1;0;0;6;0;0.03;0.00;0.03;0.03;0.03;Matches
+256;Sasa Kalajdzic;at AUT;Wolves;28-290;1997;1;0;15;0.2;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+257;Arnaud Kalimuendo;fr FRA;Nottingham Forest;24-093;2002;9;0;96;01.jan;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+258;Daichi Kamada;jp JPN;Crystal Palace;29-261;1996;22;17;1,526;17.0;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
+259;Boubacar Kamara;fr FRA;Aston Villa;26-151;1999;18;17;1,411;15.jul;1;3;4;1;0;0;5;0;0.06;0.19;0.26;0.06;0.26;Matches
+260;Mohamadou Kanté;fr FRA;West Ham United;20-215;2005;9;0;44;0.5;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+261;Michael Kayode;it ITA;Brentford;21-287;2004;32;32;2,808;31.2;1;1;2;1;0;0;6;0;0.03;0.03;0.06;0.03;0.06;Matches
+262;Michael Keane;eng ENG;Everton;33-102;1993;28;24;2,141;23.aug;3;0;3;3;0;0;0;1;0.13;0.00;0.13;0.13;0.13;Matches
+263;Caoimhín Kelleher;ie IRL;Brentford;27-151;1998;32;32;2,88;32.0;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+264;Milos Kerkez;hu HUN;Liverpool;22-167;2003;29;25;2,033;22.jun;2;1;3;2;0;0;4;0;0.09;0.04;0.13;0.09;0.13;Matches
+265;Kevin;br BRA;Fulham;23-109;2003;23;8;908;10.jan;1;1;2;1;0;0;1;0;0.10;0.10;0.20;0.10;0.20;Matches
+266;Abdukodir Khusanov;uz UZB;Manchester City;22-053;2004;18;12;1,162;12.sep;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
+267;Max Kilman;eng ENG;West Ham United;28-335;1997;21;17;1,561;17.mar;0;0;0;0;0;0;4;0;0.00;0.00;0.00;0.00;0.00;Matches
+268;Joshua King;eng ENG;Fulham;19-110;2007;27;15;1,208;13.apr;1;2;3;1;0;0;3;0;0.07;0.15;0.22;0.07;0.22;Matches
+269;Antonín Kinský;cz CZE;Tottenham Hotspur;23-041;2003;2;2;180;2.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+270;Justin Kluivert;nl NED;Bournemouth;26-353;1999;18;10;919;10.feb;2;0;2;2;0;0;4;0;0.20;0.00;0.20;0.20;0.20;Matches
+271;Joe Knight;eng ENG;Brighton;20-214;2005;1;0;1;0.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+272;Randal Kolo Muani;fr FRA;Tottenham Hotspur;27-139;1998;25;17;1,377;15.mar;1;1;2;1;0;0;2;0;0.07;0.07;0.13;0.07;0.13;Matches
+273;Ibrahima Konaté;fr FRA;Liverpool;26-333;1999;31;31;2,66;29.jun;1;0;1;1;0;0;6;0;0.03;0.00;0.03;0.03;0.03;Matches
+274;Ezri Konsa;eng ENG;Aston Villa;28-182;1997;31;31;2,765;30.jul;0;0;0;0;0;0;0;1;0.00;0.00;0.00;0.00;0.00;Matches
+275;Charalampos Kostoulas;gr GRE;Brighton;18-328;2007;17;2;314;03.mai;2;1;3;2;0;0;2;0;0.57;0.29;0.86;0.57;0.86;Matches
 Rk;Player;Nation;Squad;Age;Born;MP;Starts;Min;90s;Gls;Ast;G+A;G-PK;PK;PKatt;CrdY;CrdR;Gls;Ast;G+A;G-PK;G+A-PK;Matches
-276;Shea Lacey;eng ENG;Manchester Utd;18-322;2007;2;0;14;0.2;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-277;Maxence Lacroix;fr FRA;Crystal Palace;25-330;2000;27;27;2,395;26.jun;1;2;3;1;0;0;3;1;0.04;0.08;0.11;0.04;0.11;Matches
-278;Senne Lammens;be BEL;Manchester Utd;23-238;2002;22;22;1,98;22.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-279;Jamaal Lascelles;eng ENG;Newcastle United;32-111;1993;2;0;21;0.2;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-280;Josh Laurent;eng ENG;Burnley;30-300;1995;25;14;1,39;15.apr;1;0;1;1;0;0;6;0;0.06;0.00;0.06;0.06;0.06;Matches
-281;Roméo Lavia;be BEL;Chelsea;22-055;2004;5;1;124;01.apr;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-282;Enzo Le Fée;fr FRA;Sunderland;26-027;2000;27;25;2,205;24.mai;4;4;8;1;3;4;5;0;0.16;0.16;0.33;0.04;0.20;Matches
-283;Bernd Leno;de GER;Fulham;33-363;1992;28;28;2,52;28.0;0;0;0;0;0;0;3;0;0.00;0.00;0.00;0.00;0.00;Matches
-284;Jefferson Lerma;co COL;Crystal Palace;31-128;1994;23;12;1,165;12.sep;0;2;2;0;0;0;6;0;0.00;0.15;0.15;0.00;0.15;Matches
-285;Rico Lewis;eng ENG;Manchester City;21-101;2004;10;3;317;03.mai;0;1;1;0;0;0;1;0;0.00;0.28;0.28;0.00;0.28;Matches
-286;Keane Lewis-Potter;eng ENG;Brentford;25-008;2001;26;13;1,161;12.sep;3;1;4;3;0;0;1;0;0.23;0.08;0.31;0.23;0.31;Matches
-287;Myles Lewis-Skelly;eng ENG;Arsenal;19-157;2006;14;1;321;03.jun;0;0;0;0;0;0;3;0;0.00;0.00;0.00;0.00;0.00;Matches
-288;Matthijs de Ligt;nl NED;Manchester Utd;26-202;1999;13;13;1,17;13.0;1;0;1;1;0;0;0;0;0.08;0.00;0.08;0.08;0.08;Matches
-289;Pedro Lima;br BRA;Wolves;19-244;2006;3;0;4;0.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-290;Victor Lindelöf;se SWE;Aston Villa;31-228;1994;12;6;578;06.apr;0;1;1;0;0;0;0;0;0.00;0.16;0.16;0.00;0.16;Matches
-291;Valentino Livramento;eng ENG;Newcastle United;23-110;2002;13;11;1,049;11.jul;0;1;1;0;0;0;1;0;0.00;0.09;0.09;0.00;0.09;Matches
-292;Sean Longstaff;eng ENG;Leeds United;28-123;1997;17;10;947;10.mai;1;2;3;1;0;0;2;0;0.10;0.19;0.29;0.10;0.29;Matches
-293;Fer López;es ESP;Wolves;21-282;2004;9;2;235;02.jun;0;1;1;0;0;0;1;0;0.00;0.38;0.38;0.00;0.38;Matches
-294;Lucas;br BRA;Burnley;24-343;2001;13;11;997;11.jan;0;0;0;0;0;0;0;1;0.00;0.00;0.00;0.00;0.00;Matches
-295;Lorenzo Lucca;it ITA;Nottingham Forest;25-173;2000;3;1;121;01.mar;1;0;1;1;0;0;0;0;0.74;0.00;0.74;0.74;0.74;Matches
-296;Florentino Luís;pt POR;Burnley;26-195;1999;23;19;1,598;17.aug;0;2;2;0;0;0;4;0;0.00;0.11;0.11;0.00;0.11;Matches
-297;Douglas Luiz;br BRA;Aston Villa;27-297;1998;5;5;394;04.apr;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-298;Douglas Luiz;br BRA;Nottingham Forest;27-297;1998;8;5;315;03.mai;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
-299;Saša Lukić;rs SRB;Fulham;29-201;1996;19;15;1,21;13.apr;1;2;3;1;0;0;6;0;0.07;0.15;0.22;0.07;0.22;Matches
-300;Ian Maatsen;nl NED;Aston Villa;23-357;2002;22;12;1,165;12.sep;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
+276;Mateo Kovačić;hr CRO;Manchester City;31-352;1994;2;0;15;0.2;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+277;Emil Krafth;se SWE;Newcastle United;31-264;1994;1;1;45;0.5;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+278;Ladislav Krejčí;cz CZE;Wolves;27-003;1999;26;25;2,201;24.mai;2;1;3;2;0;0;5;1;0.08;0.04;0.12;0.08;0.12;Matches
+279;Mohammed Kudus;gh GHA;Tottenham Hotspur;25-264;2000;19;19;1,535;17.jan;2;5;7;2;0;0;3;0;0.12;0.29;0.41;0.12;0.41;Matches
+280;Jonah Kusi-Asare;se SWE;Fulham;18-293;2007;5;0;34;0.4;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+281;Shea Lacey;eng ENG;Manchester Utd;19-009;2007;2;0;14;0.2;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+282;Maxence Lacroix;fr FRA;Crystal Palace;26-017;2000;30;30;2,665;29.jun;1;2;3;1;0;0;3;1;0.03;0.07;0.10;0.03;0.10;Matches
+283;Senne Lammens;be BEL;Manchester Utd;23-290;2002;27;27;2,43;27.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+284;Jamaal Lascelles;eng ENG;Newcastle United;32-163;1993;2;0;21;0.2;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+285;Josh Laurent;eng ENG;Burnley;30-352;1995;30;17;1,679;18.jul;1;0;1;1;0;0;7;1;0.05;0.00;0.05;0.05;0.05;Matches
+286;Roméo Lavia;be BEL;Chelsea;22-107;2004;11;3;325;03.jun;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+287;Enzo Le Fée;fr FRA;Sunderland;26-079;2000;31;28;2,481;27.jun;4;5;9;1;3;4;5;0;0.15;0.18;0.33;0.04;0.22;Matches
+288;Bernd Leno;de GER;Fulham;34-050;1992;33;33;2,97;33.0;0;0;0;0;0;0;3;0;0.00;0.00;0.00;0.00;0.00;Matches
+289;Jefferson Lerma;co COL;Crystal Palace;31-180;1994;26;15;1,435;15.sep;0;2;2;0;0;0;6;0;0.00;0.13;0.13;0.00;0.13;Matches
+290;Rico Lewis;eng ENG;Manchester City;21-153;2004;10;3;317;03.mai;0;1;1;0;0;0;1;0;0.00;0.28;0.28;0.00;0.28;Matches
+291;Keane Lewis-Potter;eng ENG;Brentford;25-060;2001;31;17;1,525;16.sep;3;2;5;3;0;0;1;0;0.18;0.12;0.30;0.18;0.30;Matches
+292;Myles Lewis-Skelly;eng ENG;Arsenal;19-209;2006;15;2;411;04.jun;0;0;0;0;0;0;3;0;0.00;0.00;0.00;0.00;0.00;Matches
+293;Matthijs de Ligt;nl NED;Manchester Utd;26-254;1999;13;13;1,17;13.0;1;0;1;1;0;0;0;0;0.08;0.00;0.08;0.08;0.08;Matches
+294;Pedro Lima;br BRA;Wolves;19-296;2006;4;0;49;0.5;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+295;Victor Lindelöf;se SWE;Aston Villa;31-280;1994;13;7;668;07.apr;0;1;1;0;0;0;0;0;0.00;0.13;0.13;0.00;0.13;Matches
+296;Valentino Livramento;eng ENG;Newcastle United;23-162;2002;17;14;1,328;14.aug;0;1;1;0;0;0;1;0;0.00;0.07;0.07;0.00;0.07;Matches
+297;Sean Longstaff;eng ENG;Leeds United;28-175;1997;20;10;960;10.jul;2;2;4;2;0;0;2;0;0.19;0.19;0.37;0.19;0.37;Matches
+298;Fer López;es ESP;Wolves;21-334;2004;9;2;235;02.jun;0;1;1;0;0;0;1;0;0.00;0.38;0.38;0.00;0.38;Matches
+299;Lucas;br BRA;Burnley;25-030;2001;16;12;1,113;12.apr;0;0;0;0;0;0;0;1;0.00;0.00;0.00;0.00;0.00;Matches
+300;Lorenzo Lucca;it ITA;Nottingham Forest;25-225;2000;3;1;121;01.mar;1;0;1;1;0;0;0;0;0.74;0.00;0.74;0.74;0.74;Matches
 Rk;Player;Nation;Squad;Age;Born;MP;Starts;Min;90s;Gls;Ast;G+A;G-PK;PK;PKatt;CrdY;CrdR;Gls;Ast;G+A;G-PK;G+A-PK;Matches
-301;Alexis Mac Allister;ar ARG;Liverpool;27-068;1998;27;23;1,91;21.feb;2;2;4;2;0;0;4;0;0.09;0.09;0.19;0.09;0.19;Matches
-302;Noni Madueke;eng ENG;Arsenal;23-357;2002;19;11;835;09.mar;2;1;3;2;0;0;0;0;0.22;0.11;0.32;0.22;0.32;Matches
-303;Gabriel Magalhães;br BRA;Arsenal;28-073;1997;23;22;1,986;22.jan;3;4;7;3;0;0;3;0;0.14;0.18;0.32;0.14;0.32;Matches
-304;Soungoutou Magassa;fr FRA;West Ham United;22-145;2003;17;11;906;10.jan;1;0;1;1;0;0;3;0;0.10;0.00;0.10;0.10;0.10;Matches
-305;Harry Maguire;eng ENG;Manchester Utd;32-362;1993;15;11;946;10.mai;1;1;2;1;0;0;2;0;0.10;0.10;0.19;0.10;0.19;Matches
-306;Kobbie Mainoo;eng ENG;Manchester Utd;20-317;2005;19;7;867;09.jun;0;2;2;0;0;0;0;0;0.00;0.21;0.21;0.00;0.21;Matches
-307;Tyrell Malacia;nl NED;Manchester Utd;26-197;1999;1;0;3;0.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-308;Donyell Malen;nl NED;Aston Villa;27-052;1999;21;5;656;07.mar;4;1;5;4;0;0;0;0;0.55;0.14;0.69;0.55;0.69;Matches
-309;Giorgi Mamardashvili;ge GEO;Liverpool;25-154;2000;5;5;450;5.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-310;Reinildo Mandava;mz MOZ;Sunderland;32-040;1994;17;17;1,427;15.sep;0;1;1;0;0;0;6;1;0.00;0.06;0.06;0.00;0.06;Matches
-311;Mateus Mane;pt POR;Wolves;18-167;2007;18;12;1,172;13.0;2;1;3;2;0;0;0;0;0.15;0.08;0.23;0.15;0.23;Matches
-312;Bendito Mantato;eng ENG;Manchester Utd;18-036;2008;1;0;16;0.2;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-313;Solly March;eng ENG;Brighton;31-225;1994;1;0;5;0.1;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-314;Omar Marmoush;eg EGY;Manchester City;27-023;1999;16;6;513;05.jul;1;2;3;1;0;0;1;0;0.18;0.35;0.53;0.18;0.53;Matches
-315;Callum Marshall;nir NIR;West Ham United;21-094;2004;2;0;60;0.7;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-316;Gabriel Martinelli;br BRA;Arsenal;24-257;2001;23;8;765;08.mai;1;2;3;1;0;0;2;0;0.12;0.24;0.35;0.12;0.35;Matches
-317;Emiliano Martínez;ar ARG;Aston Villa;33-181;1992;24;24;2,115;23.mai;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
-318;Lisandro Martínez;ar ARG;Manchester Utd;28-043;1998;14;9;908;10.jan;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-319;Arthur Masuaku;cd COD;Sunderland;32-115;1993;3;2;126;01.apr;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
-320;Pape Matar Sarr;sn SEN;Tottenham Hotspur;23-169;2002;19;10;1,057;11.jul;2;3;5;2;0;0;1;0;0.17;0.26;0.43;0.17;0.43;Matches
-321;Jean-Philippe Mateta;fr FRA;Crystal Palace;28-247;1997;23;23;1,904;21.feb;8;0;8;5;3;3;2;0;0.38;0.00;0.38;0.24;0.24;Matches
-322;Konstantinos Mavropanos;gr GRE;West Ham United;28-081;1997;21;18;1,723;19.jan;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
-323;Eliezer Mayenda;es ESP;Sunderland;20-298;2005;16;7;689;07.jul;2;0;2;2;0;0;0;0;0.26;0.00;0.26;0.26;0.26;Matches
-324;Ezra Mayers;bb BRB;West Ham United;19-045;2007;6;0;117;01.mar;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-325;Noussair Mazraoui;ma MAR;Manchester Utd;28-108;1997;14;6;534;05.sep;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
+301;Florentino Luís;pt POR;Burnley;26-247;1999;27;22;1,826;20.mar;0;2;2;0;0;0;6;0;0.00;0.10;0.10;0.00;0.10;Matches
+302;Douglas Luiz;br BRA;Aston Villa;27-349;1998;9;6;503;05.jun;1;0;1;1;0;0;0;0;0.18;0.00;0.18;0.18;0.18;Matches
+303;Douglas Luiz;br BRA;Nottingham Forest;27-349;1998;8;5;315;03.mai;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
+304;Saša Lukić;rs SRB;Fulham;29-253;1996;22;16;1,374;15.mar;1;2;3;1;0;0;7;0;0.07;0.13;0.20;0.07;0.20;Matches
+305;Ian Maatsen;nl NED;Aston Villa;24-044;2002;26;14;1,346;15.0;0;1;1;0;0;0;2;0;0.00;0.07;0.07;0.00;0.07;Matches
+306;Alexis Mac Allister;ar ARG;Liverpool;27-120;1998;32;26;2,208;24.mai;2;2;4;2;0;0;5;0;0.08;0.08;0.16;0.08;0.16;Matches
+307;Noni Madueke;eng ENG;Arsenal;24-044;2002;22;14;993;11.0;2;1;3;2;0;0;0;0;0.18;0.09;0.27;0.18;0.27;Matches
+308;Gabriel Magalhães;br BRA;Arsenal;28-125;1997;27;26;2,346;26.jan;3;4;7;3;0;0;4;0;0.12;0.15;0.27;0.12;0.27;Matches
+309;Soungoutou Magassa;fr FRA;West Ham United;22-197;2003;21;11;978;10.sep;1;0;1;1;0;0;4;0;0.09;0.00;0.09;0.09;0.09;Matches
+310;Harry Maguire;eng ENG;Manchester Utd;33-049;1993;18;14;1,203;13.apr;1;1;2;1;0;0;3;1;0.07;0.07;0.15;0.07;0.15;Matches
+311;Kobbie Mainoo;eng ENG;Manchester Utd;21-004;2005;23;11;1,212;13.mai;0;2;2;0;0;0;1;0;0.00;0.15;0.15;0.00;0.15;Matches
+312;Tyrell Malacia;nl NED;Manchester Utd;26-249;1999;2;0;9;0.1;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+313;Donyell Malen;nl NED;Aston Villa;27-104;1999;21;5;656;07.mar;4;1;5;4;0;0;0;0;0.55;0.14;0.69;0.55;0.69;Matches
+314;Giorgi Mamardashvili;ge GEO;Liverpool;25-206;2000;8;8;687;07.jun;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+315;Reinildo Mandava;mz MOZ;Sunderland;32-092;1994;20;19;1,58;17.jun;0;1;1;0;0;0;7;1;0.00;0.06;0.06;0.00;0.06;Matches
+316;Mateus Mane;pt POR;Wolves;18-219;2007;22;14;1,369;15.feb;2;1;3;2;0;0;0;0;0.13;0.07;0.20;0.13;0.20;Matches
+317;Bendito Mantato;eng ENG;Manchester Utd;18-088;2008;1;0;16;0.2;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+318;Solly March;eng ENG;Brighton;31-277;1994;1;0;5;0.1;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+319;Omar Marmoush;eg EGY;Manchester City;27-075;1999;17;7;572;06.apr;1;3;4;1;0;0;2;0;0.16;0.47;0.63;0.16;0.63;Matches
+320;Callum Marshall;nir NIR;West Ham United;21-146;2004;2;0;60;0.7;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+321;Gabriel Martinelli;br BRA;Arsenal;24-309;2001;27;10;952;10.jun;1;3;4;1;0;0;2;0;0.09;0.28;0.38;0.09;0.38;Matches
+322;Emiliano Martínez;ar ARG;Aston Villa;33-233;1992;28;28;2,475;27.mai;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
+323;Lisandro Martínez;ar ARG;Manchester Utd;28-095;1998;15;10;963;10.jul;0;0;0;0;0;0;0;1;0.00;0.00;0.00;0.00;0.00;Matches
+324;Arthur Masuaku;cd COD;Sunderland;32-167;1993;3;2;126;01.apr;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+325;Pape Matar Sarr;sn SEN;Tottenham Hotspur;23-221;2002;23;13;1,356;15.jan;2;3;5;2;0;0;2;0;0.13;0.20;0.33;0.13;0.33;Matches
 Rk;Player;Nation;Squad;Age;Born;MP;Starts;Min;90s;Gls;Ast;G+A;G-PK;PK;PKatt;CrdY;CrdR;Gls;Ast;G+A;G-PK;G+A-PK;Matches
-326;Bryan Mbeumo;cm CMR;Manchester Utd;26-207;1999;23;23;1,968;21.sep;9;3;12;9;0;0;3;0;0.41;0.14;0.55;0.41;0.55;Matches
-327;James Mcatee;eng ENG;Nottingham Forest;23-135;2002;8;1;176;2.0;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
-328;John McGinn;sct SCO;Aston Villa;31-135;1994;22;21;1,591;17.jul;3;2;5;3;0;0;3;0;0.17;0.11;0.28;0.17;0.28;Matches
-329;Dwight McNeil;eng ENG;Everton;26-100;1999;15;8;701;07.aug;0;1;1;0;0;0;1;0;0.00;0.13;0.13;0.00;0.13;Matches
-330;Hannibal Mejbri;tn TUN;Burnley;23-040;2003;20;9;812;9.0;1;3;4;1;0;0;6;0;0.11;0.33;0.44;0.11;0.44;Matches
-331;Mikel Merino;es ESP;Arsenal;29-253;1996;21;10;1,007;11.feb;4;3;7;4;0;0;1;0;0.36;0.27;0.63;0.36;0.63;Matches
-332;Antoni Milambo;nl NED;Brentford;20-333;2005;1;1;45;0.5;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-333;Nikola Milenković;rs SRB;Nottingham Forest;28-141;1997;28;28;2,52;28.0;0;0;0;0;0;0;5;0;0.00;0.00;0.00;0.00;0.00;Matches
-334;Lewis Miley;eng ENG;Newcastle United;19-305;2006;19;11;1,136;12.jun;1;3;4;1;0;0;0;0;0.08;0.24;0.32;0.08;0.32;Matches
-335;James Milner;eng ENG;Brighton;40-057;1986;17;4;561;06.feb;1;1;2;0;1;1;2;0;0.16;0.16;0.32;0.00;0.16;Matches
-336;Veljko Milosavljević;rs SRB;Bournemouth;18-247;2007;7;4;368;04.jan;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-337;Tyrone Mings;eng ENG;Aston Villa;32-354;1993;11;9;784;08.jul;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-338;Yankuba Minteh;gm GAM;Brighton;21-223;2004;24;18;1,637;18.feb;1;4;5;1;0;0;0;0;0.05;0.22;0.27;0.05;0.27;Matches
-339;Tyrick Mitchell;eng ENG;Crystal Palace;26-182;1999;28;28;2,487;27.jun;1;1;2;1;0;0;5;0;0.04;0.04;0.07;0.04;0.07;Matches
-340;Kaoru Mitoma;jp JPN;Brighton;28-286;1997;18;15;1,366;15.feb;2;1;3;2;0;0;3;0;0.13;0.07;0.20;0.13;0.20;Matches
-341;Morato;br BRA;Nottingham Forest;24-245;2001;14;10;940;10.apr;0;0;0;0;0;0;4;0;0.00;0.00;0.00;0.00;0.00;Matches
-342;Cristhian Mosquera;es ESP;Arsenal;21-248;2004;12;5;557;06.feb;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
-343;Yerson Mosquera;co COL;Wolves;24-304;2001;20;18;1,585;17.jun;0;0;0;0;0;0;10;0;0.00;0.00;0.00;0.00;0.00;Matches
-344;Mason Mount;eng ENG;Manchester Utd;27-051;1999;17;10;816;09.jan;3;0;3;3;0;0;0;0;0.33;0.00;0.33;0.33;0.33;Matches
-345;Divine Mukasa;eng ENG;Manchester City;18-192;2007;2;0;27;0.3;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-346;Nordi Mukiele;fr FRA;Sunderland;28-121;1997;25;25;2,163;24.0;1;3;4;1;0;0;4;0;0.04;0.12;0.17;0.04;0.17;Matches
-347;Romaine Mundle;eng ENG;Sunderland;22-312;2003;14;2;411;04.jun;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
-348;Marshall Munetsi;zw ZIM;Wolves;29-253;1996;13;9;875;09.jul;1;1;2;1;0;0;2;0;0.10;0.10;0.21;0.10;0.21;Matches
-349;Rodrigo Muniz;br BRA;Fulham;24-302;2001;11;4;443;04.sep;1;1;2;1;0;0;1;0;0.20;0.20;0.41;0.20;0.41;Matches
-350;Daniel Muñoz;co COL;Crystal Palace;29-280;1996;20;20;1,765;19.jun;3;2;5;3;0;0;5;0;0.15;0.10;0.25;0.15;0.25;Matches
+326;Jean-Philippe Mateta;fr FRA;Crystal Palace;28-299;1997;26;23;1,994;22.feb;10;0;10;6;4;4;2;0;0.45;0.00;0.45;0.27;0.27;Matches
+327;Konstantinos Mavropanos;gr GRE;West Ham United;28-133;1997;26;22;2,084;23.feb;3;0;3;3;0;0;2;0;0.13;0.00;0.13;0.13;0.13;Matches
+328;Eliezer Mayenda;es ESP;Sunderland;20-350;2005;19;8;758;08.apr;2;0;2;2;0;0;0;0;0.24;0.00;0.24;0.24;0.24;Matches
+329;Ezra Mayers;bb BRB;West Ham United;19-097;2007;6;0;117;01.mar;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+330;Noussair Mazraoui;ma MAR;Manchester Utd;28-160;1997;17;9;777;08.jun;0;0;0;0;0;0;3;0;0.00;0.00;0.00;0.00;0.00;Matches
+331;Bryan Mbeumo;cm CMR;Manchester Utd;26-259;1999;28;27;2,294;25.mai;9;3;12;9;0;0;4;0;0.35;0.12;0.47;0.35;0.47;Matches
+332;James Mcatee;eng ENG;Nottingham Forest;23-187;2002;10;1;180;2.0;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+333;John McGinn;sct SCO;Aston Villa;31-187;1994;26;25;1,886;21.0;4;3;7;4;0;0;4;0;0.19;0.14;0.33;0.19;0.33;Matches
+334;Dwight McNeil;eng ENG;Everton;26-152;1999;20;13;1,101;12.feb;0;1;1;0;0;0;1;0;0.00;0.08;0.08;0.00;0.08;Matches
+335;Hannibal Mejbri;tn TUN;Burnley;23-092;2003;23;12;990;11.0;1;3;4;1;0;0;7;0;0.09;0.27;0.36;0.09;0.36;Matches
+336;Mikel Merino;es ESP;Arsenal;29-305;1996;21;10;1,007;11.feb;4;3;7;4;0;0;1;0;0.36;0.27;0.63;0.36;0.63;Matches
+337;Antoni Milambo;nl NED;Brentford;21-020;2005;1;1;45;0.5;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+338;Nikola Milenković;rs SRB;Nottingham Forest;28-193;1997;33;33;2,97;33.0;0;0;0;0;0;0;6;0;0.00;0.00;0.00;0.00;0.00;Matches
+339;Lewis Miley;eng ENG;Newcastle United;19-357;2006;21;13;1,316;14.jun;1;4;5;1;0;0;0;0;0.07;0.27;0.34;0.07;0.34;Matches
+340;James Milner;eng ENG;Brighton;40-109;1986;19;6;726;08.jan;1;1;2;0;1;1;2;0;0.12;0.12;0.25;0.00;0.12;Matches
+341;Veljko Milosavljević;rs SRB;Bournemouth;18-299;2007;7;4;368;04.jan;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+342;Tyrone Mings;eng ENG;Aston Villa;33-041;1993;14;12;1,054;11.jul;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+343;Yankuba Minteh;gm GAM;Brighton;21-275;2004;30;23;2,077;23.jan;2;4;6;2;0;0;3;0;0.09;0.17;0.26;0.09;0.26;Matches
+344;Tyrick Mitchell;eng ENG;Crystal Palace;26-234;1999;32;32;2,846;31.6;1;2;3;1;0;0;5;0;0.03;0.06;0.09;0.03;0.09;Matches
+345;Kaoru Mitoma;jp JPN;Brighton;28-338;1997;23;17;1,573;17.mai;3;1;4;3;0;0;3;0;0.17;0.06;0.23;0.17;0.23;Matches
+346;Morato;br BRA;Nottingham Forest;24-297;2001;16;10;944;10.mai;0;0;0;0;0;0;4;0;0.00;0.00;0.00;0.00;0.00;Matches
+347;Cristhian Mosquera;es ESP;Arsenal;21-300;2004;16;7;761;08.mai;0;0;0;0;0;0;3;0;0.00;0.00;0.00;0.00;0.00;Matches
+348;Yerson Mosquera;co COL;Wolves;24-356;2001;23;20;1,776;19.jul;0;0;0;0;0;0;11;0;0.00;0.00;0.00;0.00;0.00;Matches
+349;Mason Mount;eng ENG;Manchester Utd;27-103;1999;19;10;827;09.feb;3;0;3;3;0;0;1;0;0.33;0.00;0.33;0.33;0.33;Matches
+350;Divine Mukasa;eng ENG;Manchester City;18-244;2007;2;0;27;0.3;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
 Rk;Player;Nation;Squad;Age;Born;MP;Starts;Min;90s;Gls;Ast;G+A;G-PK;PK;PKatt;CrdY;CrdR;Gls;Ast;G+A;G-PK;G+A-PK;Matches
-351;Murillo;br BRA;Nottingham Forest;23-241;2002;20;20;1,729;19.feb;1;0;1;1;0;0;3;0;0.05;0.00;0.05;0.05;0.05;Matches
-352;Alex Murphy;ie IRL;Newcastle United;21-250;2004;1;0;2;0.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-353;Jacob Murphy;eng ENG;Newcastle United;31-006;1995;23;13;1,137;12.jun;3;1;4;3;0;0;1;0;0.24;0.08;0.32;0.24;0.32;Matches
-354;Vitaliy Mykolenko;ua UKR;Everton;26-277;1999;23;23;2,058;22.sep;0;1;1;0;0;0;5;0;0.00;0.04;0.04;0.00;0.04;Matches
-355;David Møller Wolfe;no NOR;Wolves;23-313;2002;17;8;768;08.mai;0;2;2;0;0;0;1;0;0.00;0.23;0.23;0.00;0.23;Matches
-356;Iliman Ndiaye;sn SEN;Everton;25-361;2000;22;22;1,881;20.sep;5;2;7;3;2;2;2;0;0.24;0.10;0.33;0.14;0.24;Matches
-357;Dan Ndoye;ch SUI;Nottingham Forest;25-128;2000;21;14;1,116;12.apr;1;1;2;1;0;0;1;0;0.08;0.08;0.16;0.08;0.16;Matches
-358;Dan Neil;eng ENG;Sunderland;24-079;2001;3;0;14;0.2;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-359;Reiss Nelson;eng ENG;Brentford;26-082;1999;6;0;55;0.6;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-360;Pedro Neto;pt POR;Chelsea;25-358;2000;28;24;2,14;23.aug;5;4;9;5;0;0;4;1;0.21;0.17;0.38;0.21;0.38;Matches
-361;Luca Netz;de GER;Nottingham Forest;22-291;2003;2;0;50;0.6;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-362;Rio Ngumoha;eng ENG;Liverpool;17-185;2008;10;0;112;01.feb;1;0;1;1;0;0;0;0;0.80;0.00;0.80;0.80;0.80;Matches
-363;Eddie Nketiah;eng ENG;Crystal Palace;26-276;1999;12;2;424;04.jul;2;0;2;2;0;0;2;0;0.42;0.00;0.42;0.42;0.42;Matches
-364;Lukas Nmecha;de GER;Leeds United;27-078;1998;22;7;738;08.feb;6;1;7;4;2;3;0;0;0.73;0.12;0.85;0.49;0.61;Matches
-365;Matheus Nunes;pt POR;Manchester City;27-187;1998;25;23;2,085;23.feb;1;4;5;1;0;0;4;0;0.04;0.17;0.22;0.04;0.22;Matches
-366;Ethan Nwaneri;eng ENG;Arsenal;18-346;2007;6;0;171;01.sep;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-367;Trey Nyoni;eng ENG;Liverpool;18-245;2007;3;0;7;0.1;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-368;Christian Nørgaard;dk DEN;Arsenal;31-357;1994;5;0;50;0.6;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-369;Jake O'Brien;ie IRL;Everton;24-291;2001;27;25;2,278;25.mar;0;1;1;0;0;0;2;1;0.00;0.04;0.04;0.00;0.04;Matches
-370;Luke O'Nien;eng ENG;Sunderland;31-101;1994;5;0;24;0.3;0;0;0;0;0;0;0;1;0.00;0.00;0.00;0.00;0.00;Matches
-371;Matt O'Riley;dk DEN;Brighton;25-101;2000;3;2;186;02.jan;1;0;1;0;1;1;0;0;0.48;0.00;0.48;0.00;0.00;Matches
-372;Wilson Odobert;fr FRA;Tottenham Hotspur;21-094;2004;24;10;985;10.sep;0;2;2;0;0;0;0;0;0.00;0.18;0.18;0.00;0.18;Matches
-373;Noah Okafor;ch SUI;Leeds United;25-282;2000;23;15;1,273;14.jan;4;0;4;4;0;0;3;0;0.28;0.00;0.28;0.28;0.28;Matches
-374;Amadou Onana;be BEL;Aston Villa;24-198;2001;19;16;1,29;14.mar;2;0;2;2;0;0;2;0;0.14;0.00;0.14;0.14;0.14;Matches
-375;Frank Onyeka;ng NGA;Brentford;28-060;1998;6;0;92;1.0;0;1;1;0;0;0;0;0;0.00;0.98;0.98;0.00;0.98;Matches
+351;Nordi Mukiele;fr FRA;Sunderland;28-173;1997;27;27;2,334;25.sep;2;3;5;2;0;0;5;0;0.08;0.12;0.19;0.08;0.19;Matches
+352;Romaine Mundle;eng ENG;Sunderland;22-364;2003;14;2;411;04.jun;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+353;Marshall Munetsi;zw ZIM;Wolves;29-305;1996;13;9;875;09.jul;1;1;2;1;0;0;2;0;0.10;0.10;0.21;0.10;0.21;Matches
+354;Rodrigo Muniz;br BRA;Fulham;24-354;2001;16;7;730;08.jan;1;1;2;1;0;0;1;0;0.12;0.12;0.25;0.12;0.25;Matches
+355;Daniel Muñoz;co COL;Crystal Palace;29-332;1996;23;23;1,958;21.aug;3;2;5;3;0;0;6;0;0.14;0.09;0.23;0.14;0.23;Matches
+356;Murillo;br BRA;Nottingham Forest;23-293;2002;25;25;2,13;23.jul;1;0;1;1;0;0;5;0;0.04;0.00;0.04;0.04;0.04;Matches
+357;Alex Murphy;ie IRL;Newcastle United;21-302;2004;1;0;2;0.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+358;Jacob Murphy;eng ENG;Newcastle United;31-058;1995;28;15;1,364;15.feb;3;1;4;3;0;0;2;0;0.20;0.07;0.26;0.20;0.26;Matches
+359;Vitaliy Mykolenko;ua UKR;Everton;26-329;1999;28;28;2,508;27.sep;0;1;1;0;0;0;5;0;0.00;0.04;0.04;0.00;0.04;Matches
+360;David Møller Wolfe;no NOR;Wolves;24-000;2002;18;9;846;09.apr;0;2;2;0;0;0;1;0;0.00;0.21;0.21;0.00;0.21;Matches
+361;Iliman Ndiaye;sn SEN;Everton;26-048;2000;27;27;2,328;25.sep;6;3;9;4;2;2;2;0;0.23;0.12;0.35;0.15;0.27;Matches
+362;Dan Ndoye;ch SUI;Nottingham Forest;25-180;2000;24;14;1,173;13.0;1;1;2;1;0;0;1;0;0.08;0.08;0.15;0.08;0.15;Matches
+363;Dan Neil;eng ENG;Sunderland;24-131;2001;3;0;14;0.2;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+364;Reiss Nelson;eng ENG;Brentford;26-134;1999;8;0;106;01.feb;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+365;Pedro Neto;pt POR;Chelsea;26-045;2000;32;28;2,479;27.mai;5;4;9;5;0;0;4;1;0.18;0.15;0.33;0.18;0.33;Matches
+366;Luca Netz;de GER;Nottingham Forest;22-343;2003;2;0;50;0.6;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+367;Rio Ngumoha;eng ENG;Liverpool;17-237;2008;15;2;316;03.mai;2;0;2;2;0;0;0;0;0.57;0.00;0.57;0.57;0.57;Matches
+368;Eddie Nketiah;eng ENG;Crystal Palace;26-328;1999;12;2;424;04.jul;2;0;2;2;0;0;2;0;0.42;0.00;0.42;0.42;0.42;Matches
+369;Lukas Nmecha;de GER;Leeds United;27-130;1998;27;9;908;10.jan;6;1;7;4;2;3;0;0;0.59;0.10;0.69;0.40;0.50;Matches
+370;Matheus Nunes;pt POR;Manchester City;27-239;1998;30;28;2,535;28.feb;1;5;6;1;0;0;4;0;0.04;0.18;0.21;0.04;0.21;Matches
+371;Ethan Nwaneri;eng ENG;Arsenal;19-033;2007;6;0;171;01.sep;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+372;Trey Nyoni;eng ENG;Liverpool;18-297;2007;5;0;16;0.2;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+373;Christian Nørgaard;dk DEN;Arsenal;32-044;1994;6;0;61;0.7;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+374;Jake O'Brien;ie IRL;Everton;24-343;2001;32;30;2,728;30.mar;0;1;1;0;0;0;2;1;0.00;0.03;0.03;0.00;0.03;Matches
+375;Luke O'Nien;eng ENG;Sunderland;31-153;1994;10;4;411;04.jun;0;0;0;0;0;0;1;1;0.00;0.00;0.00;0.00;0.00;Matches
 Rk;Player;Nation;Squad;Age;Born;MP;Starts;Min;90s;Gls;Ast;G+A;G-PK;PK;PKatt;CrdY;CrdR;Gls;Ast;G+A;G-PK;G+A-PK;Matches
-376;Nehemiah Oriola;eng ENG;Brighton;18-264;2007;1;0;1;0.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-377;Stefan Ortega;de GER;Nottingham Forest;33-116;1992;3;3;270;3.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-378;William Osula;dk DEN;Newcastle United;22-210;2003;15;1;273;3.0;1;0;1;1;0;0;0;0;0.33;0.00;0.33;0.33;0.33;Matches
-379;Dango Ouattara;bf BFA;Brentford;24-019;2002;22;17;1,53;17.0;5;2;7;5;0;0;4;0;0.29;0.12;0.41;0.29;0.41;Matches
-380;Nico O’Reilly;eng ENG;Manchester City;20-346;2005;27;22;2,043;22.jul;4;3;7;4;0;0;4;0;0.18;0.13;0.31;0.18;0.31;Matches
-381;Pablo;br BRA;West Ham United;22-059;2004;5;3;252;02.aug;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-382;João Palhinha;pt POR;Tottenham Hotspur;30-236;1995;25;18;1,689;18.aug;3;2;5;3;0;0;6;0;0.16;0.11;0.27;0.16;0.27;Matches
-383;Cole Palmer;eng ENG;Chelsea;23-300;2002;17;15;1,153;12.aug;8;1;9;3;5;5;4;0;0.62;0.08;0.70;0.23;0.31;Matches
-384;Lucas Paquetá;br BRA;West Ham United;28-187;1997;18;18;1,511;16.aug;4;1;5;2;2;2;7;1;0.24;0.06;0.30;0.12;0.18;Matches
-385;Nathan Patterson;sct SCO;Everton;24-137;2001;6;3;240;02.jul;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-386;Myles Peart-Harris;eng ENG;Brentford;23-165;2002;1;0;1;0.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-387;Lucas Perri;br BRA;Leeds United;28-082;1997;16;16;1,44;16.0;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
-388;Đorđe Petrović;rs SRB;Bournemouth;26-145;1999;28;28;2,52;28.0;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
-389;Jordan Pickford;eng ENG;Everton;31-360;1994;28;28;2,52;28.0;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
-390;Ethan Pinnock;jm JAM;Brentford;32-277;1993;3;3;228;02.mai;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
-391;Yeremi Pino;es ESP;Crystal Palace;23-133;2002;26;21;1,71;19.0;2;1;3;2;0;0;4;0;0.11;0.05;0.16;0.11;0.16;Matches
-392;Joël Piroe;nl NED;Leeds United;26-212;1999;12;2;219;02.apr;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-393;Nick Pope;eng ENG;Newcastle United;33-317;1992;22;22;1,966;21.aug;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
-394;Pedro Porro;es ESP;Tottenham Hotspur;26-170;1999;24;22;1,913;21.mar;0;2;2;0;0;0;6;0;0.00;0.09;0.09;0.00;0.09;Matches
-395;Freddie Potts;eng ENG;West Ham United;22-171;2003;19;11;1,101;12.feb;0;1;1;0;0;0;1;0;0.00;0.08;0.08;0.00;0.08;Matches
-396;Aaron Ramsdale;eng ENG;Newcastle United;27-292;1998;7;6;554;06.feb;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-397;Jacob Ramsey;eng ENG;Newcastle United;24-278;2001;18;8;857;09.mai;2;1;3;2;0;0;3;0;0.21;0.11;0.32;0.21;0.32;Matches
-398;David Raya;es ESP;Arsenal;30-168;1995;29;29;2,61;29.0;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
-399;Harrison Reed;eng ENG;Fulham;31-034;1995;5;0;27;0.3;1;0;1;1;0;0;0;0;mar.33;0.00;mar.33;mar.33;mar.33;Matches
-400;Tijjani Reijnders;nl NED;Manchester City;27-216;1998;25;17;1,48;16.apr;5;2;7;5;0;0;2;0;0.30;0.12;0.43;0.30;0.43;Matches
+376;Matt O'Riley;dk DEN;Brighton;25-153;2000;6;2;204;02.mar;1;0;1;0;1;1;0;0;0.44;0.00;0.44;0.00;0.00;Matches
+377;Wilson Odobert;fr FRA;Tottenham Hotspur;21-146;2004;24;10;985;10.sep;0;2;2;0;0;0;0;0;0.00;0.18;0.18;0.00;0.18;Matches
+378;Noah Okafor;ch SUI;Leeds United;25-334;2000;27;18;1,497;16.jun;7;1;8;7;0;0;3;0;0.42;0.06;0.48;0.42;0.48;Matches
+379;Callum Olusesi;eng ENG;Tottenham Hotspur;19-096;2007;1;0;15;0.2;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+380;Amadou Onana;be BEL;Aston Villa;24-250;2001;24;21;1,74;19.mar;2;0;2;2;0;0;3;0;0.10;0.00;0.10;0.10;0.10;Matches
+381;Frank Onyeka;ng NGA;Brentford;28-112;1998;6;0;92;1.0;0;1;1;0;0;0;0;0;0.00;0.98;0.98;0.00;0.98;Matches
+382;Nehemiah Oriola;eng ENG;Brighton;18-316;2007;1;0;1;0.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+383;Stefan Ortega;de GER;Nottingham Forest;33-168;1992;3;3;270;3.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+384;William Osula;dk DEN;Newcastle United;22-262;2003;19;3;468;05.feb;4;0;4;4;0;0;0;0;0.77;0.00;0.77;0.77;0.77;Matches
+385;Dango Ouattara;bf BFA;Brentford;24-071;2002;27;21;1,894;21.0;5;3;8;5;0;0;4;0;0.24;0.14;0.38;0.24;0.38;Matches
+386;Nico O’Reilly;eng ENG;Manchester City;21-033;2005;31;26;2,376;26.apr;5;3;8;5;0;0;4;0;0.19;0.11;0.30;0.19;0.30;Matches
+387;Pablo;br BRA;West Ham United;22-111;2004;9;7;556;06.feb;0;1;1;0;0;0;0;0;0.00;0.16;0.16;0.00;0.16;Matches
+388;João Palhinha;pt POR;Tottenham Hotspur;30-288;1995;28;19;1,832;20.apr;3;2;5;3;0;0;6;0;0.15;0.10;0.25;0.15;0.25;Matches
+389;Cole Palmer;eng ENG;Chelsea;23-352;2002;22;20;1,597;17.jul;9;1;10;4;5;5;4;0;0.51;0.06;0.56;0.23;0.28;Matches
+390;Lucas Paquetá;br BRA;West Ham United;28-239;1997;18;18;1,511;16.aug;4;1;5;2;2;2;7;1;0.24;0.06;0.30;0.12;0.18;Matches
+391;Nathan Patterson;sct SCO;Everton;24-189;2001;6;3;240;02.jul;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+392;Myles Peart-Harris;eng ENG;Brentford;23-217;2002;1;0;1;0.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+393;Lucas Perri;br BRA;Leeds United;28-134;1997;16;16;1,44;16.0;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
+394;Đorđe Petrović;rs SRB;Bournemouth;26-197;1999;34;34;3,06;34.0;0;0;0;0;0;0;3;0;0.00;0.00;0.00;0.00;0.00;Matches
+395;Jordan Pickford;eng ENG;Everton;32-047;1994;33;33;2,97;33.0;0;0;0;0;0;0;4;0;0.00;0.00;0.00;0.00;0.00;Matches
+396;Ethan Pinnock;jm JAM;Brentford;32-329;1993;4;4;318;03.mai;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+397;Yeremi Pino;es ESP;Crystal Palace;23-185;2002;29;23;1,854;20.jun;2;1;3;2;0;0;4;0;0.10;0.05;0.15;0.10;0.15;Matches
+398;Joël Piroe;sr SUR;Leeds United;26-264;1999;14;2;228;02.mai;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+399;Nick Pope;eng ENG;Newcastle United;34-004;1992;22;22;1,966;21.aug;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+400;Pedro Porro;es ESP;Tottenham Hotspur;26-222;1999;29;27;2,346;26.jan;1;2;3;1;0;0;7;0;0.04;0.08;0.12;0.04;0.12;Matches
 Rk;Player;Nation;Squad;Age;Born;MP;Starts;Min;90s;Gls;Ast;G+A;G-PK;PK;PKatt;CrdY;CrdR;Gls;Ast;G+A;G-PK;G+A-PK;Matches
-401;Chadi Riad;ma MAR;Crystal Palace;22-258;2003;5;2;224;02.mai;0;1;1;0;0;0;2;0;0.00;0.40;0.40;0.00;0.40;Matches
-402;Declan Rice;eng ENG;Arsenal;27-047;1999;28;27;2,401;26.jul;4;5;9;4;0;0;2;0;0.15;0.19;0.34;0.15;0.34;Matches
-403;Chris Richards;us USA;Crystal Palace;25-339;2000;24;24;2,152;23.sep;1;0;1;1;0;0;3;0;0.04;0.00;0.04;0.04;0.04;Matches
-404;Richarlison;br BRA;Tottenham Hotspur;28-296;1997;23;13;1,339;14.sep;8;3;11;8;0;0;5;0;0.54;0.20;0.74;0.54;0.74;Matches
-405;Chris Rigg;eng ENG;Sunderland;18-257;2007;10;6;377;04.feb;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-406;Patrick Roberts;eng ENG;Sunderland;29-025;1997;1;0;28;0.3;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-407;Andrew Robertson;sct SCO;Liverpool;31-356;1994;16;5;644;07.feb;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-408;Antonee Robinson;us USA;Fulham;28-206;1997;12;9;804;08.sep;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-409;Kaden Rodney;eng ENG;Crystal Palace;21-146;2004;1;0;4;0.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-410;Joe Rodon;wls WAL;Leeds United;28-131;1997;26;26;2,275;25.mar;2;0;2;2;0;0;1;0;0.08;0.00;0.08;0.08;0.08;Matches
-411;Rodri;es ESP;Manchester City;29-253;1996;16;12;1,064;11.aug;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
-412;Guido Rodríguez;ar ARG;West Ham United;31-324;1994;6;2;180;2.0;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
-413;Robin Roefs;nl NED;Sunderland;23-044;2003;28;28;2,52;28.0;0;0;0;0;0;0;3;0;0.00;0.00;0.00;0.00;0.00;Matches
-414;Morgan Rogers;eng ENG;Aston Villa;23-219;2002;28;28;2,497;27.jul;8;5;13;8;0;0;5;0;0.29;0.18;0.47;0.29;0.47;Matches
-415;Merlin Röhl;de GER;Everton;23-240;2002;10;2;359;4.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-416;Cristian Romero;ar ARG;Tottenham Hotspur;27-309;1998;21;20;1,709;19.0;4;1;5;4;0;0;10;2;0.21;0.05;0.26;0.21;0.26;Matches
-417;Georginio Rutter;fr FRA;Brighton;23-316;2002;23;18;1,505;16.jul;2;2;4;2;0;0;2;0;0.12;0.12;0.24;0.12;0.24;Matches
-418;José Sá;pt POR;Wolves;33-044;1993;17;17;1,53;17.0;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
-419;Noah Sadiki;cd COD;Sunderland;21-075;2004;23;23;2,022;22.mai;0;0;0;0;0;0;6;0;0.00;0.00;0.00;0.00;0.00;Matches
-420;Bukayo Saka;eng ENG;Arsenal;24-178;2001;25;20;1,818;20.feb;5;3;8;4;1;1;1;0;0.25;0.15;0.40;0.20;0.35;Matches
-421;Mohamed Salah;eg EGY;Liverpool;33-260;1992;20;18;1,702;18.sep;4;6;10;3;1;1;1;0;0.21;0.32;0.53;0.16;0.48;Matches
-422;William Saliba;fr FRA;Arsenal;24-343;2001;24;23;1,984;22.0;1;0;1;1;0;0;1;0;0.05;0.00;0.05;0.05;0.05;Matches
-423;Robert Sánchez;es ESP;Chelsea;28-104;1997;27;27;2,344;26.0;0;1;1;0;0;0;3;1;0.00;0.04;0.04;0.00;0.04;Matches
-424;Jadon Sancho;eng ENG;Aston Villa;25-342;2000;17;7;669;07.apr;0;1;1;0;0;0;0;0;0.00;0.13;0.13;0.00;0.13;Matches
-425;Ibrahim Sangaré;ci CIV;Nottingham Forest;28-090;1997;20;18;1,495;16.jun;2;2;4;2;0;0;3;0;0.12;0.12;0.24;0.12;0.24;Matches
+401;Freddie Potts;eng ENG;West Ham United;22-223;2003;21;12;1,159;12.sep;0;1;1;0;0;0;1;0;0.00;0.08;0.08;0.00;0.08;Matches
+402;Aaron Ramsdale;eng ENG;Newcastle United;27-344;1998;12;11;1,004;11.feb;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
+403;Jacob Ramsey;eng ENG;Newcastle United;24-330;2001;23;12;1,149;12.aug;2;1;3;2;0;0;5;1;0.16;0.08;0.23;0.16;0.23;Matches
+404;David Raya;es ESP;Arsenal;30-220;1995;33;33;2,97;33.0;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+405;Rayan;br BRA;Bournemouth;19-263;2006;11;9;793;08.aug;3;2;5;3;0;0;1;0;0.34;0.23;0.57;0.34;0.57;Matches
+406;Harrison Reed;eng ENG;Fulham;31-086;1995;6;0;31;0.3;1;0;1;1;0;0;0;0;feb.90;0.00;feb.90;feb.90;feb.90;Matches
+407;Tijjani Reijnders;nl NED;Manchester City;27-268;1998;26;17;1,496;16.jun;5;2;7;5;0;0;2;0;0.30;0.12;0.42;0.30;0.42;Matches
+408;Chadi Riad;ma MAR;Crystal Palace;22-310;2003;6;3;314;03.mai;0;1;1;0;0;0;2;0;0.00;0.29;0.29;0.00;0.29;Matches
+409;Declan Rice;eng ENG;Arsenal;27-099;1999;32;31;2,761;30.jul;4;5;9;4;0;0;2;0;0.13;0.16;0.29;0.13;0.29;Matches
+410;Chris Richards;us USA;Crystal Palace;26-026;2000;28;28;2,512;27.sep;1;0;1;1;0;0;3;0;0.04;0.00;0.04;0.04;0.04;Matches
+411;Richarlison;br BRA;Tottenham Hotspur;28-348;1997;27;16;1,572;17.mai;9;3;12;9;0;0;5;0;0.52;0.17;0.69;0.52;0.69;Matches
+412;Chris Rigg;eng ENG;Sunderland;18-309;2007;15;10;701;07.aug;1;0;1;1;0;0;1;0;0.13;0.00;0.13;0.13;0.13;Matches
+413;Patrick Roberts;eng ENG;Sunderland;29-077;1997;1;0;28;0.3;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+414;Andrew Robertson;sct SCO;Liverpool;32-043;1994;21;8;950;10.jun;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+415;Antonee Robinson;us USA;Fulham;28-258;1997;17;13;1,122;12.mai;0;0;0;0;0;0;3;0;0.00;0.00;0.00;0.00;0.00;Matches
+416;Kaden Rodney;eng ENG;Crystal Palace;21-198;2004;1;0;4;0.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+417;Joe Rodon;wls WAL;Leeds United;28-183;1997;31;29;2,591;28.aug;2;0;2;2;0;0;1;0;0.07;0.00;0.07;0.07;0.07;Matches
+418;Rodri;es ESP;Manchester City;29-305;1996;20;16;1,421;15.aug;1;0;1;1;0;0;2;0;0.06;0.00;0.06;0.06;0.06;Matches
+419;Guido Rodríguez;ar ARG;West Ham United;32-011;1994;6;2;180;2.0;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+420;Robin Roefs;nl NED;Sunderland;23-096;2003;30;30;2,7;30.0;0;0;0;0;0;0;3;0;0.00;0.00;0.00;0.00;0.00;Matches
+421;Morgan Rogers;eng ENG;Aston Villa;23-271;2002;33;33;2,92;32.4;9;5;14;9;0;0;6;0;0.28;0.15;0.43;0.28;0.43;Matches
+422;Merlin Röhl;de GER;Everton;23-292;2002;12;2;366;04.jan;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+423;Cristian Romero;ar ARG;Tottenham Hotspur;27-361;1998;23;22;1,868;20.aug;4;1;5;4;0;0;11;2;0.19;0.05;0.24;0.19;0.24;Matches
+424;James Rowswell;eng ENG;Tottenham Hotspur;19-284;2006;1;0;1;0.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+425;Georginio Rutter;fr FRA;Brighton;24-003;2002;28;20;1,717;19.jan;3;3;6;3;0;0;2;0;0.16;0.16;0.31;0.16;0.31;Matches
 Rk;Player;Nation;Squad;Age;Born;MP;Starts;Min;90s;Gls;Ast;G+A;G-PK;PK;PKatt;CrdY;CrdR;Gls;Ast;G+A;G-PK;G+A-PK;Matches
-426;Andrey Santos;br BRA;Chelsea;21-303;2004;21;10;969;10.aug;0;0;0;0;0;0;4;0;0.00;0.00;0.00;0.00;0.00;Matches
-427;Ismaila Sarr;sn SEN;Crystal Palace;28-005;1998;18;18;1,545;17.feb;5;1;6;4;1;1;2;0;0.29;0.06;0.35;0.23;0.29;Matches
-428;Mamadou Sarr;sn SEN;Chelsea;20-185;2005;2;1;92;1.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-429;Sávio;br BRA;Manchester City;21-326;2004;16;5;564;06.mar;0;1;1;0;0;0;2;0;0.00;0.16;0.16;0.00;0.16;Matches
-430;Nicolò Savona;it ITA;Nottingham Forest;22-348;2003;14;11;1,028;11.apr;2;0;2;2;0;0;2;0;0.18;0.00;0.18;0.18;0.18;Matches
-431;Oliver Scarles;eng ENG;West Ham United;20-080;2005;12;9;656;07.mar;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
-432;Dane Scarlett;eng ENG;Tottenham Hotspur;21-343;2004;2;0;9;0.1;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-433;Kevin Schade;de GER;Brentford;24-095;2001;25;23;1,973;21.sep;7;3;10;7;0;1;6;1;0.32;0.14;0.46;0.32;0.46;Matches
-434;Fabian Schär;ch SUI;Newcastle United;34-072;1991;16;11;1,091;12.jan;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
-435;Alex Scott;eng ENG;Bournemouth;22-193;2003;28;25;2,04;22.jul;2;1;3;2;0;0;3;0;0.09;0.04;0.13;0.09;0.13;Matches
-436;Jenson Seelt;nl NED;Sunderland;22-283;2003;2;1;134;01.mai;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-437;Matz Sels;be BEL;Nottingham Forest;34-004;1992;21;20;1,768;19.jun;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
-438;Antoine Semenyo;gh GHA;Bournemouth;26-054;2000;20;20;1,798;20.0;10;3;13;9;1;2;6;0;0.50;0.15;0.65;0.45;0.60;Matches
-439;Antoine Semenyo;gh GHA;Manchester City;26-054;2000;7;7;625;06.sep;4;1;5;4;0;0;0;0;0.58;0.14;0.72;0.58;0.72;Matches
-440;Marcos Senesi;ar ARG;Bournemouth;28-296;1997;27;27;2,388;26.mai;0;4;4;0;0;0;8;0;0.00;0.15;0.15;0.00;0.15;Matches
-441;Benjamin Šeško;si SVN;Manchester Utd;22-275;2003;23;12;1,216;13.mai;8;1;9;8;0;0;1;0;0.59;0.07;0.67;0.59;0.67;Matches
-442;Ryan Sessegnon;eng ENG;Fulham;25-288;2000;21;18;1,601;17.aug;2;1;3;2;0;0;0;0;0.11;0.06;0.17;0.11;0.17;Matches
-443;Luke Shaw;eng ENG;Manchester Utd;30-233;1995;28;28;2,375;26.apr;0;1;1;0;0;0;4;0;0.00;0.04;0.04;0.00;0.04;Matches
-444;Bernardo Silva;pt POR;Manchester City;31-204;1994;28;24;2,081;23.jan;1;4;5;1;0;0;8;0;0.04;0.17;0.22;0.04;0.22;Matches
-445;Jota Silva;pt POR;Nottingham Forest;26-213;1999;1;0;12;0.1;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-446;Xavi Simons;nl NED;Tottenham Hotspur;22-315;2003;22;17;1,521;16.sep;1;4;5;1;0;0;4;1;0.06;0.24;0.30;0.06;0.30;Matches
-447;Adam Smith;eng ENG;Bournemouth;34-307;1991;16;10;730;08.jan;0;1;1;0;0;0;2;0;0.00;0.12;0.12;0.00;0.12;Matches
-448;Emile Smith Rowe;eng ENG;Fulham;25-217;2000;28;16;1,427;15.sep;3;0;3;3;0;0;1;0;0.19;0.00;0.19;0.19;0.19;Matches
-449;Dominic Solanke;eng ENG;Tottenham Hotspur;28-169;1997;9;5;529;05.sep;2;0;2;2;0;0;1;0;0.34;0.00;0.34;0.34;0.34;Matches
-450;Julio Soler;ar ARG;Bournemouth;21-014;2005;3;0;35;0.4;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+426;José Sá;pt POR;Wolves;33-096;1993;20;20;1,8;20.0;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
+427;Noah Sadiki;cd COD;Sunderland;21-127;2004;28;28;2,472;27.mai;0;1;1;0;0;0;8;0;0.00;0.04;0.04;0.00;0.04;Matches
+428;Bukayo Saka;eng ENG;Arsenal;24-230;2001;27;22;1,998;22.feb;6;3;9;5;1;1;1;0;0.27;0.14;0.41;0.23;0.36;Matches
+429;Mohamed Salah;eg EGY;Liverpool;33-312;1992;24;21;1,998;22.feb;7;6;13;6;1;1;1;0;0.32;0.27;0.59;0.27;0.54;Matches
+430;William Saliba;fr FRA;Arsenal;25-030;2001;27;26;2,254;25.0;1;0;1;1;0;0;1;0;0.04;0.00;0.04;0.04;0.04;Matches
+431;Robert Sánchez;es ESP;Chelsea;28-156;1997;32;32;2,794;31.0;0;1;1;0;0;0;3;1;0.00;0.03;0.03;0.00;0.03;Matches
+432;Jadon Sancho;eng ENG;Aston Villa;26-029;2000;20;8;774;08.jun;0;2;2;0;0;0;0;0;0.00;0.23;0.23;0.00;0.23;Matches
+433;Ibrahim Sangaré;ci CIV;Nottingham Forest;28-142;1997;25;23;1,945;21.jun;2;2;4;2;0;0;5;0;0.09;0.09;0.19;0.09;0.19;Matches
+434;Andrey Santos;br BRA;Chelsea;21-355;2004;24;11;1,075;11.sep;0;0;0;0;0;0;4;0;0.00;0.00;0.00;0.00;0.00;Matches
+435;Ismaila Sarr;sn SEN;Crystal Palace;28-057;1998;22;20;1,784;19.aug;7;1;8;5;2;2;2;0;0.35;0.05;0.40;0.25;0.30;Matches
+436;Mamadou Sarr;sn SEN;Chelsea;20-237;2005;2;1;92;1.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+437;Sávio;br BRA;Manchester City;22-013;2004;20;5;617;06.sep;0;1;1;0;0;0;2;0;0.00;0.15;0.15;0.00;0.15;Matches
+438;Nicolò Savona;it ITA;Nottingham Forest;23-035;2003;14;11;1,028;11.apr;2;0;2;2;0;0;2;0;0.18;0.00;0.18;0.18;0.18;Matches
+439;Oliver Scarles;eng ENG;West Ham United;20-132;2005;12;9;656;07.mar;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+440;Dane Scarlett;eng ENG;Tottenham Hotspur;22-030;2004;2;0;9;0.1;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+441;Kevin Schade;de GER;Brentford;24-147;2001;30;28;2,386;26.mai;7;3;10;7;0;1;6;1;0.26;0.11;0.38;0.26;0.38;Matches
+442;Fabian Schär;ch SUI;Newcastle United;34-124;1991;16;11;1,091;12.jan;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+443;Alex Scott;eng ENG;Bournemouth;22-245;2003;34;31;2,58;28.jul;3;1;4;3;0;0;4;0;0.10;0.03;0.14;0.10;0.14;Matches
+444;Jenson Seelt;nl NED;Sunderland;22-335;2003;2;1;134;01.mai;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+445;Matz Sels;be BEL;Nottingham Forest;34-056;1992;26;25;2,218;24.jun;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
+446;Antoine Semenyo;gh GHA;Bournemouth;26-106;2000;20;20;1,798;20.0;10;3;13;9;1;2;6;0;0.50;0.15;0.65;0.45;0.60;Matches
+447;Antoine Semenyo;gh GHA;Manchester City;26-106;2000;12;12;1,032;11.mai;5;1;6;5;0;0;1;0;0.44;0.09;0.52;0.44;0.52;Matches
+448;Marcos Senesi;ar ARG;Bournemouth;28-348;1997;33;33;2,928;32.5;0;5;5;0;0;0;8;0;0.00;0.15;0.15;0.00;0.15;Matches
+449;Benjamin Šeško;si SVN;Manchester Utd;22-327;2003;28;15;1,511;16.aug;9;1;10;9;0;0;2;0;0.54;0.06;0.60;0.54;0.60;Matches
+450;Ryan Sessegnon;eng ENG;Fulham;25-340;2000;26;19;1,743;19.apr;2;1;3;2;0;0;0;0;0.10;0.05;0.15;0.10;0.15;Matches
 Rk;Player;Nation;Squad;Age;Born;MP;Starts;Min;90s;Gls;Ast;G+A;G-PK;PK;PKatt;CrdY;CrdR;Gls;Ast;G+A;G-PK;G+A-PK;Matches
-451;Oliver Sonne;pe PER;Burnley;25-112;2000;7;1;169;01.sep;1;0;1;1;0;0;0;0;0.53;0.00;0.53;0.53;0.53;Matches
-452;Borna Sosa;hr CRO;Crystal Palace;28-040;1998;5;0;55;0.6;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-453;Tomáš Souček;cz CZE;West Ham United;31-003;1995;25;14;1,336;14.aug;4;0;4;4;0;0;2;1;0.27;0.00;0.27;0.27;0.27;Matches
-454;Souza;br BRA;Tottenham Hotspur;19-259;2006;2;0;47;0.5;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-455;Djed Spence;eng ENG;Tottenham Hotspur;25-205;2000;22;19;1,688;18.aug;0;0;0;0;0;0;4;0;0.00;0.00;0.00;0.00;0.00;Matches
-456;Anton Stach;de GER;Leeds United;27-107;1998;23;22;1,866;20.jul;4;3;7;4;0;0;3;0;0.19;0.14;0.34;0.19;0.34;Matches
-457;John Stones;eng ENG;Manchester City;31-278;1994;7;4;353;03.sep;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-458;Jørgen Strand Larsen;no NOR;Crystal Palace;26-024;2000;4;4;327;03.jun;2;0;2;2;0;0;1;0;0.55;0.00;0.55;0.55;0.55;Matches
-459;Jørgen Strand Larsen;no NOR;Wolves;26-024;2000;22;14;1,404;15.jun;1;1;2;0;1;2;2;0;0.06;0.06;0.13;0.00;0.06;Matches
-460;Pascal Struijk;nl NED;Leeds United;26-203;1999;25;24;2,169;24.jan;0;1;1;0;0;0;3;0;0.00;0.04;0.04;0.00;0.04;Matches
-461;Crysencio Summerville;nl NED;West Ham United;24-123;2001;23;21;1,766;19.jun;4;1;5;4;0;0;4;0;0.20;0.05;0.25;0.20;0.25;Matches
-462;Dominik Szoboszlai;hu HUN;Liverpool;25-128;2000;26;26;2,331;25.sep;4;3;7;4;0;1;6;1;0.15;0.12;0.27;0.15;0.27;Matches
-463;Jocelin Ta Bi;ci CIV;Sunderland;21-021;2005;1;1;38;0.4;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-464;Chemsdine Talbi;ma MAR;Sunderland;20-297;2005;21;12;1,152;12.aug;3;1;4;3;0;0;0;0;0.23;0.08;0.31;0.23;0.31;Matches
-465;Ao Tanaka;jp JPN;Leeds United;27-173;1998;20;7;746;08.mar;2;0;2;2;0;0;1;0;0.24;0.00;0.24;0.24;0.24;Matches
-466;James Tarkowski;eng ENG;Everton;33-103;1992;28;28;2,52;28.0;0;1;1;0;0;0;5;0;0.00;0.04;0.04;0.00;0.04;Matches
-467;Marcus Tavernier;eng ENG;Bournemouth;26-345;1999;24;21;1,852;20.jun;5;4;9;3;2;2;3;0;0.24;0.19;0.44;0.15;0.34;Matches
-468;Loum Tchaouna;fr FRA;Burnley;22-175;2003;21;9;820;09.jan;1;0;1;1;0;0;1;0;0.11;0.00;0.11;0.11;0.11;Matches
-469;Jackson Tchatchoua;cm CMR;Wolves;24-169;2001;26;15;1,525;16.sep;0;0;0;0;0;0;3;0;0.00;0.00;0.00;0.00;0.00;Matches
-470;Mathys Tel;fr FRA;Tottenham Hotspur;20-309;2005;21;6;676;07.mai;3;0;3;3;0;0;0;0;0.40;0.00;0.40;0.40;0.40;Matches
-471;Kenny Tete;nl NED;Fulham;30-144;1995;20;19;1,62;18.0;1;0;1;1;0;0;2;0;0.06;0.00;0.06;0.06;0.06;Matches
-472;Thiago;br BRA;Brentford;24-249;2001;28;27;2,382;26.mai;18;1;19;12;6;7;6;0;0.68;0.04;0.72;0.45;0.49;Matches
-473;Malick Thiaw;de GER;Newcastle United;24-206;2001;25;24;2,118;23.mai;4;0;4;4;0;0;3;0;0.17;0.00;0.17;0.17;0.17;Matches
-474;Youri Tielemans;be BEL;Aston Villa;28-299;1997;17;15;1,298;14.apr;0;4;4;0;0;0;0;0;0.00;0.28;0.28;0.00;0.28;Matches
-475;Jurriën Timber;nl NED;Arsenal;24-258;2001;28;26;2,327;25.sep;3;4;7;3;0;0;5;0;0.12;0.15;0.27;0.12;0.27;Matches
+451;Luke Shaw;eng ENG;Manchester Utd;30-285;1995;33;33;2,795;31.jan;0;1;1;0;0;0;6;0;0.00;0.03;0.03;0.00;0.03;Matches
+452;Bernardo Silva;pt POR;Manchester City;31-256;1994;33;29;2,505;27.aug;2;4;6;2;0;0;9;0;0.07;0.14;0.22;0.07;0.22;Matches
+453;Jota Silva;pt POR;Nottingham Forest;26-265;1999;1;0;12;0.1;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+454;Xavi Simons;nl NED;Tottenham Hotspur;23-002;2003;27;18;1,693;18.aug;2;5;7;2;0;0;5;1;0.11;0.27;0.37;0.11;0.37;Matches
+455;Adam Smith;eng ENG;Bournemouth;34-359;1991;19;11;809;9.0;0;1;1;0;0;0;3;0;0.00;0.11;0.11;0.00;0.11;Matches
+456;Emile Smith Rowe;eng ENG;Fulham;25-269;2000;32;17;1,577;17.mai;3;0;3;3;0;0;1;0;0.17;0.00;0.17;0.17;0.17;Matches
+457;Dominic Solanke;eng ENG;Tottenham Hotspur;28-221;1997;14;10;962;10.jul;3;0;3;3;0;0;1;0;0.28;0.00;0.28;0.28;0.28;Matches
+458;Julio Soler;ar ARG;Bournemouth;21-066;2005;3;0;35;0.4;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+459;Oliver Sonne;pe PER;Burnley;25-164;2000;7;1;169;01.sep;1;0;1;1;0;0;0;0;0.53;0.00;0.53;0.53;0.53;Matches
+460;Borna Sosa;hr CRO;Crystal Palace;28-092;1998;6;0;56;0.6;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+461;Tomáš Souček;cz CZE;West Ham United;31-055;1995;30;19;1,778;19.aug;4;0;4;4;0;0;2;1;0.20;0.00;0.20;0.20;0.20;Matches
+462;Souza;br BRA;Tottenham Hotspur;19-311;2006;4;2;144;01.jun;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+463;Djed Spence;eng ENG;Tottenham Hotspur;25-257;2000;25;21;1,823;20.mar;0;0;0;0;0;0;4;0;0.00;0.00;0.00;0.00;0.00;Matches
+464;Anton Stach;de GER;Leeds United;27-159;1998;26;25;2,136;23.jul;4;3;7;4;0;0;3;0;0.17;0.13;0.29;0.17;0.29;Matches
+465;John Stones;eng ENG;Manchester City;31-330;1994;7;4;353;03.sep;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+466;Jørgen Strand Larsen;no NOR;Wolves;26-076;2000;22;14;1,404;15.jun;1;1;2;0;1;2;2;0;0.06;0.06;0.13;0.00;0.06;Matches
+467;Jørgen Strand Larsen;no NOR;Crystal Palace;26-076;2000;8;8;587;06.mai;3;0;3;3;0;0;2;0;0.46;0.00;0.46;0.46;0.46;Matches
+468;Pascal Struijk;nl NED;Leeds United;26-255;1999;31;30;2,701;30.0;0;1;1;0;0;0;4;0;0.00;0.03;0.03;0.00;0.03;Matches
+469;Crysencio Summerville;nl NED;West Ham United;24-175;2001;26;24;2,023;22.mai;5;1;6;5;0;0;4;0;0.22;0.04;0.27;0.22;0.27;Matches
+470;Dominik Szoboszlai;hu HUN;Liverpool;25-180;2000;31;31;2,781;30.sep;5;4;9;5;0;1;7;1;0.16;0.13;0.29;0.16;0.29;Matches
+471;Jocelin Ta Bi;ci CIV;Sunderland;21-073;2005;1;1;38;0.4;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+472;Chemsdine Talbi;ma MAR;Sunderland;20-349;2005;25;14;1,362;15.jan;4;1;5;4;0;0;0;0;0.26;0.07;0.33;0.26;0.33;Matches
+473;Ao Tanaka;jp JPN;Leeds United;27-225;1998;24;10;1,019;11.mar;2;0;2;2;0;0;1;0;0.18;0.00;0.18;0.18;0.18;Matches
+474;James Tarkowski;eng ENG;Everton;33-155;1992;32;32;2,88;32.0;1;1;2;1;0;0;5;0;0.03;0.03;0.06;0.03;0.06;Matches
+475;Marcus Tavernier;eng ENG;Bournemouth;27-032;1999;30;27;2,389;26.mai;6;4;10;4;2;2;5;0;0.23;0.15;0.38;0.15;0.30;Matches
 Rk;Player;Nation;Squad;Age;Born;MP;Starts;Min;90s;Gls;Ast;G+A;G-PK;PK;PKatt;CrdY;CrdR;Gls;Ast;G+A;G-PK;G+A-PK;Matches
-476;Jean-Clair Todibo;fr FRA;West Ham United;26-062;1999;18;18;1,519;16.sep;0;1;1;0;0;0;4;1;0.00;0.06;0.06;0.00;0.06;Matches
-477;Sandro Tonali;it ITA;Newcastle United;25-298;2000;28;24;1,949;21.jul;0;2;2;0;0;0;3;0;0.00;0.09;0.09;0.00;0.09;Matches
-478;Pau Torres;es ESP;Aston Villa;29-045;1997;16;14;1,298;14.apr;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-479;Alex Tóth;hu HUN;Bournemouth;20-130;2005;4;1;74;0.8;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
-480;James Trafford;eng ENG;Manchester City;23-143;2002;3;3;270;3.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-481;Adama Traoré;es ESP;West Ham United;30-036;1996;4;0;27;0.3;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
-482;Adama Traoré;es ESP;Fulham;30-036;1996;15;1;274;3.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-483;Bertrand Traoré;bf BFA;Sunderland;30-177;1995;11;9;630;7.0;1;0;1;1;0;0;1;0;0.14;0.00;0.14;0.14;0.14;Matches
-484;Mike Trésor;be BEL;Burnley;26-278;1999;4;0;23;0.3;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-485;Kieran Trippier;eng ENG;Newcastle United;35-164;1990;16;15;1,302;14.mai;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
-486;Leandro Trossard;be BEL;Arsenal;31-088;1994;25;18;1,646;18.mar;5;5;10;5;0;0;1;0;0.27;0.27;0.55;0.27;0.55;Matches
-487;Adrien Truffert;fr FRA;Bournemouth;24-102;2001;28;28;2,479;27.mai;0;2;2;0;0;0;3;0;0.00;0.07;0.07;0.00;0.07;Matches
-488;Axel Tuanzebe;cd COD;Burnley;28-108;1997;11;11;931;10.mar;1;0;1;1;0;0;1;0;0.10;0.00;0.10;0.10;0.10;Matches
-489;Stefanos Tzimas;gr GRE;Brighton;20-055;2006;9;1;139;01.mai;1;1;2;1;0;0;0;0;0.65;0.65;jan.29;0.65;jan.29;Matches
-490;Christantus Uche;ng NGA;Crystal Palace;22-287;2003;13;0;163;01.aug;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-491;Destiny Udogie;it ITA;Tottenham Hotspur;23-094;2002;13;8;798;08.sep;0;1;1;0;0;0;2;0;0.00;0.11;0.11;0.00;0.11;Matches
-492;Manuel Ugarte;uy URU;Manchester Utd;24-325;2001;18;7;757;08.apr;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
-493;Lesley Ugochukwu;fr FRA;Burnley;21-341;2004;27;21;1,815;20.feb;3;1;4;3;0;0;3;1;0.15;0.05;0.20;0.15;0.20;Matches
-494;Enes Ünal;tr TUR;Bournemouth;28-296;1997;15;0;171;01.sep;1;0;1;1;0;0;1;0;0.53;0.00;0.53;0.53;0.53;Matches
-495;Hákon Valdimarsson;is ISL;Brentford;24-140;2001;1;1;90;1.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-496;Virgil van Dijk;nl NED;Liverpool;34-237;1991;28;28;2,52;28.0;3;0;3;3;0;0;4;0;0.11;0.00;0.11;0.11;0.11;Matches
-497;Joël Veltman;nl NED;Brighton;34-046;1992;16;8;834;09.mar;1;0;1;1;0;0;4;0;0.11;0.00;0.11;0.11;0.11;Matches
-498;Micky van de Ven;nl NED;Tottenham Hotspur;24-317;2001;26;26;2,329;25.sep;4;1;5;4;0;0;7;0;0.15;0.04;0.19;0.15;0.19;Matches
-499;Bart Verbruggen;nl NED;Brighton;23-196;2002;28;28;2,52;28.0;0;0;0;0;0;0;3;0;0.00;0.00;0.00;0.00;0.00;Matches
-500;Guglielmo Vicario;it ITA;Tottenham Hotspur;29-146;1996;28;28;2,52;28.0;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+476;Loum Tchaouna;fr FRA;Burnley;22-227;2003;25;10;937;10.apr;1;0;1;1;0;0;1;0;0.10;0.00;0.10;0.10;0.10;Matches
+477;Jackson Tchatchoua;cm CMR;Wolves;24-221;2001;30;19;1,84;20.apr;0;1;1;0;0;0;3;0;0.00;0.05;0.05;0.00;0.05;Matches
+478;Mathys Tel;fr FRA;Tottenham Hotspur;20-361;2005;26;9;969;10.aug;3;0;3;3;0;0;0;0;0.28;0.00;0.28;0.28;0.28;Matches
+479;Kenny Tete;nl NED;Fulham;30-196;1995;22;21;1,791;19.sep;1;0;1;1;0;0;2;0;0.05;0.00;0.05;0.05;0.05;Matches
+480;Igor Thiago;br BRA;Brentford;24-301;2001;33;32;2,832;31.mai;21;1;22;14;7;8;6;0;0.67;0.03;0.70;0.44;0.48;Matches
+481;Malick Thiaw;de GER;Newcastle United;24-258;2001;30;28;2,515;27.sep;4;0;4;4;0;0;4;0;0.14;0.00;0.14;0.14;0.14;Matches
+482;Youri Tielemans;be BEL;Aston Villa;28-351;1997;20;17;1,502;16.jul;0;4;4;0;0;0;0;0;0.00;0.24;0.24;0.00;0.24;Matches
+483;Jurriën Timber;nl NED;Arsenal;24-310;2001;30;28;2,454;27.mar;3;5;8;3;0;0;5;0;0.11;0.18;0.29;0.11;0.29;Matches
+484;Jean-Clair Todibo;fr FRA;West Ham United;26-114;1999;20;20;1,698;18.sep;0;1;1;0;0;0;4;1;0.00;0.05;0.05;0.00;0.05;Matches
+485;Sandro Tonali;it ITA;Newcastle United;25-350;2000;31;27;2,212;24.jun;0;2;2;0;0;0;3;0;0.00;0.08;0.08;0.00;0.08;Matches
+486;Pau Torres;es ESP;Aston Villa;29-097;1997;18;16;1,478;16.apr;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+487;Alex Tóth;hu HUN;Bournemouth;20-182;2005;7;1;83;0.9;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+488;James Trafford;eng ENG;Manchester City;23-195;2002;3;3;270;3.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+489;Adama Traoré;es ESP;Fulham;30-088;1996;15;1;274;3.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+490;Adama Traoré;es ESP;West Ham United;30-088;1996;8;0;104;01.feb;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+491;Bertrand Traoré;bf BFA;Sunderland;30-229;1995;12;9;632;7.0;1;0;1;1;0;0;1;0;0.14;0.00;0.14;0.14;0.14;Matches
+492;Mike Trésor;be BEL;Burnley;26-330;1999;6;0;43;0.5;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+493;Kieran Trippier;eng ENG;Newcastle United;35-216;1990;19;17;1,501;16.jul;0;1;1;0;0;0;3;0;0.00;0.06;0.06;0.00;0.06;Matches
+494;Leandro Trossard;be BEL;Arsenal;31-140;1994;28;18;1,731;19.feb;5;5;10;5;0;0;1;0;0.26;0.26;0.52;0.26;0.52;Matches
+495;Adrien Truffert;fr FRA;Bournemouth;24-154;2001;34;34;3,019;33.5;1;3;4;1;0;0;4;0;0.03;0.09;0.12;0.03;0.12;Matches
+496;Axel Tuanzebe;cd COD;Burnley;28-160;1997;11;11;931;10.mar;1;0;1;1;0;0;1;0;0.10;0.00;0.10;0.10;0.10;Matches
+497;Stefanos Tzimas;gr GRE;Brighton;20-107;2006;9;1;139;01.mai;1;1;2;1;0;0;0;0;0.65;0.65;jan.29;0.65;jan.29;Matches
+498;Christantus Uche;ng NGA;Crystal Palace;22-339;2003;14;0;173;01.sep;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+499;Destiny Udogie;it ITA;Tottenham Hotspur;23-146;2002;16;10;1,008;11.feb;0;1;1;0;0;0;3;0;0.00;0.09;0.09;0.00;0.09;Matches
+500;Manuel Ugarte;uy URU;Manchester Utd;25-012;2001;22;8;887;09.sep;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
 Rk;Player;Nation;Squad;Age;Born;MP;Starts;Min;90s;Gls;Ast;G+A;G-PK;PK;PKatt;CrdY;CrdR;Gls;Ast;G+A;G-PK;G+A-PK;Matches
-501;Rayan Vitor;br BRA;Bournemouth;19-211;2006;5;4;378;04.feb;2;1;3;2;0;0;1;0;0.48;0.24;0.71;0.48;0.71;Matches
-502;Kyle Walker;eng ENG;Burnley;35-278;1990;26;26;2,281;25.mar;0;2;2;0;0;0;8;0;0.00;0.08;0.08;0.00;0.08;Matches
-503;Kyle Walker-Peters;eng ENG;West Ham United;28-323;1997;18;10;959;10.jul;1;0;1;1;0;0;2;0;0.09;0.00;0.09;0.09;0.09;Matches
-504;Aaron Wan-Bissaka;cd COD;West Ham United;28-096;1997;19;18;1,641;18.feb;0;2;2;0;0;0;2;0;0.00;0.11;0.11;0.00;0.11;Matches
-505;James Ward-Prowse;eng ENG;West Ham United;31-121;1994;5;5;413;04.jun;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-506;James Ward-Prowse;eng ENG;Burnley;31-121;1994;3;1;116;01.mar;0;1;1;0;0;0;0;0;0.00;0.78;0.78;0.00;0.78;Matches
-507;Ollie Watkins;eng ENG;Aston Villa;30-062;1995;27;24;2,077;23.jan;8;1;9;8;0;0;1;0;0.35;0.04;0.39;0.35;0.39;Matches
-508;Tom Watson;eng ENG;Brighton;19-328;2006;6;0;62;0.7;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
-509;Danny Welbeck;eng ENG;Brighton;35-096;1990;27;18;1,633;18.jan;10;0;10;9;1;3;4;0;0.55;0.00;0.55;0.50;0.50;Matches
-510;Adam Wharton;eng ENG;Crystal Palace;22-024;2004;25;25;2,052;22.aug;0;3;3;0;0;0;6;1;0.00;0.13;0.13;0.00;0.13;Matches
-511;Ben White;eng ENG;Arsenal;28-145;1997;7;5;411;04.jun;0;1;1;0;0;0;0;0;0.00;0.22;0.22;0.00;0.22;Matches
-512;Mats Wieffer;nl NED;Brighton;26-106;1999;18;15;1,315;14.jun;0;3;3;0;0;0;6;0;0.00;0.21;0.21;0.00;0.21;Matches
-513;Neco Williams;wls WAL;Nottingham Forest;24-323;2001;27;27;2,349;26.jan;1;1;2;1;0;0;4;1;0.04;0.04;0.08;0.04;0.08;Matches
-514;Estêvão Willian;br BRA;Chelsea;18-312;2007;19;10;746;08.mar;2;2;4;2;0;0;3;0;0.24;0.24;0.48;0.24;0.48;Matches
-515;Joe Willock;eng ENG;Newcastle United;26-194;1999;17;6;556;06.feb;0;0;0;0;0;0;3;0;0.00;0.00;0.00;0.00;0.00;Matches
-516;Callum Wilson;eng ENG;West Ham United;34-003;1992;23;9;945;10.mai;5;1;6;5;0;0;0;0;0.48;0.10;0.57;0.48;0.57;Matches
-517;Harry Wilson;wls WAL;Fulham;28-345;1997;27;25;2,084;23.feb;9;6;15;9;0;0;6;0;0.39;0.26;0.65;0.39;0.65;Matches
-518;Ben Winterburn;eng ENG;Bournemouth;21-179;2004;1;0;7;0.1;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-519;Florian Wirtz;de GER;Liverpool;22-303;2003;25;21;1,851;20.jun;4;2;6;4;0;0;1;0;0.19;0.10;0.29;0.19;0.29;Matches
-520;Yoane Wissa;cd COD;Newcastle United;29-180;1996;12;4;429;04.aug;1;0;1;1;0;0;1;0;0.21;0.00;0.21;0.21;0.21;Matches
-521;Nick Woltemade;de GER;Newcastle United;24-016;2002;25;19;1,534;17.0;7;2;9;6;1;1;0;0;0.41;0.12;0.53;0.35;0.47;Matches
-522;Chris Wood;nz NZL;Nottingham Forest;34-085;1991;8;7;540;6.0;2;0;2;2;0;0;0;0;0.33;0.00;0.33;0.33;0.33;Matches
-523;Joe Worrall;eng ENG;Burnley;29-051;1997;9;4;427;04.jul;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-524;Granit Xhaka;ch SUI;Sunderland;33-156;1992;24;23;2,058;22.sep;1;5;6;1;0;0;4;0;0.04;0.22;0.26;0.04;0.26;Matches
-525;Yehor Yarmoliuk;ua UKR;Brentford;22-001;2004;28;23;1,991;22.jan;1;2;3;1;0;0;7;0;0.05;0.09;0.14;0.05;0.14;Matches
+501;Lesley Ugochukwu;fr FRA;Burnley;22-028;2004;32;24;2,114;23.mai;3;1;4;3;0;0;3;1;0.13;0.04;0.17;0.13;0.17;Matches
+502;Enes Ünal;tr TUR;Bournemouth;28-348;1997;19;0;189;02.jan;1;0;1;1;0;0;1;0;0.48;0.00;0.48;0.48;0.48;Matches
+503;Hákon Valdimarsson;is ISL;Brentford;24-192;2001;1;1;90;1.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+504;Virgil van Dijk;nl NED;Liverpool;34-289;1991;33;33;2,97;33.0;4;0;4;4;0;0;4;0;0.12;0.00;0.12;0.12;0.12;Matches
+505;Joël Veltman;nl NED;Brighton;34-098;1992;21;8;898;10.0;1;0;1;1;0;0;4;0;0.10;0.00;0.10;0.10;0.10;Matches
+506;Micky van de Ven;nl NED;Tottenham Hotspur;25-004;2001;30;30;2,591;28.aug;4;1;5;4;0;0;8;1;0.14;0.03;0.17;0.14;0.17;Matches
+507;Bart Verbruggen;nl NED;Brighton;23-248;2002;34;34;3,06;34.0;0;0;0;0;0;0;3;0;0.00;0.00;0.00;0.00;0.00;Matches
+508;Guglielmo Vicario;it ITA;Tottenham Hotspur;29-198;1996;31;31;2,79;31.0;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+509;Kyle Walker;eng ENG;Burnley;35-330;1990;32;31;2,736;30.apr;0;2;2;0;0;0;9;0;0.00;0.07;0.07;0.00;0.07;Matches
+510;Kyle Walker-Peters;eng ENG;West Ham United;29-010;1997;20;12;1,139;12.jul;1;0;1;1;0;0;2;0;0.08;0.00;0.08;0.08;0.08;Matches
+511;Aaron Wan-Bissaka;cd COD;West Ham United;28-148;1997;22;21;1,903;21.jan;0;2;2;0;0;0;4;0;0.00;0.09;0.09;0.00;0.09;Matches
+512;James Ward-Prowse;eng ENG;West Ham United;31-173;1994;5;5;413;04.jun;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+513;James Ward-Prowse;eng ENG;Burnley;31-173;1994;9;6;587;06.mai;0;1;1;0;0;0;1;0;0.00;0.15;0.15;0.00;0.15;Matches
+514;Ollie Watkins;eng ENG;Aston Villa;30-114;1995;32;29;2,458;27.mar;11;2;13;11;0;0;3;0;0.40;0.07;0.48;0.40;0.48;Matches
+515;Tom Watson;eng ENG;Brighton;20-015;2006;6;0;62;0.7;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+516;Danny Welbeck;eng ENG;Brighton;35-148;1990;33;22;1,982;22.0;13;0;13;12;1;3;5;0;0.59;0.00;0.59;0.54;0.54;Matches
+517;Adam Wharton;eng ENG;Crystal Palace;22-076;2004;28;26;2,19;24.mar;0;5;5;0;0;0;6;1;0.00;0.21;0.21;0.00;0.21;Matches
+518;Ben White;eng ENG;Arsenal;28-197;1997;9;6;503;05.jun;0;1;1;0;0;0;0;0;0.00;0.18;0.18;0.00;0.18;Matches
+519;Mats Wieffer;nl NED;Brighton;26-158;1999;24;21;1,796;20.0;2;3;5;2;0;0;8;0;0.10;0.15;0.25;0.10;0.25;Matches
+520;Neco Williams;wls WAL;Nottingham Forest;25-010;2001;32;32;2,798;31.jan;2;3;5;2;0;0;5;1;0.06;0.10;0.16;0.06;0.16;Matches
+521;Estêvão Willian;br BRA;Chelsea;18-364;2007;22;12;848;09.apr;2;2;4;2;0;0;4;0;0.21;0.21;0.42;0.21;0.42;Matches
+522;Joe Willock;eng ENG;Newcastle United;26-246;1999;20;7;703;07.aug;0;1;1;0;0;0;3;0;0.00;0.13;0.13;0.00;0.13;Matches
+523;Callum Wilson;eng ENG;West Ham United;34-055;1992;27;10;1,074;11.sep;5;1;6;5;0;0;0;0;0.42;0.08;0.50;0.42;0.50;Matches
+524;Harry Wilson;wls WAL;Fulham;29-032;1997;31;29;2,428;27.0;10;6;16;10;0;0;6;0;0.37;0.22;0.59;0.37;0.59;Matches
+525;Ben Winterburn;eng ENG;Bournemouth;21-231;2004;1;0;7;0.1;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
 Rk;Player;Nation;Squad;Age;Born;MP;Starts;Min;90s;Gls;Ast;G+A;G-PK;PK;PKatt;CrdY;CrdR;Gls;Ast;G+A;G-PK;G+A-PK;Matches
-526;Ryan Yates;eng ENG;Nottingham Forest;28-101;1997;13;1;376;04.feb;0;1;1;0;0;0;1;0;0.00;0.24;0.24;0.00;0.24;Matches
-527;Leny Yoro;fr FRA;Manchester Utd;20-109;2005;25;14;1,345;14.sep;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-528;Oleksandr Zinchenko;ua UKR;Nottingham Forest;29-077;1996;5;4;353;03.sep;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-529;Joshua Zirkzee;nl NED;Manchester Utd;24-284;2001;17;4;508;05.jun;2;1;3;2;0;0;1;0;0.35;0.18;0.53;0.35;0.53;Matches
-530;Martín Zubimendi;es ESP;Arsenal;27-028;1999;29;28;2,444;27.feb;5;1;6;5;0;0;4;0;0.18;0.04;0.22;0.18;0.22;Matches
-531;Martin Ødegaard;no NOR;Arsenal;27-075;1998;20;13;1,076;12.0;1;5;6;1;0;0;0;0;0.08;0.42;0.50;0.08;0.50;Matches
+526;Florian Wirtz;de GER;Liverpool;22-355;2003;29;25;2,155;23.sep;4;3;7;4;0;0;1;0;0.17;0.13;0.29;0.17;0.29;Matches
+527;Yoane Wissa;cd COD;Newcastle United;29-232;1996;14;4;432;04.aug;1;0;1;1;0;0;1;0;0.21;0.00;0.21;0.21;0.21;Matches
+528;Nick Woltemade;de GER;Newcastle United;24-068;2002;29;21;1,676;18.jun;7;3;10;6;1;1;0;0;0.38;0.16;0.54;0.32;0.48;Matches
+529;Chris Wood;nz NZL;Nottingham Forest;34-137;1991;10;8;641;07.jan;2;0;2;2;0;0;0;0;0.28;0.00;0.28;0.28;0.28;Matches
+530;Freddie Woodman;eng ENG;Liverpool;29-050;1997;1;0;33;0.4;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+531;Joe Worrall;eng ENG;Burnley;29-103;1997;11;5;500;05.jun;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+532;Granit Xhaka;ch SUI;Sunderland;33-208;1992;29;27;2,454;27.mar;1;5;6;1;0;0;5;0;0.04;0.18;0.22;0.04;0.22;Matches
+533;Yehor Yarmoliuk;ua UKR;Brentford;22-053;2004;33;26;2,313;25.jul;1;2;3;1;0;0;7;0;0.04;0.08;0.12;0.04;0.12;Matches
+534;Ryan Yates;eng ENG;Nottingham Forest;28-153;1997;18;1;432;04.aug;0;2;2;0;0;0;1;0;0.00;0.42;0.42;0.00;0.42;Matches
+535;Leny Yoro;fr FRA;Manchester Utd;20-161;2005;29;18;1,705;18.sep;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
+536;Oleksandr Zinchenko;ua UKR;Nottingham Forest;29-129;1996;5;4;353;03.sep;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+537;Joshua Zirkzee;nl NED;Manchester Utd;24-336;2001;19;4;527;05.sep;2;1;3;2;0;0;1;0;0.34;0.17;0.51;0.34;0.51;Matches
+538;Martín Zubimendi;es ESP;Arsenal;27-080;1999;33;32;2,755;30.jun;5;1;6;5;0;0;4;0;0.16;0.03;0.20;0.16;0.20;Matches
+539;Martin Ødegaard;no NOR;Arsenal;27-127;1998;21;14;1,166;13.0;1;5;6;1;0;0;0;0;0.08;0.39;0.46;0.08;0.46;Matches

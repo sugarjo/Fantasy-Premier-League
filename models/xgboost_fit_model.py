@@ -26,7 +26,9 @@ from hyperopt.fmin import generate_trials_to_calculate
 from difflib import SequenceMatcher
 
 directories = r'C:\Users\jorgels\Github\Fantasy-Premier-League\data'
-model_path = r"M:\model.sav"
+model_path = r"\\platon.uio.no\med-imb-u1\jorgels\model.sav"
+
+
 try:
     folders = os.listdir(directories)
     main_directory = r'C:\Users\jorgels\Github\Fantasy-Premier-League'
@@ -34,11 +36,11 @@ except:
     main_directory = r'C:\Users\jorgels\Git\Fantasy-Premier-League'
 
 
-optimize = True
+optimize = False
 continue_optimize = False
 
 method = 'xgboost'
-temporal_window = 11 # less than what is used...
+temporal_window = 7 # less than what is used...
 
 season_dfs = []
 
@@ -366,7 +368,7 @@ def objective_linear_svr(space):
     return {'loss': val_error, 'status': STATUS_OK }
 
 
-with open(r'M:\model_data.pkl', 'rb') as file:
+with open(r"\\platon.uio.no\med-imb-u1\jorgels\model_data.pkl", 'rb') as file:
     train_data = pickle.load(file)                
 
 
@@ -1117,9 +1119,9 @@ elif method == 'xgboost':
     min_eval_fraction = 1/(380*0.8)
     
     
-    space={'max_depth': hp.quniform("max_depth", 1, 6000, 1),
-            'min_split_loss': hp.uniform('min_split_loss', 0, 350), #log?
-            'reg_lambda' : hp.uniform('reg_lambda', 0, 700),
+    space={'max_depth': hp.quniform("max_depth", 1, 8500, 1),
+            'min_split_loss': hp.uniform('min_split_loss', 0, 500), #log?
+            'reg_lambda' : hp.uniform('reg_lambda', 0, 1000),
             'reg_alpha': hp.uniform('reg_alpha', 0.01, 400),
             'min_child_weight' : hp.uniform('min_child_weight', 0, 700),
             'learning_rate': hp.uniform('learning_rate', 0, 0.05),
@@ -1127,12 +1129,12 @@ elif method == 'xgboost':
             'colsample_bytree': hp.uniform('colsample_bytree', 0.1, 1),
             'colsample_bylevel': hp.uniform('colsample_bylevel', 0.1, 1),
             'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
-            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 10, 6000, 1),
+            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 10, 7000, 1),
             'eval_fraction': hp.uniform('eval_fraction', min_eval_fraction, 0.25),
-            'n_estimators': hp.quniform('n_estimators', 2, 90000, 1),
-            'max_delta_step': hp.uniform('max_delta_step', 0, 150),
+            'n_estimators': hp.quniform('n_estimators', 2, 125000, 1),
+            'max_delta_step': hp.uniform('max_delta_step', 0, 175),
             'grow_policy': hp.choice('grow_policy', [0, 1]), #1
-            'max_leaves': hp.quniform('max_leaves', 0, 3000, 1),
+            'max_leaves': hp.quniform('max_leaves', 0, 4000, 1),
             'max_bin':  hp.qloguniform('max_bin', np.log(2), np.log(150), 1),
             'temporal_window': hp.quniform('temporal_window', 1, temporal_window+1, 1),
         }

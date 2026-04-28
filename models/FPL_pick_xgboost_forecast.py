@@ -4,29 +4,32 @@ import time
 
 
 my_players = [
-    {'web_name': 'Raya', 'selling_price': 59, 'element_type': 1},
-    {'web_name': 'Dúbravka', 'selling_price': 40, 'element_type': 1},
+    {'web_name': 'Sánchez', 'selling_price': 48, 'element_type': 1},
+    {'web_name': 'Darlow', 'selling_price': 39, 'element_type': 1},
     
-    {'web_name': 'Keane', 'selling_price': 46, 'element_type': 2},
-    {'web_name': 'Mings', 'selling_price': 43, 'element_type': 2},
-    {'web_name': 'Chalobah', 'selling_price': 53, 'element_type': 2},
-    {'web_name': 'Virgil', 'selling_price': 61, 'element_type': 2},
-    {'web_name': "Gabriel", 'selling_price': 71, 'element_type': 2},
+    {'web_name': 'Truffert', 'selling_price': 47, 'element_type': 2},
+    {'web_name': 'Muñoz', 'selling_price': 58, 'element_type': 2},
+    {'web_name': 'Van Hecke', 'selling_price': 45, 'element_type': 2},
+    {'web_name': 'Justin', 'selling_price': 39, 'element_type': 2},
+    {'web_name': "O'Reilly", 'selling_price': 50, 'element_type': 2},
     
     {'web_name': 'Semenyo', 'selling_price': 79, 'element_type': 3},
-    {'web_name': 'Mac Allister', 'selling_price': 62, 'element_type': 3},
-    {'web_name': 'M.Salah', 'selling_price': 140, 'element_type': 3},
-    {'web_name': 'B.Fernandes', 'selling_price': 99, 'element_type': 3},
-    {'web_name': 'Wilson', 'selling_price': 58, 'element_type': 3},
+    {'web_name': 'Groß', 'selling_price': 55, 'element_type': 3},
+    {'web_name': 'Tavernier', 'selling_price': 54, 'element_type': 3},
+    {'web_name': 'Palmer', 'selling_price': 105, 'element_type': 3},
+    {'web_name': 'B.Fernandes', 'selling_price': 101, 'element_type': 3},
     
-    {'web_name': 'Bowen', 'selling_price': 75, 'element_type': 4},
-    {'web_name': 'Raúl', 'selling_price': 62, 'element_type': 4},
-    {'web_name': 'Tolu', 'selling_price': 54, 'element_type': 4},
+    {'web_name': 'Welbeck', 'selling_price': 62, 'element_type': 4},
+    {'web_name': 'João Pedro', 'selling_price': 76, 'element_type': 4},
+    {'web_name': 'Haaland', 'selling_price': 144, 'element_type': 4},
 ]
 
 
 
-bank = 7 #in 10ths of M
+
+
+
+bank = 6 #in 10ths of M
 free_transfers = 1
 save_transfers_for_later = 0 #transfers left at end of last round (no need to put higher than 4)
 
@@ -38,37 +41,34 @@ points_per_game_treshold = 0.1
 running_minutes_threshold = -1
 
 #1: ARS, 8: CRY, 13:MCI, 20: WOL
-exclude_team = [1, 8, 13, 20]
+exclude_team = []#[][1, 8, 13, 20]
 
-exclude_players = ['Keane', 'Collins', 'Bruno G.', 'Havertz', 'M.Bizot', 'Robertson', 'Trossard', 'Jörgensen', 'Gvardiol', 'Digne', 'G.Jesus', 'Foden', 'Merino', 'Estêvão', 'Richarlison', 'Ashley Barnes', 'Nketiah', 'Kostoulas', 'Foster', 'Piroe', 'Nmecha', 'Beto', 'Flemming', 'Awoniyi', 'Callum Wilson', 'Acheampong', 'White', 'Cherki']
-
+exclude_players = ['Malacia', 'Harrison Armstrong', 'J.Palhinha', 'Isidor', 'Kinsky', "O'Nien", 'Beto', 'G.Jesus', 'Keane', 'Potts', 'Reinildo', 'Spence', 'Mané', 'Trossard', 'Richarlison', 'Callum Wilson', 'James Wilson']
+#check james and saka and mateta
 include_players = []
 
-do_not_exclude_players = ["Semenyo", "Gabriel", "Raya", "Tolu"]
+do_not_exclude_players = [] #["Semenyo", "Gabriel", "Raya", "Tolu"]
 
 
 
-do_not_transfer_out = ['Mings', 'Keane', 'Wilson']
-rounds_to_value = 2
+do_not_transfer_out = [] #['Mings', 'Keane', 'Wilson']
+rounds_to_value = 4
 #transfer to evaluate per week
-trans_per_week = 2
+trans_per_week = 3
 
 jump_rounds = 0
 #if you also want to evaluate players on the bench. in case of uncertain starters.
 number_players_eval = 11
 
 wildcard = False
-benchboost = False
-skip_gw = [100]
+benchboost = []
+skip_gw = []
 
 tripple_captain_gw = 100
 
 iterations = 20
 
-
-
 midfield_price_limit = -1
-
 
 #assistant manager in 2024-25 season
 assistant_manager_gw = 100
@@ -89,9 +89,9 @@ afcon_players = []
 manual_blanks = {29: ['Rice', 'Wilson']}
 
 #GW               
-manual_blank = {} #{31: {'MCI': ['CRY']}}
-manual_double = {}
-#manual_double = {26: {'WOL': ['ARS', 4, 2]}}
+manual_blank = {}#{34: {'BUR': ['MCI'], 'BHA': ['CHE'], 'ARS': ['NEW'], 'LIV': ['CRY']}}
+#manual_double = {}
+manual_double = {36: {'CRY': ['MCI', 5, 3]}, 37: {'MCI': ['BOU', 4, 4]}}#{33: {'BUR': ['MCI', 4, 2], 'BHA': ['CHE', 3, 3], 'ARS': ['NEW', 3, 5], 'LIV': ['CRY', 3, 4]}, }
 
 
 season = '2025-26'
@@ -138,16 +138,16 @@ string_names = df_teams['short_name'].values
 
 am_num_team = np.where(string_names == assistant_manager_team)[0][0]
 
-#log in
-session = requests.session()
-url = 'https://users.premierleague.com/accounts/login/'
-payload = {
- 'password': 'jorgeN8#larseN(3',
- 'login': 'jorgen.sugar@gmail.com',
- 'redirect_uri': 'https://fantasy.premierleague.com',
- 'app': 'plfpl-web'
-}
-session.post(url, data=payload)
+# #log in
+# session = requests.session()
+# url = 'https://users.premierleague.com/accounts/login/'
+# payload = {
+#  'password': 'jorgeN8#larseN(3',
+#  'login': 'jorgen.sugar@gmail.com',
+#  'redirect_uri': 'https://fantasy.premierleague.com',
+#  'app': 'plfpl-web'
+# }
+# session.post(url, data=payload)
 
 #get my team and money in the bank
 
@@ -394,16 +394,8 @@ else:
 for i in range(jump_rounds, rounds_to_value+jump_rounds):
     this_gw = i + current_gameweek
     
-    if benchboost:
+    if this_gw in benchboost:
         benchboost_gws.append(this_gw)
-    
-    if this_gw in skip_gw:
-        free_hit.append(True)
-        skip_free_hit_calc = True
-    else:
-        print(this_gw)
-        free_hit.append(False)
-
         
     if tripple_captain_gw == this_gw:
         tripple_captain.append(True)
@@ -420,10 +412,15 @@ for i in range(jump_rounds, rounds_to_value+jump_rounds):
         add_afcon_transfers.append(5)
     else:
         add_afcon_transfers.append(0)
-
-    # if any(np.array(skip_gw) == this_gw):
-    #     continue
-
+        
+        
+    if this_gw in skip_gw:
+        free_hit.append(True)
+        skip_free_hit_calc = True
+        continue
+    else:
+        print(this_gw)
+        free_hit.append(False)
     
 
     url = 'https://fantasy.premierleague.com/api/fixtures' + '?event=' + str(this_gw)
@@ -481,6 +478,11 @@ for i in range(jump_rounds, rounds_to_value+jump_rounds):
                 df_future_games = add_frame
             
             print('Manual double:', this_gw, home_team, away_team)
+            
+            
+if len(benchboost_gws) == 0:
+    print('No benchboost gws!')
+    benchboost_gws = [-1]
         
 slim_elements_df['form'] = slim_elements_df['form'].astype(float)
 
@@ -600,8 +602,12 @@ keep_ind = []
 for el in [1, 2, 3, 4]:
     selected = slim_elements_df.element_type == el
     min_keeper_price = np.min(slim_elements_df.loc[selected, 'now_cost'])
-    keep_ind.append(np.where((slim_elements_df['now_cost']==min_keeper_price) & (slim_elements_df.element_type == el))[0][0])
-    selected_players.iloc[keep_ind[-1]] = False
+    
+    selected_low_price = np.where((slim_elements_df['now_cost']==min_keeper_price) & (slim_elements_df.element_type == el))
+    
+    for k in selected_low_price[0]:          
+        keep_ind.append(k)
+        selected_players.iloc[keep_ind[-1]] = False
     
     # if len(np.where((slim_elements_df['now_cost']==min_keeper_price) & (slim_elements_df.element_type == el))[0]) > 1 and el > 1:  
     #     keep_ind.append(np.where((slim_elements_df['now_cost']==min_keeper_price) & (slim_elements_df.element_type == el))[0][1])
@@ -932,11 +938,14 @@ for df_name in slim_elements_df.iterrows():
                 col_stem = ''.join([char for char in col if not char.isdigit()])
     
                 if col_stem in dynamic_categorical_variables:
-                    predicting_df[col] = predicting_df[col].astype('category')
+                    cat_series = predicting_df[col].astype('category')
+                    predicting_df = predicting_df.drop(columns=[col])
+                    predicting_df[col] = cat_series
+                    #predicting_df.loc[:, col] = predicting_df[col].astype('category')
                 elif col_stem in int_variables:
-                    predicting_df[col] = predicting_df[col].astype('Int64')
+                    predicting_df.loc[:, col] = predicting_df[col].astype('Int64')
                 elif col_stem in temporal_features or col_stem in float_variables or col_stem in temporal_single_features:
-                    predicting_df[col] = predicting_df[col].astype('float')
+                    predicting_df.loc[:, col] = predicting_df[col].astype('float')
                 # else:
                 #     print('CHECK', col)
                 
@@ -1063,17 +1072,17 @@ for df_name in slim_elements_df.iterrows():
                 if is_estimated and df_name[1]['web_name'] not in do_not_exclude_players:
                     estimated = 0
                     
-                    
-                #keep a budget player
-                if df_name[0] in keep_ind:
-                    if estimated < 0.1:
-                        estimated = 0.1
-                        
-                    if game_idx == 0:
-                        print('Including because of low price:', df_name[1].web_name)
 
             pred_score[gw_idx] = pred_score[gw_idx] + estimated
             total_matches = total_matches + 1
+          
+        #keep a budget player
+        if df_name[0] in keep_ind:
+            for p_ind, p in enumerate(pred_score):
+                if p < 0.1:
+                    pred_score[p_ind] = 0.1
+                
+            print('Including because of low price:', df_name[1].web_name)
 
 
         first_gw = pred_score[0]
@@ -1688,7 +1697,7 @@ else:
         
         
         for j in range(player_iteration):
-    
+
     
             transfers = []
             probability = []
@@ -1942,7 +1951,7 @@ for i in range(len(point_diff)):
     no_transfers.append([np.nan, np.nan])
 
     
-for benchboost_gw in benchboost_gws[::-1]:
+for benchboost_gw in benchboost_gws:
     
     benchboost = []
     
@@ -1979,7 +1988,7 @@ for benchboost_gw in benchboost_gws[::-1]:
     try:
         print('Check saved transfers')
         #load saved_transfers
-        with open(r'M:\best_transfers.pkl', 'rb') as file:
+        with open(r'\\platon.uio.no\med-imb-u1\jorgels\best_transfers.pkl', 'rb') as file:
             saved_transfers = pickle.load(file)
             
         check_transfers = []
@@ -2074,7 +2083,7 @@ for benchboost_gw in benchboost_gws[::-1]:
         all_evaluated_transfers = []
     
         if counter > 0:
-            print('Start random selections')
+            print('Start random selections', counter)
         
             p = ((probabilities.T - np.nanmin(probabilities, axis=1)).T / counts)**2 + 1e-6
             prob = (p.T) / np.nansum((p.T), axis=0)
@@ -2118,7 +2127,7 @@ for benchboost_gw in benchboost_gws[::-1]:
                         
                         
                         #save transfers
-                        with open(r'M:\best_transfers.pkl', 'wb') as file:
+                        with open(r'\\platon.uio.no\med-imb-u1\jorgels\best_transfers.pkl', 'wb') as file:
                             pickle.dump(best_transfer, file)
                         
                     
@@ -2157,7 +2166,7 @@ for benchboost_gw in benchboost_gws[::-1]:
         price = []
         last_gw = 0
         try:
-            with open(r"M:\best_transfers" + str(benchboost_gw) + ".txt", 'w') as file:
+            with open(r"\\platon.uio.no\med-imb-u1\jorgels\best_transfers.pkl" + str(benchboost_gw) + ".txt", 'w') as file:
             
                 print('gw', 'free_hit', 'bench', file=file)
                 print('gw', 'free_hit', 'bench')
@@ -2215,3 +2224,4 @@ for benchboost_gw in benchboost_gws[::-1]:
                 print('\n')
         except:
             print('Not able to open file')
+        
