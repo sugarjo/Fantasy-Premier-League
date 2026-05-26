@@ -40,7 +40,7 @@ optimize = False
 continue_optimize = False
 
 method = 'xgboost'
-temporal_window = 7 # less than what is used...
+temporal_window = 5 # less than what is used...
 
 season_dfs = []
 
@@ -1136,7 +1136,7 @@ elif method == 'xgboost':
             'grow_policy': hp.choice('grow_policy', [0, 1]), #1
             'max_leaves': hp.quniform('max_leaves', 0, 4000, 1),
             'max_bin':  hp.qloguniform('max_bin', np.log(2), np.log(150), 1),
-            'temporal_window': hp.quniform('temporal_window', 1, temporal_window+1, 1),
+            'temporal_window': hp.quniform('temporal_window', 1, temporal_window, 1),
         }
     
 
@@ -1315,11 +1315,11 @@ elif method == 'xgboost':
         fit_sample = list(set().union(*season_selection.values()))
         
         
+        
         fits_mask =  pd.Series(match_ind_df).isin(fit_sample)  # Mask for cross-validation sample
         evals_mask = ~fits_mask  # Mask for validation, simply the inverse of cvs_mask
         
-        
-        
+
         
         #remove features
         for feat in check_features:

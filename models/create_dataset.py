@@ -30,9 +30,9 @@ except:
 
 
 build_from_scratch = True
-check_last_data = False
+check_last_data = True
 
-temporal_window = 7
+temporal_window = 11
     
 
 # Function to correct string_team based on the majority
@@ -465,9 +465,9 @@ for folder in folders:
                                     
                             #player_name change DURING season
                             
-                            if closest_match[0] == 'Igor Thiago Nascimento Rodrigues' or closest_match[0] == 'Igor Thiago':
-                                a = fjhkfhf
-                                print(name_string)
+                            # if closest_match[0] == 'Igor Thiago Nascimento Rodrigues' or closest_match[0] == 'Igor Thiago':
+                            #     a = fjhkfhf
+                            #     print(name_string)
 
                                 
                             if not closest_match:

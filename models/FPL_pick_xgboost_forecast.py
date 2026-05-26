@@ -5,23 +5,23 @@ import time
 
 my_players = [
     {'web_name': 'Sánchez', 'selling_price': 48, 'element_type': 1},
-    {'web_name': 'Darlow', 'selling_price': 39, 'element_type': 1},
+    {'web_name': 'Henderson', 'selling_price': 51, 'element_type': 1},
     
     {'web_name': 'Truffert', 'selling_price': 47, 'element_type': 2},
-    {'web_name': 'Muñoz', 'selling_price': 58, 'element_type': 2},
-    {'web_name': 'Van Hecke', 'selling_price': 45, 'element_type': 2},
+    {'web_name': 'Tarkowski', 'selling_price': 57, 'element_type': 2},
+    {'web_name': 'Van Hecke', 'selling_price': 46, 'element_type': 2},
     {'web_name': 'Justin', 'selling_price': 39, 'element_type': 2},
-    {'web_name': "O'Reilly", 'selling_price': 50, 'element_type': 2},
+    {'web_name': "O'Reilly", 'selling_price': 51, 'element_type': 2},
     
-    {'web_name': 'Semenyo', 'selling_price': 79, 'element_type': 3},
+    {'web_name': 'Cherki', 'selling_price': 66, 'element_type': 3},
     {'web_name': 'Groß', 'selling_price': 55, 'element_type': 3},
-    {'web_name': 'Tavernier', 'selling_price': 54, 'element_type': 3},
-    {'web_name': 'Palmer', 'selling_price': 105, 'element_type': 3},
+    {'web_name': 'Tavernier', 'selling_price': 53, 'element_type': 3},
+    {'web_name': 'Palmer', 'selling_price': 103, 'element_type': 3},
     {'web_name': 'B.Fernandes', 'selling_price': 101, 'element_type': 3},
     
     {'web_name': 'Welbeck', 'selling_price': 62, 'element_type': 4},
-    {'web_name': 'João Pedro', 'selling_price': 76, 'element_type': 4},
-    {'web_name': 'Haaland', 'selling_price': 144, 'element_type': 4},
+    {'web_name': 'João Pedro', 'selling_price': 74, 'element_type': 4},
+    {'web_name': 'Haaland', 'selling_price': 145, 'element_type': 4},
 ]
 
 
@@ -29,7 +29,7 @@ my_players = [
 
 
 
-bank = 6 #in 10ths of M
+bank = 7 #in 10ths of M
 free_transfers = 1
 save_transfers_for_later = 0 #transfers left at end of last round (no need to put higher than 4)
 
@@ -40,21 +40,22 @@ form_treshold = 0.1
 points_per_game_treshold = 0.1
 running_minutes_threshold = -1
 
-#1: ARS, 8: CRY, 13:MCI, 20: WOL
-exclude_team = []#[][1, 8, 13, 20]
+#'ARS', 'AVL', 'BHA', 'BOU', 'BRE', 'BUR', 'CHE', 'CRY', 'EVE',
+       # 'FUL', 'LEE', 'LIV', 'MCI', 'MUN', 'NEW', 'NFO', 'SUN', 'TOT',
+       # 'WHU', 'WOL'
+exclude_team = ['ARS', 'MCI', 'MUN', 'AVL', 'LIV', 'NEW' , 'EVE', 'FUL', 'LEE', 'CRY', 'NFO', 'BUR', 'WOL']
 
-exclude_players = ['Malacia', 'Harrison Armstrong', 'J.Palhinha', 'Isidor', 'Kinsky', "O'Nien", 'Beto', 'G.Jesus', 'Keane', 'Potts', 'Reinildo', 'Spence', 'Mané', 'Trossard', 'Richarlison', 'Callum Wilson', 'James Wilson']
+exclude_players = ['João Pedro']
 #check james and saka and mateta
 include_players = []
 
-do_not_exclude_players = [] #["Semenyo", "Gabriel", "Raya", "Tolu"]
+do_not_exclude_players = ['Henderson', 'Tarkowski', "O'Reilly", 'Justin', 'Cherki', 'B.Fernandes', 'Haaland'] 
 
 
-
-do_not_transfer_out = [] #['Mings', 'Keane', 'Wilson']
-rounds_to_value = 4
+do_not_transfer_out = ['Truffert', 'Sánchez', 'Van Hecke', 'Groß', 'Tavernier', 'Palmer', 'Welbeck']
+rounds_to_value = 1
 #transfer to evaluate per week
-trans_per_week = 3
+trans_per_week = 1
 
 jump_rounds = 0
 #if you also want to evaluate players on the bench. in case of uncertain starters.
@@ -91,7 +92,7 @@ manual_blanks = {29: ['Rice', 'Wilson']}
 #GW               
 manual_blank = {}#{34: {'BUR': ['MCI'], 'BHA': ['CHE'], 'ARS': ['NEW'], 'LIV': ['CRY']}}
 #manual_double = {}
-manual_double = {36: {'CRY': ['MCI', 5, 3]}, 37: {'MCI': ['BOU', 4, 4]}}#{33: {'BUR': ['MCI', 4, 2], 'BHA': ['CHE', 3, 3], 'ARS': ['NEW', 3, 5], 'LIV': ['CRY', 3, 4]}, }
+manual_double = {}#{33: {'BUR': ['MCI', 4, 2], 'BHA': ['CHE', 3, 3], 'ARS': ['NEW', 3, 5], 'LIV': ['CRY', 3, 4]}, }
 
 
 season = '2025-26'
@@ -506,8 +507,10 @@ games_played = np.round(total_points / points_per_game)
 selected_players = (form < form_treshold) | (minutes_played < minutes_thisyear_treshold) | (points_per_game < points_per_game_treshold)
 
 for club in exclude_team:
-    ind = slim_elements_df['team'] == club
+    ind = slim_elements_df['string_team'] == club
     selected_players.loc[ind] = True  
+    if sum(ind) > 0:
+        print('Exclude', slim_elements_df.loc[ind, 'string_team'].iloc[0])
 
 for name in do_not_exclude_players:
     ind = slim_elements_df['web_name'] == name
@@ -2224,4 +2227,7 @@ for benchboost_gw in benchboost_gws:
                 print('\n')
         except:
             print('Not able to open file')
+        
+        
+        
         
