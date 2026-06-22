@@ -38,7 +38,6 @@ except:
 
 
 method = 'xgboost'
-temporal_window = 11 # less than what is used...
 
 season_dfs = []
 
@@ -130,7 +129,8 @@ def objective_xgboost(space):
     
     
     
-    #print(space)
+   #print(space)
+    
     
     space["grow_policy"] = grow_policy[space["grow_policy"]]
     
@@ -161,9 +161,10 @@ def objective_xgboost(space):
 
     # Filter the columns based on the defined function
     columns_to_keep = [col for col in cv_X.columns if should_keep_column(col, threshold)]
-    objective_X = cv_X[columns_to_keep]      
+    objective_X = cv_X[columns_to_keep]    
+    HO_X = val_X[columns_to_keep].copy()
       
-    #remove features
+    #remove features that are listed in space
     for feat in check_features:
         if feat in space.keys():
             #if remove
@@ -177,6 +178,21 @@ def objective_xgboost(space):
                         columns_to_keep.append(col)
                     
                 objective_X = objective_X[columns_to_keep]
+                HO_X = HO_X[columns_to_keep]
+                
+    #remove features that are unknown
+    columns_to_keep = []
+    for feat in objective_X.keys():
+        keep = True
+        for uk in unknown_features:
+            if feat == uk:
+                keep = False
+        
+        if keep:
+            columns_to_keep.append(feat)
+            
+    objective_X = objective_X[columns_to_keep]
+    HO_X = HO_X[columns_to_keep]
                 
     # Get the 80% of the first matches every season...
     objective_copy = objective_X.copy()
@@ -201,20 +217,9 @@ def objective_xgboost(space):
     fit_y =  cv_y.loc[fits_mask.values].copy()
     eval_y = cv_y.loc[evals_mask.values].copy()
 
-    #make sure all categories in val_x is present in cv_x
-    for column in eval_X.columns:
-        if isinstance(eval_X[column].dtype, pd.CategoricalDtype):
-            # Get the values in the current column of val_X
-            val_values = eval_X[column]
-            
-            # Check which values are present in the corresponding column of cv_X
-            mask = val_values.isin(fit_X[column])
-            
-            # Set values that are not present in cv_X[column] to NaN
-            eval_X.loc[~mask, column] = np.nan
-    
     dfit = xgb.DMatrix(data=fit_X, label=fit_y, enable_categorical=True)
     deval = xgb.DMatrix(data=eval_X, label=eval_y, enable_categorical=True)
+    dval_objective = xgb.DMatrix(data=HO_X, label=val_y, enable_categorical=True)
 
     evals = [(dfit, 'train'), (deval, 'eval')]
     
@@ -232,40 +237,27 @@ def objective_xgboost(space):
         )
     
 
-    objective_val_X = val_X[columns_to_keep]
-    dval_objective = xgb.DMatrix(data= objective_val_X, label=val_y, enable_categorical=True)
-
     val_pred = model.predict(dval_objective)
     
     val_error = mean_squared_error(val_y,  val_pred)
     #print('done1', val_error)
+
+    cv_loss  = objective_xgboost_custom(space, val_X, val_y, cv_X, cv_y, vals_mask)
+    cv_error = cv_loss['loss']
+    #print('done2', cv_error)  
     
-    mean_y = np.mean(cv_y)
-    #train_error = np.mean(np.abs((cv_y - mean_cv)**2))
-    random_error = np.mean(np.abs((val_y - mean_y)**2))
+    end = time.time()
+    elapsed = end - start
+
+    total_error = np.mean([val_error, cv_error]) + elapsed/25
     
-    if val_error > random_error*3:
-        total_error = float(99)
-        
-        end = time.time()
-    else:       
-    
-        cv_loss  = objective_xgboost_custom(space, val_X, val_y, cv_X, cv_y, vals_mask)
-        cv_error = cv_loss['loss']
-        #print('done2', cv_error)  
-        
-        end = time.time()
-        elapsed = end - start
-    
-        total_error = np.mean([val_error, cv_error]) + elapsed/25
-        
-        #print(cv_loss["status"])
+    #print(cv_loss["status"])
         
     #print(total_error, type(total_error))        
 
     return {'loss': total_error, 'status': STATUS_OK }
 
-def objective_xgboost_custom(space, cv_X,cv_y, val_X, val_y, cvs_mask):
+def objective_xgboost_custom(space, cv_X, cv_y, val_X, val_y, cvs_mask):
     
     #print(space)
     
@@ -294,13 +286,12 @@ def objective_xgboost_custom(space, cv_X,cv_y, val_X, val_y, cvs_mask):
     # Define the threshold
     threshold = int(space['temporal_window'])
     
-    
-
     # Filter the columns based on the defined function
     columns_to_keep = [col for col in cv_X.columns if should_keep_column(col, threshold)]
-    objective_X = cv_X[columns_to_keep]      
+    objective_X = cv_X[columns_to_keep]    
+    HO_X = val_X[columns_to_keep].copy()
       
-    #remove features
+    #remove features that are listed in space
     for feat in check_features:
         if feat in space.keys():
             #if remove
@@ -314,6 +305,21 @@ def objective_xgboost_custom(space, cv_X,cv_y, val_X, val_y, cvs_mask):
                         columns_to_keep.append(col)
                     
                 objective_X = objective_X[columns_to_keep]
+                HO_X = HO_X[columns_to_keep]
+                
+    #remove features that are unknown
+    columns_to_keep = []
+    for feat in objective_X.keys():
+        keep = True
+        for uk in unknown_features:
+            if feat == uk:
+                keep = False
+        
+        if keep:
+            columns_to_keep.append(feat)
+            
+    objective_X = objective_X[columns_to_keep]
+    HO_X = HO_X[columns_to_keep]
                 
     # Get the 80% of the first matches every season...
     objective_copy = objective_X.copy()
@@ -336,22 +342,12 @@ def objective_xgboost_custom(space, cv_X,cv_y, val_X, val_y, cvs_mask):
     fit_X = objective_X.iloc[fits_mask.values].copy()
     eval_X =  objective_X.loc[evals_mask.values].copy()
     fit_y =  cv_y.loc[fits_mask.values].copy()
-    eval_y = cv_y.loc[evals_mask.values].copy()
-
-    #make sure all categories in val_x is present in cv_x
-    for column in eval_X.columns:
-        if isinstance(eval_X[column].dtype, pd.CategoricalDtype):
-            # Get the values in the current column of val_X
-            val_values = eval_X[column]
-            
-            # Check which values are present in the corresponding column of cv_X
-            mask = val_values.isin(fit_X[column])
-            
-            # Set values that are not present in cv_X[column] to NaN
-            eval_X.loc[~mask, column] = np.nan
+    eval_y = cv_y.loc[evals_mask.values].copy()               
+                
     
     dfit = xgb.DMatrix(data=fit_X, label=fit_y, enable_categorical=True)
     deval = xgb.DMatrix(data=eval_X, label=eval_y, enable_categorical=True)
+    dval_objective = xgb.DMatrix(data=HO_X, label=val_y, enable_categorical=True)
 
     evals = [(dfit, 'train'), (deval, 'eval')]
 
@@ -366,8 +362,7 @@ def objective_xgboost_custom(space, cv_X,cv_y, val_X, val_y, cvs_mask):
     verbose_eval=False  # Set to True if you want to see detailed logging
         )
 
-    objective_val_X = val_X[columns_to_keep]
-    dval_objective = xgb.DMatrix(data= objective_val_X, label=val_y, enable_categorical=True)
+    
 
     val_pred = model.predict(dval_objective)
     
@@ -399,7 +394,7 @@ train_data = train_data.loc[selected]
 unique_names = train_data.name.unique()
 
 #two for train and val
-n_tresh = 4
+n_tresh = 2
 
 for unique_ind, name in enumerate(unique_names):
     selected = (train_data.name == name)
@@ -412,6 +407,12 @@ for unique_ind, name in enumerate(unique_names):
 temporal_features = ['minutes', 'ict_index', 'influence', 'threat', 'creativity', 'bps',
         'total_points', 'expected_goals', 'expected_assists',
         'expected_goals_conceded', 'own_team_points', 'own_element_points', 'opp_team_points', 'opp_element_points', 'defcon']
+
+
+#the non digit version of these features will be removed
+unknown_features = ['minutes', 'ict_index', 'total_points', 'own_team_points', 'own_element_points', 'defcon']
+
+
 
 train_y = train_data['total_points'].astype(int)
 train_X = train_data.drop(columns=temporal_features)
@@ -507,6 +508,8 @@ hyper_vals = {'max_depth': [],
 train_data['local_predictions'] = np.nan
 train_data['local_const_predictions'] = np.nan
 
+trials = Trials() 
+
 #train local models
 for ind, name in enumerate(unique_names):
     
@@ -562,16 +565,28 @@ for ind, name in enumerate(unique_names):
             val_values = val_X[column]
             
             # Check which values are present in the corresponding column of cv_X
-            mask = val_values.isin(cv_X[column])
+            mask = val_values.isin(train_copy[column])
             
             # Set values that are not present in cv_X[column] to NaN
             val_X.loc[~mask, column] = np.nan
+            
+    #make sure all categories in val_x is present in cv_x
+    for column in cv_X.columns:
+        if isinstance(cv_X[column].dtype, pd.CategoricalDtype):
+            # Get the values in the current column of val_X
+            val_values = cv_X[column]
+            
+            # Check which values are present in the corresponding column of cv_X
+            mask = val_values.isin(train_copy[column])
+            
+            # Set values that are not present in cv_X[column] to NaN
+            cv_X.loc[~mask, column] = np.nan
+            
+    
         
         
         
     mean_cv = np.mean(cv_y)
-    #train_error = np.mean(np.abs((cv_y - mean_cv)**2))
-    average_error1 = np.mean(np.abs((val_y - mean_cv)**2))
     
     subset_idx = train_data.index[sel_name]        # index of selected rows
     rows_to_update = subset_idx[vals_mask]         # further filtered rows
@@ -590,11 +605,38 @@ for ind, name in enumerate(unique_names):
     _, matches_season1 = np.unique(cv_X.season, return_counts=True)
     _, matches_season2 = np.unique(val_X.season, return_counts=True)
     
-    min_eval_fraction = 1/min([max(matches_season1), max(matches_season2)])
-    
-    if max(matches_season1) <= 1 or max(matches_season2) <= 1:
+    if len(matches_season1) == 0  or len(matches_season2) == 0:
         print('Skip name. Only a few matches:', sum(sel_name))
+        
+        #run one leave out 
+        subset_idx = train_data.index[sel_name]        # index of selected rows
+        
+        for s_ind in range(len(subset_idx)):
+            loo_points = np.mean(train_y[subset_idx[:s_ind].to_list() + subset_idx[s_ind+1:].to_list()])
+                        
+            rows_to_update = subset_idx[s_ind]         # further filtered rows
+            train_data.loc[rows_to_update, 'local_const_predictions'] = loo_points
+        
         continue
+    
+    else:    
+    
+        min_eval_fraction = 1/min([max(matches_season1), max(matches_season2)])
+        
+        if max(matches_season1) <= 1 or max(matches_season2) <= 1:
+            
+            #run one leave out 
+            subset_idx = train_data.index[sel_name]        # index of selected rows
+            
+            for s_ind in range(len(subset_idx)):
+                loo_points = np.mean(train_y[subset_idx[:s_ind].to_list() + subset_idx[s_ind+1:].to_list()])
+                            
+                rows_to_update = subset_idx[s_ind]         # further filtered rows
+                train_data.loc[rows_to_update, 'local_const_predictions'] = loo_points
+                
+                
+            print('Skip name. Only a few matches:', sum(sel_name))
+            continue
     
     
     
@@ -602,7 +644,8 @@ for ind, name in enumerate(unique_names):
     grow_policy = ['depthwise', 'lossguide']
     
     
-    individual_features = ['season', 'total_points', 'points_per_played_game', 'points_per_game', 'minutes', 'string_opp_team',  'opp_difficulty', 'was_home', 'own_difficulty', 'ict_index', 'transfers_in', 'transfers_out', 'bps'] #, 'difficulty']
+    individual_features = ['season', 'total_points', 'points_per_played_game', 'points_per_game', 'minutes', 'string_opp_team',  'opp_difficulty', 'was_home', 'own_difficulty', 'ict_index', 'transfers_in', 'transfers_out', 'expected_goals', 'expected_assists',
+            'expected_goals_conceded', 'defcon', 'own_element_points']
     
     #all_features = ['total_points', 'points_per_played_game', 'points_per_game', 'minutes', 'ict_index',  'influence', 'threat', 'creativity', 'bps', 'expected_goals', 'expected_assists',
          #   'expected_goals_conceded', 'defcon', 'string_opp_team',  'opp_difficulty', 'was_home', 'own_team_points', 'own_element_points', 'opp_team_points', 'opp_element_points', 'own_difficulty'] #, 'difficulty']
@@ -618,6 +661,7 @@ for ind, name in enumerate(unique_names):
 
     cv_X = cv_X[keep_cols]
     val_X = val_X[keep_cols]
+    train_copy = train_copy[keep_cols]
     
     
     # #include feature search in the hyperparams
@@ -631,23 +675,23 @@ for ind, name in enumerate(unique_names):
 
     
     space={'max_depth': hp.qloguniform("max_depth", 1, np.log(100), 1), 
-            'min_split_loss': hp.loguniform('min_split_loss', 0, np.log(60)), #log?
-            'reg_lambda' : hp.uniform('reg_lambda', 0, 30),
-            'reg_alpha': hp.uniform('reg_alpha', 0.01, 35),
+            'min_split_loss': hp.loguniform('min_split_loss', 0, np.log(40)), #log?
+            'reg_lambda' : hp.uniform('reg_lambda', 0, 250),
+            'reg_alpha': hp.uniform('reg_alpha', 0.01, 70),
             'min_child_weight' : hp.uniform('min_child_weight', 0, 70),
-            'learning_rate': hp.loguniform('learning_rate', 0, np.log(5)),
+            'learning_rate': hp.loguniform('learning_rate', 0, np.log(7)),
             'subsample': hp.uniform('subsample', 0.1, 1),
             'colsample_bytree': hp.uniform('colsample_bytree', 0.1, 1),
             'colsample_bylevel': hp.uniform('colsample_bylevel', 0.1, 1),
             'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
-            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 1, 500, 1),
+            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 1, 400, 1),
             'eval_fraction': hp.uniform('eval_fraction', min_eval_fraction, 0.51),
-            'n_estimators': hp.quniform('n_estimators', 2, 1000, 1),
-            'max_delta_step': hp.uniform('max_delta_step', 0, 25),
+            'n_estimators': hp.quniform('n_estimators', 2, 10000, 1),
+            'max_delta_step': hp.uniform('max_delta_step', 0, 400),
             'grow_policy': hp.choice('grow_policy', [0, 1]), #1
-            'max_leaves': hp.quniform('max_leaves', 0, 30, 1),
-            'max_bin':  hp.qloguniform('max_bin', np.log(2), np.log(150), 1),
-            'temporal_window': hp.quniform('temporal_window', 1, temporal_window, 1),
+            'max_leaves': hp.quniform('max_leaves', 0, 200, 1),
+            'max_bin':  hp.qloguniform('max_bin', np.log(2), np.log(130), 1),
+            'temporal_window': hp.quniform('temporal_window', 1, 20, 1),
         }
 
     for feature in check_features:
@@ -668,7 +712,7 @@ for ind, name in enumerate(unique_names):
     loss = np.inf
     tid = 0
     
-    while loss > np.mean([average_error1, average_error2])*3 and tid < 200:
+    while loss > 60 and tid < 200:
 
         #optmimize hyperparameters. use all training data
         best_hyperparams = fmin(fn = objective_xgboost,
@@ -791,7 +835,7 @@ for ind, name in enumerate(unique_names):
         
 
         objective_val_X = X2[columns_to_keep]
-        dval_objective = xgb.DMatrix(data= objective_val_X, label=y2, enable_categorical=True)
+        dval_objective = xgb.DMatrix(data=objective_val_X, label=y2, enable_categorical=True)
 
         val_pred = model.predict(dval_objective)
         
@@ -806,77 +850,23 @@ for ind, name in enumerate(unique_names):
         subset_idx = train_data.index[sel_name]        # index of selected rows
         rows_to_update = subset_idx[mask2]   
         
-        if loss == 99:# further filtered rows
-            train_data.loc[rows_to_update, 'local_predictions'] = np.median(y2)
-        else:
-            train_data.loc[rows_to_update, 'local_predictions'] = val_pred
+        train_data.loc[rows_to_update, 'local_predictions'] = val_pred
 
         #print(val_pred)        
         print('done', random_error-val_error)
         
         
-selected = np.array(hyper_vals["losses"]) < 99
+
 for k in hyper_vals:
     plt.figure()
-    print(k, np.max(np.array(hyper_vals[k])[selected]))
-    plt.hist(np.array(hyper_vals[k])[selected])
+    #print(k, np.max(np.array(hyper_vals[k])[selected]))
+    plt.hist(np.array(hyper_vals[k]))
     plt.title(k)
     
+plt.show()
 
+local_error = np.nanmean((train_y - train_data['local_predictions'])**2)
+print('Local error:', local_error)
 
-
-    
-        # summary = {'model': model, 'train_features': objective_X, 'hyperparameters': space}#, 'all_rows': original_df}
-    
-        # pickle.dump(summary, open(model_path, 'wb'))
-    
-        # xgb.plot_importance(model, importance_type='gain',
-        #                 max_num_features=20, show_values=False)
-        # plt.show()
-        
-        # data =  model.get_score()
-    
-        # # Dictionary to hold summed values and counts
-        # summed_values = {}
-        # count_values = {}
-    
-        # for key, value in data.items():
-        #     # Extract the part of the string after the digits
-        #     new_key = ''.join(filter(lambda x: not x.isdigit(), key))  # or use re.sub(r'^\d+', '', key)
-            
-        #     # Sum the values and count the occurrences for the same new_key
-        #     if new_key in summed_values:
-        #         summed_values[new_key] += value
-        #         count_values[new_key] += 1
-        #     else:
-        #         summed_values[new_key] = value
-        #         count_values[new_key] = 1
-    
-        # # Calculate mean for each key
-        # mean_values = {k: summed_values[k] / count_values[k] for k in summed_values}
-    
-        # # Sort the mean values by their values
-        # sorted_mean_values = dict(sorted(mean_values.items(), key=lambda item: item[1]))
-    
-        # #print(sorted_mean_values)  # Output will be sorted by mean values
-    
-        # # Plotting the sorted mean values
-        # plt.figure(figsize=(10, 6))
-        # plt.bar(sorted_mean_values.keys(), sorted_mean_values.values(), color='skyblue')
-        # plt.xlabel('Labels')
-        # plt.ylabel('Mean Values')
-        # plt.title('Mean Values of Points Sorted')
-        # plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
-        # plt.tight_layout()  # Adjust layout to prevent clipping of labels
-    
-        # # Show the plot
-        # plt.show()
-        
-        # train_data = xgb.DMatrix(data=objective_X, label=train_y, enable_categorical=True)
-        # pred = model.predict(train_data)
-        
-        # train_error = np.mean(np.abs((train_y - pred)**2))
-        
-        # print('Train error:', train_error)
         
 train_data.to_pickle(r'\\platon.uio.no\med-imb-u1\jorgels\\model_local_data.pkl')  # Set index=False to not include row indices

@@ -210,24 +210,24 @@ def objective_xgboost(space):
                     
                 objective_X = objective_X[columns_to_keep]
                 
+    #remove features that are unknown
+    columns_to_keep = []
+    for feat in objective_X.keys():
+        keep = True
+        for uk in unknown_features:
+            if feat == uk:
+                keep = False
+        
+        if keep:
+            columns_to_keep.append(feat)
+                          
+    objective_X = objective_X[columns_to_keep]
+                
 
-    
     fit_X = objective_X.iloc[fits_mask.values].copy()
     eval_X =  objective_X.loc[evals_mask.values].copy()
     fit_y =  cv_y.loc[fits_mask.values].copy()
     eval_y = cv_y.loc[evals_mask.values].copy()
-
-    #make sure all categories in val_x is present in cv_x
-    for column in eval_X.columns:
-        if isinstance(eval_X[column].dtype, pd.CategoricalDtype):
-            # Get the values in the current column of val_X
-            val_values = eval_X[column]
-            
-            # Check which values are present in the corresponding column of cv_X
-            mask = val_values.isin(fit_X[column])
-            
-            # Set values that are not present in cv_X[column] to NaN
-            eval_X.loc[~mask, column] = np.nan
     
     dfit = xgb.DMatrix(data=fit_X, label=fit_y, enable_categorical=True)
     deval = xgb.DMatrix(data=eval_X, label=eval_y, enable_categorical=True)
@@ -584,847 +584,404 @@ val_X =  train_X.loc[vals_mask.values].copy()
 cv_y =  train_y.loc[cvs_mask.values].copy()
 val_y = train_y.loc[vals_mask.values].copy()
 
-#transform y to normal distribution
-min_val = np.min(cv_y)
-log_cv_y = np.log(cv_y - min_val + 1)   
-
-if method == 'linear_reg':
-    #9.04 with hyperparams tested on val data. temp win = 0
-    #9.02 with hyperparams tested on val data. temp win = 1
-    #9.04 with hyperparams tested on val data. temp win = 2
-    
-    from sklearn.linear_model import LinearRegression, Ridge, Lasso
-    from sklearn.preprocessing import StandardScaler
-    
-    #do not keep historical data
-    threshold = 2
-
-    # Filter the columns based on the defined function
-    columns_to_keep = [col for col in cv_X.columns if should_keep_column(col, threshold)]
-    
-    objective_X = cv_X[columns_to_keep]
-    val_X = val_X[columns_to_keep]  
-    
-    objective_X = objective_X.drop('season', axis=1)
-    val_X = val_X.drop('season', axis=1)
-    
-    for c in objective_X.columns:
-        if 'own_difficulty' in c or 'other_difficulty' in c:
-            objective_X[c] = objective_X[c].astype(float)
-            val_X[c] = val_X[c].astype(float)
-        elif objective_X[c].dtype == 'Int64':
-            objective_X[c] = objective_X[c].astype(float)
-            val_X[c] = val_X[c].astype(float)
+#make sure all categories in val_x is present in cv_x
+for column in val_X.columns:
+    if isinstance(val_X[column].dtype, pd.CategoricalDtype):
+        # Get the values in the current column of val_X
+        val_values = val_X[column]
         
-   
-    df_cv_one_hot = pd.get_dummies(objective_X, columns=['element_type', 'names'])
-    df_val_one_hot = pd.get_dummies(val_X, columns=['element_type', 'names'])
-    
-    for c in objective_X.columns:
-        if 'string_team' in c or 'string_opp_team' in c:
-            df_cv_one_hot = pd.get_dummies(df_cv_one_hot, columns=[c])
-            df_val_one_hot = pd.get_dummies(df_val_one_hot, columns=[c])
-            
-    cv_filled_mean = df_cv_one_hot.fillna(df_cv_one_hot.mean(numeric_only=True))
-    val_filled_mean = df_val_one_hot.fillna(df_val_one_hot.mean(numeric_only=True))
-    
-    scaler = StandardScaler()
-    scaled_cv_X = scaler.fit_transform(cv_filled_mean)
-    
-    scaled_cv_X = pd.DataFrame(scaled_cv_X, columns=cv_filled_mean.columns)
-    scaled_val_X =  pd.DataFrame(scaler.transform(val_filled_mean), columns=cv_filled_mean.columns)
-
-    regularization = ['lasso', 'ridge']
-
-    space={'alpha': hp.loguniform('alpha', -3, np.log(1000)),
-           'reg': hp.choice('reg', regularization),
-        }
-
-    trials = Trials()
-
-    best_hyperparams = fmin(fn = objective_linear_reg,
-                    space = space,
-                    algo = atpe.suggest,
-                    early_stop_fn=no_progress_loss(500),
-                    trials = trials)
-
-    # model.fit(cv_filled_mean, cv_y)
-
-    # selected = val_X['running_minutes'] > 60
-
-    # val_pred = model.predict(val_filled_mean[selected])
-    # val_error = mean_squared_error(val_y[selected], val_pred)
-
-    # plt.scatter(val_y[selected], np.abs((val_y[selected]-val_pred)))
-
-elif method == 'svr':
-    
-    #takes too long to fit...
-
-    from sklearn.svm import SVR
-    from sklearn.preprocessing import StandardScaler
-    
-    #do not keep historical data
-    threshold = 0
-
-    # Filter the columns based on the defined function
-    columns_to_keep = [col for col in cv_X.columns if should_keep_column(col, threshold)]
-    
-    objective_X = cv_X[columns_to_keep]
-    val_X = val_X[columns_to_keep]  
-    
-    objective_X = objective_X.drop('season', axis=1)
-    val_X = val_X.drop('season', axis=1)
-    
-    for c in objective_X.columns:
-        if 'own_difficulty' in c or 'other_difficulty' in c:
-            objective_X[c] = objective_X[c].astype(float)
-            val_X[c] = val_X[c].astype(float)
-        elif objective_X[c].dtype == 'Int64':
-            objective_X[c] = objective_X[c].astype(float)
-            val_X[c] = val_X[c].astype(float)
+        # Check which values are present in the corresponding column of cv_X
+        mask = val_values.isin(train_X[column])
         
-   
-    df_cv_one_hot = pd.get_dummies(objective_X, columns=['element_type', 'names'])
-    df_val_one_hot = pd.get_dummies(val_X, columns=['element_type', 'names'])
-    
-    for c in objective_X.columns:
-        if 'string_team' in c or 'string_opp_team' in c:
-            df_cv_one_hot = pd.get_dummies(df_cv_one_hot, columns=[c])
-            df_val_one_hot = pd.get_dummies(df_val_one_hot, columns=[c])
-            
-    cv_filled_mean = df_cv_one_hot.fillna(df_cv_one_hot.mean(numeric_only=True))
-    val_filled_mean = df_val_one_hot.fillna(df_val_one_hot.mean(numeric_only=True))
-    
-    scaler = StandardScaler()
-    scaled_cv_X = scaler.fit_transform(cv_filled_mean)
-    
-    scaled_cv_X = pd.DataFrame(scaled_cv_X, columns=cv_filled_mean.columns)
-    scaled_val_X =  pd.DataFrame(scaler.transform(val_filled_mean), columns=cv_filled_mean.columns)
-    
-    #transform y to normal distribution
-    min_val = np.min(cv_y)
-    log_cv_y = np.log(cv_y - min_val + 1)   
-    
-    #get an validation set for fitting
-    #cv_X, val_X, cv_y, val_y, cv_sample_weights, _, cv_stratify, _ = train_test_split(df_one_hot, train_y, sample_weights, stratify, test_size=0.25, stratify=stratify, random_state=42)
+        # Set values that are not present in cv_X[column] to NaN
+        val_X.loc[~mask, column] = np.nan
 
-    space = {
-        'pars': hp.choice('kernel_shape', [
-            {'kernel': 'linear', 'C': hp.loguniform('C_linear', -3, 3), 'epsilon': hp.loguniform('epsilon_linear', -2, 2)},
-            {'kernel': 'poly', 'degree': hp.quniform('degree', 2, 5, 1), 'gamma': hp.loguniform('gamma_poly', -4, 2), 'C': hp.loguniform('C_poly', -3, 3), 'epsilon': hp.loguniform('epsilon_poly', -2, 2)},
-            {'kernel': 'rbf', 'gamma': hp.loguniform('gamma_rbf', -4, 2), 'C': hp.loguniform('C_rbf', -3, 3), 'epsilon': hp.loguniform('epsilon_rbf', -2, 2)},
-            {'kernel': 'sigmoid', 'gamma': hp.loguniform('gamma_sigmoid', -4, 2), 'C': hp.loguniform('C_sigmoid', -3, 3), 'epsilon': hp.loguniform('epsilon_sigmoid', -2, 2)}
-        ])
+#make sure all categories in val_x is present in cv_x
+for column in cv_X.columns:
+    if isinstance(cv_X[column].dtype, pd.CategoricalDtype):
+        # Get the values in the current column of val_X
+        val_values = cv_X[column]
+        
+        # Check which values are present in the corresponding column of cv_X
+        mask = val_values.isin(train_X[column])
+        
+        # Set values that are not present in cv_X[column] to NaN
+        cv_X.loc[~mask, column] = np.nan
+    
+    
+    
+mean_cv = np.mean(cv_y)
+train_error = np.mean(np.abs((cv_y - mean_cv)**2))
+validation_error = np.mean(np.abs((val_y - mean_cv)**2))
+
+print('Train random error: ', train_error)
+print('Validation random error: ', validation_error)   
+
+hyperparam_path = main_directory + '\models\hyperparams.pkl'
+with open(hyperparam_path, 'rb') as f:
+    old_trials = pickle.load(f)
+
+hyperparams = old_trials.best_trial['misc']['vals']
+#reformat the lists
+old_hyperparams = {}
+for field, val in hyperparams.items():
+    old_hyperparams[field] = val[0]
+    
+# old_trials = generate_trials_to_calculate([old_hyperparams])
+
+# old_hyperparams = fmin(fn = objective_xgboost,
+#                 space = space,
+#                 algo = tpe.suggest,
+#                 max_evals = 1,
+#                 trials = old_trials)    
+    
+# old_loss = old_trials.best_trial["result"]["loss"]
+
+
+grow_policy = ['depthwise', 'lossguide']
+#include feature search in the hyperparams
+check_features = ['transfers_in', 'transfers_out', 'minutes', 'ict_index', 'influence', 'threat', 'creativity', 'bps',
+        'total_points', 'expected_goals', 'expected_assists', 'points_per_played_game', 'was_home', 'season',
+        'expected_goals_conceded', 'own_team_points', 'own_element_points', 'opp_team_points', 'opp_element_points', 'defcon', 'name', 'points_per_game', 'string_opp_team', 'own_difficulty', 'opp_difficulty'] #, 'difficulty']
+
+do_remove_features= ['names', 'points_per_game', 'points_per_played_game', 'season']
+
+#the non digit version of these features will be removed
+unknown_features = ['minutes', 'ict_index', 'total_points', 'own_team_points', 'own_element_points', 'defcon']
+
+
+#old_hyperparams["grow_policy"] = grow_policy[old_hyperparams["grow_policy"]]
+
+loss = objective_xgboost(old_hyperparams)
+old_loss = loss['loss']
+
+
+print('Old loss: ', old_loss)
+    
+
+# #make sure that there will be data left for evaluation in the final model
+# cv_season =  cv_X.iloc[-1].season
+# selected_cv =  cv_X.season == cv_season
+# cv_fraction = sum(selected_cv) / cv_X.shape[0]   
+
+# current_season =  train_X.iloc[-1].season
+# selected_test =  train_X.season == current_season
+# current_fraction = sum(selected_test) / train_X.shape[0]   
+
+#max_eval_fraction = np.min([cv_fraction, current_fraction])
+
+
+#min_eval_fraction = 1/(len(unique_integers) * 0.80)#len(np.unique(cv_stratify))/cv_X.shape[0]
+#we need at least one match every season
+min_eval_fraction = 1/(380*0.8)
+
+
+space={'max_depth': hp.quniform("max_depth", 1, 8500, 1),
+        'min_split_loss': hp.uniform('min_split_loss', 0, 500), #log?
+        'reg_lambda' : hp.uniform('reg_lambda', 0, 1000),
+        'reg_alpha': hp.uniform('reg_alpha', 0.01, 400),
+        'min_child_weight' : hp.uniform('min_child_weight', 0, 700),
+        'learning_rate': hp.uniform('learning_rate', 0, 0.05),
+        'subsample': hp.uniform('subsample', 0.1, 1),
+        'colsample_bytree': hp.uniform('colsample_bytree', 0.1, 1),
+        'colsample_bylevel': hp.uniform('colsample_bylevel', 0.1, 1),
+        'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
+        'early_stopping_rounds': hp.quniform("early_stopping_rounds", 10, 7000, 1),
+        'eval_fraction': hp.uniform('eval_fraction', min_eval_fraction, 0.25),
+        'n_estimators': hp.quniform('n_estimators', 2, 125000, 1),
+        'max_delta_step': hp.uniform('max_delta_step', 0, 175),
+        'grow_policy': hp.choice('grow_policy', [0, 1]), #1
+        'max_leaves': hp.quniform('max_leaves', 0, 4000, 1),
+        'max_bin':  hp.qloguniform('max_bin', np.log(2), np.log(150), 1),
+        'temporal_window': hp.quniform('temporal_window', 1, temporal_window, 1),
     }
 
 
-    trials = Trials()
+for feature in check_features:
+    # Add a new entry in the dictionary with the feature as the key
+    # and hp.quniform('n_estimators', 0, 2, 1) as the value
+    space[feature] = hp.choice(feature, [True, False]), #111
 
-    best_hyperparams = fmin(fn = objective_svr,
-                    space = space,
-                    algo = tpe.suggest,
-                    early_stop_fn=no_progress_loss(1000),
-                    max_evals = 10000,
-                    trials = trials)
-
-
-    model.fit(cv_filled_mean, cv_y)
-
-    selected = val_X['running_minutes'] > 60
-
-    val_pred = model.predict(val_filled_mean[selected])
-    val_error = mean_squared_error(val_y[selected], val_pred)
-
-    plt.scatter(val_y[selected], np.abs((val_y[selected]-val_pred)))
-
-
-elif method == 'linear_svr':
     
-    #window 0: 9.07
-    #windiw 1: 9.06
+#optimize and iteratively get hyperparamaters
+batch_size = 100
+if optimize:
+    max_evals = 500000
 
-    from sklearn.svm import LinearSVR
-    from sklearn.preprocessing import StandardScaler
-    
-    
-    #do not keep historical data
-    threshold = 1
-
-    # Filter the columns based on the defined function
-    columns_to_keep = [col for col in cv_X.columns if should_keep_column(col, threshold)]
-    
-    objective_X = cv_X[columns_to_keep]
-    val_X = val_X[columns_to_keep]  
-    
-    objective_X = objective_X.drop('season', axis=1)
-    val_X = val_X.drop('season', axis=1)
-    
-    for c in objective_X.columns:
-        if 'own_difficulty' in c or 'other_difficulty' in c:
-            objective_X[c] = objective_X[c].astype(float)
-            val_X[c] = val_X[c].astype(float)
-        elif objective_X[c].dtype == 'Int64':
-            objective_X[c] = objective_X[c].astype(float)
-            val_X[c] = val_X[c].astype(float)
-        
-   
-    df_cv_one_hot = pd.get_dummies(objective_X, columns=['element_type', 'names'])
-    df_val_one_hot = pd.get_dummies(val_X, columns=['element_type', 'names'])
-    
-    for c in objective_X.columns:
-        if 'string_team' in c or 'string_opp_team' in c:
-            df_cv_one_hot = pd.get_dummies(df_cv_one_hot, columns=[c])
-            df_val_one_hot = pd.get_dummies(df_val_one_hot, columns=[c])
-            
-    cv_filled_mean = df_cv_one_hot.fillna(df_cv_one_hot.mean(numeric_only=True))
-    val_filled_mean = df_val_one_hot.fillna(df_val_one_hot.mean(numeric_only=True))
-    
-    scaler = StandardScaler()
-    scaled_cv_X = scaler.fit_transform(cv_filled_mean)
-    
-    scaled_cv_X = pd.DataFrame(scaled_cv_X, columns=cv_filled_mean.columns)
-    scaled_val_X =  pd.DataFrame(scaler.transform(val_filled_mean), columns=cv_filled_mean.columns)
-    
-
-
-    space = {'C': hp.loguniform('C_linear', -3, 3),
-             'epsilon': hp.loguniform('epsilon_linear', -2, 2),
-             'loss': hp.choice('loss', ['epsilon_insensitive', 'squared_epsilon_insensitive']),
-            }
-
-
-    trials = Trials()
-
-    best_hyperparams = fmin(fn = objective_linear_svr,
-                    space = space,
-                    algo = tpe.suggest,
-                    early_stop_fn=no_progress_loss(500),
-                    max_evals = 10000,
-                    trials = trials)
-
-
-    model.fit(cv_filled_mean, cv_y)
-
-    selected = val_X['running_minutes'] > 60
-
-    val_pred = model.predict(val_filled_mean[selected])
-    val_error = mean_squared_error(val_y[selected], val_pred)
-
-    plt.scatter(val_y[selected], np.abs((val_y[selected]-val_pred)))
-
-
-elif method == 'cnn':
-
-    import tensorflow as tf
-    from tensorflow.keras.models import Sequential
-    from tensorflow.keras.layers import Dense, Flatten, Dropout
-    from sklearn.preprocessing import StandardScaler
-    from keras.callbacks import EarlyStopping
-    from keras.callbacks import ReduceLROnPlateau
-    from keras.regularizers import l1, l2, l1_l2
-    
-    #do not keep historical data
-    threshold = 0
-
-    # Filter the columns based on the defined function
-    columns_to_keep = [col for col in cv_X.columns if should_keep_column(col, threshold)]
-    
-    objective_X = cv_X[columns_to_keep]
-    val_X = val_X[columns_to_keep]  
-    
-    objective_X = objective_X.drop('season', axis=1)
-    val_X = val_X.drop('season', axis=1)
-    
-    for c in objective_X.columns:
-        if 'own_difficulty' in c or 'other_difficulty' in c:
-            objective_X[c] = objective_X[c].astype(float)
-            val_X[c] = val_X[c].astype(float)
-        elif objective_X[c].dtype == 'Int64':
-            objective_X[c] = objective_X[c].astype(float)
-            val_X[c] = val_X[c].astype(float)
-        
-   
-    df_cv_one_hot = pd.get_dummies(objective_X, columns=['element_type', 'names'])
-    df_val_one_hot = pd.get_dummies(val_X, columns=['element_type', 'names'])
-    
-    for c in objective_X.columns:
-        if 'string_team' in c or 'string_opp_team' in c:
-            df_cv_one_hot = pd.get_dummies(df_cv_one_hot, columns=[c])
-            df_val_one_hot = pd.get_dummies(df_val_one_hot, columns=[c])
-            
-            
-    fit_X, eval_X, fit_y, eval_y = train_test_split(df_cv_one_hot, cv_y, test_size=0.25, random_state=42)
-    
-    cv_filled_mean = df_cv_one_hot.fillna(df_cv_one_hot.median(numeric_only=True))
-    val_filled_mean = df_val_one_hot.fillna(df_cv_one_hot.median(numeric_only=True))
-    
-    eval_X_filled_mean = eval_X.fillna(fit_X.nanmedian(numeric_only=True))
-    fit_X_filled_mean = fit_X.fillna(fit_X.median(numeric_only=True))   
-
-    scaler = StandardScaler()
-    scaled_fit_X = scaler.fit_transform(fit_X_filled_mean)
-    scaled_eval_X = scaler.transform(eval_X_filled_mean)
-
-    scaler = StandardScaler()
-    scaled_cv_X = scaler.fit_transform(cv_filled_mean)
-    scaled_val_X = scaler.transform(val_filled_mean)
-
-    alpha_l1 = 0.001
-    alpha_l2 = 0.001
-
-    # Define the model
-    model = Sequential()
-
-    model.add(Dense(1024, activation='relu', kernel_regularizer=l1_l2(l1=alpha_l1, l2=alpha_l2)))
-    model.add(Dropout(0.4))
-    model.add(Dense(1, activation='linear'))  # Change to 'sigmoid' if binary classification
-
-    # Define the ReduceLROnPlateau callback
-    reduce_lr = ReduceLROnPlateau(
-    monitor='val_loss',  # Metric to monitor
-    factor=0.1,          # Factor by which to reduce the learning rate
-    patience=1,         # Number of epochs with no improvement after which learning rate is reduced
-    min_lr=0.000001,      # Lower bound on the learning rate
-    verbose=1            # Verbosity mode; 1 for printing messages, 0 for silent
-    )
-
-    # Compile the model
-    model.compile(optimizer='adam', loss='mean_squared_error')  # Choose 'binary_crossentropy' for binary classification
-
-    # Train the model
-    model.fit(scaled_fit_X.astype(float), fit_y, epochs=100, batch_size=32, callbacks=[EarlyStopping(monitor='val_loss', patience=2), reduce_lr], validation_data=(scaled_eval_X.astype(float), eval_y))
-
-    # Evaluate the model
-    #selected = val_X['running_minutes'] > 60
-
-    val_pred = model.predict(scaled_val_X)
-    val_error = mean_squared_error(val_y, val_pred)
-    print(val_error)
-
-elif method == 'mixedLM':
-    #2025: with random effect: 8.80, window 0
-    #2025: with random effect: 8.79, window 1
-    #2025: with random effect: 8.80, window 2
-    
-    cv_X = train_X.iloc[cvs].copy()
-    val_X =  train_X.loc[vals].copy()
-    cv_y =  train_y.loc[cvs].copy()
-    val_y = train_y.loc[vals].copy()
-
-
-    #do not keep historical data
-    threshold = 2
-
-    # Filter the columns based on the defined function
-    columns_to_keep = [col for col in cv_X.columns if should_keep_column(col, threshold)]
-    
-    objective_X = cv_X[columns_to_keep]
-    val_X = val_X[columns_to_keep]  
-    
-    objective_X = objective_X.drop('season', axis=1)
-    val_X = val_X.drop('season', axis=1)
-    
-    #objective_X = objective_X.dropna(how='any')
-    
-    for c in objective_X.columns:
-        if 'own_difficulty' in c or 'other_difficulty' in c:
-            objective_X[c] = objective_X[c].astype(float)
-            val_X[c] = val_X[c].astype(float)
-        elif objective_X[c].dtype == 'Int64':
-            objective_X[c] = objective_X[c].astype(float)
-            val_X[c] = val_X[c].astype(float)   
-        elif objective_X[c].dtype == 'category':
-            objective_X[c] = objective_X[c].cat.add_categories('unknown')  # Make sure 'NaN' is a category
-            objective_X[c].fillna('unknown', inplace=True)
-            
-            val_X[c] = val_X[c].cat.add_categories('unknown')  # Make sure 'NaN' is a category
-            val_X[c].fillna('unknown', inplace=True)
-            
-            objective_X[c] = objective_X[c].astype(str)
-            val_X[c] = val_X[c].astype(str)  
-            
-
-    cv_filled_mean = objective_X.fillna(objective_X.median(numeric_only=True))
-    val_filled_mean = val_X.fillna(objective_X.median(numeric_only=True))
-    
-    
-    #rename columns
-    new_columns = []
-    # Create a mapping of digits to capital letters
-    digit_to_letter = {
-        '0': 'A',
-        '1': 'B',
-        '2': 'C',
-        '3': 'D',
-        '4': 'E',
-        '5': 'F',
-        '6': 'G',
-        '7': 'H',
-        '8': 'I',
-        '9': 'J'
-    }
-
-
-    for col in cv_filled_mean:
-        if col[0].isdigit():  # Check if the first character is a digit
-            new_col = digit_to_letter[col[0]] + col[1:]  # Move the first character to the end
-            new_columns.append(new_col)
-        else:
-            new_columns.append(col)  # Keep the original name
-
-    # Renaming the columns
-    cv_filled_mean.columns = new_columns
-    val_filled_mean.columns = new_columns
-    
-    
-    #make fit_tring
-    fit_string = "total_points ~ "
-    for ind, c in enumerate(cv_filled_mean.keys()):
-        
-        if ind > 100:
-            continue
-        
-        if c == 'names' or c =='total_points':
-            continue
-        
-        if cv_filled_mean[c].dtype == 'category':
-            c_string = "C(" + c + ")"
-        else:
-            c_string = c
-        
-        if ind > 0:
-            fit_string = fit_string + " + " + c_string
-        else:
-            fit_string = fit_string + c_string
-        
-    #transform y to normal distribution
-    min_val = np.min(cv_y)
-    log_cv_y = np.log(cv_y - min_val + 1)  
-    
-    cv_filled_mean['total_points'] = log_cv_y
-    cv_filled_mean['names'] = cv_filled_mean['names'].astype(str)
-    
-    #necessary to avoid singular matrix
-    # Remove rows that contain 'unknown' in any column
-    #cv_filled_mean = cv_filled_mean[~cv_filled_mean.isin(['unknown']).any(axis=1)]
-    import statsmodels.api as sm
-    model = sm.MixedLM.from_formula(fit_string, groups='names', data=cv_filled_mean)
-    result = model.fit()
-
-    prediction = result.predict(val_filled_mean)
-    val_normal = np.exp(prediction) + min_val - 1    
-    val_error = mean_squared_error(val_y,  val_normal)
-    print('without random effect', val_error)
-    
-
-    rand_e = result.random_effects
-    name_list = list(rand_e.keys())
-
-    for row in val_filled_mean.iterrows():
-        if row[1]["names"] in name_list:
-            random_effect = rand_e[row[1]["names"]].iloc[0]
-        else:
-            random_effect = 0
-
-        # if row[1]["element_type"] in name_list:
-        #     random_effect = re[row[1]["element_type"]].iloc[0]
-        # else:
-        #     random_effect = 0
-
-        prediction[row[0]] = prediction[row[0]] + random_effect
-
-    val_normal = np.exp(prediction) + min_val - 1    
-    val_error = mean_squared_error(val_y,  val_normal)
-    print('with random effect', val_error)
-
-
-elif method == 'xgboost':
-
-    #make sure all categories in val_x is present in cv_x
-    for column in val_X.columns:
-        if isinstance(val_X[column].dtype, pd.CategoricalDtype):
-            # Get the values in the current column of val_X
-            val_values = val_X[column]
-            
-            # Check which values are present in the corresponding column of cv_X
-            mask = val_values.isin(cv_X[column])
-            
-            # Set values that are not present in cv_X[column] to NaN
-            val_X.loc[~mask, column] = np.nan
-        
-        
-        
-    mean_cv = np.mean(cv_y)
-    train_error = np.mean(np.abs((cv_y - mean_cv)**2))
-    validation_error = np.mean(np.abs((val_y - mean_cv)**2))
-    
-    print('Train random error: ', train_error)
-    print('Validation random error: ', validation_error)   
-    
-    hyperparam_path = main_directory + '\models\hyperparams.pkl'
+if continue_optimize:
+    hyperparam_path = main_directory + '\models\hyperparams_temp.pkl'
     with open(hyperparam_path, 'rb') as f:
-        old_trials = pickle.load(f)
+        trials = pickle.load(f)
+else:
+    trials = Trials()
 
-    hyperparams = old_trials.best_trial['misc']['vals']
-    #reformat the lists
-    old_hyperparams = {}
-    for field, val in hyperparams.items():
-        old_hyperparams[field] = val[0]
+if optimize:
+
+    for i in range(len(trials.trials)+batch_size, max_evals + 1, batch_size):
+
+        # Save the trials object every 'batch_size' iterations. Can save with any method you prefer
+
+        #optmimize hyperparameters. use all training data
+        best_hyperparams = fmin(fn = objective_xgboost,
+                        space = space,
+                        algo = atpe.suggest,
+                        max_evals = i,
+                        trials = trials)
+
+        print(best_hyperparams)
         
-    # old_trials = generate_trials_to_calculate([old_hyperparams])
+        #hyperparam_path = main_directory + '\models\hyperparams_temp.pkl'
+        hyperparam_path = main_directory + '\models\hyperparams_temp.pkl'
+        pickle.dump(trials, open(hyperparam_path, "wb"))
+        
+else:      
 
-    # old_hyperparams = fmin(fn = objective_xgboost,
+    
+    hyperparam_path = main_directory + '\models\hyperparams_temp.pkl'
+    with open(hyperparam_path, 'rb') as f:
+        new_trials = pickle.load(f)
+        
+    hyperparams = new_trials.best_trial['misc']['vals']
+    #reformat the lists
+    new_hyperparams = {}
+    for field, val in hyperparams.items():
+        new_hyperparams[field] = val[0]
+        
+    #new_hyperparams["grow_policy"] = grow_policy[new_hyperparams["grow_policy"]]
+                       
+        
+    # new_trials = generate_trials_to_calculate([new_hyperparams])
+
+    # new_hyperparams = fmin(fn = objective_xgboost,
     #                 space = space,
     #                 algo = tpe.suggest,
     #                 max_evals = 1,
-    #                 trials = old_trials)    
+    #                 trials = new_trials)    
+
+    # new_loss =  new_trials.best_trial["result"]["loss"]
+
+    loss = objective_xgboost(new_hyperparams)
+    new_loss = loss['loss']
+    
+    print('New loss: ', new_loss)
+    
+    if new_loss < old_loss:
+        print('Overwriting old loss')
+        hyperparam_path = main_directory + '\models\hyperparams.pkl'
+        pickle.dump(new_trials, open(hyperparam_path, "wb"))
+        trials = new_trials
         
-    # old_loss = old_trials.best_trial["result"]["loss"]
-    
-    
-    grow_policy = ['depthwise', 'lossguide']
-    #include feature search in the hyperparams
-    check_features = ['transfers_in', 'transfers_out', 'minutes', 'ict_index', 'influence', 'threat', 'creativity', 'bps',
-            'total_points', 'expected_goals', 'expected_assists', 'points_per_played_game', 'was_home', 'season',
-            'expected_goals_conceded', 'own_team_points', 'own_element_points', 'opp_team_points', 'opp_element_points', 'defcon', 'name', 'points_per_game', 'string_opp_team', 'own_difficulty', 'opp_difficulty'] #, 'difficulty']
-
-    do_remove_features= ['names', 'points_per_game', 'points_per_played_game', 'season']
-    
-    
-    
-    #old_hyperparams["grow_policy"] = grow_policy[old_hyperparams["grow_policy"]]
-
-    loss = objective_xgboost(old_hyperparams)
-    old_loss = loss['loss']
-
-    
-    print('Old loss: ', old_loss)
-        
-    
-    # #make sure that there will be data left for evaluation in the final model
-    # cv_season =  cv_X.iloc[-1].season
-    # selected_cv =  cv_X.season == cv_season
-    # cv_fraction = sum(selected_cv) / cv_X.shape[0]   
-    
-    # current_season =  train_X.iloc[-1].season
-    # selected_test =  train_X.season == current_season
-    # current_fraction = sum(selected_test) / train_X.shape[0]   
-    
-    #max_eval_fraction = np.min([cv_fraction, current_fraction])
-    
-    
-    #min_eval_fraction = 1/(len(unique_integers) * 0.80)#len(np.unique(cv_stratify))/cv_X.shape[0]
-    #we need at least one match every season
-    min_eval_fraction = 1/(380*0.8)
-    
-    
-    space={'max_depth': hp.quniform("max_depth", 1, 8500, 1),
-            'min_split_loss': hp.uniform('min_split_loss', 0, 500), #log?
-            'reg_lambda' : hp.uniform('reg_lambda', 0, 1000),
-            'reg_alpha': hp.uniform('reg_alpha', 0.01, 400),
-            'min_child_weight' : hp.uniform('min_child_weight', 0, 700),
-            'learning_rate': hp.uniform('learning_rate', 0, 0.05),
-            'subsample': hp.uniform('subsample', 0.1, 1),
-            'colsample_bytree': hp.uniform('colsample_bytree', 0.1, 1),
-            'colsample_bylevel': hp.uniform('colsample_bylevel', 0.1, 1),
-            'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
-            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 10, 7000, 1),
-            'eval_fraction': hp.uniform('eval_fraction', min_eval_fraction, 0.25),
-            'n_estimators': hp.quniform('n_estimators', 2, 125000, 1),
-            'max_delta_step': hp.uniform('max_delta_step', 0, 175),
-            'grow_policy': hp.choice('grow_policy', [0, 1]), #1
-            'max_leaves': hp.quniform('max_leaves', 0, 4000, 1),
-            'max_bin':  hp.qloguniform('max_bin', np.log(2), np.log(150), 1),
-            'temporal_window': hp.quniform('temporal_window', 1, temporal_window, 1),
-        }
-    
-
-    for feature in check_features:
-        # Add a new entry in the dictionary with the feature as the key
-        # and hp.quniform('n_estimators', 0, 2, 1) as the value
-        space[feature] = hp.choice(feature, [True, False]), #111
-
-        
-    #optimize and iteratively get hyperparamaters
-    batch_size = 100
-    if optimize:
-        max_evals = 500000
-    
-    if continue_optimize:
-        hyperparam_path = main_directory + '\models\hyperparams_temp.pkl'
-        with open(hyperparam_path, 'rb') as f:
-            trials = pickle.load(f)
+        print(new_hyperparams)
     else:
-        trials = Trials()
+        print('Keep old loss')
+        trials = old_trials
+        print(old_hyperparams)
+    
+    losses = []
+    for i in range(len(trials.trials)):
 
-    if optimize:
-
-        for i in range(len(trials.trials)+batch_size, max_evals + 1, batch_size):
-
-            # Save the trials object every 'batch_size' iterations. Can save with any method you prefer
-
-            #optmimize hyperparameters. use all training data
-            best_hyperparams = fmin(fn = objective_xgboost,
-                            space = space,
-                            algo = atpe.suggest,
-                            max_evals = i,
-                            trials = trials)
-
-            print(best_hyperparams)
-            
-            #hyperparam_path = main_directory + '\models\hyperparams_temp.pkl'
-            hyperparam_path = main_directory + '\models\hyperparams_temp.pkl'
-            pickle.dump(trials, open(hyperparam_path, "wb"))
-            
-    else:      
-
-        
-        hyperparam_path = main_directory + '\models\hyperparams_temp.pkl'
-        with open(hyperparam_path, 'rb') as f:
-            new_trials = pickle.load(f)
-            
-        hyperparams = new_trials.best_trial['misc']['vals']
-        #reformat the lists
-        new_hyperparams = {}
-        for field, val in hyperparams.items():
-            new_hyperparams[field] = val[0]
-            
-        #new_hyperparams["grow_policy"] = grow_policy[new_hyperparams["grow_policy"]]
-                           
-            
-        # new_trials = generate_trials_to_calculate([new_hyperparams])
-
-        # new_hyperparams = fmin(fn = objective_xgboost,
-        #                 space = space,
-        #                 algo = tpe.suggest,
-        #                 max_evals = 1,
-        #                 trials = new_trials)    
-
-        # new_loss =  new_trials.best_trial["result"]["loss"]
-
-        loss = objective_xgboost(new_hyperparams)
-        new_loss = loss['loss']
-        
-        print('New loss: ', new_loss)
-        
-        if new_loss < old_loss:
-            print('Overwriting old loss')
-            hyperparam_path = main_directory + '\models\hyperparams.pkl'
-            pickle.dump(new_trials, open(hyperparam_path, "wb"))
-            trials = new_trials
-            
-            print(new_hyperparams)
+        if trials.trials[i]['result'] == {'status': 'new'}:
+            losses.append(9999)
+            print('Miss result')
         else:
-            print('Keep old loss')
-            trials = old_trials
-            print(old_hyperparams)
-        
-        losses = []
-        for i in range(len(trials.trials)):
-    
-            if trials.trials[i]['result'] == {'status': 'new'}:
-                losses.append(9999)
-                print('Miss result')
-            else:
-                losses.append(trials.trials[i]['result']['loss'])
-    
-        sorted_losses = np.argsort(losses)
-    
-        
-        best_best_ind = 0
-    
-        #train with all data
-        best_cv_trial =  sorted_losses[best_best_ind]
-        print('Original loss:', losses[best_cv_trial])
-    
-        hyperparams = trials.trials[best_cv_trial]['misc']['vals']
-        #print(hyperparams)
-    
-        space = {}
-        for field, val in hyperparams.items():
-            space[field] = val[0]
-    
-        pars = {
-            'max_depth': int(space['max_depth']),
-            'min_split_loss': space['min_split_loss'],
-            'reg_lambda': space['reg_lambda'],
-            'reg_alpha': space['reg_alpha'],
-            'min_child_weight': int(space['min_child_weight']),
-            'learning_rate': space['learning_rate'],
-            'subsample': space['subsample'],
-            'colsample_bytree': space['colsample_bytree'],
-            'colsample_bylevel': space['colsample_bylevel'],
-            'colsample_bynode': space['colsample_bynode'],
-            'max_delta_step': space['max_delta_step'],
-            'grow_policy': grow_policy[space['grow_policy']],
-            'max_leaves': int(space['max_leaves']),
-            'tree_method': 'hist',
-            'max_bin':  int(space['max_bin']),
-            'disable_default_eval_metric': 1
-            }
-    
-        #remove weaks that we don't need.
-        # Define the threshold
-        threshold = int(space['temporal_window'])
-    
-        # Filter the columns based on the defined function
-        columns_to_keep = [col for col in train_X.columns if should_keep_column(col, threshold)]
-        objective_X = train_X[columns_to_keep]
-        
+            losses.append(trials.trials[i]['result']['loss'])
 
-        #fit_X, eval_X, fit_y, eval_y, fit_sample_weights, eval_sample_weights = train_test_split(objective_X, train_y, sample_weights, test_size=space['eval_fraction'], stratify=stratify, random_state=42)
+    sorted_losses = np.argsort(losses)
+
+    
+    best_best_ind = 0
+
+    #train with all data
+    best_cv_trial =  sorted_losses[best_best_ind]
+    print('Original loss:', losses[best_cv_trial])
+
+    hyperparams = trials.trials[best_cv_trial]['misc']['vals']
+    #print(hyperparams)
+
+    space = {}
+    for field, val in hyperparams.items():
+        space[field] = val[0]
+
+    pars = {
+        'max_depth': int(space['max_depth']),
+        'min_split_loss': space['min_split_loss'],
+        'reg_lambda': space['reg_lambda'],
+        'reg_alpha': space['reg_alpha'],
+        'min_child_weight': int(space['min_child_weight']),
+        'learning_rate': space['learning_rate'],
+        'subsample': space['subsample'],
+        'colsample_bytree': space['colsample_bytree'],
+        'colsample_bylevel': space['colsample_bylevel'],
+        'colsample_bynode': space['colsample_bynode'],
+        'max_delta_step': space['max_delta_step'],
+        'grow_policy': grow_policy[space['grow_policy']],
+        'max_leaves': int(space['max_leaves']),
+        'tree_method': 'hist',
+        'max_bin':  int(space['max_bin']),
+        'disable_default_eval_metric': 1
+        }
+
+    #remove weaks that we don't need.
+    # Define the threshold
+    threshold = int(space['temporal_window'])
+
+    # Filter the columns based on the defined function
+    columns_to_keep = [col for col in train_X.columns if should_keep_column(col, threshold)]
+    objective_X = train_X[columns_to_keep]
+    
+
+    #fit_X, eval_X, fit_y, eval_y, fit_sample_weights, eval_sample_weights = train_test_split(objective_X, train_y, sample_weights, test_size=space['eval_fraction'], stratify=stratify, random_state=42)
+    
+    # match_ind = pd.factorize(
+    #     objective_X[['string_team', 'was_home', 'string_opp_team', 'season']]
+    #     .apply(lambda row: '-'.join(row.astype(str)), axis=1)
+    # )[0]
         
-        # match_ind = pd.factorize(
-        #     objective_X[['string_team', 'was_home', 'string_opp_team', 'season']]
-        #     .apply(lambda row: '-'.join(row.astype(str)), axis=1)
-        # )[0]
+    
+    # #get 20% of those matches
+    # # Step 1: Get unique integers using a set
+    # unique_integers = list(set(match_ind))
+    
+    # # Step 2: Calculate 20% of the unique integers
+    # num_to_select = int(len(unique_integers) * space['eval_fraction'])
+    
+    
+    
+    # Step 3: Randomly select 20% of the unique integers
+    # eval_sample = random.sample(unique_integers, num_to_select)
+    
+    # match_ind_df = pd.Series(match_ind) 
+    
+    # evals_mask = match_ind_df.isin(eval_sample)  # Mask for cross-validation sample
+    # fits_mask = ~evals_mask  # Mask for validation, simply the inverse of cvs_mask
+    
+    
+    # Get the 80% of the first matches every season...
+    objective_copy = objective_X.copy()
+    objective_copy = objective_copy.reset_index(drop=True)
+    objective_copy['match_ind'] = pd.Series(match_ind)
+
+    
+    # groupby seasons and aggregate into a dictionary: season -> set(of chosen match_inds)
+    season_selection = (objective_copy.groupby('season', observed=False)['match_ind']
+                          .agg(lambda s: first_Xpct_unique(s.tolist(), 1-space['eval_fraction']))
+                          .to_dict())
+    
+    # If you want a single flat list of all chosen match_inds (unique across seasons or duplicates kept):
+    # option 1: Unique across all seasons:
+    fit_sample = list(set().union(*season_selection.values()))
+    
+    
+    
+    fits_mask =  pd.Series(match_ind_df).isin(fit_sample)  # Mask for cross-validation sample
+    evals_mask = ~fits_mask  # Mask for validation, simply the inverse of cvs_mask
+    
+
+    
+    #remove features
+    for feat in check_features:
+        
+        if feat in space.keys():
             
-        
-        # #get 20% of those matches
-        # # Step 1: Get unique integers using a set
-        # unique_integers = list(set(match_ind))
-        
-        # # Step 2: Calculate 20% of the unique integers
-        # num_to_select = int(len(unique_integers) * space['eval_fraction'])
-        
-        
-        
-        # Step 3: Randomly select 20% of the unique integers
-        # eval_sample = random.sample(unique_integers, num_to_select)
-        
-        # match_ind_df = pd.Series(match_ind) 
-        
-        # evals_mask = match_ind_df.isin(eval_sample)  # Mask for cross-validation sample
-        # fits_mask = ~evals_mask  # Mask for validation, simply the inverse of cvs_mask
-        
-        
-        # Get the 80% of the first matches every season...
-        objective_copy = objective_X.copy()
-        objective_copy = objective_copy.reset_index(drop=True)
-        objective_copy['match_ind'] = pd.Series(match_ind)
-
-        
-        # groupby seasons and aggregate into a dictionary: season -> set(of chosen match_inds)
-        season_selection = (objective_copy.groupby('season', observed=False)['match_ind']
-                              .agg(lambda s: first_Xpct_unique(s.tolist(), 1-space['eval_fraction']))
-                              .to_dict())
-        
-        # If you want a single flat list of all chosen match_inds (unique across seasons or duplicates kept):
-        # option 1: Unique across all seasons:
-        fit_sample = list(set().union(*season_selection.values()))
-        
-        
-        
-        fits_mask =  pd.Series(match_ind_df).isin(fit_sample)  # Mask for cross-validation sample
-        evals_mask = ~fits_mask  # Mask for validation, simply the inverse of cvs_mask
-        
-
-        
-        #remove features
-        for feat in check_features:
-            
-            if feat in space.keys():
+            #if remove
+            if not space[feat]:  
                 
-                #if remove
-                if not space[feat]:  
+                columns_to_keep = []
+                
+                for col in objective_X.columns:
                     
-                    columns_to_keep = []
+                    if col == feat: # and col in do_remove_features:
+                        continue
+                    #keep if it foes not have a number in front or first is not a digit (i.e. the fixed features)
+                    if (not feat == re.sub(r'\d+', '', col) or not col[0].isdigit()):
+                        columns_to_keep.append(col)
                     
-                    for col in objective_X.columns:
-                        
-                        if col == feat: # and col in do_remove_features:
-                            continue
-                        #keep if it foes not have a number in front or first is not a digit (i.e. the fixed features)
-                        if (not feat == re.sub(r'\d+', '', col) or not col[0].isdigit()):
-                            columns_to_keep.append(col)
-                        
-                    objective_X = objective_X[columns_to_keep]
+                objective_X = objective_X[columns_to_keep]
+    
+    fit_X = objective_X.iloc[fits_mask.values].copy()
+    eval_X =  objective_X.loc[evals_mask.values].copy()
+    fit_y =  train_y.loc[fits_mask.values].copy()
+    eval_y = train_y.loc[evals_mask.values].copy()
+    
+    #make sure all categories in val_x is present in cv_x
+    for column in eval_X.columns:
         
-        fit_X = objective_X.iloc[fits_mask.values].copy()
-        eval_X =  objective_X.loc[evals_mask.values].copy()
-        fit_y =  train_y.loc[fits_mask.values].copy()
-        eval_y = train_y.loc[evals_mask.values].copy()
-        
-        #make sure all categories in val_x is present in cv_x
-        for column in eval_X.columns:
+        if isinstance(eval_X[column].dtype, pd.CategoricalDtype):
+            # Get the values in the current column of val_X
+            val_values = eval_X[column]
             
-            if isinstance(eval_X[column].dtype, pd.CategoricalDtype):
-                # Get the values in the current column of val_X
-                val_values = eval_X[column]
-                
-                # Check which values are present in the corresponding column of cv_X
-                mask = val_values.isin(fit_X[column])
-                
-                # Set values that are not present in cv_X[column] to NaN
-                eval_X.loc[~mask, column] = np.nan
-        
-        
-        dfit = xgb.DMatrix(data=fit_X, label=fit_y, enable_categorical=True)
-        deval = xgb.DMatrix(data=eval_X, label=eval_y, enable_categorical=True)
-    
-        evals = [(dfit, 'train'), (deval, 'eval')]
-    
-        model = xgb.train(
-        params=pars,
-        num_boost_round=int(space['n_estimators']),
-        early_stopping_rounds= int(space['early_stopping_rounds']),
-        dtrain=dfit,
-        evals=evals,
-        custom_metric=custom_metric,
-        obj=quantile_objective,
-        verbose_eval=False  # Set to True if you want to see detailed logging
-            )
-    
-        summary = {'model': model, 'train_features': objective_X, 'hyperparameters': space}#, 'all_rows': original_df}
-    
-        pickle.dump(summary, open(model_path, 'wb'))
-    
-        xgb.plot_importance(model, importance_type='gain',
-                        max_num_features=20, show_values=False)
-        plt.show()
-        
-        data =  model.get_score()
-
-        # Dictionary to hold summed values and counts
-        summed_values = {}
-        count_values = {}
-
-        for key, value in data.items():
-            # Extract the part of the string after the digits
-            new_key = ''.join(filter(lambda x: not x.isdigit(), key))  # or use re.sub(r'^\d+', '', key)
+            # Check which values are present in the corresponding column of cv_X
+            mask = val_values.isin(fit_X[column])
             
-            # Sum the values and count the occurrences for the same new_key
-            if new_key in summed_values:
-                summed_values[new_key] += value
-                count_values[new_key] += 1
-            else:
-                summed_values[new_key] = value
-                count_values[new_key] = 1
+            # Set values that are not present in cv_X[column] to NaN
+            eval_X.loc[~mask, column] = np.nan
+    
+    
+    dfit = xgb.DMatrix(data=fit_X, label=fit_y, enable_categorical=True)
+    deval = xgb.DMatrix(data=eval_X, label=eval_y, enable_categorical=True)
 
-        # Calculate mean for each key
-        mean_values = {k: summed_values[k] / count_values[k] for k in summed_values}
+    evals = [(dfit, 'train'), (deval, 'eval')]
 
-        # Sort the mean values by their values
-        sorted_mean_values = dict(sorted(mean_values.items(), key=lambda item: item[1]))
+    model = xgb.train(
+    params=pars,
+    num_boost_round=int(space['n_estimators']),
+    early_stopping_rounds= int(space['early_stopping_rounds']),
+    dtrain=dfit,
+    evals=evals,
+    custom_metric=custom_metric,
+    obj=quantile_objective,
+    verbose_eval=False  # Set to True if you want to see detailed logging
+        )
 
-        #print(sorted_mean_values)  # Output will be sorted by mean values
+    summary = {'model': model, 'train_features': objective_X, 'hyperparameters': space}#, 'all_rows': original_df}
 
-        # Plotting the sorted mean values
-        plt.figure(figsize=(10, 6))
-        plt.bar(sorted_mean_values.keys(), sorted_mean_values.values(), color='skyblue')
-        plt.xlabel('Labels')
-        plt.ylabel('Mean Values')
-        plt.title('Mean Values of Points Sorted')
-        plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
-        plt.tight_layout()  # Adjust layout to prevent clipping of labels
+    pickle.dump(summary, open(model_path, 'wb'))
 
-        # Show the plot
-        plt.show()
+    xgb.plot_importance(model, importance_type='gain',
+                    max_num_features=20, show_values=False)
+    plt.show()
+    
+    data =  model.get_score()
+
+    # Dictionary to hold summed values and counts
+    summed_values = {}
+    count_values = {}
+
+    for key, value in data.items():
+        # Extract the part of the string after the digits
+        new_key = ''.join(filter(lambda x: not x.isdigit(), key))  # or use re.sub(r'^\d+', '', key)
         
-        train_data = xgb.DMatrix(data=objective_X, label=train_y, enable_categorical=True)
-        pred = model.predict(train_data)
-        
-        train_error = np.mean(np.abs((train_y - pred)**2))
-        
-        print('Train error:', train_error)
+        # Sum the values and count the occurrences for the same new_key
+        if new_key in summed_values:
+            summed_values[new_key] += value
+            count_values[new_key] += 1
+        else:
+            summed_values[new_key] = value
+            count_values[new_key] = 1
+
+    # Calculate mean for each key
+    mean_values = {k: summed_values[k] / count_values[k] for k in summed_values}
+
+    # Sort the mean values by their values
+    sorted_mean_values = dict(sorted(mean_values.items(), key=lambda item: item[1]))
+
+    #print(sorted_mean_values)  # Output will be sorted by mean values
+
+    # Plotting the sorted mean values
+    plt.figure(figsize=(10, 6))
+    plt.bar(sorted_mean_values.keys(), sorted_mean_values.values(), color='skyblue')
+    plt.xlabel('Labels')
+    plt.ylabel('Mean Values')
+    plt.title('Mean Values of Points Sorted')
+    plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
+    plt.tight_layout()  # Adjust layout to prevent clipping of labels
+
+    # Show the plot
+    plt.show()
+    
+    train_data = xgb.DMatrix(data=objective_X, label=train_y, enable_categorical=True)
+    pred = model.predict(train_data)
+    
+    train_error = np.mean(np.abs((train_y - pred)**2))
+    
+    print('Train error:', train_error)
