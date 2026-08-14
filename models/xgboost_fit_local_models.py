@@ -37,9 +37,10 @@ except:
     main_directory = r'C:\Users\jorgels\Git\Fantasy-Premier-League'
 
 
-method = 'xgboost'
+update_models = True
 
-season_dfs = []
+
+current_season = '2025-26'
 
 # Function to correct string_team based on the majority
 def correct_string_team(group):
@@ -390,18 +391,6 @@ with open(r"\\platon.uio.no\med-imb-u1\jorgels\model_data.pkl", 'rb') as file:
 selected = train_data["minutes"] >= 60
 train_data = train_data.loc[selected]
 
-#remove players with few matches
-unique_names = train_data.name.unique()
-
-#two for train and val
-n_tresh = 2
-
-for unique_ind, name in enumerate(unique_names):
-    selected = (train_data.name == name)
-
-    if sum(selected) < n_tresh:
-        train_data = train_data.loc[~selected]
-
 
 #included for all windows, but not current
 temporal_features = ['minutes', 'ict_index', 'influence', 'threat', 'creativity', 'bps',
@@ -515,6 +504,22 @@ for ind, name in enumerate(unique_names):
     
     print(ind, '/', len(unique_names), name)
     
+    model_name = f'{name}.pkl'
+    model_path = rf"\\platon.uio.no\med-imb-u1\jorgels\fantasy\local_models\{name}.pkl"
+    
+    if not update_models:
+        if os.path.isfile(model_path):
+            with open(model_path, "rb") as f:
+                summary = pickle.load(f)
+                
+            best_hyperparams = summary["hyperparams"]
+            
+            for k in best_hyperparams.keys():
+                if k in hyper_vals:
+                    hyper_vals[k].append(best_hyperparams[k])
+            
+            continue           
+        
     sel_name = train_X.name == name
     
     # Get the 80% of the first matches every season...
@@ -549,6 +554,19 @@ for ind, name in enumerate(unique_names):
     
     cvs_mask = pd.Series(match_ind_df).isin(train_sample)  # Mask for cross-validation sample
     vals_mask = ~cvs_mask  # Mask for validation, simply the inverse of cvs_mask
+    
+    #set the split for later use
+
+
+    subset_idx = train_data.index[sel_name]        # index of selected rows
+    rows_to_update = subset_idx[cvs_mask]  
+    train_data.loc[rows_to_update, 'split'] = 1
+    rows_to_update = subset_idx[vals_mask]
+    train_data.loc[rows_to_update, 'split'] = 0
+    
+    #at least one train and val
+    if sum(sel_name) < 2:
+        continue
     
     cvs_match_integers = list(set(match_ind_df[cvs_mask]))
     
@@ -645,7 +663,7 @@ for ind, name in enumerate(unique_names):
     
     
     individual_features = ['season', 'total_points', 'points_per_played_game', 'points_per_game', 'minutes', 'string_opp_team',  'opp_difficulty', 'was_home', 'own_difficulty', 'ict_index', 'transfers_in', 'transfers_out', 'expected_goals', 'expected_assists',
-            'expected_goals_conceded', 'defcon', 'own_element_points']
+            'expected_goals_conceded', 'defcon', 'own_element_points', 'season']
     
     #all_features = ['total_points', 'points_per_played_game', 'points_per_game', 'minutes', 'ict_index',  'influence', 'threat', 'creativity', 'bps', 'expected_goals', 'expected_assists',
          #   'expected_goals_conceded', 'defcon', 'string_opp_team',  'opp_difficulty', 'was_home', 'own_team_points', 'own_element_points', 'opp_team_points', 'opp_element_points', 'own_difficulty'] #, 'difficulty']
@@ -670,13 +688,13 @@ for ind, name in enumerate(unique_names):
     #         'expected_goals_conceded', 'own_team_points', 'own_element_points', 'opp_team_points', 'opp_element_points', 'defcon', 'name', 'points_per_game', 'string_opp_team', 'own_difficulty', 'opp_difficulty'] #, 'difficulty']
     
     check_features = individual_features
-    do_remove_features= ['names', 'points_per_game', 'points_per_played_game', 'season']   
+    #do_remove_features= ['names', 'points_per_game', 'points_per_played_game', 'season']   
     
 
     
     space={'max_depth': hp.qloguniform("max_depth", 1, np.log(100), 1), 
             'min_split_loss': hp.loguniform('min_split_loss', 0, np.log(40)), #log?
-            'reg_lambda' : hp.uniform('reg_lambda', 0, 250),
+            'reg_lambda' : hp.uniform('reg_lambda', 0, 550),
             'reg_alpha': hp.uniform('reg_alpha', 0.01, 70),
             'min_child_weight' : hp.uniform('min_child_weight', 0, 70),
             'learning_rate': hp.loguniform('learning_rate', 0, np.log(7)),
@@ -684,13 +702,13 @@ for ind, name in enumerate(unique_names):
             'colsample_bytree': hp.uniform('colsample_bytree', 0.1, 1),
             'colsample_bylevel': hp.uniform('colsample_bylevel', 0.1, 1),
             'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
-            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 1, 400, 1),
+            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 1, 800, 1),
             'eval_fraction': hp.uniform('eval_fraction', min_eval_fraction, 0.51),
-            'n_estimators': hp.quniform('n_estimators', 2, 10000, 1),
-            'max_delta_step': hp.uniform('max_delta_step', 0, 400),
+            'n_estimators': hp.quniform('n_estimators', 2, 90000, 1),
+            'max_delta_step': hp.uniform('max_delta_step', 0, 3600),
             'grow_policy': hp.choice('grow_policy', [0, 1]), #1
-            'max_leaves': hp.quniform('max_leaves', 0, 200, 1),
-            'max_bin':  hp.qloguniform('max_bin', np.log(2), np.log(130), 1),
+            'max_leaves': hp.quniform('max_leaves', 0, 800, 1),
+            'max_bin':  hp.qloguniform('max_bin', np.log(2), np.log(100), 1),
             'temporal_window': hp.quniform('temporal_window', 1, 20, 1),
         }
 
@@ -729,7 +747,6 @@ for ind, name in enumerate(unique_names):
     for k in best_hyperparams.keys():
         if k in hyper_vals:
             hyper_vals[k].append(best_hyperparams[k])
-        
     hyper_vals["losses"].append(trials.best_trial['result']['loss'])
     hyper_vals["num_matches"].append(sum(sel_name))
     
@@ -753,7 +770,7 @@ for ind, name in enumerate(unique_names):
         }
     
 
-
+    #get cross-valiated local predictions
     for X1, y1, X2, y2, mask1, mask2 in zip((cv_X, val_X), (cv_y, val_y), (val_X, cv_X), (val_y, cv_y), (cvs_mask, vals_mask), (vals_mask, cvs_mask)):
 
         # Get the 80% of the first matches every season...
@@ -855,6 +872,101 @@ for ind, name in enumerate(unique_names):
         #print(val_pred)        
         print('done', random_error-val_error)
         
+        
+
+     
+        
+     
+    #store the model for the predictions...
+    #for the players who are not part of current season we don't need the models...
+    if not current_season in train_copy.season:
+            summary = {'model': [], 'train_features': [], 'hyperparams': best_hyperparams}#, 'all_rows': original_df}
+            
+            pickle.dump(summary, open(model_path, 'wb'))
+    else:
+            
+        # Get the 80% of the first matches every season...
+            X1 = train_copy.reset_index(drop=True)
+            
+            #remove weaks that we don't need.
+            # Define the threshold
+            threshold = int(best_hyperparams['temporal_window'])
+            
+            # Filter the columns based on the defined function
+            columns_to_keep = [col for col in X1.columns if should_keep_column(col, threshold)]
+            objective_X = X1[columns_to_keep]      
+              
+            #remove features
+            for feat in check_features:
+                if feat in space.keys():
+                    #if remove
+                    if not space[feat]:     
+                        columns_to_keep = []
+                        for col in objective_X.columns:
+                            if col == feat: # and col in do_remove_features:
+                                continue
+                            #keep if it foes not have a number in front or first is not a digit (i.e. the fixed features)
+                            if (not feat == re.sub(r'\d+', '', col) or not col[0].isdigit()):
+                                columns_to_keep.append(col)
+                            
+                        objective_X = objective_X[columns_to_keep]
+                        
+            # Get the 80% of the first matches every season...
+            objective_copy = objective_X.copy()
+            objective_copy = objective_copy.reset_index(drop=True)
+            objective_copy['match_ind'] = pd.Series(match_ind[sel_name])
+        
+            
+            # groupby seasons and aggregate into a dictionary: season -> set(of chosen match_inds)
+            season_selection = (objective_copy.groupby('season', observed=False)['match_ind']
+                                  .agg(lambda s: first_Xpct_unique(s.tolist(), 1-best_hyperparams['eval_fraction']))
+                                  .to_dict())
+            
+            # If you want a single flat list of all chosen match_inds (unique across seasons or duplicates kept):
+            # option 1: Unique across all seasons:
+            fit_sample = list(set().union(*season_selection.values()))
+                
+            fits_mask =  pd.Series(match_ind_df).isin(fit_sample)  # Mask for cross-validation sample
+            evals_mask = ~fits_mask  # Mask for validation, simply the inverse of cvs_mask 
+            
+            fit_X = objective_X.iloc[fits_mask.values].copy()
+            eval_X =  objective_X.loc[evals_mask.values].copy()
+            fit_y =  train_y.loc[fits_mask.values].copy()
+            eval_y = train_y.loc[evals_mask.values].copy()
+        
+            #make sure all categories in val_x is present in cv_x
+            for column in eval_X.columns:
+                if isinstance(eval_X[column].dtype, pd.CategoricalDtype):
+                    # Get the values in the current column of val_X
+                    val_values = eval_X[column]
+                    
+                    # Check which values are present in the corresponding column of cv_X
+                    mask = val_values.isin(fit_X[column])
+                    
+                    # Set values that are not present in cv_X[column] to NaN
+                    eval_X.loc[~mask, column] = np.nan
+            
+            dfit = xgb.DMatrix(data=fit_X, label=fit_y, enable_categorical=True)
+            deval = xgb.DMatrix(data=eval_X, label=eval_y, enable_categorical=True)
+        
+            evals = [(dfit, 'train'), (deval, 'eval')]
+            
+            model = xgb.train(
+            params=pars,
+            num_boost_round=int(best_hyperparams['n_estimators']),
+            early_stopping_rounds= int(best_hyperparams['early_stopping_rounds']),
+            dtrain=dfit,
+            evals=evals,
+            custom_metric=custom_metric,
+            obj=custom_objective,
+            verbose_eval=False  # Set to True if you want to see detailed logging
+                )
+            
+            summary = {'model': model, 'train_features': objective_X, 'hyperparams': best_hyperparams}#, 'all_rows': original_df}
+        
+            pickle.dump(summary, open(model_path, 'wb'))
+            
+    
         
 
 for k in hyper_vals:

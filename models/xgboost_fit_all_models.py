@@ -477,32 +477,14 @@ train_copy = train_copy.reset_index(drop=True)
 train_copy['match_ind'] = pd.Series(match_ind[sel_name])
 match_ind_df = pd.Series(match_ind[sel_name]) 
 
-# groupby seasons and aggregate into a dictionary: season -> set(of chosen match_inds)
-season_selection = (train_copy.groupby('season', observed=False)['match_ind']
-                      .agg(lambda s: first_Xpct_unique(s.tolist(), 0.5))
-                      .to_dict())
- 
-# If you want a single flat list of all chosen match_inds (unique across seasons or duplicates kept):
-# option 1: Unique across all seasons:
-train_sample = list(set().union(*season_selection.values()))
-
-
-# Step 2: Calculate 20% of the unique integers
-
-# unique_integers = list(set(match_ind))
-
-# num_to_select = max(1, int(len(unique_integers) * 0.80))  # Ensure at least one is selected
 
 # Step 3: Randomly select 20% of the unique integers
 random.seed(42)
 
-# train_sample = random.sample(unique_integers, num_to_select)
+cvs_mask = train_copy.split == 0  # Mask for cross-validation sample
+#vals_mask =train_copy.split == 1  # Mask for validation, simply the inverse of cvs_mask
+vals_mask = ~cvs_mask  
 
-# vals = [x not in train_sample for x in match_ind_df]
-# cvs = [x in train_sample for x in match_ind_df]
-
-cvs_mask = pd.Series(match_ind_df).isin(train_sample)  # Mask for cross-validation sample
-vals_mask = ~cvs_mask  # Mask for validation, simply the inverse of cvs_mask
 
 cvs_match_integers = list(set(match_ind_df[cvs_mask]))
  
@@ -598,27 +580,24 @@ old_loss = loss['loss']
 
 print('Old loss: ', old_loss)
 
-space={'early_stopping_rounds': hp.quniform("early_stopping_rounds", 1, 1500, 1),
-       'max_depth': hp.qloguniform("max_depth", 1, np.log(225), 1), 
+space={'early_stopping_rounds': hp.quniform("early_stopping_rounds", 1, 3000, 1),
+       'max_bin':  hp.qloguniform('max_bin', np.log(2), np.log(130), 1),
+       'max_delta_step': hp.uniform('max_delta_step', 0, 2000),
+       'max_depth': hp.qloguniform("max_depth", 1, np.log(225), 1),
+       'min_child_weight' : hp.uniform('min_child_weight', 0, 800),
+       'max_leaves': hp.quniform('max_leaves', 0, 300, 1),
         'min_split_loss': hp.loguniform('min_split_loss', 0, np.log(200)), #log?
-        'n_estimators': hp.quniform('n_estimators', 2, 30000, 1),
+        'n_estimators': hp.quniform('n_estimators', 2, 40000, 1),
         'reg_alpha': hp.uniform('reg_alpha', 0.01, 1500),
-        'reg_lambda' : hp.uniform('reg_lambda', 0, 1500),
-        
-        'min_child_weight' : hp.uniform('min_child_weight', 0, 500),
+        'reg_lambda' : hp.uniform('reg_lambda', 0, 4000),
+        'eval_fraction': hp.uniform('eval_fraction', min_eval_fraction, 0.45),
         'learning_rate': hp.loguniform('learning_rate', 0, np.log(7)),
         'subsample': hp.uniform('subsample', 0.1, 1),
         'colsample_bytree': hp.uniform('colsample_bytree', 0.1, 1),
         'colsample_bylevel': hp.uniform('colsample_bylevel', 0.1, 1),
         'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
-        
-        'eval_fraction': hp.uniform('eval_fraction', min_eval_fraction, 0.45),
-        
-        'max_delta_step': hp.uniform('max_delta_step', 0, 1500),
         'grow_policy': hp.choice('grow_policy', [0, 1]), #1
-        'max_leaves': hp.quniform('max_leaves', 0, 300, 1),
-        'max_bin':  hp.qloguniform('max_bin', np.log(2), np.log(130), 1),
-        'temporal_window': hp.quniform('temporal_window', 1, 6, 1),
+        'temporal_window': hp.quniform('temporal_window', 1, 7, 1),
     }
 
 for feature in check_features:
