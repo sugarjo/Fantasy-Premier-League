@@ -907,10 +907,9 @@ for pos in range(1,5):
     plt.show()
 
 
-    summary = {'model': model, 'train_features': objective_X}#, 'all_rows': original_df}
+    summary = {'model': model, 'train_features': objective_X, 'hyperparameters': best_hyperparams}#, 'all_rows': original_df}
     
-    
-    model_path = r"\\platon.uio.no\med-imb-u1\jorgels"  + f'\element_model_{pos}.pkl'
+    model_path = r"\\platon.uio.no\med-imb-u1\jorgels"  + f'\element_model_{pos}.sav'
     
     pickle.dump(summary, open(model_path, 'wb'))
         

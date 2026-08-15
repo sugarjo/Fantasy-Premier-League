@@ -38,6 +38,7 @@ except:
 
 
 update_models = True
+update_hyperparams = False
 
 
 current_season = '2025-26'
@@ -504,10 +505,9 @@ for ind, name in enumerate(unique_names):
     
     print(ind, '/', len(unique_names), name)
     
-    model_name = f'{name}.pkl'
     model_path = rf"\\platon.uio.no\med-imb-u1\jorgels\fantasy\local_models\{name}.pkl"
     
-    if not update_models:
+    if not update_models or not update_hyperparams:
         if os.path.isfile(model_path):
             with open(model_path, "rb") as f:
                 summary = pickle.load(f)
@@ -517,9 +517,16 @@ for ind, name in enumerate(unique_names):
             for k in best_hyperparams.keys():
                 if k in hyper_vals:
                     hyper_vals[k].append(best_hyperparams[k])
+        else:
+            ('No model')
+            continue
+                    
+    if not update_models:
+        continue
+    
+    model_path = rf"\\platon.uio.no\med-imb-u1\jorgels\fantasy\local_models\{name}.sav"
             
-            continue           
-        
+                    
     sel_name = train_X.name == name
     
     # Get the 80% of the first matches every season...
@@ -682,6 +689,9 @@ for ind, name in enumerate(unique_names):
     train_copy = train_copy[keep_cols]
     
     
+
+    
+    
     # #include feature search in the hyperparams
     # check_features = ['transfers_in', 'transfers_out', 'minutes', 'ict_index', 'influence', 'threat', 'creativity', 'bps',
     #         'total_points', 'expected_goals', 'expected_assists', 'points_per_played_game', 'was_home', 'season',
@@ -691,7 +701,7 @@ for ind, name in enumerate(unique_names):
     #do_remove_features= ['names', 'points_per_game', 'points_per_played_game', 'season']   
     
 
-    
+        
     space={'max_depth': hp.qloguniform("max_depth", 1, np.log(100), 1), 
             'min_split_loss': hp.loguniform('min_split_loss', 0, np.log(40)), #log?
             'reg_lambda' : hp.uniform('reg_lambda', 0, 550),
@@ -704,10 +714,10 @@ for ind, name in enumerate(unique_names):
             'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
             'early_stopping_rounds': hp.quniform("early_stopping_rounds", 1, 800, 1),
             'eval_fraction': hp.uniform('eval_fraction', min_eval_fraction, 0.51),
-            'n_estimators': hp.quniform('n_estimators', 2, 60000, 1),
-            'max_delta_step': hp.uniform('max_delta_step', 0, 2600),
+            'n_estimators': hp.quniform('n_estimators', 2, 90000, 1),
+            'max_delta_step': hp.uniform('max_delta_step', 0, 3600),
             'grow_policy': hp.choice('grow_policy', [0, 1]), #1
-            'max_leaves': hp.quniform('max_leaves', 0, 600, 1),
+            'max_leaves': hp.quniform('max_leaves', 0, 800, 1),
             'max_bin':  hp.qloguniform('max_bin', np.log(2), np.log(100), 1),
             'temporal_window': hp.quniform('temporal_window', 1, 20, 1),
         }
@@ -716,7 +726,7 @@ for ind, name in enumerate(unique_names):
         # Add a new entry in the dictionary with the feature as the key
         # and hp.quniform('n_estimators', 0, 2, 1) as the value
         space[feature] = hp.choice(feature, [True, False]), #111
-    
+        
     if ind == 0:
         trials = Trials() 
         
@@ -725,30 +735,35 @@ for ind, name in enumerate(unique_names):
             best_hyperparams['eval_fraction'] = min_eval_fraction
         
         trials = generate_trials_to_calculate([best_hyperparams])
-        #trials = Trials() 
-    
-    loss = np.inf
-    tid = 0
-    
-    while loss > 60 and tid < 200:
+        
+    #trials = Trials() 
+    if update_hyperparams:
+        print('Search for hyperparameters')
 
-        #optmimize hyperparameters. use all training data
-        best_hyperparams = fmin(fn = objective_xgboost,
-                        space = space,
-                        algo = atpe.suggest,
-                        trials = trials,
-                        max_evals=99999999,
-                        early_stop_fn=no_progress_loss(40)
-                        )
+        loss = np.inf
+        tid = 0
         
-        loss = trials.best_trial['result']['loss']
-        tid = len(trials)
-        
-    for k in best_hyperparams.keys():
-        if k in hyper_vals:
-            hyper_vals[k].append(best_hyperparams[k])
-    hyper_vals["losses"].append(trials.best_trial['result']['loss'])
-    hyper_vals["num_matches"].append(sum(sel_name))
+        while loss > 60 and tid < 200:
+    
+            #optmimize hyperparameters. use all training data
+            best_hyperparams = fmin(fn = objective_xgboost,
+                            space = space,
+                            algo = atpe.suggest,
+                            trials = trials,
+                            max_evals=99999999,
+                            early_stop_fn=no_progress_loss(40)
+                            )
+            
+            loss = trials.best_trial['result']['loss']
+            tid = len(trials)
+            
+        for k in best_hyperparams.keys():
+            if k in hyper_vals:
+                hyper_vals[k].append(best_hyperparams[k])
+        hyper_vals["losses"].append(trials.best_trial['result']['loss'])
+        hyper_vals["num_matches"].append(sum(sel_name))
+    
+    print('Train')
     
     pars = {
         'max_depth': int(best_hyperparams['max_depth']),
@@ -768,7 +783,7 @@ for ind, name in enumerate(unique_names):
         'max_bin':  int(best_hyperparams['max_bin']),
         'disable_default_eval_metric': 1
         }
-    
+        
 
     #get cross-valiated local predictions
     for X1, y1, X2, y2, mask1, mask2 in zip((cv_X, val_X), (cv_y, val_y), (val_X, cv_X), (val_y, cv_y), (cvs_mask, vals_mask), (vals_mask, cvs_mask)):
@@ -982,6 +997,7 @@ print('Local error:', local_error)
 
         
 train_data.to_pickle(r'\\platon.uio.no\med-imb-u1\jorgels\\model_local_data.pkl')  # Set index=False to not include row indices
+
 
 
 import os
@@ -1893,10 +1909,9 @@ for pos in range(1,5):
     plt.show()
 
 
-    summary = {'model': model, 'train_features': objective_X}#, 'all_rows': original_df}
+    summary = {'model': model, 'train_features': objective_X, 'hyperparameters': best_hyperparams}#, 'all_rows': original_df}
     
-    
-    model_path = r"\\platon.uio.no\med-imb-u1\jorgels"  + f'\element_model_{pos}.pkl'
+    model_path = r"\\platon.uio.no\med-imb-u1\jorgels"  + f'\element_model_{pos}.sav'
     
     pickle.dump(summary, open(model_path, 'wb'))
         
@@ -2487,24 +2502,24 @@ old_loss = loss['loss']
 
 print('Old loss: ', old_loss)
 
-space={'max_depth': hp.qloguniform("max_depth", 1, np.log(100), 1), 
-        'min_split_loss': hp.loguniform('min_split_loss', 0, np.log(40)), #log?
-        'reg_lambda' : hp.uniform('reg_lambda', 0, 550),
-        'reg_alpha': hp.uniform('reg_alpha', 0.01, 70),
-        'min_child_weight' : hp.uniform('min_child_weight', 0, 70),
+space={'early_stopping_rounds': hp.quniform("early_stopping_rounds", 1, 3000, 1),
+       'max_bin':  hp.qloguniform('max_bin', np.log(2), np.log(130), 1),
+       'max_delta_step': hp.uniform('max_delta_step', 0, 2000),
+       'max_depth': hp.qloguniform("max_depth", 1, np.log(225), 1),
+       'min_child_weight' : hp.uniform('min_child_weight', 0, 800),
+       'max_leaves': hp.quniform('max_leaves', 0, 300, 1),
+        'min_split_loss': hp.loguniform('min_split_loss', 0, np.log(200)), #log?
+        'n_estimators': hp.quniform('n_estimators', 2, 40000, 1),
+        'reg_alpha': hp.uniform('reg_alpha', 0.01, 1500),
+        'reg_lambda' : hp.uniform('reg_lambda', 0, 4000),
+        'eval_fraction': hp.uniform('eval_fraction', min_eval_fraction, 0.45),
         'learning_rate': hp.loguniform('learning_rate', 0, np.log(7)),
         'subsample': hp.uniform('subsample', 0.1, 1),
         'colsample_bytree': hp.uniform('colsample_bytree', 0.1, 1),
         'colsample_bylevel': hp.uniform('colsample_bylevel', 0.1, 1),
         'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
-        'early_stopping_rounds': hp.quniform("early_stopping_rounds", 1, 800, 1),
-        'eval_fraction': hp.uniform('eval_fraction', min_eval_fraction, 0.51),
-        'n_estimators': hp.quniform('n_estimators', 2, 90000, 1),
-        'max_delta_step': hp.uniform('max_delta_step', 0, 3600),
         'grow_policy': hp.choice('grow_policy', [0, 1]), #1
-        'max_leaves': hp.quniform('max_leaves', 0, 800, 1),
-        'max_bin':  hp.qloguniform('max_bin', np.log(2), np.log(100), 1),
-        'temporal_window': hp.quniform('temporal_window', 1, 20, 1),
+        'temporal_window': hp.quniform('temporal_window', 1, 7, 1),
     }
 
 for feature in check_features:
@@ -2813,17 +2828,13 @@ xgb.plot_importance(model, importance_type='gain',
 plt.show()
 
 
-summary = {'model': model, 'train_features': objective_X}#, 'all_rows': original_df}
+summary = {'model': model, 'train_features': objective_X, 'hyperparameters': best_hyperparams}#, 'all_rows': original_df}
 
 
-model_path = r"\\platon.uio.no\med-imb-u1\jorgels\all_model.pkl"
+model_path = r"\\platon.uio.no\med-imb-u1\jorgels\all_model.sav"
 
 pickle.dump(summary, open(model_path, 'wb'))
     
-
-
-
-
 
 
 

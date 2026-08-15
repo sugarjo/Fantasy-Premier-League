@@ -4,24 +4,24 @@ import time
 
 
 my_players = [
-    {'web_name': 'Sánchez', 'selling_price': 48, 'element_type': 1},
-    {'web_name': 'Henderson', 'selling_price': 51, 'element_type': 1},
+    {'web_name': 'Pickford', 'selling_price': 55, 'element_type': 1},
+    {'web_name': 'Steele', 'selling_price': 40, 'element_type': 1},
     
-    {'web_name': 'Truffert', 'selling_price': 47, 'element_type': 2},
-    {'web_name': 'Tarkowski', 'selling_price': 57, 'element_type': 2},
-    {'web_name': 'Van Hecke', 'selling_price': 46, 'element_type': 2},
-    {'web_name': 'Justin', 'selling_price': 39, 'element_type': 2},
-    {'web_name': "O'Reilly", 'selling_price': 51, 'element_type': 2},
+    {'web_name': 'Virgil', 'selling_price': 65, 'element_type': 2},
+    {'web_name': 'Guéhi', 'selling_price': 60, 'element_type': 2},
+    {'web_name': 'Senesi', 'selling_price': 60, 'element_type': 2},
+    {'web_name': 'Tarkowski', 'selling_price': 60, 'element_type': 2},
+    {'web_name': "Matheus N.", 'selling_price': 60, 'element_type': 2},
     
-    {'web_name': 'Cherki', 'selling_price': 66, 'element_type': 3},
-    {'web_name': 'Groß', 'selling_price': 55, 'element_type': 3},
-    {'web_name': 'Tavernier', 'selling_price': 53, 'element_type': 3},
-    {'web_name': 'Palmer', 'selling_price': 103, 'element_type': 3},
-    {'web_name': 'B.Fernandes', 'selling_price': 101, 'element_type': 3},
+    {'web_name': 'Doku', 'selling_price': 75, 'element_type': 3},
+    {'web_name': 'Kroupi.Jr', 'selling_price': 75, 'element_type': 3},
+    {'web_name': 'Rice', 'selling_price': 75, 'element_type': 3},
+    {'web_name': 'Rogers', 'selling_price': 75, 'element_type': 3},
+    {'web_name': 'Szoboszlai', 'selling_price': 70, 'element_type': 3},
     
-    {'web_name': 'Welbeck', 'selling_price': 62, 'element_type': 4},
-    {'web_name': 'João Pedro', 'selling_price': 74, 'element_type': 4},
-    {'web_name': 'Haaland', 'selling_price': 145, 'element_type': 4},
+    {'web_name': 'Thiago', 'selling_price': 80, 'element_type': 4},
+    {'web_name': 'Gyökeres', 'selling_price': 75, 'element_type': 4},
+    {'web_name': 'João Pedro', 'selling_price': 75, 'element_type': 4},
 ]
 
 
@@ -29,39 +29,39 @@ my_players = [
 
 
 
-bank = 7 #in 10ths of M
+bank = 0 #in 10ths of M
 free_transfers = 1
-save_transfers_for_later = 0 #transfers left at end of last round (no need to put higher than 4)
+save_transfers_for_later = 5 #transfers left at end of last round (no need to put higher than 4)
 
 forward_price_limit = -1 #in millions
 
-minutes_thisyear_treshold = 60
-form_treshold = 0.1
-points_per_game_treshold = 0.1
+minutes_thisyear_treshold = -1
+form_treshold = -0.1
+points_per_game_treshold = -0.1
 running_minutes_threshold = -1
 
 #'ARS', 'AVL', 'BHA', 'BOU', 'BRE', 'BUR', 'CHE', 'CRY', 'EVE',
        # 'FUL', 'LEE', 'LIV', 'MCI', 'MUN', 'NEW', 'NFO', 'SUN', 'TOT',
        # 'WHU', 'WOL'
-exclude_team = ['ARS', 'MCI', 'MUN', 'AVL', 'LIV', 'NEW' , 'EVE', 'FUL', 'LEE', 'CRY', 'NFO', 'BUR', 'WOL']
+exclude_team = []
 
-exclude_players = ['João Pedro']
+exclude_players = []
 #check james and saka and mateta
 include_players = []
 
-do_not_exclude_players = ['Henderson', 'Tarkowski', "O'Reilly", 'Justin', 'Cherki', 'B.Fernandes', 'Haaland'] 
+do_not_exclude_players = [] 
 
 
-do_not_transfer_out = ['Truffert', 'Sánchez', 'Van Hecke', 'Groß', 'Tavernier', 'Palmer', 'Welbeck']
-rounds_to_value = 1
+do_not_transfer_out = []
+rounds_to_value = 5
 #transfer to evaluate per week
-trans_per_week = 1
+trans_per_week = 3
 
 jump_rounds = 0
 #if you also want to evaluate players on the bench. in case of uncertain starters.
 number_players_eval = 11
 
-wildcard = False
+wildcard = True
 benchboost = []
 skip_gw = []
 
@@ -76,7 +76,7 @@ assistant_manager_gw = 100
 assistant_manager_team = 'CRY'
 assistant_manager_price = 0.8 #in millions
 
-addition_of_5_afcon_transfers = 166
+addition_of_5_afcon_transfers = 100
 
 
 force_90 = []
@@ -87,7 +87,7 @@ manual_pred = 1
 #
 #afcon_players = ['Foster', 'Ouattara', 'Agbadou', 'M.Salah', 'Sarr', 'Doucouré', 'Ndіaye', 'Gueye', 'Iwobi', 'Bassey', 'Mbeumo', 'Mazraoui', 'Amad', 'Wissa', 'Aina', 'Boly', 'Sangaré', 'P.M.Sarr', 'Traoré', 'Diouf', 'Wan-Bissaka']
 afcon_players = []
-manual_blanks = {29: ['Rice', 'Wilson']}
+manual_blanks = {} #{29: ['Rice', 'Wilson']}
 
 #GW               
 manual_blank = {}#{34: {'BUR': ['MCI'], 'BHA': ['CHE'], 'ARS': ['NEW'], 'LIV': ['CRY']}}
@@ -95,8 +95,8 @@ manual_blank = {}#{34: {'BUR': ['MCI'], 'BHA': ['CHE'], 'ARS': ['NEW'], 'LIV': [
 manual_double = {}#{33: {'BUR': ['MCI', 4, 2], 'BHA': ['CHE', 3, 3], 'ARS': ['NEW', 3, 5], 'LIV': ['CRY', 3, 4]}, }
 
 
-season = '2025-26'
-previous_season = '2024-25'
+season = '2026-27'
+previous_season = '2025-26'
 
 skip_free_hit_calc = False
 
@@ -118,9 +118,11 @@ num_jobs = 4
 
 #insert string for team
 #old PC
+
+#info from vaastav
 directory = os.path.join(r'C:\Users\jorgels\Github\Fantasy-Premier-League\data', season)
 team_path = os.path.join(r'C:\Users\jorgels\Github\Fantasy-Premier-League\data', season, 'teams.csv')
-model_path = r"\\platon.uio.no\med-imb-u1\jorgels\model.sav"
+model_path = r"\\platon.uio.no\med-imb-u1\jorgels\all_model.pkl"
 
 try:
     df_teams = pd.read_csv(team_path)
@@ -519,15 +521,15 @@ for name in do_not_exclude_players:
 # points_per_game[selected_players] = 0
 
 with open(model_path, 'rb') as f:
-    summary = pickle.load(f)
+    all_model = pickle.load(f)
     
 predictions = []
 
-result = summary["model"]
-hyperparamaters = summary["hyperparameters"]
-temporal_window = int(hyperparamaters["temporal_window"])
+all_model =  all_model["model"]
+hyperparameters =  all_model["hyperparameters"]
+all_temporal_window = int(hyperparameters["temporal_window"])
 
-train_X = summary["train_features"]
+train_X = all_model["train_features"]
 #all_rows = summary["all_rows"]
 
 with open(r'\\platon.uio.no\med-imb-u1\jorgels\model_data.pkl', 'rb') as file:
@@ -596,13 +598,23 @@ float_variables = ['transfers_in', 'transfers_out', 'threat', 'own_element_point
 
 
 
-
-
-
-#free hit
 keep_ind = []
+
+element_models = []
+
+
+
 #if rounds_to_value == 1 and wildcard:
 for el in [1, 2, 3, 4]:
+    
+    #load element model
+    
+    element_model_path = f'\\\\platon.uio.no\\med-imb-u1\\jorgels\\element_model_{el}.pkl'
+    
+    with open(element_model_path, 'rb') as f:
+        element_models.append(pickle.load(f))
+    
+    
     selected = slim_elements_df.element_type == el
     min_keeper_price = np.min(slim_elements_df.loc[selected, 'now_cost'])
     
@@ -652,6 +664,14 @@ for df_name in slim_elements_df.iterrows():
         second_name = df_name[1].second_name
         name = first_name + ' ' + second_name
         player_id =  df_name[1].id
+        
+        
+        element_model = element_models[position-1]
+        
+        if all_temporal_window < element_model['hyperparameters']['temporal_window']:
+            temporal_window = element_model['hyperparameters']['temporal_window']
+        else:
+            temporal_window = all_temporal_window
 
         # url = 'https://fantasy.premierleague.com/api/element-summary/' + str(player_id)
         # downloaded = False
@@ -707,6 +727,16 @@ for df_name in slim_elements_df.iterrows():
             game_idx = len(predicting_df)
 
         else:
+            
+            #load_player model
+            player_model_path = rf"\\platon.uio.no\med-imb-u1\jorgels\fantasy\local_models\{name}.pkl"
+            
+            with open(player_model_path, 'rb') as f:
+                player_model = pickle.load(f)
+                
+            if temporal_window < player_model['hyperparams']['temporal_window']:
+                temporal_window = player_model['hyperparams']['temporal_window']
+        
             is_estimated = False
             selected = all_rows.name == name
             predicting_df = all_rows.loc[selected]
@@ -911,7 +941,7 @@ for df_name in slim_elements_df.iterrows():
     
                 temp_train.loc[index, opponent_point_names] = full_ooop[::-1].to_list()
                 
-                opp_elem_selected =  opp_selected & (all_rows['element_type'] == element_type)
+                opp_elem_selected =  opp_selected & (all_rows['element_type'] == position)
                       
                 first_indices = all_rows.loc[opp_elem_selected].drop_duplicates(subset='kickoff_time', keep='first').index
                 
@@ -996,7 +1026,8 @@ for df_name in slim_elements_df.iterrows():
                     # Set values that are not present in cv_X[column] to NaN
                     predicting_df.loc[~mask, column] = np.nan
                     
-                    print(val_values[~mask] + ': does not exist in training data. Set to nan')
+                    if not column == 'string_opp_team':
+                        print(str(val_values[~mask]) + ': does not exist in training data. Set to nan')
 
 
 
@@ -1010,8 +1041,11 @@ for df_name in slim_elements_df.iterrows():
             gw = game[1].gameweek
 
             Dgame = xgb.DMatrix(data=predicting_df.iloc[[game_idx]], enable_categorical=True)
+            
+            local_prediction = player_model['model'].predict(Dgame)[0]
+            
 
-            estimated = result.predict(Dgame)[0]
+            estimated = all_model.predict(Dgame)[0]
             
             #estimated = (10**estimated) - 1 + min_y
 
