@@ -122,7 +122,7 @@ num_jobs = 4
 #info from vaastav
 directory = os.path.join(r'C:\Users\jorgels\Github\Fantasy-Premier-League\data', season)
 team_path = os.path.join(r'C:\Users\jorgels\Github\Fantasy-Premier-League\data', season, 'teams.csv')
-model_path = r"\\platon.uio.no\med-imb-u1\jorgels\all_model.pkl"
+model_path = r"\\platon.uio.no\med-imb-u1\jorgels\fantasy\all_model.sav"
 
 try:
     df_teams = pd.read_csv(team_path)
@@ -521,18 +521,18 @@ for name in do_not_exclude_players:
 # points_per_game[selected_players] = 0
 
 with open(model_path, 'rb') as f:
-    all_model = pickle.load(f)
+    all_model_summary = pickle.load(f)
     
 predictions = []
 
-all_model =  all_model["model"]
-hyperparameters =  all_model["hyperparameters"]
+all_model =  all_model_summary["model"]
+hyperparameters =  all_model_summary["hyperparameters"]
 all_temporal_window = int(hyperparameters["temporal_window"])
 
-train_X = all_model["train_features"]
+#train_X = all_model_summary["train_features"]
 #all_rows = summary["all_rows"]
 
-with open(r'\\platon.uio.no\med-imb-u1\jorgels\model_data.pkl', 'rb') as file:
+with open(r'\\platon.uio.no\med-imb-u1\jorgels\fantasy\model_data.pkl', 'rb') as file:
     all_rows = pickle.load(file) 
 
 #min_y = np.min(train_X['0total_points'])
@@ -609,7 +609,7 @@ for el in [1, 2, 3, 4]:
     
     #load element model
     
-    element_model_path = f'\\\\platon.uio.no\\med-imb-u1\\jorgels\\element_model_{el}.pkl'
+    element_model_path = f'\\\\platon.uio.no\\med-imb-u1\\jorgels\\fantasy\\element_model_{el}.sav'
     
     with open(element_model_path, 'rb') as f:
         element_models.append(pickle.load(f))
@@ -669,7 +669,7 @@ for df_name in slim_elements_df.iterrows():
         element_model = element_models[position-1]
         
         if all_temporal_window < element_model['hyperparameters']['temporal_window']:
-            temporal_window = element_model['hyperparameters']['temporal_window']
+            temporal_window = int(element_model['hyperparameters']['temporal_window'])
         else:
             temporal_window = all_temporal_window
 
@@ -729,17 +729,18 @@ for df_name in slim_elements_df.iterrows():
         else:
             
             #load_player model
-            player_model_path = rf"\\platon.uio.no\med-imb-u1\jorgels\fantasy\local_models\{name}.pkl"
+            player_model_path = rf"\\platon.uio.no\med-imb-u1\jorgels\fantasy\local_models\{name}.sav"
             
             with open(player_model_path, 'rb') as f:
                 player_model = pickle.load(f)
                 
             if temporal_window < player_model['hyperparams']['temporal_window']:
-                temporal_window = player_model['hyperparams']['temporal_window']
+                temporal_window = int(player_model['hyperparams']['temporal_window'])
         
             is_estimated = False
             selected = all_rows.name == name
             predicting_df = all_rows.loc[selected]
+            
             predicting_df = predicting_df.iloc[-(temporal_window+1+rounds_to_value):]
 
 
@@ -986,8 +987,11 @@ for df_name in slim_elements_df.iterrows():
         
         #include also train_X to maintain categories. use inner to not get too many columns
         #predicting_df = pd.concat([train_X, predicting_df], ignore_index = True, join='inner')
-        common_columns = train_X.columns.intersection(predicting_df.columns)
+        # common_columns = train_X.columns.intersection(predicting_df.columns)
+        # predicting_df = predicting_df[common_columns]
+        common_columns = all_rows.columns.intersection(predicting_df.columns)
         predicting_df = predicting_df[common_columns]
+        predicting_df = predicting_df.drop('kickoff_time', axis=1)
 
 
         #total_points, minutes, kickoff time not for prediction
@@ -1000,10 +1004,17 @@ for df_name in slim_elements_df.iterrows():
 
         #predicting_df[fixed_features] = predicting_df[fixed_features].astype('category')
 
+        # for cat in predicting_df.keys():
+        #     if isinstance(train_X[cat].dtype, pd.CategoricalDtype):
+        #         #get_categories
+        #         train_cats = train_X[cat].cat.categories
+        #         cats = CategoricalDtype(categories=train_cats, ordered=False)
+        #         predicting_df[cat] = predicting_df[cat].astype(cats)
+        
         for cat in predicting_df.keys():
-            if isinstance(train_X[cat].dtype, pd.CategoricalDtype):
+            if isinstance(all_rows[cat].dtype, pd.CategoricalDtype):
                 #get_categories
-                train_cats = train_X[cat].cat.categories
+                train_cats = all_rows[cat].cat.categories
                 cats = CategoricalDtype(categories=train_cats, ordered=False)
                 predicting_df[cat] = predicting_df[cat].astype(cats)
 
@@ -1020,7 +1031,8 @@ for df_name in slim_elements_df.iterrows():
                 val_values = predicting_df[column]
                 
                 # Check which values are present in the corresponding column of cv_X
-                mask = val_values.isin(train_X[column])
+                #mask = val_values.isin(train_X[column])
+                mask = val_values.isin(all_rows[column])
                 
                 if sum(~mask) > 0:                
                     # Set values that are not present in cv_X[column] to NaN
@@ -1030,22 +1042,43 @@ for df_name in slim_elements_df.iterrows():
                         print(str(val_values[~mask]) + ': does not exist in training data. Set to nan')
 
 
+        
+        #set up the data
+        #local       
+        common_columns = player_model['train_features'].columns.intersection(predicting_df.columns)
+        local_data = predicting_df[common_columns]
 
-
+        Dgame = xgb.DMatrix(data=local_data, enable_categorical=True)
+        
+        predicting_df["local_predictions"] = player_model['model'].predict(Dgame)
+        predicting_df["local_const_predictions"] = 2
+        
+        #element
+        common_columns = element_model['train_features'].columns.intersection(predicting_df.columns)
+        element_data = predicting_df[common_columns]
+        
+        Dgame = xgb.DMatrix(data=element_data, enable_categorical=True)
+        
+        predicting_df["element_predictions"] = element_model['model'].predict(Dgame)
+        predicting_df["element_const_predictions"] = 2
+        
+        #all
+        common_columns = all_model_summary['train_features'].columns.intersection(predicting_df.columns)
+        all_data = predicting_df[common_columns]
+        
+        Dgame = xgb.DMatrix(data=all_data, enable_categorical=True)
+        
+        player_predictions = all_model_summary['model'].predict(Dgame)
+        
         #prediciting one by one:
         for game in gws.iterrows():
 
             game_idx = game[0]
             gw_idx = int(game[1].gameweek_ind)
             
-            gw = game[1].gameweek
-
-            Dgame = xgb.DMatrix(data=predicting_df.iloc[[game_idx]], enable_categorical=True)
-            
-            local_prediction = player_model['model'].predict(Dgame)[0]
-            
-
-            estimated = all_model.predict(Dgame)[0]
+            gw = game[1].gameweek           
+        
+            estimated = player_predictions[game_idx]
             
             #estimated = (10**estimated) - 1 + min_y
 
@@ -1095,7 +1128,9 @@ for df_name in slim_elements_df.iterrows():
                     # Reset categories for each categorical column
                     for column in categorical_columns:
     
-                        are_identical = set(train_X[column].cat.categories) == set(predicting_df[column].cat.categories)
+                        #are_identical = set(train_X[column].cat.categories) == set(predicting_df[column].cat.categories)
+                        are_identical = set(all_rows[column].cat.categories) == set(predicting_df[column].cat.categories)
+                    
                         if not are_identical:
                             print("ERROR CATEGORIES", df_name[0], column)
 

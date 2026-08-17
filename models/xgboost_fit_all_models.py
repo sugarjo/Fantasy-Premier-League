@@ -26,6 +26,8 @@ from hyperopt.fmin import generate_trials_to_calculate
 
 from difflib import SequenceMatcher
 
+update_hyperparams = False
+
 directories = r'C:\Users\jorgels\Github\Fantasy-Premier-League\data'
 model_path = r"\\platon.uio.no\med-imb-u1\jorgels\model.sav"
 
@@ -363,14 +365,12 @@ def objective_xgboost_custom(space, cv_X, cv_y, val_X, val_y, cvs_mask):
 
                
 
+with open(r"\\platon.uio.no\med-imb-u1\jorgels\fantasy\model_data.pkl", 'rb') as file:
+    original_data = pickle.load(file)                
 
-with open(r"\\platon.uio.no\med-imb-u1\jorgels\\element_data.pkl", 'rb') as file:
-    train_data = pickle.load(file)                
+selected = original_data["minutes"] >= 60
+train_data = original_data.loc[selected].copy()
 
-
-
-selected = train_data["minutes"] >= 60
-train_data = train_data.loc[selected]
 
 #remove players with few matches
 unique_names = train_data.name.unique()
@@ -613,41 +613,44 @@ tid = 0
 
 
 #temp_hyperparam_path = main_directory + '\models\hyperparams_temp.pkl'
-
-while loss > 60 and tid < 200:
-
-    #optmimize hyperparameters. use all training data
-    new_hyperparams = fmin(fn = objective_xgboost,
-                    space = space,
-                    algo = atpe.suggest,
-                    trials = trials,
-                    max_evals=99999999,
-                    early_stop_fn=no_progress_loss(100)
-                    )
+if update_hyperparams:
     
-    #pickle.dump(trials, open(temp_hyperparam_path, "wb"))
+    while loss > 60 and tid < 200:
     
-    loss = trials.best_trial['result']['loss']
-    tid = len(trials)
-    
+        #optmimize hyperparameters. use all training data
+        new_hyperparams = fmin(fn = objective_xgboost,
+                        space = space,
+                        algo = atpe.suggest,
+                        trials = trials,
+                        max_evals=99999999,
+                        early_stop_fn=no_progress_loss(100)
+                        )
+        
+        #pickle.dump(trials, open(temp_hyperparam_path, "wb"))
+        
+        loss = trials.best_trial['result']['loss']
+        tid = len(trials)
+        
 
 
- # with open(temp_hyperparam_path, 'rb') as f:
- #     new_trials = pickle.load(f)
+     # with open(temp_hyperparam_path, 'rb') as f:
+     #     new_trials = pickle.load(f)
+         
+     # hyperparams = new_trials.best_trial['misc']['vals']
+     # #reformat the lists
+     # new_hyperparams = {}
+    for field, val in new_hyperparams.items():
+         #new_hyperparams[field] = val[0]
+         print(field, val)
+         
+    loss = objective_xgboost(new_hyperparams)
+    new_loss = loss['loss']
      
- # hyperparams = new_trials.best_trial['misc']['vals']
- # #reformat the lists
- # new_hyperparams = {}
-for field, val in new_hyperparams.items():
-     #new_hyperparams[field] = val[0]
-     print(field, val)
-     
-loss = objective_xgboost(new_hyperparams)
-new_loss = loss['loss']
- 
-print('New loss: ', new_loss)
-   
- 
+    print('New loss: ', new_loss)
+
+else:      
+    new_loss = np.inf
+
 if new_loss < old_loss:
     #print('Element error: ', new_loss)
     
@@ -667,9 +670,8 @@ else:
     
     mse = old_loss
     
- 
- 
- 
+    
+    
 trial_hyperparams = trials.best_trial['misc']['vals']
 
 best_hyperparams = {}
@@ -822,7 +824,7 @@ print('All error:', np.mean(all_error))
         
         
         
-train_data.to_pickle(r'\\platon.uio.no\med-imb-u1\jorgels\\all_data.pkl')  # Set index=False to not include row indices
+#train_data.to_pickle(r'\\platon.uio.no\med-imb-u1\jorgels\\fantasy\\all_data.pkl')  # Set index=False to not include row indices
 
 # Get the 80% of the first matches every season...
 X1 = train_copy.reset_index(drop=True)
@@ -906,10 +908,9 @@ xgb.plot_importance(model, importance_type='gain',
 plt.show()
 
 
-summary = {'model': model, 'train_features': objective_X, 'hyperparameters': best_hyperparams}#, 'all_rows': original_df}
+summary = {'model': model, 'train_features': objective_X.columns, 'hyperparameters': best_hyperparams}#, 'all_rows': original_df}
 
-
-model_path = r"\\platon.uio.no\med-imb-u1\jorgels\all_model.sav"
+model_path = r"\\platon.uio.no\med-imb-u1\jorgels\fantasy\all_model.sav"
 
 pickle.dump(summary, open(model_path, 'wb'))
     

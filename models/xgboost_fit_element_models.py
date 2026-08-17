@@ -361,15 +361,12 @@ def objective_xgboost_custom(space, cv_X, cv_y, val_X, val_y, cvs_mask):
     return {'loss': val_error, 'status': STATUS_OK }
 
                
+with open(r"\\platon.uio.no\med-imb-u1\jorgels\fantasy\model_data.pkl", 'rb') as file:
+    original_data = pickle.load(file)                
 
+selected = original_data["minutes"] >= 60
+train_data = original_data.loc[selected].copy()
 
-with open(r"\\platon.uio.no\med-imb-u1\jorgels\\model_local_data.pkl", 'rb') as file:
-    train_data = pickle.load(file)                
-
-
-
-selected = train_data["minutes"] >= 60
-train_data = train_data.loc[selected]
 
 #remove players with few matches
 unique_names = train_data.name.unique()
@@ -811,7 +808,7 @@ for pos in range(1,5):
         subset_idx = train_data.index[sel_name]        # index of selected rows
         rows_to_update = subset_idx[mask2]   
         
-        train_data.loc[rows_to_update, 'element_predictions'] = val_pred
+        original_data.loc[rows_to_update, 'element_predictions'] = val_pred
         
         local_error.append(np.nanmean((y2 - train_data.loc[rows_to_update, 'local_predictions'])**2))
         
@@ -907,12 +904,12 @@ for pos in range(1,5):
     plt.show()
 
 
-    summary = {'model': model, 'train_features': objective_X, 'hyperparameters': best_hyperparams}#, 'all_rows': original_df}
+    summary = {'model': model, 'train_features': objective_X.columns, 'hyperparameters': best_hyperparams}#, 'all_rows': original_df}
     
-    model_path = r"\\platon.uio.no\med-imb-u1\jorgels"  + f'\element_model_{pos}.sav'
+    model_path = r"\\platon.uio.no\med-imb-u1\jorgels\fantasy"  + f'\element_model_{pos}.sav'
     
     pickle.dump(summary, open(model_path, 'wb'))
         
         
         
-train_data.to_pickle(r'\\platon.uio.no\med-imb-u1\jorgels\\element_data.pkl')  # Set index=False to not include row indices
+train_data.to_pickle(r'\\platon.uio.no\med-imb-u1\jorgels\\fantasy\\model_data.pkl')  # Set index=False to not include row indices
