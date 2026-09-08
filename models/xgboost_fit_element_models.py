@@ -28,6 +28,7 @@ from difflib import SequenceMatcher
 
 directories = r'C:\Users\jorgels\Github\Fantasy-Premier-League\data'
 
+update_hyperparams = False
 
 try:
     folders = os.listdir(directories)
@@ -40,14 +41,6 @@ method = 'xgboost'
 
 season_dfs = []
 
-# Function to correct string_team based on the majority
-def correct_string_team(group):
-    # Count occurrences of each string_team
-    counts = group['string_team'].value_counts()
-    majority_team = counts.idxmax()  # Get the majority string_team
-    # Replace incorrect string_team with the majority_team
-    group['string_team'] = majority_team
-    return group
 
 def sequence_matcher_similarity(s1, s2):
     similarity = SequenceMatcher(None, ' '.join(sorted(s1.split())), ' '.join(sorted(s2.split()))).ratio()
@@ -463,6 +456,7 @@ def first_Xpct_unique(seq, X):
 
 
 train_data['element_predictions'] = np.nan
+original_data['element_predictions'] = np.nan
 
 trials = Trials() 
 
@@ -582,7 +576,7 @@ for pos in range(1,5):
     
     print('Old loss: ', old_loss)
     
-    space={ 'early_stopping_rounds': hp.quniform("early_stopping_rounds", 1, 4000, 1),
+    space={ 'early_stopping_rounds': hp.quniform("early_stopping_rounds", 1, 4500, 1),
             'eval_fraction': hp.uniform('eval_fraction', min_eval_fraction, 0.45),
             'learning_rate': hp.loguniform('learning_rate', 0, np.log(7)),
             'max_bin':  hp.qloguniform('max_bin', np.log(2), np.log(175), 1),
@@ -615,41 +609,53 @@ for pos in range(1,5):
     tid = 0
     
     
+    tested_hyperparam_path = main_directory + f'\models\\hyperparams_test_{pos}.pkl'
+    
+    
     #temp_hyperparam_path = main_directory + '\models\hyperparams_temp.pkl'
+    if update_hyperparams:
+        while loss > 60 and tid < 200:
     
-    while loss > 60 and tid < 200:
-
-        #optmimize hyperparameters. use all training data
-        new_hyperparams = fmin(fn = objective_xgboost,
-                        space = space,
-                        algo = atpe.suggest,
-                        trials = new_trials,
-                        max_evals=99999999,
-                        early_stop_fn=no_progress_loss(100)
-                        )
+            #optmimize hyperparameters. use all training data
+            new_hyperparams = fmin(fn = objective_xgboost,
+                            space = space,
+                            algo = atpe.suggest,
+                            trials = trials,
+                            max_evals=99999999,
+                            early_stop_fn=no_progress_loss(500)
+                            )
+            
+            pickle.dump(trials, open(tested_hyperparam_path, "wb"))
+            
+            loss = trials.best_trial['result']['loss']
+            tid = len(trials)
         
-        #pickle.dump(trials, open(temp_hyperparam_path, "wb"))
         
-        loss = new_trials.best_trial['result']['loss']
-        tid = len(new_trials)
-        
+        for field, val in new_hyperparams.items():
+             #new_hyperparams[field] = val[0]
+             print(field, val)
     
-    
-    # with open(temp_hyperparam_path, 'rb') as f:
-    #     new_trials = pickle.load(f)
+        continue        
         
-    # hyperparams = new_trials.best_trial['misc']['vals']
-    # #reformat the lists
-    # new_hyperparams = {}
-    for field, val in new_hyperparams.items():
-        print(field, val)
+        
+    with open(tested_hyperparam_path, 'rb') as f:
+        new_trials = pickle.load(f)
+        
+    hyperparams = new_trials.best_trial['misc']['vals']
+    #reformat the lists
+    new_hyperparams = {}
+    for field, val in hyperparams.items():
+        new_hyperparams[field] = val[0]
+        
+    if new_hyperparams['eval_fraction'] < min_eval_fraction:
+        new_hyperparams['eval_fraction'] = min_eval_fraction
         
     loss = objective_xgboost(new_hyperparams)
     new_loss = loss['loss']
-    
+     
     print('New loss: ', new_loss)
-      
-    
+
+
     if new_loss < old_loss:
         #print('Element error: ', new_loss)
         
@@ -668,17 +674,15 @@ for pos in range(1,5):
         trials = old_trials
         
         mse = old_loss
-    
-    
-    
+        
+        
+        
     trial_hyperparams = trials.best_trial['misc']['vals']
-    
+
     best_hyperparams = {}
     for field, val in trial_hyperparams.items():
         best_hyperparams[field] = val[0]
         #print(field, val[0])
-        
-
     
     pars = {
         'max_depth': int(best_hyperparams['max_depth']),
@@ -809,6 +813,7 @@ for pos in range(1,5):
         rows_to_update = subset_idx[mask2]   
         
         original_data.loc[rows_to_update, 'element_predictions'] = val_pred
+        train_data.loc[rows_to_update, 'element_predictions'] = val_pred
         
         local_error.append(np.nanmean((y2 - train_data.loc[rows_to_update, 'local_predictions'])**2))
         
@@ -911,5 +916,5 @@ for pos in range(1,5):
     pickle.dump(summary, open(model_path, 'wb'))
         
         
-        
-train_data.to_pickle(r'\\platon.uio.no\med-imb-u1\jorgels\\fantasy\\model_data.pkl')  # Set index=False to not include row indices
+if not update_hyperparams:
+    train_data.to_pickle(r'\\platon.uio.no\med-imb-u1\jorgels\\fantasy\\model_data.pkl')  # Set index=False to not include row indices

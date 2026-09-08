@@ -147,7 +147,7 @@ Rk;Player;Nation;Squad;Age;Born;MP;Starts;Min;90s;Gls;Ast;G+A;G-PK;PK;PKatt;CrdY
 141;George Earthy;eng ENG;West Ham United;20;2004;1;0;9;0.1;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
 142;Odsonne Édouard;fr FRA;Crystal Palace;27;1998;1;0;3;0.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
 143;Tom Edozie;eng ENG;Wolves;19;2006;3;0;14;0.2;1;0;1;1;0;0;0;0;jun.43;0.00;jun.43;jun.43;jun.43;Matches
-144;Alysson Edward;br BRA;Aston Villa;19;2006;3;0;49;0.5;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
+144;Alysson;br BRA;Aston Villa;19;2006;3;0;49;0.5;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
 145;Marcus Edwards;eng ENG;Burnley;26;1998;23;11;1,067;11.sep;1;3;4;1;0;0;0;0;0.08;0.25;0.34;0.08;0.34;Matches
 146;Hjalmar Ekdal;se SWE;Burnley;26;1998;19;17;1,539;17.jan;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
 147;Hugo Ekitike;fr FRA;Liverpool;23;2002;28;21;1,803;20.0;11;4;15;11;0;0;0;0;0.55;0.20;0.75;0.55;0.75;Matches
@@ -422,7 +422,7 @@ Rk;Player;Nation;Squad;Age;Born;MP;Starts;Min;90s;Gls;Ast;G+A;G-PK;PK;PKatt;CrdY
 405;Đorđe Petrović;rs SRB;Bournemouth;25;1999;38;38;3,42;38.0;0;0;0;0;0;0;3;0;0.00;0.00;0.00;0.00;0.00;Matches
 406;Jordan Pickford;eng ENG;Everton;31;1994;38;38;3,42;38.0;0;0;0;0;0;0;4;0;0.00;0.00;0.00;0.00;0.00;Matches
 407;Ethan Pinnock;jm JAM;Brentford;32;1993;4;4;318;03.mai;0;0;0;0;0;0;1;0;0.00;0.00;0.00;0.00;0.00;Matches
-408;Yeremi Pino;es ESP;Crystal Palace;22;2002;34;26;2,08;23.jan;2;2;4;2;0;0;4;0;0.09;0.09;0.17;0.09;0.17;Matches
+408;Yéremy Pino;es ESP;Crystal Palace;22;2002;34;26;2,08;23.jan;2;2;4;2;0;0;4;0;0.09;0.09;0.17;0.09;0.17;Matches
 409;Joël Piroe;sr SUR;Leeds United;25;1999;16;2;258;02.sep;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
 410;Nick Pope;eng ENG;Newcastle United;33;1992;27;27;2,416;26.aug;0;0;0;0;0;0;2;0;0.00;0.00;0.00;0.00;0.00;Matches
 411;Pedro Porro;es ESP;Tottenham Hotspur;25;1999;34;32;2,796;31.jan;1;2;3;1;0;0;10;0;0.03;0.06;0.10;0.03;0.10;Matches
@@ -439,7 +439,7 @@ Rk;Player;Nation;Squad;Age;Born;MP;Starts;Min;90s;Gls;Ast;G+A;G-PK;PK;PKatt;CrdY
 422;Richarlison;br BRA;Tottenham Hotspur;28;1997;32;20;1,964;21.aug;11;4;15;11;0;0;5;0;0.50;0.18;0.69;0.50;0.69;Matches
 423;Chris Rigg;eng ENG;Sunderland;18;2007;18;11;761;08.mai;1;1;2;1;0;0;1;0;0.12;0.12;0.24;0.12;0.24;Matches
 424;Patrick Roberts;eng ENG;Sunderland;28;1997;1;0;28;0.3;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches
-425;Andrew Robertson;sct SCO;Liverpool;31;1994;24;11;1,176;13.jan;1;0;1;1;0;0;0;0;0.08;0.00;0.08;0.08;0.08;Matches
+425;Andy Robertson;sct SCO;Liverpool;31;1994;24;11;1,176;13.jan;1;0;1;1;0;0;0;0;0.08;0.00;0.08;0.08;0.08;Matches
 Rk;Player;Nation;Squad;Age;Born;MP;Starts;Min;90s;Gls;Ast;G+A;G-PK;PK;PKatt;CrdY;CrdR;Gls;Ast;G+A;G-PK;G+A-PK;Matches
 426;Antonee Robinson;us USA;Fulham;27;1997;22;17;1,492;16.jun;1;0;1;0;1;1;5;0;0.06;0.00;0.06;0.00;0.00;Matches
 427;Kaden Rodney;eng ENG;Crystal Palace;20;2004;1;0;4;0.0;0;0;0;0;0;0;0;0;0.00;0.00;0.00;0.00;0.00;Matches

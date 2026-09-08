@@ -29,20 +29,26 @@ except:
     main_directory = r'C:\Users\jorgels\Git\Fantasy-Premier-League'
 
 
-build_from_scratch = True
-check_last_data = False
+season = "2026-27"
 
-temporal_window = 20
+build_from_scratch = False
+check_last_data = True
+
+temporal_window = 21
     
 
 # Function to correct string_team based on the majority
 def correct_string_team(group):
+    fixture, string_opp_team = group.name
+    group['fixture'] = fixture
+    group['string_opp_team'] = string_opp_team
     # Count occurrences of each string_team
     counts = group['string_team'].value_counts()
     majority_team = counts.idxmax()  # Get the majority string_team
     # Replace incorrect string_team with the majority_team
     group['string_team'] = majority_team
     return group
+
 
 def sequence_matcher_similarity(s1, s2):
     similarity = SequenceMatcher(None, ' '.join(sorted(s1.split())), ' '.join(sorted(s2.split()))).ratio()
@@ -62,7 +68,7 @@ def clean_string(input_string):
     cleaned_string = re.sub(r'\d+', '', cleaned_string)
     return cleaned_string.strip()  # Optional: strip leading/trailing spaces
 
-static_path = os.path.join(directories, '2025-26\static_2025-26.json')
+static_path = os.path.join(directories, f'{season}\static_{season}.json')
 
 if check_last_data:
     
@@ -105,7 +111,7 @@ if check_last_data:
                 
                 # Save to a JSON file
                 
-                filename = os.path.join(directories, f'2025-26\players\{player_id[1].id}_2025-26.json')
+                filename = os.path.join(directories, f'{season}\players\{player_id[1].id}_{season}.json')
                 with open(filename , 'w') as json_file:
                     json.dump(player, json_file)
             except:
@@ -124,7 +130,7 @@ if check_last_data:
         gw = r.json()
         
         # Save to a JSON file
-        filename = os.path.join(directories, f'2025-26\\fixtures\\{i}_2025-26.json') 
+        filename = os.path.join(directories, f'{season}\\fixtures\\{i}_{season}.json') 
 
         with open(filename , 'w') as json_file:
             json.dump(gw, json_file)
@@ -199,7 +205,7 @@ if check_last_data:
                             'second_name': static_df.loc[selected_static]["second_name"].iloc[0],
                             'web_name': static_df.loc[selected_static]["web_name"].iloc[0],
                             'string_team': string_team,
-                            'season': '2025-26',
+                            'season': season,
                             'name': static_df.loc[selected_static ]["first_name"].iloc[0] + ' ' + static_df.loc[selected_static ]["second_name"].iloc[0],
                             'clearances_blocks_interceptions': history['clearances_blocks_interceptions'],
                             'recoveries': history['recoveries'],
@@ -210,7 +216,7 @@ if check_last_data:
                     gw_data.append(new_row)
         if gw_data:  
             gw_df = pd.DataFrame(gw_data)
-            filename = os.path.join(directories, f'2025-26\\gws\\gw{i}.json')
+            filename = os.path.join(directories, f'{season}\\gws\\gw{i}.json')
             gw_df.to_json(filename)
                     
             
@@ -261,6 +267,10 @@ for folder in folders:
                 season_data = pd.merge(season_data, fixture_data_fbref.loc[:, ['Wk', 'game_id', 'kickoff_time']], on='game_id', how='left')
                 season_data.rename(columns={'Wk': 'gameweek'}, inplace=True)
                 
+                #those that has changed fbref names               
+                selected = season_data.Player == 'Andrew Robertson'
+                season_data.loc[selected, 'Player'] = 'Andy Robertson'
+                
                 fbref_names = season_data.Player.to_list()
             
                 print('Season_data range from', min(season_data.gameweek), max(season_data.gameweek))
@@ -281,6 +291,7 @@ for folder in folders:
                 string_names = np.array([t["short_name"] for t in static_data["teams"]])
                 
                 is_json_file = True
+                is_json_gw_file = True
             
             except:
                 player_path = directory + '/players_raw.csv'
@@ -292,6 +303,7 @@ for folder in folders:
                 string_names = df_teams["short_name"].values
                 
                 is_json_file = False
+                is_json_gw_file = False
             
             
             if not (folder == '2016-17' or folder == '2017-18'):
@@ -327,15 +339,18 @@ for folder in folders:
 
                     gw_path = directory + '/gws' + '/' + gw_csv
 
-                    if not is_json_file:
+                    if not is_json_gw_file:
                         if folder == '2018-19' or folder == '2016-17' or folder == '2017-18':
                             gw = pd.read_csv(gw_path, encoding='latin1')
                         else:
                             gw = pd.read_csv(gw_path)   
                         
                     else:
-                        
-                        gw = pd.read_json(gw_path)
+                        try:
+                            gw = pd.read_json(gw_path)
+                        except:
+                            gw = pd.read_csv(gw_path)  
+                            is_json_gw_file = False                        
                         
                     
                         
@@ -353,7 +368,7 @@ for folder in folders:
                     if not (folder == '2016-17' or folder == '2017-18'):
                         #we need to get dfficulties in and string team!
                         if is_json_file:
-                            filename = directories + fr'\\2025-26\fixtures\{gw_num}_2025-26.json'
+                            filename = directories + fr'\\{season}\fixtures\{gw_num}_{season}.json'
                             with open(filename, 'r') as json_file:
                                 fixture_json = json.load(json_file)  # Load the data from the file
                             fixture_data_gw = pd.DataFrame(fixture_json)
@@ -406,9 +421,11 @@ for folder in folders:
                         
                     
                     #manually change some names:
-                    fantasy_manual_names = ['Mike Trésor Ndayishimiye', 'Alysson Edward Franco da Rocha dos Santos', 'João Victor de Souza Menezes', 'Rayan Vitor Simplício Rocha', 'Pedro Cardoso de Lima', 'Pablo Felipe Pereira de Jesus', 'John Victor Maciel Furtado', 'Lucas Pires Silva', 'Jair Paula da Cunha Filho', 'Yéremy Pino Santos', 'Manuel Ugarte Ribeiro', 'Sávio Moreira de Oliveira', 'Kevin Santos Lopes de Macedo', 'Mateus Gonçalo Espanha Fernandes', 'Nico González Iglesias', 'Marc Guiu Paz', 'Marcus Oliveira Alencar', "Rodrigo 'Rodri' Hernandez Cascante", 'Rodrigo Moreno', 'Josh Sims', 'Bernardo Mota Veiga de Carvalho e Silva', 'Andrey Nascimento dos Santos', 'Alisson Becker', 'João Maria Lobo Alves Palhares Costa Palhinha Gonçalves', 'Igor Jesus Maciel da Cruz', 'João Pedro Ferreira da Silva', 'Murillo Costa dos Santos', 'Matheus Santos Carneiro da Cunha', 'Rúben dos Santos Gato Alves Dias', 'Estêvão Almeida de Oliveira Gonçalves', "Rodrigo 'Rodri' Hernandez", 'Vitor de Oliveira Nunes dos Reis', 'Welington Damascena Santos', 'André Trindade da Costa Neto', 'Francisco Evanilson de Lima Barbosa', 'João Pedro Ferreira Silva', 'Igor Thiago Nascimento Rodrigues', "Sávio 'Savinho' Moreira de Oliveira", 'Norberto Bercique Gomes Betuncal', 'Anssumane Fati Vieira', 'Victor da Silva', 'Manuel Benson Hedilazio', 'Igor Julio dos Santos de Paulo', 'Murillo Santiago Costa dos Santos', 'Felipe Augusto de Almeida Monteiro', 'Mateus Cardoso Lemos Martins', 'João Victor Gomes da Silva', 'Danilo dos Santos de Oliveira', 'Alexandre Moreno Lopera', 'Carlos Ribeiro Dias', 'Matheus Santos Carneiro Da Cunha', 'Renan Augusto Lodi dos Santos', 'Lyanco Silveira Neves Vojnovic', 'Willian Borges da Silva', 'Carlos Henrique Casimiro', 'Norberto Murara Neto', 'Antony Matheus dos Santos', 'Lucas Tolentino Coelho de Lima', 'Diogo Teixeira da Silva','Fábio Freitas Gouveia Carvalho', 'Emerson Leite de Souza Junior', 'Bernardo Veiga de Carvalho e Silva', 'Francisco Jorge Tomás Oliveira', 'Samir Caetano de Souza Santos', 'Lyanco Evangelista Silveira Neves Vojnovic', 'Emerson Aparecido Leite de Souza Junior', 'Juan Camilo Hernández Suárez', 'José Malheiro de Sá', 'Francisco Machado Mota de Castro Trincão', 'Francisco Casilla Cortés', 'Rúben Santos Gato Alves Dias', 'Raphael Dias Belloli', 'Vitor Ferreira', 'Oluwasemilogo Adesewo Ibidapo Ajayi', 'Ivan Ricardo Neves Abreu Cavaleiro', 'Hélder Wander Sousa de Azevedo e Costa', 'Allan Marques Loureiro', 'Bruno André Cavaco Jordao', 'João Pedro Junqueira de Jesus', 'Borja González Tomás', 'José Reina', 'Roberto Jimenez Gago', 'José Ángel Esmorís Tasende', 'Rodrigo Hernandez', 'Mahmoud Ahmed Ibrahim Hassan', 'José Ignacio Peleteiro Romallo', 'Joelinton Cássio Apolinário de Lira', 'Alexandre Nascimento Costa Silva', 'Fabio Henrique Tavares', 'Bernard Anício Caldeira Duarte', 'André Filipe Tavares Gomes', 'André Filipe Tavares', 'Rúben Gonçalo Silva Nascimento Vinagre', 'Rúben Diogo da Silva Neves', 'Rui Pedro dos Santos Patrício', 'João Filipe Iria Santos Moutinho', 'Jorge Luiz Frello Filho', 'Frederico Rodrigues de Paula Santos', 'Fabricio Agosto Ramírez', 'Bonatini Lohner Maia Bonatini', 'Bernardo Fernandes da Silva Junior', 'Alisson Ramses Becker', 'Olayinka Fredrick Oladotun Ladapo', 'Lucas Rodrigues Moura da Silva', 'João Mário Naval Costa Eduardo', 'Adrien Sebastian Perruchet Silva', 'Danilo Luiz da Silva', 'Jesé Rodríguez Ruiz', 'Jose Luis Mato Sanmartín', 'Ederson Santana de Moraes', 'Bruno Saltor Grau', 'Bernardo Mota Veiga de Carvalho e Silva', 'Robert Kenedy Nunes do Nascimento', 'Gabriel Armando de Abreu', 'Fabio Pereira da Silva', 'Fernando Francisco Reges', 'David Luiz Moreira Marinho', 'Willian Borges Da Silva', 'Pedro Rodríguez Ledesma', 'Oscar dos Santos Emboaba Junior', 'Manuel Agudo Durán', 'Fernando Luiz Rosa', 'Adrián San Miguel del Castillo']
-                    fbref_manual_names = ['Mike Trésor', 'Alysson Edward', 'Souza', 'Rayan', 'Pedro Lima', 'Pablo', 'John', 'Lucas', 'Jair Cunha', 'Yeremi Pino', 'Manuel Ugarte', 'Sávio', 'Kevin', 'Mateus Fernandes', 'Nicolás González', 'Marc Guiu', 'Marquinhos', 'Rodri', 'Rodrigo', 'Josh Sims', 'Bernardo Silva', 'Andrey Santos', 'Alisson', 'João Palhinha', 'Igor Jesus', 'Jota Silva', 'Murillo', 'Matheus Cunha', 'Rúben Dias', 'Estêvão Willian', 'Rodri', 'Vitor Reis', 'Welington', 'André', 'Evanilson', 'Jota Silva', 'Igor Thiago', 'Sávio', 'Beto', 'Ansu Fati', 'Vitinho', 'Benson Manuel', 'Igor', 'Murillo', 'Felipe', 'Tetê', 'João Gomes', 'Danilo', 'Álex Moreno', 'Cafú', 'Matheus Cunha', 'Renan Lodi', 'Lyanco', 'Willian', 'Casemiro', 'Neto', 'Antony', 'Lucas Paquetá', 'Diogo Jota', 'Fabio Carvalho', 'Emerson', 'Bernardo Silva', 'Chiquinho', 'Samir Santos', 'Lyanco', 'Emerson', 'Cucho', 'José Sá', 'Francisco Trincão', 'Kiko Casilla', 'Rúben Dias', 'Raphinha', 'Vitinha', 'Semi Ajayi', 'Ivan Cavaleiro', 'Hélder Costa', 'Allan', 'Bruno Jordão', 'João Pedro', 'Borja Bastón', 'Pepe Reina', 'Roberto', 'Angeliño', 'Rodri', 'Trézéguet', 'Jota', 'Joelinton', 'Xande Silva', 'Fabinho', 'Bernard', 'André Gomes', 'André Gomes', 'Rúben Vinagre', 'Rúben Neves', 'Rui Patrício', 'João Moutinho', 'Jorginho', 'Fred', 'Fabricio', 'Léo Bonatini', 'Bernardo', 'Alisson', 'Freddie Ladapo', 'Lucas Moura', 'João Mário', 'Adrien Silva', 'Danilo', 'Jesé', 'Joselu', 'Ederson', 'Bruno', 'Bernardo Silva', 'Kenedy', 'Gabriel Paulista', 'Fábio', 'Fernando', 'David Luiz', 'Willian', 'Pedro', 'Oscar', 'Nolito', 'Fernandinho', 'Adrián']
-                
+                    #if multiple fantasy version over the years, duplicate and put the current one first
+                    fantasy_manual_names = ['Mohamed Belloumi', 'Andrew Robertson', 'Emersonn Correia da Silva', 'João Pedro Loureiro da Costa', 'António João Pereira de Albuquerque Tavares da Silva', 'Felipe Rodrigues da Silva', 'Mike Trésor Ndayishimiye', 'Alysson Edward Franco da Rocha dos Santos', 'João Victor de Souza Menezes', 'Rayan Vitor Simplício Rocha', 'Pedro Cardoso de Lima', 'Pablo Felipe Pereira de Jesus', 'John Victor Maciel Furtado', 'Lucas Pires Silva', 'Jair Paula da Cunha Filho', 'Yéremy Pino Santos', 'Manuel Ugarte Ribeiro', 'Sávio Moreira de Oliveira', 'Kevin Santos Lopes de Macedo', 'Mateus Fernandes', 'Mateus Gonçalo Espanha Fernandes', 'Nico González Iglesias', 'Marc Guiu Paz', 'Marcus Oliveira Alencar', "Rodrigo 'Rodri' Hernandez Cascante", 'Rodrigo Moreno', 'Josh Sims', 'Bernardo Mota Veiga de Carvalho e Silva', 'Andrey Nascimento dos Santos', 'Alisson Becker', 'João Maria Lobo Alves Palhares Costa Palhinha Gonçalves', 'Igor Jesus Maciel da Cruz', 'João Pedro Ferreira da Silva', 'Murillo Costa dos Santos', 'Matheus Santos Carneiro da Cunha', 'Rúben dos Santos Gato Alves Dias', 'Estêvão Almeida de Oliveira Gonçalves', "Rodrigo 'Rodri' Hernandez", 'Vitor de Oliveira Nunes dos Reis', 'Welington Damascena Santos', 'André Trindade da Costa Neto', 'Francisco Evanilson de Lima Barbosa', 'João Pedro Ferreira Silva', 'Igor Thiago Nascimento Rodrigues', "Sávio 'Savinho' Moreira de Oliveira", 'Norberto Bercique Gomes Betuncal', 'Anssumane Fati Vieira', 'Victor da Silva', 'Manuel Benson Hedilazio', 'Igor Julio dos Santos de Paulo', 'Murillo Santiago Costa dos Santos', 'Felipe Augusto de Almeida Monteiro', 'Mateus Cardoso Lemos Martins', 'Joao Gomes', 'João Victor Gomes da Silva', 'Danilo dos Santos de Oliveira', 'Alexandre Moreno Lopera', 'Carlos Ribeiro Dias', 'Matheus Santos Carneiro Da Cunha', 'Renan Augusto Lodi dos Santos', 'Lyanco Silveira Neves Vojnovic', 'Willian Borges da Silva', 'Carlos Henrique Casimiro', 'Norberto Murara Neto', 'Antony Matheus dos Santos', 'Lucas Tolentino Coelho de Lima', 'Diogo Teixeira da Silva','Fábio Freitas Gouveia Carvalho', 'Emerson Leite de Souza Junior', 'Bernardo Veiga de Carvalho e Silva', 'Francisco Jorge Tomás Oliveira', 'Samir Caetano de Souza Santos', 'Lyanco Evangelista Silveira Neves Vojnovic', 'Emerson Aparecido Leite de Souza Junior', 'Juan Camilo Hernández Suárez', 'José Malheiro de Sá', 'Francisco Machado Mota de Castro Trincão', 'Francisco Casilla Cortés', 'Rúben Santos Gato Alves Dias', 'Raphael Dias Belloli', 'Vitor Ferreira', 'Semi Ajayi', 'Oluwasemilogo Adesewo Ibidapo Ajayi', 'Ivan Ricardo Neves Abreu Cavaleiro', 'Hélder Wander Sousa de Azevedo e Costa', 'Allan Marques Loureiro', 'Bruno André Cavaco Jordao', 'João Pedro Junqueira de Jesus', 'Borja González Tomás', 'José Reina', 'Roberto Jimenez Gago', 'José Ángel Esmorís Tasende', 'Rodrigo Hernandez', 'Mahmoud Ahmed Ibrahim Hassan', 'José Ignacio Peleteiro Romallo', 'Joelinton Cássio Apolinário de Lira', 'Alexandre Nascimento Costa Silva', 'Fabio Henrique Tavares', 'Bernard Anício Caldeira Duarte', 'André Filipe Tavares Gomes', 'André Filipe Tavares', 'Rúben Gonçalo Silva Nascimento Vinagre', 'Rúben Diogo da Silva Neves', 'Rui Pedro dos Santos Patrício', 'João Filipe Iria Santos Moutinho', 'Jorge Luiz Frello Filho', 'Frederico Rodrigues de Paula Santos', 'Fabricio Agosto Ramírez', 'Bonatini Lohner Maia Bonatini', 'Bernardo Fernandes da Silva Junior', 'Alisson Ramses Becker', 'Olayinka Fredrick Oladotun Ladapo', 'Lucas Rodrigues Moura da Silva', 'João Mário Naval Costa Eduardo', 'Adrien Sebastian Perruchet Silva', 'Danilo Luiz da Silva', 'Jesé Rodríguez Ruiz', 'Jose Luis Mato Sanmartín', 'Ederson Santana de Moraes', 'Bruno Saltor Grau', 'Bernardo Mota Veiga de Carvalho e Silva', 'Robert Kenedy Nunes do Nascimento', 'Gabriel Armando de Abreu', 'Fabio Pereira da Silva', 'Fernando Francisco Reges', 'David Luiz Moreira Marinho', 'Willian Borges Da Silva', 'Pedro Rodríguez Ledesma', 'Oscar dos Santos Emboaba Junior', 'Manuel Agudo Durán', 'Fernando Luiz Rosa', 'Adrián San Miguel del Castillo']
+                    fbref_manual_names = ['Bachir Belloumi', 'Andy Robertson', 'Emersonn', 'Costinha', 'António Silva', 'Morato', 'Mike Trésor', 'Alysson', 'Souza', 'Rayan', 'Pedro Lima', 'Pablo', 'John', 'Lucas', 'Jair Cunha', 'Yéremy Pino', 'Manuel Ugarte', 'Sávio', 'Kevin', 'Mateus Fernandes', 'Mateus Fernandes', 'Nicolás González', 'Marc Guiu', 'Marquinhos', 'Rodri', 'Rodrigo', 'Josh Sims', 'Bernardo Silva', 'Andrey Santos', 'Alisson', 'João Palhinha', 'Igor Jesus', 'Jota Silva', 'Murillo', 'Matheus Cunha', 'Rúben Dias', 'Estêvão Willian', 'Rodri', 'Vitor Reis', 'Welington', 'André', 'Evanilson', 'Jota Silva', 'Igor Thiago', 'Sávio', 'Beto', 'Ansu Fati', 'Vitinho', 'Benson Manuel', 'Igor', 'Murillo', 'Felipe', 'Tetê', 'João Gomes', 'João Gomes', 'Danilo', 'Álex Moreno', 'Cafú', 'Matheus Cunha', 'Renan Lodi', 'Lyanco', 'Willian', 'Casemiro', 'Neto', 'Antony', 'Lucas Paquetá', 'Diogo Jota', 'Fabio Carvalho', 'Emerson', 'Bernardo Silva', 'Chiquinho', 'Samir Santos', 'Lyanco', 'Emerson', 'Cucho', 'José Sá', 'Francisco Trincão', 'Kiko Casilla', 'Rúben Dias', 'Raphinha', 'Vitinha', 'Semi Ajayi', 'Semi Ajayi', 'Ivan Cavaleiro', 'Hélder Costa', 'Allan', 'Bruno Jordão', 'João Pedro', 'Borja Bastón', 'Pepe Reina', 'Roberto', 'Angeliño', 'Rodri', 'Trézéguet', 'Jota', 'Joelinton', 'Xande Silva', 'Fabinho', 'Bernard', 'André Gomes', 'André Gomes', 'Rúben Vinagre', 'Rúben Neves', 'Rui Patrício', 'João Moutinho', 'Jorginho', 'Fred', 'Fabricio', 'Léo Bonatini', 'Bernardo', 'Alisson', 'Freddie Ladapo', 'Lucas Moura', 'João Mário', 'Adrien Silva', 'Danilo', 'Jesé', 'Joselu', 'Ederson', 'Bruno', 'Bernardo Silva', 'Kenedy', 'Gabriel Paulista', 'Fábio', 'Fernando', 'David Luiz', 'Willian', 'Pedro', 'Oscar', 'Nolito', 'Fernandinho', 'Adrián']
+                    
+                    
                     #covid weeks
                     if gw_num > 38:
                         gw_num = gw_num - 9
@@ -417,9 +434,12 @@ for folder in folders:
                                   
                     for el in gw.iterrows():
                         
-                        # if 'William Saliba' in  el[1]['name']:
-                        #     a=dhdhdhdhd
+                        # if 'Mohamed-Ali Cho' in  el[1]['name']:
+                            
+                        #     a=jdjhdhd
                         #     print(el[0], el[1].element, el[1]['name'])
+                            
+                            
                         element = el[1].element
                         el_selected =  df_player.element == element
                         
@@ -467,7 +487,7 @@ for folder in folders:
                                     
                             #player_name change DURING season
                             
-                            # if closest_match[0] == 'Igor Thiago Nascimento Rodrigues' or closest_match[0] == 'Igor Thiago':
+                            # if closest_match[0] == 'Mohamed Ali Cho' and not name_string == 'Mohamed-Ali Cho':
                             #     a = fjhkfhf
                             #     print(name_string)
 
@@ -475,6 +495,7 @@ for folder in folders:
                             if not closest_match:
                                 if el[1].minutes > 0:
                                     print('No player matched in fbref', el[1]['name'], name_string)  
+                                    a = hhdhdh
                                 continue
                                 
                             # if not closest_match:
@@ -485,17 +506,14 @@ for folder in folders:
                             
                             #print('Automatic matching')
                         
-                        
-                        
-
-                        
-                        
+                        #if the name is in the fbref liist
                         #keep this before inventing new names.
                         num_player_selected = fbref_names.count(closest_match[0])
                         
                         if num_player_selected == 0 and el[1].minutes > 0:
-                            a = hfhhfhf
+
                             print('Player played, but not matched', el[0], el[1]['name'], closest_match)
+                            a = hfhhfhf
                             continue                 
                             
                         #use names from fbref. same name across seasons
@@ -690,7 +708,7 @@ for folder in folders:
     
     
                 #variables I calculate myself
-                if not is_json_file:
+                if not is_json_gw_file:
                     df_gw['string_opp_team'] = None
                  
                 df_gw['points_per_game'] = np.nan       
@@ -706,7 +724,7 @@ for folder in folders:
                     
                     opp_team = []
                     
-                    if not is_json_file:
+                    if not is_json_gw_file:
                         for team in player_df['opponent_team'].astype(int).values-1:
                             opp_team.append(string_names[team])
                     
@@ -760,7 +778,8 @@ for folder in folders:
                     
                 
                 # #apply correct club for those who has transferred
-                season_df = season_df.groupby(['fixture', 'string_opp_team'], group_keys=False).apply(correct_string_team)
+                #season_df = season_df.groupby(['fixture', 'string_opp_team'], group_keys=False).apply(correct_string_team)
+                season_df = ( season_df.groupby(['fixture', 'string_opp_team'], as_index=False, group_keys=False).apply(correct_string_team, include_groups=False))
                 
                 # def get_majority(series):
                 #     return series.mode()[0]  # mode() returns the most common value
@@ -795,13 +814,14 @@ with open(static_path, 'r') as json_file:
    
 static_df = pd.DataFrame(static['elements'])
 fantasy_names = static_df.first_name + ' ' + static_df.second_name
-selected_season = season_df.season == '2025-26'
+selected_season = season_df.season == season
 matched_inds = []
 
 
-
+#these are the fbref names
 for name_string in np.unique(season_df.loc[selected_season, 'name']):   
     
+    #get the fantasy name
     if name_string in fbref_manual_names:
         name_selected = [k == name_string for k in fbref_manual_names]
         manual_ind =  np.where(name_selected)[0][0]
@@ -1100,4 +1120,4 @@ train_data = pd.concat([train, temp_train], axis=1)
 
 
  
-train_data.to_pickle(r'\\platon.uio.no\med-imb-u1\jorgels\\model_data.pkl')  # Set index=False to not include row indices
+train_data.to_pickle(r'\\platon.uio.no\med-imb-u1\jorgels\\fantasy\\model_data.pkl')  # Set index=False to not include row indices

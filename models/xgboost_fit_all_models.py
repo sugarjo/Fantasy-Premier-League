@@ -43,15 +43,6 @@ method = 'xgboost'
 
 season_dfs = []
 
-# Function to correct string_team based on the majority
-def correct_string_team(group):
-    # Count occurrences of each string_team
-    counts = group['string_team'].value_counts()
-    majority_team = counts.idxmax()  # Get the majority string_team
-    # Replace incorrect string_team with the majority_team
-    group['string_team'] = majority_team
-    return group
-
 def sequence_matcher_similarity(s1, s2):
     similarity = SequenceMatcher(None, ' '.join(sorted(s1.split())), ' '.join(sorted(s2.split()))).ratio()
     first_name_similarity = SequenceMatcher(None, s1.split()[0], s2.split()[0]).ratio()
@@ -611,6 +602,8 @@ trials = Trials()
 loss = np.inf
 tid = 0
 
+tested_hyperparam_path = main_directory + f'\models\\tested_hyperparams.pkl'
+
 
 #temp_hyperparam_path = main_directory + '\models\hyperparams_temp.pkl'
 if update_hyperparams:
@@ -623,33 +616,42 @@ if update_hyperparams:
                         algo = atpe.suggest,
                         trials = trials,
                         max_evals=99999999,
-                        early_stop_fn=no_progress_loss(100)
+                        early_stop_fn=no_progress_loss(500)
                         )
         
-        #pickle.dump(trials, open(temp_hyperparam_path, "wb"))
+        pickle.dump(trials, open(tested_hyperparam_path, "wb"))
         
         loss = trials.best_trial['result']['loss']
         tid = len(trials)
-        
-
-
-     # with open(temp_hyperparam_path, 'rb') as f:
-     #     new_trials = pickle.load(f)
-         
-     # hyperparams = new_trials.best_trial['misc']['vals']
-     # #reformat the lists
-     # new_hyperparams = {}
+    
+    
     for field, val in new_hyperparams.items():
          #new_hyperparams[field] = val[0]
          print(field, val)
-         
-    loss = objective_xgboost(new_hyperparams)
-    new_loss = loss['loss']
-     
-    print('New loss: ', new_loss)
+    
+    
+    quit()
 
-else:      
-    new_loss = np.inf
+
+
+with open(tested_hyperparam_path, 'rb') as f:
+    new_trials = pickle.load(f)
+    
+hyperparams = new_trials.best_trial['misc']['vals']
+#reformat the lists
+new_hyperparams = {}
+for field, val in hyperparams.items():
+    new_hyperparams[field] = val[0]
+    
+
+if new_hyperparams['eval_fraction'] < min_eval_fraction:
+    new_hyperparams['eval_fraction'] = min_eval_fraction
+    
+loss = objective_xgboost(new_hyperparams)
+new_loss = loss['loss']
+ 
+print('New loss: ', new_loss)
+
 
 if new_loss < old_loss:
     #print('Element error: ', new_loss)

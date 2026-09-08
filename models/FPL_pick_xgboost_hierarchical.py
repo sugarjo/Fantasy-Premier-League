@@ -4,24 +4,24 @@ import time
 
 
 my_players = [
-    {'web_name': 'Pickford', 'selling_price': 55, 'element_type': 1},
-    {'web_name': 'Steele', 'selling_price': 40, 'element_type': 1},
+    {'web_name': 'Lammens', 'selling_price': 50, 'element_type': 1},
+    {'web_name': 'Verbruggen', 'selling_price': 45, 'element_type': 1},
     
-    {'web_name': 'Virgil', 'selling_price': 65, 'element_type': 2},
-    {'web_name': 'Guéhi', 'selling_price': 60, 'element_type': 2},
-    {'web_name': 'Senesi', 'selling_price': 60, 'element_type': 2},
+    {'web_name': 'F.Kadıoğlu', 'selling_price': 44, 'element_type': 2},
+    {'web_name': 'Konsa', 'selling_price': 44, 'element_type': 2},
+    {'web_name': "O'Reilly", 'selling_price': 65, 'element_type': 2},
     {'web_name': 'Tarkowski', 'selling_price': 60, 'element_type': 2},
-    {'web_name': "Matheus N.", 'selling_price': 60, 'element_type': 2},
+    {'web_name': "Murillo", 'selling_price': 55, 'element_type': 2},
     
-    {'web_name': 'Doku', 'selling_price': 75, 'element_type': 3},
-    {'web_name': 'Kroupi.Jr', 'selling_price': 75, 'element_type': 3},
-    {'web_name': 'Rice', 'selling_price': 75, 'element_type': 3},
+    {'web_name': 'Gomez', 'selling_price': 50, 'element_type': 3},
     {'web_name': 'Rogers', 'selling_price': 75, 'element_type': 3},
+    {'web_name': 'Stach', 'selling_price': 60, 'element_type': 3},
+    {'web_name': 'Foden', 'selling_price': 70, 'element_type': 3},
     {'web_name': 'Szoboszlai', 'selling_price': 70, 'element_type': 3},
     
-    {'web_name': 'Thiago', 'selling_price': 80, 'element_type': 4},
-    {'web_name': 'Gyökeres', 'selling_price': 75, 'element_type': 4},
-    {'web_name': 'João Pedro', 'selling_price': 75, 'element_type': 4},
+    {'web_name': 'Barry', 'selling_price': 55, 'element_type': 4},
+    {'web_name': 'Isak', 'selling_price': 90, 'element_type': 4},
+    {'web_name': 'Haaland', 'selling_price': 155, 'element_type': 4},
 ]
 
 
@@ -29,13 +29,13 @@ my_players = [
 
 
 
-bank = 0 #in 10ths of M
-free_transfers = 1
-save_transfers_for_later = 5 #transfers left at end of last round (no need to put higher than 4)
+bank = 11 #in 10ths of M
+free_transfers = 2
+save_transfers_for_later = 3 #transfers left at end of last round (no need to put higher than 4)
 
 forward_price_limit = -1 #in millions
 
-minutes_thisyear_treshold = -1
+minutes_thisyear_treshold = 60
 form_treshold = -0.1
 points_per_game_treshold = -0.1
 running_minutes_threshold = -1
@@ -46,14 +46,13 @@ running_minutes_threshold = -1
 exclude_team = []
 
 exclude_players = []
-#check james and saka and mateta
 include_players = []
 
 do_not_exclude_players = [] 
 
 
 do_not_transfer_out = []
-rounds_to_value = 5
+rounds_to_value = 2
 #transfer to evaluate per week
 trans_per_week = 3
 
@@ -61,13 +60,13 @@ jump_rounds = 0
 #if you also want to evaluate players on the bench. in case of uncertain starters.
 number_players_eval = 11
 
-wildcard = True
-benchboost = []
+wildcard = False
+benchboost = [] #gws
 skip_gw = []
 
 tripple_captain_gw = 100
 
-iterations = 20
+iterations = 10
 
 midfield_price_limit = -1
 
@@ -542,7 +541,7 @@ predictions = []
 
 # #add nan categories
 # dynamic_categorical_variables = ['string_opp_team', 'own_difficulty',
-#        'other_difficulty'] #'difficulty',
+#        'opp_difficulty'] #'difficulty',
 
 # int_variables = ['minutes', 'total_points', 'was_home', 'bps', 'own_team_points', 'defcon', 'SoT']
 
@@ -567,14 +566,16 @@ predictions = []
 
 
 
+#how variables are includedvariables
+#always included. also for current weak
 dynamic_features = ['string_opp_team', 'transfers_in', 'transfers_out',
-        'was_home', 'own_difficulty', 'other_difficulty']#, 'difficulty']
+        'was_home', 'own_difficulty', 'opp_difficulty']#, 'difficulty']
 
 #features that I don't have access to in advance.
 #included for all windows, but not current
 temporal_features = ['minutes', 'ict_index', 'influence', 'threat', 'creativity', 'bps',
         'total_points', 'expected_goals', 'expected_assists',
-        'expected_goals_conceded', 'own_team_points', 'own_element_points','defcon', 'opp_element_points', 'opp_team_points']
+        'expected_goals_conceded', 'own_team_points', 'own_element_points','defcon']#, 'opp_element_points']#, 'opp_team_points']
 #included once
 temporal_single_features = ['points_per_game', 'points_per_played_game']
 #total_points, minutes, kickoff time not for prediction
@@ -583,17 +584,18 @@ fixed_features = ['kickoff_time', 'element_type', 'string_team', 'season', 'name
 
 #categories for dtype
 categorical_variables = ['element_type', 'string_team', 'season', 'name']
-#season_df[categorical_variables] = season_df[categorical_variables].astype('category')
+
+
 #add nan categories
 dynamic_categorical_variables = ['string_opp_team', 'own_difficulty',
-        'other_difficulty'] #'difficulty',
+        'opp_difficulty'] #'difficulty',
 
-int_variables = ['minutes', 'total_points', 'was_home', 'bps', 'own_team_points', 'defcon', 'opp_team_points']
-#season_df[int_variables] = season_df[int_variables].astype('Int64')
+
+int_variables = ['minutes', 'total_points', 'was_home', 'bps', 'own_team_points', 'defcon'] #, 'opp_team_points']
+
 
 float_variables = ['transfers_in', 'transfers_out', 'threat', 'own_element_points',  'expected_goals', 'expected_assists',
-'expected_goals_conceded', 'creativity', 'ict_index', 'influence', 'opp_element_points']
-#season_df[float_variables] = season_df[float_variables].astype('float')
+'expected_goals_conceded', 'creativity', 'ict_index', 'influence'] #, 'opp_element_points']
 
 
 
@@ -709,16 +711,27 @@ for df_name in slim_elements_df.iterrows():
         #matches with team
         selected_matches = np.logical_or(df_future_games.team_h == team, df_future_games.team_a == team)
         gws = df_future_games[selected_matches]
+        
+        #load_player model
+        player_model_path = rf"\\platon.uio.no\med-imb-u1\jorgels\fantasy\local_models\{name}.sav"
+        
+        try:
+            with open(player_model_path, 'rb') as f:
+                player_model = pickle.load(f)
+                
+        except:
+            print('No model for', name)
+            player_model = []
                 
         #cif there is no historical data for player. use data from slim
         #or if there are no matches
-        if sum(all_rows.name == name) == 0 or len(gws)==0:
+        if sum(all_rows.name == name) == 0 or len(gws)==0 or not player_model:
 
             selected_ind = np.where(elements_df.id == player_id)[0][-1]
 
             #at beginnig of season data contains season sums
             if sum(all_rows.name == name) == 0:
-                print(name, ': seto to zero. Does not exist in game database. Have no historical data')
+                print(name, ': set to zero. Does not exist in game database. Have no historical data')
                 
             is_estimated = True
             #just take some random data to make the script work
@@ -728,14 +741,10 @@ for df_name in slim_elements_df.iterrows():
 
         else:
             
-            #load_player model
-            player_model_path = rf"\\platon.uio.no\med-imb-u1\jorgels\fantasy\local_models\{name}.sav"
-            
-            with open(player_model_path, 'rb') as f:
-                player_model = pickle.load(f)
-                
-            if temporal_window < player_model['hyperparams']['temporal_window']:
-                temporal_window = int(player_model['hyperparams']['temporal_window'])
+
+            if player_model['hyperparams']:
+                if temporal_window < player_model['hyperparams']['temporal_window']:
+                    temporal_window = int(player_model['hyperparams']['temporal_window'])
         
             is_estimated = False
             selected = all_rows.name == name
@@ -786,7 +795,7 @@ for df_name in slim_elements_df.iterrows():
             if home_matches[game_idx]:
 
                 new_row['own_difficulty'] = home_difficulty[game_idx]
-                new_row['other_difficulty'] = away_difficulty[game_idx]
+                new_row['opp_difficulty'] = away_difficulty[game_idx]
                 new_row['string_opp_team'] = string_names[game[1].team_a-1]
                 new_row['was_home'] = 1
                 #necessary because of unavailable players
@@ -795,7 +804,7 @@ for df_name in slim_elements_df.iterrows():
             else:
 
                 new_row['own_difficulty'] = away_difficulty[game_idx]
-                new_row['other_difficulty'] = home_difficulty[game_idx]
+                new_row['opp_difficulty'] = home_difficulty[game_idx]
                 new_row['string_opp_team'] = string_names[game[1].team_h-1]
                 new_row['was_home'] = 0
 
@@ -1025,45 +1034,79 @@ for df_name in slim_elements_df.iterrows():
         
         
         #make sure all categories in pred is present in train. to avoid predictions outside of feature space
+        #loop columns
         for column in predicting_df.columns:
+            #if categorical
             if isinstance(predicting_df[column].dtype, pd.CategoricalDtype):
                 # Get the values in the current column of val_X
                 val_values = predicting_df[column]
                 
                 # Check which values are present in the corresponding column of cv_X
-                #mask = val_values.isin(train_X[column])
                 mask = val_values.isin(all_rows[column])
                 
                 if sum(~mask) > 0:                
+                    
+                    if not 'string_opp_team' in column:
+                        print(str(val_values[~mask]) + ': does not exist in training data. Set to nan')
+                    
                     # Set values that are not present in cv_X[column] to NaN
                     predicting_df.loc[~mask, column] = np.nan
                     
-                    if not column == 'string_opp_team':
-                        print(str(val_values[~mask]) + ': does not exist in training data. Set to nan')
+
 
 
         
         #set up the data
-        #local       
-        common_columns = player_model['train_features'].columns.intersection(predicting_df.columns)
-        local_data = predicting_df[common_columns]
-
-        Dgame = xgb.DMatrix(data=local_data, enable_categorical=True)
-        
-        predicting_df["local_predictions"] = player_model['model'].predict(Dgame)
-        predicting_df["local_const_predictions"] = 2
+        #local
+        if player_model:
+            if player_model["model"]:
+                common_columns = player_model['train_features'].intersection(predicting_df.columns)
+                local_data = predicting_df[common_columns]
+                
+                try:
+                    Dgame = xgb.DMatrix(data=local_data, enable_categorical=True)
+                    
+                    local_pred =  player_model['model'].predict(Dgame)
+                    
+                    selected = (local_pred > max(all_rows.local_predictions)) |  (local_pred < min(all_rows.local_predictions))
+                    local_pred[selected] = np.nan
+                    
+                    if sum(selected) > 0:
+                        print(name, ':', sum(selected), 'unrealistic local predictions set to NaN')
+                        print(temporal_window)
+                    
+                    predicting_df["local_predictions"] = local_pred
+                except: 
+                    print('Predictions did not work. Probably has not played a 60 min match this year and therefore lack season category')
+                    predicting_df["local_predictions"] = np.nan
+                    predicting_df["local_const_predictions"] = player_model['local_constant']
+                    
+            else:
+                predicting_df["local_predictions"] = np.nan
+                
+            predicting_df["local_const_predictions"] = player_model['local_constant']
+        else:
+            predicting_df["local_predictions"] = np.nan
+            predicting_df["local_const_predictions"] = np.nan
         
         #element
-        common_columns = element_model['train_features'].columns.intersection(predicting_df.columns)
+        common_columns = element_model['train_features'].intersection(predicting_df.columns)
         element_data = predicting_df[common_columns]
         
         Dgame = xgb.DMatrix(data=element_data, enable_categorical=True)
+                
+        element_pred =  element_model['model'].predict(Dgame)
         
-        predicting_df["element_predictions"] = element_model['model'].predict(Dgame)
-        predicting_df["element_const_predictions"] = 2
+        selected = (element_pred > max(all_rows.element_predictions)) | (element_pred < min(all_rows.element_predictions))
+        element_pred[selected] = np.nan
+        
+        if sum(selected) > 0:
+            print(name, ':', sum(selected), 'unrealistic element predictions set to NaN')
+        
+        predicting_df["element_predictions"] = element_pred
         
         #all
-        common_columns = all_model_summary['train_features'].columns.intersection(predicting_df.columns)
+        common_columns = all_model_summary['train_features'].intersection(predicting_df.columns)
         all_data = predicting_df[common_columns]
         
         Dgame = xgb.DMatrix(data=all_data, enable_categorical=True)
@@ -1141,8 +1184,8 @@ for df_name in slim_elements_df.iterrows():
                     if df_name[1]['first_name'] in exclude_name and df_name[1]['second_name'] in exclude_name:
                         estimated = 0
                         
-                if is_estimated and df_name[1]['web_name'] not in do_not_exclude_players:
-                    estimated = 0
+                # if is_estimated and df_name[1]['web_name'] not in do_not_exclude_players:
+                #     estimated = 0
                     
 
             pred_score[gw_idx] = pred_score[gw_idx] + estimated

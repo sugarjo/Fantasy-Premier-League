@@ -36,21 +36,17 @@ try:
 except:
     main_directory = r'C:\Users\jorgels\Git\Fantasy-Premier-League'
 
-
+optimize_mode = False
+#trains all models on the current data
 update_models = True
+#searches for hyperparam
 update_hyperparams = False
+#this will also include the players with frozen data
+exclude_frozen_players = True
 
+current_season = '2026-27'
+temporal_window = 21
 
-current_season = '2025-26'
-
-# Function to correct string_team based on the majority
-def correct_string_team(group):
-    # Count occurrences of each string_team
-    counts = group['string_team'].value_counts()
-    majority_team = counts.idxmax()  # Get the majority string_team
-    # Replace incorrect string_team with the majority_team
-    group['string_team'] = majority_team
-    return group
 
 def sequence_matcher_similarity(s1, s2):
     similarity = SequenceMatcher(None, ' '.join(sorted(s1.split())), ' '.join(sorted(s2.split()))).ratio()
@@ -382,7 +378,18 @@ def objective_xgboost_custom(space, cv_X, cv_y, val_X, val_y, cvs_mask):
     return {'loss': val_error, 'status': STATUS_OK }
 
                
+import requests
 
+#get statistics of all players
+url = 'https://fantasy.premierleague.com/api/bootstrap-static/'
+r = requests.get(url)
+statistics = r.json()
+
+elements_df = pd.DataFrame(statistics['elements'])
+
+
+names = elements_df.first_name + ' ' + elements_df.second_name
+        
 
 with open(r"\\platon.uio.no\med-imb-u1\jorgels\fantasy\model_data.pkl", 'rb') as file:
     original_data = pickle.load(file)                
@@ -491,34 +498,67 @@ hyper_vals = {'max_depth': [],
 train_data['local_predictions'] = np.nan
 train_data['local_const_predictions'] = np.nan
 
+original_data['local_predictions'] = np.nan
+original_data['local_const_predictions'] = np.nan
+
+
 trials = Trials() 
 
 #train local models
 for ind, name in enumerate(unique_names):
     
+    if ind > 0:
+        if best_hyperparams:
+            last_hyperparams = best_hyperparams.copy()
+    
     print(ind, '/', len(unique_names), name)
     
     model_path = rf"\\platon.uio.no\med-imb-u1\jorgels\fantasy\local_models\{name}.sav"
     
-    if not update_models or not update_hyperparams:
-        if os.path.isfile(model_path):
-            with open(model_path, "rb") as f:
-                summary = pickle.load(f)
-                
-            best_hyperparams = summary["hyperparams"]
-            
-            for k in best_hyperparams.keys():
-                if k in hyper_vals:
-                    hyper_vals[k].append(best_hyperparams[k])
-        else:
-            ('No model')
-            continue
-                    
-    if not update_models:
-        continue            
-                    
+    num_matches_train = -1
     sel_name = train_X.name == name
     
+    search_hyperparams = True
+    
+    if os.path.isfile(model_path):
+        try:
+            with open(model_path, "rb") as f:
+                summary = pickle.load(f)
+            
+            best_hyperparams = summary["hyperparams"]
+            
+            # #delete later:
+            # try:
+            #     summary["hyperparams"]["num_matches"] = summary["num_matches"]
+            #     num_matches_train = summary["hyperparams"]["num_matches"]
+            # except:
+            #     num_matches_train = -1
+            num_matches_train = summary["hyperparams"]["num_matches"]
+            
+            if summary['tested_hyperparams']:
+                A = GHGHD
+            
+            
+            
+            loading_fail = False
+            
+            if not optimize_mode and (not update_hyperparams or (exclude_frozen_players and sum(sel_name) == num_matches_train) or name not in names):
+                for k in best_hyperparams.keys():
+                    if k in hyper_vals:
+                        hyper_vals[k].append(best_hyperparams[k])
+                        
+                search_hyperparams = False
+            
+        except:
+            loading_fail = True
+            
+    else:
+        loading_fail = True
+        
+        
+        
+        
+                
     # Get the 80% of the first matches every season...
     train_copy = train_X.loc[sel_name].copy()
     train_copy = train_copy.reset_index(drop=True)
@@ -553,8 +593,6 @@ for ind, name in enumerate(unique_names):
     vals_mask = ~cvs_mask  # Mask for validation, simply the inverse of cvs_mask
     
     #set the split for later use
-
-
     subset_idx = train_data.index[sel_name]        # index of selected rows
     rows_to_update = subset_idx[cvs_mask]  
     train_data.loc[rows_to_update, 'split'] = 1
@@ -563,6 +601,11 @@ for ind, name in enumerate(unique_names):
     
     #at least one train and val
     if sum(sel_name) < 2:
+        if sum(sel_name) > 0:
+            summary = {'model': [], 'train_features': [], 'hyperparams': [], "local_constant": np.mean(train_y.loc[sel_name])}#, 'all_rows': original_df}
+            pickle.dump(summary, open(model_path, 'wb'))
+            
+        print('Skip name. Only a few matches:', sum(sel_name))
         continue
     
     cvs_match_integers = list(set(match_ind_df[cvs_mask]))
@@ -596,16 +639,13 @@ for ind, name in enumerate(unique_names):
             
             # Set values that are not present in cv_X[column] to NaN
             cv_X.loc[~mask, column] = np.nan
-            
-    
-        
-        
-        
+
     mean_cv = np.mean(cv_y)
     
     subset_idx = train_data.index[sel_name]        # index of selected rows
     rows_to_update = subset_idx[vals_mask]         # further filtered rows
     train_data.loc[rows_to_update, 'local_const_predictions'] = mean_cv
+    original_data.loc[rows_to_update, 'local_const_predictions'] = mean_cv
     
     mean_val = np.mean(val_y)
     #train_error = np.mean(np.abs((cv_y - mean_cv)**2))
@@ -613,6 +653,7 @@ for ind, name in enumerate(unique_names):
     
     rows_to_update = subset_idx[cvs_mask]         # further filtered rows
     train_data.loc[rows_to_update, 'local_const_predictions'] = mean_val
+    original_data.loc[rows_to_update, 'local_const_predictions'] = mean_val
     
     #min_eval_fraction = 1/(len(unique_integers) * 0.80)#len(np.unique(cv_stratify))/cv_X.shape[0]
     #we need at least one match every season
@@ -631,6 +672,10 @@ for ind, name in enumerate(unique_names):
                         
             rows_to_update = subset_idx[s_ind]         # further filtered rows
             train_data.loc[rows_to_update, 'local_const_predictions'] = loo_points
+            original_data.loc[rows_to_update, 'local_const_predictions'] = loo_points
+            
+            summary = {'model': [], 'train_features': [], 'hyperparams': [], "local_constant": np.mean(train_y.loc[sel_name])}#, 'all_rows': original_df}
+            pickle.dump(summary, open(model_path, 'wb'))
         
         continue
     
@@ -648,6 +693,10 @@ for ind, name in enumerate(unique_names):
                             
                 rows_to_update = subset_idx[s_ind]         # further filtered rows
                 train_data.loc[rows_to_update, 'local_const_predictions'] = loo_points
+                original_data.loc[rows_to_update, 'local_const_predictions'] = loo_points
+                
+            summary = {'model': [], 'train_features': [], 'hyperparams': [], "local_constant": np.mean(train_y.loc[sel_name])}#, 'all_rows': original_df}
+            pickle.dump(summary, open(model_path, 'wb'))
                 
                 
             print('Skip name. Only a few matches:', sum(sel_name))
@@ -674,10 +723,6 @@ for ind, name in enumerate(unique_names):
     cv_X = cv_X[keep_cols]
     val_X = val_X[keep_cols]
     train_copy = train_copy[keep_cols]
-    
-    
-
-    
     
     # #include feature search in the hyperparams
     # check_features = ['transfers_in', 'transfers_out', 'minutes', 'ict_index', 'influence', 'threat', 'creativity', 'bps',
@@ -706,7 +751,7 @@ for ind, name in enumerate(unique_names):
             'grow_policy': hp.choice('grow_policy', [0, 1]), #1
             'max_leaves': hp.quniform('max_leaves', 0, 800, 1),
             'max_bin':  hp.qloguniform('max_bin', np.log(2), np.log(100), 1),
-            'temporal_window': hp.quniform('temporal_window', 1, 20, 1),
+            'temporal_window': hp.quniform('temporal_window', 1, temporal_window, 1),
         }
 
     for feature in check_features:
@@ -714,17 +759,24 @@ for ind, name in enumerate(unique_names):
         # and hp.quniform('n_estimators', 0, 2, 1) as the value
         space[feature] = hp.choice(feature, [True, False]), #111
         
-    if ind == 0:
-        trials = Trials() 
         
-    else:
-        if best_hyperparams['eval_fraction'] < min_eval_fraction:
-            best_hyperparams['eval_fraction'] = min_eval_fraction
+    if search_hyperparams:
         
-        trials = generate_trials_to_calculate([best_hyperparams])
-        
-    #trials = Trials() 
-    if update_hyperparams:
+        if ind == 0:
+            trials = Trials() 
+            
+        else:
+            if last_hyperparams:
+                if last_hyperparams['eval_fraction'] < min_eval_fraction:
+                    last_hyperparams['eval_fraction'] = min_eval_fraction
+                    
+                trials = generate_trials_to_calculate([last_hyperparams])
+                
+            else:
+                trials = Trials() 
+                print('had to generate new trials')
+            
+        #trials = Trials() 
         print('Search for hyperparameters')
 
         loss = np.inf
@@ -744,13 +796,23 @@ for ind, name in enumerate(unique_names):
             loss = trials.best_trial['result']['loss']
             tid = len(trials)
             
+            best_hyperparams["losses"] = trials.best_trial['result']['loss']
+            best_hyperparams["num_matches"] = sum(sel_name)
+                    
         for k in best_hyperparams.keys():
             if k in hyper_vals:
                 hyper_vals[k].append(best_hyperparams[k])
-        hyper_vals["losses"].append(trials.best_trial['result']['loss'])
-        hyper_vals["num_matches"].append(sum(sel_name))
     
-    print('Train')
+    
+    
+    if optimize_mode:
+        summary['tested_hyperparams'] = best_hyperparams
+        pickle.dump(summary, open(model_path, 'wb'))
+        continue
+        
+        
+        
+    print('Predict for hierarchy')
     
     pars = {
         'max_depth': int(best_hyperparams['max_depth']),
@@ -869,105 +931,111 @@ for ind, name in enumerate(unique_names):
         subset_idx = train_data.index[sel_name]        # index of selected rows
         rows_to_update = subset_idx[mask2]   
         
+        train_data.loc[rows_to_update, 'local_predictions'] = val_pred
         original_data.loc[rows_to_update, 'local_predictions'] = val_pred
         
-
         #print(val_pred)        
         print('done', random_error-val_error)
-        
-
-     
+    
+    
+    player_predictions = train_data[sel_name]
+    
     #store the model for the predictions...
     #for the players who are not part of current season we don't need the models...
     #might want to skip for first round(some players might return)
-    if False:
-    #if not current_season in np.unique(train_copy.season):
-            summary = {'model': [], 'train_features': [], 'hyperparams': best_hyperparams}#, 'all_rows': original_df}
-            
-            #pickle.dump(summary, open(model_path, 'wb'))
-    else:
-            
+        
+    #if not active players
+    if not loading_fail and not name in names.values:
+        summary = {'model': [], 'train_features': [], 'hyperparams': best_hyperparams, "local_constant": [], "predictions": player_predictions}#, 'all_rows': original_df}
+        pickle.dump(summary, open(model_path, 'wb'))
+        continue    
+    
+    #skip if not new hyperparams or data has not changed
+    if search_hyperparams or not sum(sel_name) == num_matches_train:
+        
+        print('Train for predictions', name, sum(sel_name))
+
         # Get the 80% of the first matches every season...
-            X1 = train_copy.reset_index(drop=True)
-            
-            #remove weaks that we don't need.
-            # Define the threshold
-            threshold = int(best_hyperparams['temporal_window'])
-            
-            # Filter the columns based on the defined function
-            columns_to_keep = [col for col in X1.columns if should_keep_column(col, threshold)]
-            objective_X = X1[columns_to_keep]      
-              
-            #remove features
-            for feat in check_features:
-                if feat in space.keys():
-                    #if remove
-                    if not space[feat]:     
-                        columns_to_keep = []
-                        for col in objective_X.columns:
-                            if col == feat: # and col in do_remove_features:
-                                continue
-                            #keep if it foes not have a number in front or first is not a digit (i.e. the fixed features)
-                            if (not feat == re.sub(r'\d+', '', col) or not col[0].isdigit()):
-                                columns_to_keep.append(col)
-                            
-                        objective_X = objective_X[columns_to_keep]
+        X1 = train_copy.reset_index(drop=True)
+        
+        #remove weaks that we don't need.
+        # Define the threshold
+        threshold = int(best_hyperparams['temporal_window'])
+        
+        # Filter the columns based on the defined function
+        columns_to_keep = [col for col in X1.columns if should_keep_column(col, threshold)]
+        objective_X = X1[columns_to_keep]      
+          
+        #remove features
+        for feat in check_features:
+            if feat in space.keys():
+                #if remove
+                if not space[feat]:     
+                    columns_to_keep = []
+                    for col in objective_X.columns:
+                        if col == feat: # and col in do_remove_features:
+                            continue
+                        #keep if it foes not have a number in front or first is not a digit (i.e. the fixed features)
+                        if (not feat == re.sub(r'\d+', '', col) or not col[0].isdigit()):
+                            columns_to_keep.append(col)
                         
-            # Get the 80% of the first matches every season...
-            objective_copy = objective_X.copy()
-            objective_copy = objective_copy.reset_index(drop=True)
-            objective_copy['match_ind'] = pd.Series(match_ind[sel_name])
+                    objective_X = objective_X[columns_to_keep]
+                    
+        # Get the 80% of the first matches every season...
+        objective_copy = objective_X.copy()
+        objective_copy = objective_copy.reset_index(drop=True)
+        objective_copy['match_ind'] = pd.Series(match_ind[sel_name])
+    
         
+        # groupby seasons and aggregate into a dictionary: season -> set(of chosen match_inds)
+        season_selection = (objective_copy.groupby('season', observed=False)['match_ind']
+                              .agg(lambda s: first_Xpct_unique(s.tolist(), 1-best_hyperparams['eval_fraction']))
+                              .to_dict())
+        
+        # If you want a single flat list of all chosen match_inds (unique across seasons or duplicates kept):
+        # option 1: Unique across all seasons:
+        fit_sample = list(set().union(*season_selection.values()))
             
-            # groupby seasons and aggregate into a dictionary: season -> set(of chosen match_inds)
-            season_selection = (objective_copy.groupby('season', observed=False)['match_ind']
-                                  .agg(lambda s: first_Xpct_unique(s.tolist(), 1-best_hyperparams['eval_fraction']))
-                                  .to_dict())
-            
-            # If you want a single flat list of all chosen match_inds (unique across seasons or duplicates kept):
-            # option 1: Unique across all seasons:
-            fit_sample = list(set().union(*season_selection.values()))
+        fits_mask =  pd.Series(match_ind_df).isin(fit_sample)  # Mask for cross-validation sample
+        evals_mask = ~fits_mask  # Mask for validation, simply the inverse of cvs_mask 
+        
+        fit_X = objective_X.iloc[fits_mask.values].copy()
+        eval_X =  objective_X.loc[evals_mask.values].copy()
+        fit_y =  train_y[sel_name].loc[fits_mask.values].copy()
+        eval_y = train_y[sel_name].loc[evals_mask.values].copy()
+    
+        #make sure all categories in val_x is present in cv_x
+        for column in eval_X.columns:
+            if isinstance(eval_X[column].dtype, pd.CategoricalDtype):
+                # Get the values in the current column of val_X
+                val_values = eval_X[column]
                 
-            fits_mask =  pd.Series(match_ind_df).isin(fit_sample)  # Mask for cross-validation sample
-            evals_mask = ~fits_mask  # Mask for validation, simply the inverse of cvs_mask 
-            
-            fit_X = objective_X.iloc[fits_mask.values].copy()
-            eval_X =  objective_X.loc[evals_mask.values].copy()
-            fit_y =  train_y[sel_name].loc[fits_mask.values].copy()
-            eval_y = train_y[sel_name].loc[evals_mask.values].copy()
+                # Check which values are present in the corresponding column of cv_X
+                mask = val_values.isin(fit_X[column])
+                
+                # Set values that are not present in cv_X[column] to NaN
+                eval_X.loc[~mask, column] = np.nan
         
-            #make sure all categories in val_x is present in cv_x
-            for column in eval_X.columns:
-                if isinstance(eval_X[column].dtype, pd.CategoricalDtype):
-                    # Get the values in the current column of val_X
-                    val_values = eval_X[column]
-                    
-                    # Check which values are present in the corresponding column of cv_X
-                    mask = val_values.isin(fit_X[column])
-                    
-                    # Set values that are not present in cv_X[column] to NaN
-                    eval_X.loc[~mask, column] = np.nan
-            
-            dfit = xgb.DMatrix(data=fit_X, label=fit_y, enable_categorical=True)
-            deval = xgb.DMatrix(data=eval_X, label=eval_y, enable_categorical=True)
+        dfit = xgb.DMatrix(data=fit_X, label=fit_y, enable_categorical=True)
+        deval = xgb.DMatrix(data=eval_X, label=eval_y, enable_categorical=True)
+    
+        evals = [(dfit, 'train'), (deval, 'eval')]
         
-            evals = [(dfit, 'train'), (deval, 'eval')]
-            
-            model = xgb.train(
-            params=pars,
-            num_boost_round=int(best_hyperparams['n_estimators']),
-            early_stopping_rounds= int(best_hyperparams['early_stopping_rounds']),
-            dtrain=dfit,
-            evals=evals,
-            custom_metric=custom_metric,
-            obj=custom_objective,
-            verbose_eval=False  # Set to True if you want to see detailed logging
-                )
-            
-            summary = {'model': model, 'train_features': objective_X.columns, 'hyperparams': best_hyperparams, "local_constant": np.mean(train_y.loc[sel_name])}#, 'all_rows': original_df}
+        model = xgb.train(
+        params=pars,
+        num_boost_round=int(best_hyperparams['n_estimators']),
+        early_stopping_rounds= int(best_hyperparams['early_stopping_rounds']),
+        dtrain=dfit,
+        evals=evals,
+        custom_metric=custom_metric,
+        obj=custom_objective,
+        verbose_eval=False  # Set to True if you want to see detailed logging
+            )
         
-            pickle.dump(summary, open(model_path, 'wb'))
-            
+        summary = {'model': model, 'train_features': objective_X.columns, 'hyperparams': best_hyperparams, "local_constant": np.mean(train_y.loc[sel_name]), "predictions": player_predictions}#, 'all_rows': original_df}
+    
+        pickle.dump(summary, open(model_path, 'wb'))
+    
     
         
 
@@ -983,5 +1051,7 @@ local_error = np.nanmean((train_y - train_data['local_predictions'])**2)
 print('Local error:', local_error)
         
 train_data.to_pickle(r'\\platon.uio.no\med-imb-u1\jorgels\\fantasy\\model_data.pkl')  # Set index=False to not include row indices
+
+
 
 
