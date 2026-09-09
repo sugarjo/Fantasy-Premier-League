@@ -36,13 +36,11 @@ try:
 except:
     main_directory = r'C:\Users\jorgels\Git\Fantasy-Premier-League'
 
-optimize_mode = False
-#trains all models on the current data
-update_models = True
-#searches for hyperparam
-update_hyperparams = False
-#this will also include the players with frozen data
-exclude_frozen_players = True
+#optimize everything. Typically used when hyperparams ranges change. Does not predict new points
+optimize_mode = True
+
+#this will exclude the players with frozen data
+exclude_frozen_players = False
 
 current_season = '2026-27'
 temporal_window = 21
@@ -126,11 +124,10 @@ def should_keep_column(column_name, threshold):
 def objective_xgboost(space):
     
     
+    #print(space)
     
-   #print(space)
-    
-    
-    space["grow_policy"] = grow_policy[space["grow_policy"]]
+    if space["grow_policy"] == 0 or space["grow_policy"] == 1:
+        space["grow_policy"] = grow_policy[space["grow_policy"]]
     
     pars = {
         'max_depth': int(space['max_depth']),
@@ -162,6 +159,54 @@ def objective_xgboost(space):
     objective_X = cv_X[columns_to_keep]    
     HO_X = val_X[columns_to_keep].copy()
       
+    # #remove features that are listed in space
+    # for feat in check_features:
+    #     if feat in space.keys():
+    #         #if remove
+    #         if not space[feat]:     
+    #             columns_to_keep = []
+    #             for col in objective_X.columns:
+    #                 if col == feat: # and col in do_remove_features:
+    #                     continue
+    #                 #keep if it foes not have a number in front or first is not a digit (i.e. the fixed features)
+    #                 if (not feat == re.sub(r'\d+', '', col) or not col[0].isdigit()):
+    #                     columns_to_keep.append(col)
+                    
+    #             objective_X = objective_X[columns_to_keep]
+    #             HO_X = HO_X[columns_to_keep]
+                
+    # #remove features that are unknown
+    # columns_to_keep = []
+    # for feat in objective_X.keys():
+    #     keep = True
+    #     for uk in unknown_features:
+    #         if feat == uk:
+    #             keep = False
+        
+    #     if keep:
+    #         columns_to_keep.append(feat)
+            
+    # objective_X = objective_X[columns_to_keep]
+    # HO_X = HO_X[columns_to_keep]
+                
+    # Get the 80% of the first matches every season...
+    objective_copy = objective_X.copy()
+    objective_copy = objective_copy.reset_index(drop=True)
+    objective_copy['match_ind'] = pd.Series(match_ind[sel_name][cvs_mask])
+
+    
+    # groupby seasons and aggregate into a dictionary: season -> set(of chosen match_inds)
+    season_selection = (objective_copy.groupby('season', observed=False)['match_ind']
+                          .agg(lambda s: first_Xpct_unique(s.tolist(), 1-space['eval_fraction']))
+                          .to_dict())
+    
+    # If you want a single flat list of all chosen match_inds (unique across seasons or duplicates kept):
+    # option 1: Unique across all seasons:
+    fit_sample = list(set().union(*season_selection.values()))
+        
+    fits_mask =  pd.Series(match_ind_df[cvs_mask]).isin(fit_sample)  # Mask for cross-validation sample
+    evals_mask = ~fits_mask  # Mask for validation, simply the inverse of cvs_mask 
+    
     #remove features that are listed in space
     for feat in check_features:
         if feat in space.keys():
@@ -191,24 +236,6 @@ def objective_xgboost(space):
             
     objective_X = objective_X[columns_to_keep]
     HO_X = HO_X[columns_to_keep]
-                
-    # Get the 80% of the first matches every season...
-    objective_copy = objective_X.copy()
-    objective_copy = objective_copy.reset_index(drop=True)
-    objective_copy['match_ind'] = pd.Series(match_ind[sel_name][cvs_mask])
-
-    
-    # groupby seasons and aggregate into a dictionary: season -> set(of chosen match_inds)
-    season_selection = (objective_copy.groupby('season', observed=False)['match_ind']
-                          .agg(lambda s: first_Xpct_unique(s.tolist(), 1-space['eval_fraction']))
-                          .to_dict())
-    
-    # If you want a single flat list of all chosen match_inds (unique across seasons or duplicates kept):
-    # option 1: Unique across all seasons:
-    fit_sample = list(set().union(*season_selection.values()))
-        
-    fits_mask =  pd.Series(match_ind_df[cvs_mask]).isin(fit_sample)  # Mask for cross-validation sample
-    evals_mask = ~fits_mask  # Mask for validation, simply the inverse of cvs_mask 
     
     fit_X = objective_X.iloc[fits_mask.values].copy()
     eval_X =  objective_X.loc[evals_mask.values].copy()
@@ -289,6 +316,54 @@ def objective_xgboost_custom(space, cv_X, cv_y, val_X, val_y, cvs_mask):
     objective_X = cv_X[columns_to_keep]    
     HO_X = val_X[columns_to_keep].copy()
       
+    # #remove features that are listed in space
+    # for feat in check_features:
+    #     if feat in space.keys():
+    #         #if remove
+    #         if not space[feat]:     
+    #             columns_to_keep = []
+    #             for col in objective_X.columns:
+    #                 if col == feat: # and col in do_remove_features:
+    #                     continue
+    #                 #keep if it foes not have a number in front or first is not a digit (i.e. the fixed features)
+    #                 if (not feat == re.sub(r'\d+', '', col) or not col[0].isdigit()):
+    #                     columns_to_keep.append(col)
+                    
+    #             objective_X = objective_X[columns_to_keep]
+    #             HO_X = HO_X[columns_to_keep]
+                
+    # #remove features that are unknown
+    # columns_to_keep = []
+    # for feat in objective_X.keys():
+    #     keep = True
+    #     for uk in unknown_features:
+    #         if feat == uk:
+    #             keep = False
+        
+    #     if keep:
+    #         columns_to_keep.append(feat)
+            
+    # objective_X = objective_X[columns_to_keep]
+    # HO_X = HO_X[columns_to_keep]
+                
+    # Get the 80% of the first matches every season...
+    objective_copy = objective_X.copy()
+    objective_copy = objective_copy.reset_index(drop=True)
+    objective_copy['match_ind'] = pd.Series(match_ind[sel_name][cvs_mask])
+
+    
+    # groupby seasons and aggregate into a dictionary: season -> set(of chosen match_inds)
+    season_selection = (objective_copy.groupby('season', observed=False)['match_ind']
+                          .agg(lambda s: first_Xpct_unique(s.tolist(), 1-space['eval_fraction']))
+                          .to_dict())
+    
+    # If you want a single flat list of all chosen match_inds (unique across seasons or duplicates kept):
+    # option 1: Unique across all seasons:
+    fit_sample = list(set().union(*season_selection.values()))
+        
+    fits_mask =  pd.Series(match_ind_df[cvs_mask]).isin(fit_sample)  # Mask for cross-validation sample
+    evals_mask = ~fits_mask  # Mask for validation, simply the inverse of cvs_mask 
+    
     #remove features that are listed in space
     for feat in check_features:
         if feat in space.keys():
@@ -318,24 +393,8 @@ def objective_xgboost_custom(space, cv_X, cv_y, val_X, val_y, cvs_mask):
             
     objective_X = objective_X[columns_to_keep]
     HO_X = HO_X[columns_to_keep]
-                
-    # Get the 80% of the first matches every season...
-    objective_copy = objective_X.copy()
-    objective_copy = objective_copy.reset_index(drop=True)
-    objective_copy['match_ind'] = pd.Series(match_ind[sel_name][cvs_mask])
-
     
-    # groupby seasons and aggregate into a dictionary: season -> set(of chosen match_inds)
-    season_selection = (objective_copy.groupby('season', observed=False)['match_ind']
-                          .agg(lambda s: first_Xpct_unique(s.tolist(), 1-space['eval_fraction']))
-                          .to_dict())
     
-    # If you want a single flat list of all chosen match_inds (unique across seasons or duplicates kept):
-    # option 1: Unique across all seasons:
-    fit_sample = list(set().union(*season_selection.values()))
-        
-    fits_mask =  pd.Series(match_ind_df[cvs_mask]).isin(fit_sample)  # Mask for cross-validation sample
-    evals_mask = ~fits_mask  # Mask for validation, simply the inverse of cvs_mask 
     
     fit_X = objective_X.iloc[fits_mask.values].copy()
     eval_X =  objective_X.loc[evals_mask.values].copy()
@@ -505,27 +564,106 @@ original_data['local_const_predictions'] = np.nan
 trials = Trials() 
 
 #train local models
-for ind, name in enumerate(unique_names):
+for ind, name in enumerate(unique_names[::-1]):
     
     if ind > 0:
         if best_hyperparams:
             last_hyperparams = best_hyperparams.copy()
     
-    print(ind, '/', len(unique_names), name)
+    
     
     model_path = rf"\\platon.uio.no\med-imb-u1\jorgels\fantasy\local_models\{name}.sav"
     
     num_matches_train = -1
     sel_name = train_X.name == name
     
-    search_hyperparams = True
+    print(ind, '/', len(unique_names), name, sum(sel_name))
+    
+    if optimize_mode:
+        search_hyperparams = True
+    else:
+        search_hyperparams = False
+    
+    best_hyperparams = []
+    old_hyperparams = []
+    new_hyperparams = []
+    tested_hyperparams = []
     
     if os.path.isfile(model_path):
         try:
+            print('Loading model')
             with open(model_path, "rb") as f:
                 summary = pickle.load(f)
+                
+            loading_fail = False
             
-            best_hyperparams = summary["hyperparams"]
+            
+            # new_hyperparams = {}
+            # for field, val in summary["tested_hyperparams"].items():
+                
+            #     if val == 0 or val==1:
+            #         new_hyperparams[field] = int(val)
+            #     else:
+            #         new_hyperparams[field] = val
+                    
+            # old_hyperparams = {}
+            # for field, val in summary["hyperparams"].items():
+                
+            #     if val == 0 or val==1:
+            #         old_hyperparams[field] = int(val)
+            #     else:
+            #         old_hyperparams[field] = val
+                
+            #only compare hyperparams if there are new data
+            #do not optimize if not more matches
+            try:
+                new_hyperparams = summary["tested_hyperparams"]
+                try:
+                    a = new_hyperparams["num_matches"]
+                except:
+                    new_hyperparams["num_matches"] = sum(sel_name)
+            except:
+                new_hyperparams = []
+
+
+            try:
+                old_hyperparams = summary["hyperparams"]
+                try:
+                    a = old_hyperparams["num_matches"]
+                except:
+                    old_hyperparams["num_matches"] = sum(sel_name)
+                    
+            except:
+                old_hyperparams = []
+
+            
+            #if we have both
+            if old_hyperparams and new_hyperparams:
+                if (old_hyperparams["num_matches"] == sum(sel_name)) and (new_hyperparams["num_matches"] == sum(sel_name)):
+                    print('No new data for old and new hyperparameters. Use new')
+                    old_hyperparams = []
+                    best_hyperparams = new_hyperparams
+                    tested_hyperparams = []
+                    
+                elif new_hyperparams["num_matches"] == sum(sel_name):
+                    print('No new data for new hyperparameters. Use old')
+                    new_hyperparams = []
+                    best_hyperparams = old_hyperparams
+                    tested_hyperparams = new_hyperparams
+            #if we have only old
+            elif old_hyperparams:
+                    new_hyperparams = []
+                    best_hyperparams = old_hyperparams
+                    tested_hyperparams = []
+            #if we have only new
+            else:
+                new_hyperparams = []
+                best_hyperparams = []
+                tested_hyperparams = []
+                search_hyperparams = True
+                    
+                    
+
             
             # #delete later:
             # try:
@@ -533,27 +671,20 @@ for ind, name in enumerate(unique_names):
             #     num_matches_train = summary["hyperparams"]["num_matches"]
             # except:
             #     num_matches_train = -1
-            num_matches_train = summary["hyperparams"]["num_matches"]
             
-            if summary['tested_hyperparams']:
-                A = GHGHD
-            
-            
-            
-            loading_fail = False
-            
-            if not optimize_mode and (not update_hyperparams or (exclude_frozen_players and sum(sel_name) == num_matches_train) or name not in names):
-                for k in best_hyperparams.keys():
-                    if k in hyper_vals:
-                        hyper_vals[k].append(best_hyperparams[k])
-                        
+            #if not optimizing or no new data (and these players shuld be exlcuded) and we have hyperparams
+            if best_hyperparams and (not optimize_mode or (exclude_frozen_players and ((sum(sel_name) == num_matches_train) or (name not in names)))):
+
+                print('Do not search')                        
                 search_hyperparams = False
             
         except:
             loading_fail = True
+            search_hyperparams = True
             
     else:
         loading_fail = True
+        search_hyperparams = True
         
         
         
@@ -785,7 +916,7 @@ for ind, name in enumerate(unique_names):
         while loss > 60 and tid < 200:
     
             #optmimize hyperparameters. use all training data
-            best_hyperparams = fmin(fn = objective_xgboost,
+            new_hyperparams = fmin(fn = objective_xgboost,
                             space = space,
                             algo = atpe.suggest,
                             trials = trials,
@@ -796,24 +927,53 @@ for ind, name in enumerate(unique_names):
             loss = trials.best_trial['result']['loss']
             tid = len(trials)
             
-            best_hyperparams["losses"] = trials.best_trial['result']['loss']
-            best_hyperparams["num_matches"] = sum(sel_name)
+            new_hyperparams["losses"] = trials.best_trial['result']['loss']
+            new_hyperparams["num_matches"] = sum(sel_name)
                     
-        for k in best_hyperparams.keys():
-            if k in hyper_vals:
-                hyper_vals[k].append(best_hyperparams[k])
+            
+            best_hyperparams = old_hyperparams
     
+    else:
+        new_loss = np.inf
+        old_loss = np.inf
+        
+        if new_hyperparams and old_hyperparams:
+            new_loss = objective_xgboost(new_hyperparams)["loss"]
+            old_loss = objective_xgboost(old_hyperparams)["loss"]      
+        elif old_hyperparams:
+            old_loss = 0
+        elif new_hyperparams:
+            new_loss = 0
+            
+            
+        if new_loss < old_loss:
+            best_hyperparams = new_hyperparams
+        else:
+            best_hyperparams = old_hyperparams
+            
     
+    for k in best_hyperparams.keys():
+        if k in hyper_vals:
+            hyper_vals[k].append(best_hyperparams[k])
     
+    #do not continue if don't have new data
     if optimize_mode:
-        summary['tested_hyperparams'] = best_hyperparams
+        summary['tested_hyperparams'] = new_hyperparams
         pickle.dump(summary, open(model_path, 'wb'))
         continue
-        
+    else:
+        tested_hyperparams = new_hyperparams
+    
+    
+
         
         
     print('Predict for hierarchy')
     
+    if best_hyperparams['grow_policy'] == 0 or best_hyperparams['grow_policy'] == 1:
+        best_hyperparams['grow_policy'] = grow_policy[best_hyperparams['grow_policy']]
+        
+        
     pars = {
         'max_depth': int(best_hyperparams['max_depth']),
         'min_split_loss': best_hyperparams['min_split_loss'],
@@ -826,7 +986,7 @@ for ind, name in enumerate(unique_names):
         'colsample_bylevel': best_hyperparams['colsample_bylevel'],
         'colsample_bynode': best_hyperparams['colsample_bynode'],
         'max_delta_step': best_hyperparams['max_delta_step'],
-        'grow_policy': grow_policy[best_hyperparams['grow_policy']],
+        'grow_policy': best_hyperparams['grow_policy'],
         'max_leaves': int(best_hyperparams['max_leaves']),
         'tree_method': 'hist',
         'max_bin':  int(best_hyperparams['max_bin']),
@@ -951,7 +1111,7 @@ for ind, name in enumerate(unique_names):
         continue    
     
     #skip if not new hyperparams or data has not changed
-    if search_hyperparams or not sum(sel_name) == num_matches_train:
+    if search_hyperparams or not sum(sel_name) == best_hyperparams["num_matches"]:
         
         print('Train for predictions', name, sum(sel_name))
 
@@ -1032,7 +1192,7 @@ for ind, name in enumerate(unique_names):
         verbose_eval=False  # Set to True if you want to see detailed logging
             )
         
-        summary = {'model': model, 'train_features': objective_X.columns, 'hyperparams': best_hyperparams, "local_constant": np.mean(train_y.loc[sel_name]), "predictions": player_predictions}#, 'all_rows': original_df}
+        summary = {'model': model, 'train_features': objective_X.columns, 'hyperparams': best_hyperparams, 'tested_hyperparams': tested_hyperparams, "local_constant": np.mean(train_y.loc[sel_name]), "predictions": player_predictions}#, 'all_rows': original_df}
     
         pickle.dump(summary, open(model_path, 'wb'))
     

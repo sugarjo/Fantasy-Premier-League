@@ -28,7 +28,7 @@ from difflib import SequenceMatcher
 
 directories = r'C:\Users\jorgels\Github\Fantasy-Premier-League\data'
 
-update_hyperparams = False
+update_hyperparams = True
 
 try:
     folders = os.listdir(directories)

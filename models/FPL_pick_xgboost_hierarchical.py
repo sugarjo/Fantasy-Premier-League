@@ -45,16 +45,16 @@ running_minutes_threshold = -1
        # 'WHU', 'WOL'
 exclude_team = []
 
-exclude_players = []
+exclude_players = ['Wilson', 'Mitchell', 'Wirtz']
 include_players = []
 
 do_not_exclude_players = [] 
 
 
-do_not_transfer_out = []
+do_not_transfer_out = ['Gomez', 'Szoboszlai', 'Konsa', 'Rogers', 'Isak', 'Verbruggen']
 rounds_to_value = 2
 #transfer to evaluate per week
-trans_per_week = 3
+trans_per_week = 2
 
 jump_rounds = 0
 #if you also want to evaluate players on the bench. in case of uncertain starters.

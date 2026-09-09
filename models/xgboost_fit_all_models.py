@@ -26,7 +26,7 @@ from hyperopt.fmin import generate_trials_to_calculate
 
 from difflib import SequenceMatcher
 
-update_hyperparams = False
+update_hyperparams = True
 
 directories = r'C:\Users\jorgels\Github\Fantasy-Premier-League\data'
 model_path = r"\\platon.uio.no\med-imb-u1\jorgels\model.sav"
