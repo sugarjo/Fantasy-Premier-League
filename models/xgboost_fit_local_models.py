@@ -37,13 +37,13 @@ except:
     main_directory = r'C:\Users\jorgels\Git\Fantasy-Premier-League'
 
 #optimize everything. Typically used when hyperparams ranges change. Does not predict new points
-optimize_mode = True
+optimize_mode = False
 
 #this will exclude the players with frozen data
 exclude_frozen_players = False
 
 current_season = '2026-27'
-temporal_window = 21
+max_temporal_window = 12
 
 
 def sequence_matcher_similarity(s1, s2):
@@ -469,12 +469,6 @@ unknown_features = ['minutes', 'ict_index', 'total_points', 'own_team_points', '
 train_y = train_data['total_points'].astype(int)
 train_X = train_data.drop(columns=temporal_features)          
 
-# Identify categorical columns
-categorical_columns = train_X.select_dtypes(['category']).columns
-
-# Reset categories for each categorical column
-for column in categorical_columns:
-    train_X[column] = train_X[column].cat.remove_unused_categories()
 
 #get one index for each match
 match_ind = pd.factorize(
@@ -513,12 +507,7 @@ for ind in unique_integers:
             elif len(matches) > 11:
                 print(ind,len(matches), kick_off, team_a, team_b)
                 
-train_X = train_X.drop(['kickoff_time'], axis=1)
-
-# Reset categories for each categorical column
-for column in categorical_columns:
-    train_X[column] = train_X[column].cat.remove_unused_categories()
-    
+train_X = train_X.drop(['kickoff_time'], axis=1)  
 
 # define a helper that returns the first 80% (by first-appearance order) of unique match_ind
 def first_Xpct_unique(seq, X):
@@ -560,8 +549,9 @@ train_data['local_const_predictions'] = np.nan
 original_data['local_predictions'] = np.nan
 original_data['local_const_predictions'] = np.nan
 
+last_hyperparams = []
 
-trials = Trials() 
+unlikely_values = 0
 
 #train local models
 for ind, name in enumerate(unique_names[::-1]):
@@ -652,9 +642,9 @@ for ind, name in enumerate(unique_names[::-1]):
                     tested_hyperparams = new_hyperparams
             #if we have only old
             elif old_hyperparams:
-                    new_hyperparams = []
-                    best_hyperparams = old_hyperparams
-                    tested_hyperparams = []
+                new_hyperparams = []
+                best_hyperparams = old_hyperparams
+                tested_hyperparams = []
             #if we have only new
             else:
                 new_hyperparams = []
@@ -685,13 +675,24 @@ for ind, name in enumerate(unique_names[::-1]):
     else:
         loading_fail = True
         search_hyperparams = True
-        
-        
-        
-        
                 
     # Get the 80% of the first matches every season...
     train_copy = train_X.loc[sel_name].copy()
+    
+    # Identify categorical columns
+    categorical_columns = train_copy.select_dtypes(['category']).columns
+
+    # Reset categories for each categorical column
+    for column in categorical_columns:
+        train_copy[column] = train_copy[column].cat.remove_unused_categories()
+        
+    empty_category_cols = [col for col in train_copy.select_dtypes(include=["category"]).columns
+       if len(train_copy[col].cat.categories) == 0]
+    
+    train_copy = train_copy.drop(columns=empty_category_cols)
+        
+        
+        
     train_copy = train_copy.reset_index(drop=True)
     train_copy['match_ind'] = pd.Series(match_ind[sel_name])
     match_ind_df = pd.Series(match_ind[sel_name]) 
@@ -814,7 +815,8 @@ for ind, name in enumerate(unique_names[::-1]):
     
         min_eval_fraction = 1/min([max(matches_season1), max(matches_season2)])
         
-        if max(matches_season1) <= 1 or max(matches_season2) <= 1:
+        #at least four matches to make a model...
+        if max(matches_season1) <= 3 or max(matches_season2) <= 3:
             
             #run one leave out 
             subset_idx = train_data.index[sel_name]        # index of selected rows
@@ -863,25 +865,28 @@ for ind, name in enumerate(unique_names[::-1]):
     check_features = individual_features
     #do_remove_features= ['names', 'points_per_game', 'points_per_played_game', 'season']   
     
-
+    temporal_window = len(train_copy)
+    if temporal_window > max_temporal_window:
+        temporal_window = max_temporal_window
         
-    space={'max_depth': hp.qloguniform("max_depth", 1, np.log(100), 1), 
-            'min_split_loss': hp.loguniform('min_split_loss', 0, np.log(40)), #log?
+        
+    space={'max_depth': hp.qloguniform("max_depth", 1, np.log(90), 1), 
+            'min_split_loss': hp.loguniform('min_split_loss', 0, np.log(35)), #log?
             'reg_lambda' : hp.uniform('reg_lambda', 0, 550),
-            'reg_alpha': hp.uniform('reg_alpha', 0.01, 70),
-            'min_child_weight' : hp.uniform('min_child_weight', 0, 70),
-            'learning_rate': hp.loguniform('learning_rate', 0, np.log(7)),
+            'reg_alpha': hp.uniform('reg_alpha', 0.01, 30),
+            'min_child_weight' : hp.uniform('min_child_weight', 0, 35),
+            'learning_rate': hp.loguniform('learning_rate', 0, np.log(6)),
             'subsample': hp.uniform('subsample', 0.1, 1),
             'colsample_bytree': hp.uniform('colsample_bytree', 0.1, 1),
             'colsample_bylevel': hp.uniform('colsample_bylevel', 0.1, 1),
             'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
-            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 1, 800, 1),
+            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 1, 700, 1),
             'eval_fraction': hp.uniform('eval_fraction', min_eval_fraction, 0.51),
-            'n_estimators': hp.quniform('n_estimators', 2, 90000, 1),
-            'max_delta_step': hp.uniform('max_delta_step', 0, 3600),
+            'n_estimators': hp.quniform('n_estimators', 2, 175000, 1),
+            'max_delta_step': hp.uniform('max_delta_step', 0, 6500),
             'grow_policy': hp.choice('grow_policy', [0, 1]), #1
-            'max_leaves': hp.quniform('max_leaves', 0, 800, 1),
-            'max_bin':  hp.qloguniform('max_bin', np.log(2), np.log(100), 1),
+            'max_leaves': hp.quniform('max_leaves', 0, 1750, 1),
+            'max_bin':  hp.qloguniform('max_bin', np.log(2), np.log(60), 1),
             'temporal_window': hp.quniform('temporal_window', 1, temporal_window, 1),
         }
 
@@ -900,6 +905,12 @@ for ind, name in enumerate(unique_names[::-1]):
             if last_hyperparams:
                 if last_hyperparams['eval_fraction'] < min_eval_fraction:
                     last_hyperparams['eval_fraction'] = min_eval_fraction
+                last_hyperparams["num_matches"] = sum(sel_name)
+                
+                if last_hyperparams["grow_policy"] == 'lossguide':
+                    last_hyperparams["grow_policy"] = 1
+                elif last_hyperparams["grow_policy"] == 'depthwise':
+                    last_hyperparams["grow_policy"] = 0
                     
                 trials = generate_trials_to_calculate([last_hyperparams])
                 
@@ -911,7 +922,7 @@ for ind, name in enumerate(unique_names[::-1]):
         print('Search for hyperparameters')
 
         loss = np.inf
-        tid = 0
+        tid = len(trials)
         
         while loss > 60 and tid < 200:
     
@@ -930,8 +941,12 @@ for ind, name in enumerate(unique_names[::-1]):
             new_hyperparams["losses"] = trials.best_trial['result']['loss']
             new_hyperparams["num_matches"] = sum(sel_name)
                     
-            
-            best_hyperparams = old_hyperparams
+            if optimize_mode:
+                best_hyperparams = new_hyperparams
+            elif old_hyperparams:
+                best_hyperparams = old_hyperparams
+            else:
+                best_hyperparams = new_hyperparams
     
     else:
         new_loss = np.inf
@@ -939,7 +954,9 @@ for ind, name in enumerate(unique_names[::-1]):
         
         if new_hyperparams and old_hyperparams:
             new_loss = objective_xgboost(new_hyperparams)["loss"]
-            old_loss = objective_xgboost(old_hyperparams)["loss"]      
+            old_loss = objective_xgboost(old_hyperparams)["loss"]
+            print('Old', old_loss)
+            print('New', new_loss)
         elif old_hyperparams:
             old_loss = 0
         elif new_hyperparams:
@@ -948,14 +965,15 @@ for ind, name in enumerate(unique_names[::-1]):
             
         if new_loss < old_loss:
             best_hyperparams = new_hyperparams
+            print('Use new')
         else:
             best_hyperparams = old_hyperparams
-            
+            print('Use old')
     
     for k in best_hyperparams.keys():
         if k in hyper_vals:
             hyper_vals[k].append(best_hyperparams[k])
-    
+
     #do not continue if don't have new data
     if optimize_mode:
         summary['tested_hyperparams'] = new_hyperparams
@@ -992,7 +1010,7 @@ for ind, name in enumerate(unique_names[::-1]):
         'max_bin':  int(best_hyperparams['max_bin']),
         'disable_default_eval_metric': 1
         }
-        
+          
 
     #get cross-valiated local predictions
     for X1, y1, X2, y2, mask1, mask2 in zip((cv_X, val_X), (cv_y, val_y), (val_X, cv_X), (val_y, cv_y), (cvs_mask, vals_mask), (vals_mask, cvs_mask)):
@@ -1081,7 +1099,18 @@ for ind, name in enumerate(unique_names[::-1]):
         val_pred = model.predict(dval_objective)
         
         val_error = mean_squared_error(y2,  val_pred)
-        #print('done1', val_error)
+        
+        #remove values that are outside of the training range
+        upper_threshold = np.max(y1)
+        lower_threshold = np.min(y1)
+        
+        too_high = val_pred > upper_threshold
+        val_pred[too_high] = np.nan
+        too_low = val_pred < lower_threshold
+        val_pred[too_low] = np.nan
+        
+        unlikely_values += sum(too_high)
+        unlikely_values += sum(too_low)
         
         mean_y = np.mean(y1)
 
@@ -1192,7 +1221,22 @@ for ind, name in enumerate(unique_names[::-1]):
         verbose_eval=False  # Set to True if you want to see detailed logging
             )
         
-        summary = {'model': model, 'train_features': objective_X.columns, 'hyperparams': best_hyperparams, 'tested_hyperparams': tested_hyperparams, "local_constant": np.mean(train_y.loc[sel_name]), "predictions": player_predictions}#, 'all_rows': original_df}
+        
+        
+        training_metadata = {
+                "feature_names": objective_X.columns.tolist(),
+                "categorical_columns": {},
+            }
+            
+        for col in objective_X.columns:
+            if isinstance(objective_X[col].dtype, pd.CategoricalDtype):
+                training_metadata["categorical_columns"][col] = {
+                    "categories": objective_X[col].cat.categories.tolist(),
+                    "ordered": objective_X[col].cat.ordered,
+                    }
+                    
+        
+        summary = {'model': model, 'train_features': training_metadata, 'hyperparams': best_hyperparams, 'tested_hyperparams': tested_hyperparams, "local_constant": np.mean(train_y.loc[sel_name]), "predictions": player_predictions}#, 'all_rows': original_df}
     
         pickle.dump(summary, open(model_path, 'wb'))
     
@@ -1213,5 +1257,5 @@ print('Local error:', local_error)
 train_data.to_pickle(r'\\platon.uio.no\med-imb-u1\jorgels\\fantasy\\model_data.pkl')  # Set index=False to not include row indices
 
 
-
+print('Unlikely values set to nan:', unlikely_values, train_data.shape[0])
 

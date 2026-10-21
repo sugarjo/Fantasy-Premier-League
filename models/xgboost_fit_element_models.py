@@ -28,7 +28,8 @@ from difflib import SequenceMatcher
 
 directories = r'C:\Users\jorgels\Github\Fantasy-Premier-League\data'
 
-update_hyperparams = True
+update_hyperparams = False
+check_hyperparameters = True
 
 try:
     folders = os.listdir(directories)
@@ -387,16 +388,6 @@ unknown_features = ['minutes', 'ict_index', 'total_points', 'own_team_points', '
 
 train_y = train_data['total_points'].astype(int)
 train_X = train_data.drop(columns=temporal_features)
-                
-
-# Identify categorical columns
-categorical_columns = train_X.select_dtypes(['category']).columns
-
-# Reset categories for each categorical column
-for column in categorical_columns:
-    train_X[column] = train_X[column].cat.remove_unused_categories()
-
-
 
 #get one index for each match
 match_ind = pd.factorize(
@@ -437,10 +428,7 @@ for ind in unique_integers:
                 
 train_X = train_X.drop(['kickoff_time'], axis=1)
 
-# Reset categories for each categorical column
-for column in categorical_columns:
-    train_X[column] = train_X[column].cat.remove_unused_categories()
-    
+  
 
 # define a helper that returns the first 80% (by first-appearance order) of unique match_ind
 def first_Xpct_unique(seq, X):
@@ -458,7 +446,7 @@ def first_Xpct_unique(seq, X):
 train_data['element_predictions'] = np.nan
 original_data['element_predictions'] = np.nan
 
-trials = Trials() 
+unlikely_values = 0
 
 #train local models
 for pos in range(1,5):
@@ -470,6 +458,16 @@ for pos in range(1,5):
     
     # Get the 80% of the first matches every season...
     train_copy = train_X.loc[sel_name].copy()
+    
+    # Identify categorical columns
+    categorical_columns = train_copy.select_dtypes(['category']).columns
+
+    # Reset categories for each categorical column
+    for column in categorical_columns:
+        train_copy[column] = train_copy[column].cat.remove_unused_categories()
+        
+        
+        
     train_copy = train_copy.reset_index(drop=True)
     train_copy['match_ind'] = pd.Series(match_ind[sel_name])
     match_ind_df = pd.Series(match_ind[sel_name]) 
@@ -576,18 +574,18 @@ for pos in range(1,5):
     
     print('Old loss: ', old_loss)
     
-    space={ 'early_stopping_rounds': hp.quniform("early_stopping_rounds", 1, 4500, 1),
+    space={ 'early_stopping_rounds': hp.quniform("early_stopping_rounds", 1, 5500, 1),
             'eval_fraction': hp.uniform('eval_fraction', min_eval_fraction, 0.45),
-            'learning_rate': hp.loguniform('learning_rate', 0, np.log(7)),
+            'learning_rate': hp.loguniform('learning_rate', 0, np.log(5)),
             'max_bin':  hp.qloguniform('max_bin', np.log(2), np.log(175), 1),
-            'max_delta_step': hp.uniform('max_delta_step', 0, 8200),
+            'max_delta_step': hp.uniform('max_delta_step', 0, 9200),
             'max_depth': hp.qloguniform("max_depth", 1, np.log(900), 1), 
             'max_leaves': hp.quniform('max_leaves', 0, 3000, 1),
             'min_child_weight' : hp.uniform('min_child_weight', 0, 3000),
             'min_split_loss': hp.loguniform('min_split_loss', 0, np.log(200)), #log?
             'n_estimators': hp.quniform('n_estimators', 2, 65000, 1),
             'reg_alpha': hp.uniform('reg_alpha', 0.01, 1500),
-            'reg_lambda' : hp.uniform('reg_lambda', 0, 20000),            
+            'reg_lambda' : hp.uniform('reg_lambda', 0, 35000),            
             'subsample': hp.uniform('subsample', 0.1, 1),
             'colsample_bytree': hp.uniform('colsample_bytree', 0.1, 1),
             'colsample_bylevel': hp.uniform('colsample_bylevel', 0.1, 1),
@@ -620,15 +618,15 @@ for pos in range(1,5):
             new_hyperparams = fmin(fn = objective_xgboost,
                             space = space,
                             algo = atpe.suggest,
-                            trials = trials,
+                            trials = new_trials,
                             max_evals=99999999,
-                            early_stop_fn=no_progress_loss(500)
+                            early_stop_fn=no_progress_loss(750)
                             )
             
-            pickle.dump(trials, open(tested_hyperparam_path, "wb"))
+            pickle.dump(new_trials, open(tested_hyperparam_path, "wb"))
             
-            loss = trials.best_trial['result']['loss']
-            tid = len(trials)
+            loss = new_trials.best_trial['result']['loss']
+            tid = len(new_trials)
         
         
         for field, val in new_hyperparams.items():
@@ -656,7 +654,7 @@ for pos in range(1,5):
     print('New loss: ', new_loss)
 
 
-    if new_loss < old_loss:
+    if new_loss < old_loss and check_hyperparameters:
         #print('Element error: ', new_loss)
         
         print('Overwriting old loss')
@@ -709,8 +707,7 @@ for pos in range(1,5):
     random_error = []
     local_const_error = []
     local_error = []
-    element_error = []
-    
+    element_error = []   
     
     for X1, y1, X2, y2, mask1, mask2 in zip((cv_X, val_X), (cv_y, val_y), (val_X, cv_X), (val_y, cv_y), (cvs_mask, vals_mask), (vals_mask, cvs_mask)):
 
@@ -802,7 +799,17 @@ for pos in range(1,5):
         
 
         val_error = mean_squared_error(y2,  val_pred)
-        #print('done1', val_error)
+        
+        upper_threshold = np.max(y1)
+        lower_threshold = np.min(y1)
+        
+        too_high = val_pred > upper_threshold
+        val_pred[too_high] = np.nan
+        too_low = val_pred < lower_threshold
+        val_pred[too_low] = np.nan
+        
+        unlikely_values += sum(too_high)
+        unlikely_values += sum(too_low)
         
         mean_y = np.mean(y1)
 
@@ -907,9 +914,22 @@ for pos in range(1,5):
     xgb.plot_importance(model, importance_type='gain',
                     max_num_features=20, show_values=False)
     plt.show()
+    
+    
+    training_metadata = {
+            "feature_names": objective_X.columns.tolist(),
+            "categorical_columns": {},
+        }
+        
+    for col in objective_X.columns:
+        if isinstance(objective_X[col].dtype, pd.CategoricalDtype):
+            training_metadata["categorical_columns"][col] = {
+                "categories": objective_X[col].cat.categories.tolist(),
+                "ordered": objective_X[col].cat.ordered,
+                }
 
 
-    summary = {'model': model, 'train_features': objective_X.columns, 'hyperparameters': best_hyperparams}#, 'all_rows': original_df}
+    summary = {'model': model, 'train_features': training_metadata, 'hyperparameters': best_hyperparams}#, 'all_rows': original_df}
     
     model_path = r"\\platon.uio.no\med-imb-u1\jorgels\fantasy"  + f'\element_model_{pos}.sav'
     
@@ -918,3 +938,6 @@ for pos in range(1,5):
         
 if not update_hyperparams:
     train_data.to_pickle(r'\\platon.uio.no\med-imb-u1\jorgels\\fantasy\\model_data.pkl')  # Set index=False to not include row indices
+    
+    
+print('Unlikely values set to nan:', unlikely_values, train_data.shape[0])
