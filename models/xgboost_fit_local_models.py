@@ -37,7 +37,7 @@ except:
     main_directory = r'C:\Users\jorgels\Git\Fantasy-Premier-League'
 
 #optimize everything. Typically used when hyperparams ranges change. Does not predict new points
-optimize_mode = False
+optimize_mode = True
 
 #this will exclude the players with frozen data
 exclude_frozen_players = False
@@ -871,22 +871,22 @@ for ind, name in enumerate(unique_names[::-1]):
         
         
     space={'max_depth': hp.qloguniform("max_depth", 1, np.log(90), 1), 
-            'min_split_loss': hp.loguniform('min_split_loss', 0, np.log(35)), #log?
-            'reg_lambda' : hp.uniform('reg_lambda', 0, 550),
+            'min_split_loss': hp.loguniform('min_split_loss', 0, np.log(20)), #log?
+            'reg_lambda' : hp.uniform('reg_lambda', 0, 650),
             'reg_alpha': hp.uniform('reg_alpha', 0.01, 30),
-            'min_child_weight' : hp.uniform('min_child_weight', 0, 35),
-            'learning_rate': hp.loguniform('learning_rate', 0, np.log(6)),
+            'min_child_weight' : hp.uniform('min_child_weight', 0, 15),
+            'learning_rate': hp.loguniform('learning_rate', 0, np.log(5.5)),
             'subsample': hp.uniform('subsample', 0.1, 1),
             'colsample_bytree': hp.uniform('colsample_bytree', 0.1, 1),
             'colsample_bylevel': hp.uniform('colsample_bylevel', 0.1, 1),
             'colsample_bynode': hp.uniform('colsample_bynode', 0.1, 1),
-            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 1, 700, 1),
+            'early_stopping_rounds': hp.quniform("early_stopping_rounds", 1, 500, 1),
             'eval_fraction': hp.uniform('eval_fraction', min_eval_fraction, 0.51),
-            'n_estimators': hp.quniform('n_estimators', 2, 175000, 1),
-            'max_delta_step': hp.uniform('max_delta_step', 0, 6500),
+            'n_estimators': hp.quniform('n_estimators', 2, 300000, 1), #up
+            'max_delta_step': hp.uniform('max_delta_step', 0, 10500),
             'grow_policy': hp.choice('grow_policy', [0, 1]), #1
-            'max_leaves': hp.quniform('max_leaves', 0, 1750, 1),
-            'max_bin':  hp.qloguniform('max_bin', np.log(2), np.log(60), 1),
+            'max_leaves': hp.quniform('max_leaves', 0, 2500, 1), #up
+            'max_bin':  hp.qloguniform('max_bin', np.log(2), np.log(40), 1),
             'temporal_window': hp.quniform('temporal_window', 1, temporal_window, 1),
         }
 

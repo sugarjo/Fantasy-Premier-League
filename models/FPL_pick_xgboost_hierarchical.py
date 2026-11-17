@@ -19,11 +19,11 @@ my_players = [
     {'web_name': 'Rayan', 'selling_price': 63, 'element_type': 3},
     {'web_name': 'Palmer', 'selling_price': 97, 'element_type': 3},
     {'web_name': 'Dewsbury-Hall', 'selling_price': 66, 'element_type': 3},
-    {'web_name': 'Cunha', 'selling_price': 79, 'element_type': 3},
+    {'web_name': 'Tavernier', 'selling_price': 64, 'element_type': 3},
     {'web_name': 'Enciso', 'selling_price': 55, 'element_type': 3},
     
-    {'web_name': 'Evanilson', 'selling_price': 60, 'element_type': 4},
-    {'web_name': 'João Pedro', 'selling_price': 78, 'element_type': 4},
+    {'web_name': 'Evanilson', 'selling_price': 62, 'element_type': 4},
+    {'web_name': 'Isak', 'selling_price': 91, 'element_type': 4},
     {'web_name': 'Haaland', 'selling_price': 156, 'element_type': 4},
 ]
 
@@ -32,7 +32,7 @@ my_players = [
 
 
 
-bank = 16 #in 10ths of M
+bank = 20 #in 10ths of M
 free_transfers = 3
 save_transfers_for_later = 4 #transfers left at end of last round-1 (no need to put higher than 4)
 
@@ -63,6 +63,7 @@ jump_rounds = 0
 #if you also want to evaluate players on the bench. in case of uncertain starters.
 number_players_eval = 11
 
+free_hit_calc = True
 wildcard = False
 skip_free_hit_calc = False
 benchboost = [] #gws
@@ -90,7 +91,7 @@ manual_pred = 1
 #
 #afcon_players = ['Foster', 'Ouattara', 'Agbadou', 'M.Salah', 'Sarr', 'Doucouré', 'Ndіaye', 'Gueye', 'Iwobi', 'Bassey', 'Mbeumo', 'Mazraoui', 'Amad', 'Wissa', 'Aina', 'Boly', 'Sangaré', 'P.M.Sarr', 'Traoré', 'Diouf', 'Wan-Bissaka']
 afcon_players = []
-manual_blanks = {6: ['Foden']}
+manual_blanks = {6: ['Foden'], 9: ['Pedro Porro', 'Matheus N.', 'Isak']}
 
 #GW               
 manual_blank = {}#{34: {'BUR': ['MCI'], 'BHA': ['CHE'], 'ARS': ['NEW'], 'LIV': ['CRY']}}
@@ -1105,7 +1106,7 @@ while True:
                         
                         predicting_df["local_predictions"] = local_pred
                     except: 
-                        print('Predictions did not work. Probably has not played a 60 min match this year and therefore lack season category')
+                        #print('Predictions did not work. Probably has not played a 60 min match this year and therefore lack season category')
                         predicting_df["local_predictions"] = np.nan
                         predicting_df["local_const_predictions"] = player_model['local_constant']
                         
@@ -1136,7 +1137,7 @@ while True:
             selected_el = (element_pred > max(all_rows.element_predictions)) | (element_pred < min(all_rows.element_predictions))
             element_pred[selected_el] = np.nan
             
-            if sum(selected) > 0:
+            if sum(selected_el) > 0:
                 print(name, ':', sum(selected_el), 'unrealistic element predictions set to NaN')
             
             predicting_df["element_predictions"] = element_pred
@@ -1406,9 +1407,12 @@ while True:
             #force first to be true if wildcard
             if any(assistant_manager):
                 assistant_manager[0] = True
+                
+            benchboost_objective = [False for x in tripple_captain]
             
         else:
             gw_iteration = rounds_to_value
+            benchboost_objective = benchboost
     
         max_price = 0
         deduct_points = 0
@@ -1528,7 +1532,7 @@ while True:
                     gw_prediction = predictions[team, gw]
                     team_positions = slim_elements_df.loc[team, 'element_type'].values
     
-                    estimated_points = find_team_points(team_positions, gw_prediction, benchboost[gw], tripple_captain[gw])
+                    estimated_points = find_team_points(team_positions, gw_prediction, benchboost_objective[gw], tripple_captain[gw])
                     
                     captain_bonus = np.max(predictions[team, gw])
                     
@@ -1557,7 +1561,7 @@ while True:
                         gw_prediction = predictions[team]
                     team_positions = slim_elements_df.loc[team, 'element_type'].values
     
-                    estimated_points = find_team_points(team_positions, gw_prediction, benchboost[gws], tripple_captain[gws])
+                    estimated_points = find_team_points(team_positions, gw_prediction, benchboost_objective[gws], tripple_captain[gws])
     
                     team_points.append(estimated_points)
     
@@ -1847,7 +1851,7 @@ while True:
     #loop gws
     free_hit_points = []
     
-    if True: #unlimited_transfers:
+    if not free_hit_calc: #unlimited_transfers:
         for i in range(gw_iteration):
             free_hit_points.append(0)
     else:

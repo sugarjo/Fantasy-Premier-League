@@ -27,9 +27,9 @@ from hyperopt.fmin import generate_trials_to_calculate
 from difflib import SequenceMatcher
 
 #runs the update
-update_hyperparams = False
+update_hyperparams = True
 #retrain but does not check the updated hyperparams
-check_hyperparameters = True
+check_hyperparameters = False
 
 directories = r'C:\Users\jorgels\Github\Fantasy-Premier-League\data'
 model_path = r"\\platon.uio.no\med-imb-u1\jorgels\model.sav"
@@ -569,7 +569,7 @@ old_loss = loss['loss']
 
 print('Old loss: ', old_loss)
 
-space={'early_stopping_rounds': hp.quniform("early_stopping_rounds", 1, 3000, 1),
+space={'early_stopping_rounds': hp.quniform("early_stopping_rounds", 1, 4000, 1),
        'max_bin':  hp.qloguniform('max_bin', np.log(2), np.log(130), 1),
        'max_delta_step': hp.uniform('max_delta_step', 0, 2000),
        'max_depth': hp.qloguniform("max_depth", 1, np.log(300), 1),

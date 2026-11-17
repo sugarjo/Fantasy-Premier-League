@@ -28,8 +28,8 @@ from difflib import SequenceMatcher
 
 directories = r'C:\Users\jorgels\Github\Fantasy-Premier-League\data'
 
-update_hyperparams = False
-check_hyperparameters = True
+update_hyperparams = True
+check_hyperparameters = False
 
 try:
     folders = os.listdir(directories)
@@ -580,12 +580,12 @@ for pos in range(1,5):
             'max_bin':  hp.qloguniform('max_bin', np.log(2), np.log(175), 1),
             'max_delta_step': hp.uniform('max_delta_step', 0, 9200),
             'max_depth': hp.qloguniform("max_depth", 1, np.log(900), 1), 
-            'max_leaves': hp.quniform('max_leaves', 0, 3000, 1),
+            'max_leaves': hp.quniform('max_leaves', 0, 4000, 1),
             'min_child_weight' : hp.uniform('min_child_weight', 0, 3000),
             'min_split_loss': hp.loguniform('min_split_loss', 0, np.log(200)), #log?
             'n_estimators': hp.quniform('n_estimators', 2, 65000, 1),
             'reg_alpha': hp.uniform('reg_alpha', 0.01, 1500),
-            'reg_lambda' : hp.uniform('reg_lambda', 0, 35000),            
+            'reg_lambda' : hp.uniform('reg_lambda', 0, 50000),            
             'subsample': hp.uniform('subsample', 0.1, 1),
             'colsample_bytree': hp.uniform('colsample_bytree', 0.1, 1),
             'colsample_bylevel': hp.uniform('colsample_bylevel', 0.1, 1),
