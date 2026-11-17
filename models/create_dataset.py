@@ -114,11 +114,12 @@ if check_last_data:
                 filename = os.path.join(directories, f'{season}\players\{player_id[1].id}_{season}.json')
                 with open(filename , 'w') as json_file:
                     json.dump(player, json_file)
+                    
+                #only append when the download succeeded
+                players.append(player)
             except:
                 print('Error in download')
                 time.sleep(30)
-            
-            players.append(player) 
                 
         
     #download gw
@@ -368,7 +369,7 @@ for folder in folders:
                     if not (folder == '2016-17' or folder == '2017-18'):
                         #we need to get dfficulties in and string team!
                         if is_json_file:
-                            filename = directories + fr'\\{season}\fixtures\{gw_num}_{season}.json'
+                            filename = directories + fr'\\{folder}\fixtures\{gw_num}_{folder}.json'
                             with open(filename, 'r') as json_file:
                                 fixture_json = json.load(json_file)  # Load the data from the file
                             fixture_data_gw = pd.DataFrame(fixture_json)
@@ -413,10 +414,10 @@ for folder in folders:
                          
                         if folder in ['2016-17', '2017-18', '2018-19', '2019-20', '2020-21', '2021-22', '2022-23', '2023-24', '2024-25']:
                         
-                          add_points =  (gw.loc[defenders, 'defcon'] > 10) * 2
+                          add_points =  (gw.loc[defenders, 'defcon'] >= 10) * 2
                           gw.loc[defenders, 'total_points'] += add_points
                           
-                          add_points =  (gw.loc[attackers, 'defcon'] > 12) * 2
+                          add_points =  (gw.loc[attackers, 'defcon'] >= 12) * 2
                           gw.loc[attackers, 'total_points'] += add_points
                         
                     
@@ -747,26 +748,9 @@ for folder in folders:
         
                         df_gw.loc[selected_ind, 'string_opp_team'] = opp_team.copy() 
                         #df_gw.loc[selected_ind, 'string_team'] = own_team.copy() 
-    
-                    
-                    points_per_game =  player_df['total_points'].cumsum() / (player_df['round'])
-                    
-                    #points per played game
-                    result = np.zeros(len(player_df['total_points'])+1)  # initialize result array
-                    last_games = 0  # initialize last_vplayer_df['total_points']alue to 0
-                    last_point = 0
-    
-                    for i in range(len(player_df['total_points'])):
-    
-                        if player_df['minutes'].iloc[i] >= 60:
-                            last_point += player_df['total_points'].iloc[i]
-                            last_games += 1
-    
-                        if last_games > 0:
-                            result[i+1] = last_point/last_games
-    
-                    df_gw.loc[selected_ind, 'points_per_game'] = points_per_game.values.copy()
-                    df_gw.loc[selected_ind, 'points_per_played_game'] = result[:-1].copy()
+
+                    #points_per_game and points_per_played_game are calculated for the whole
+                    #dataset after all seasons are concatenated (see below)
         
                     
                     
@@ -798,6 +782,28 @@ for folder in folders:
                 season_dfs.append(season_df)
                 
 season_df = pd.concat(season_dfs)
+season_df = season_df.reset_index(drop=True)
+
+#turn to datetime
+season_df['kickoff_time'] = pd.to_datetime(season_df['kickoff_time'])
+
+#calculate points_per_game and points_per_played_game on all data.
+#when build_from_scratch is False, df_gw only contains the new gameweeks, so these
+#have to be calculated after the old and new data are concatenated
+season_df = season_df.sort_values(by='kickoff_time', kind='stable')
+player_groups = [season_df['season'], season_df['element']]
+
+#points per game: cumulative points (including this match) divided by round
+season_df['points_per_game'] = season_df['total_points'].groupby(player_groups).cumsum() / season_df['round']
+
+#points per played game: mean points in previous matches with at least 60 minutes. 0 if none
+played_60 = season_df['minutes'] >= 60
+points_60 = season_df['total_points'].where(played_60, 0)
+previous_points_60 = points_60.groupby(player_groups).cumsum() - points_60
+previous_games_60 = played_60.astype(int).groupby(player_groups).cumsum() - played_60.astype(int)
+season_df['points_per_played_game'] = (previous_points_60 / previous_games_60.where(previous_games_60 > 0)).fillna(0)
+
+season_df = season_df.sort_index()
 
 season_df.to_csv(season_filename, index=False)  # Set index=False to not include row indices
 

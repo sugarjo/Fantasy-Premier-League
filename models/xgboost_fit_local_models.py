@@ -20,7 +20,7 @@ from matplotlib import pyplot as plt
 import xgboost as xgb
 
 
-from hyperopt import STATUS_OK, Trials, fmin, hp, atpe, tpe
+from hyperopt import STATUS_OK, STATUS_FAIL, Trials, fmin, hp, atpe, tpe
 from hyperopt.early_stop import no_progress_loss
 from hyperopt.fmin import generate_trials_to_calculate
 
@@ -65,29 +65,6 @@ def clean_string(input_string):
     cleaned_string = re.sub(r'\d+', '', cleaned_string)
     return cleaned_string.strip()  # Optional: strip leading/trailing spaces
 
-def custom_metric(pred_y, dtrain):
-
-    # Targets
-    y = dtrain.get_label()
-
-    mse = mean_squared_error(y, pred_y)
-
-    return 'MSE60', mse
-
-def custom_objective(pred_y, dtrain):
-    #https://stackoverflow.com/questions/59683944/creating-a-custom-objective-function-in-for-xgboost-xgbregressor
-    
-    # Targets
-    y = dtrain.get_label()
-
-    errors = pred_y - y
-    #grad = 0.5 * errors
-    grad = 2 * errors
-    hess = np.zeros_like(pred_y) + 2
-    #hess = np.ones_like(pred_y)
-
-    return grad, hess
-
 
 def quantile_objective(pred_y, dtrain):
 
@@ -102,6 +79,28 @@ def quantile_objective(pred_y, dtrain):
     hess = np.zeros_like(pred_y) + 2
     
     return grad, hess
+
+
+
+def normalize_feature_flags(hyperparams, features):
+    """Make the feature on/off flags of stored hyperparameters consistent.
+
+    Features are switched with hp.choice(feature, [False, True]). hyperopt stores
+    the index of the choice, so with this order the index (0/1) has the same
+    truth value as the sampled value (False/True).
+
+    Hyperparameters found before this fix ('feature_flags_v2' missing) were
+    searched without removing any features (the flags had no effect), so for those
+    all features are kept."""
+    if not hyperparams:
+        return hyperparams
+
+    if 'feature_flags_v2' not in hyperparams:
+        for feature in features:
+            hyperparams[feature] = 1
+        hyperparams['feature_flags_v2'] = 0
+
+    return hyperparams
 
 
 # Define a function to check if the column name meets the criteria
@@ -145,7 +144,8 @@ def objective_xgboost(space):
         'max_leaves': int(space['max_leaves']),
         'tree_method': 'hist',
         'max_bin':  int(space['max_bin']),
-        'disable_default_eval_metric': 1
+        'objective': 'reg:squarederror',
+        'eval_metric': 'rmse'
         }
     
     #remove weaks that we don't need.
@@ -237,6 +237,10 @@ def objective_xgboost(space):
     objective_X = objective_X[columns_to_keep]
     HO_X = HO_X[columns_to_keep]
     
+    #all features switched off. not possible to fit a model
+    if objective_X.shape[1] == 0:
+        return {'loss': np.inf, 'status': STATUS_FAIL}
+    
     fit_X = objective_X.iloc[fits_mask.values].copy()
     eval_X =  objective_X.loc[evals_mask.values].copy()
     fit_y =  cv_y.loc[fits_mask.values].copy()
@@ -256,8 +260,6 @@ def objective_xgboost(space):
     early_stopping_rounds= int(space['early_stopping_rounds']),
     dtrain=dfit,
     evals=evals,
-    custom_metric=custom_metric,
-    obj=custom_objective,
     verbose_eval=False  # Set to True if you want to see detailed logging
         )
     
@@ -304,7 +306,8 @@ def objective_xgboost_custom(space, cv_X, cv_y, val_X, val_y, cvs_mask):
         'max_leaves': int(space['max_leaves']),
         'tree_method': 'hist',
         'max_bin':  int(space['max_bin']),
-        'disable_default_eval_metric': 1
+        'objective': 'reg:squarederror',
+        'eval_metric': 'rmse'
         }
     
     #remove weaks that we don't need.
@@ -394,6 +397,10 @@ def objective_xgboost_custom(space, cv_X, cv_y, val_X, val_y, cvs_mask):
     objective_X = objective_X[columns_to_keep]
     HO_X = HO_X[columns_to_keep]
     
+    #all features switched off. not possible to fit a model
+    if objective_X.shape[1] == 0:
+        return {'loss': np.inf, 'status': STATUS_FAIL}
+    
     
     
     fit_X = objective_X.iloc[fits_mask.values].copy()
@@ -414,8 +421,6 @@ def objective_xgboost_custom(space, cv_X, cv_y, val_X, val_y, cvs_mask):
     early_stopping_rounds= int(space['early_stopping_rounds']),
     dtrain=dfit,
     evals=evals,
-    custom_metric=custom_metric,
-    obj=custom_objective,
     verbose_eval=False  # Set to True if you want to see detailed logging
         )
 
@@ -870,12 +875,12 @@ for ind, name in enumerate(unique_names[::-1]):
         temporal_window = max_temporal_window
         
         
-    space={'max_depth': hp.qloguniform("max_depth", 1, np.log(90), 1), 
-            'min_split_loss': hp.loguniform('min_split_loss', 0, np.log(20)), #log?
+    space={'max_depth': hp.qloguniform("max_depth", np.log(1), np.log(90), 1), 
+            'min_split_loss': hp.loguniform('min_split_loss', np.log(0.001), np.log(20)), #log?
             'reg_lambda' : hp.uniform('reg_lambda', 0, 650),
             'reg_alpha': hp.uniform('reg_alpha', 0.01, 30),
             'min_child_weight' : hp.uniform('min_child_weight', 0, 15),
-            'learning_rate': hp.loguniform('learning_rate', 0, np.log(5.5)),
+            'learning_rate': hp.loguniform('learning_rate', np.log(0.001), np.log(5.5)),
             'subsample': hp.uniform('subsample', 0.1, 1),
             'colsample_bytree': hp.uniform('colsample_bytree', 0.1, 1),
             'colsample_bylevel': hp.uniform('colsample_bylevel', 0.1, 1),
@@ -893,8 +898,17 @@ for ind, name in enumerate(unique_names[::-1]):
     for feature in check_features:
         # Add a new entry in the dictionary with the feature as the key
         # and hp.quniform('n_estimators', 0, 2, 1) as the value
-        space[feature] = hp.choice(feature, [True, False]), #111
+        space[feature] = hp.choice(feature, [False, True])
+    
+    #marks hyperparameters where the feature flags work (see normalize_feature_flags)
+    space['feature_flags_v2'] = hp.choice('feature_flags_v2', [True])
         
+        
+    #hyperparameters stored before the feature flag fix keep all features
+    old_hyperparams = normalize_feature_flags(old_hyperparams, check_features)
+    new_hyperparams = normalize_feature_flags(new_hyperparams, check_features)
+    best_hyperparams = normalize_feature_flags(best_hyperparams, check_features)
+    last_hyperparams = normalize_feature_flags(last_hyperparams, check_features)
         
     if search_hyperparams:
         
@@ -1008,7 +1022,8 @@ for ind, name in enumerate(unique_names[::-1]):
         'max_leaves': int(best_hyperparams['max_leaves']),
         'tree_method': 'hist',
         'max_bin':  int(best_hyperparams['max_bin']),
-        'disable_default_eval_metric': 1
+        'objective': 'reg:squarederror',
+        'eval_metric': 'rmse'
         }
           
 
@@ -1028,9 +1043,9 @@ for ind, name in enumerate(unique_names[::-1]):
           
         #remove features
         for feat in check_features:
-            if feat in space.keys():
+            if feat in best_hyperparams.keys():
                 #if remove
-                if not space[feat]:     
+                if not best_hyperparams[feat]:     
                     columns_to_keep = []
                     for col in objective_X.columns:
                         if col == feat: # and col in do_remove_features:
@@ -1042,7 +1057,8 @@ for ind, name in enumerate(unique_names[::-1]):
                     objective_X = objective_X[columns_to_keep]
                     
         # Get the 80% of the first matches every season...
-        objective_copy = objective_X.copy()
+        #use X1 since season may have been removed from the features
+        objective_copy = X1[['season']].copy()
         objective_copy = objective_copy.reset_index(drop=True)
         objective_copy['match_ind'] = pd.Series(match_ind[sel_name][mask1])
 
@@ -1087,8 +1103,6 @@ for ind, name in enumerate(unique_names[::-1]):
         early_stopping_rounds= int(best_hyperparams['early_stopping_rounds']),
         dtrain=dfit,
         evals=evals,
-        custom_metric=custom_metric,
-        obj=custom_objective,
         verbose_eval=False  # Set to True if you want to see detailed logging
             )
         
@@ -1157,9 +1171,9 @@ for ind, name in enumerate(unique_names[::-1]):
           
         #remove features
         for feat in check_features:
-            if feat in space.keys():
+            if feat in best_hyperparams.keys():
                 #if remove
-                if not space[feat]:     
+                if not best_hyperparams[feat]:     
                     columns_to_keep = []
                     for col in objective_X.columns:
                         if col == feat: # and col in do_remove_features:
@@ -1171,7 +1185,8 @@ for ind, name in enumerate(unique_names[::-1]):
                     objective_X = objective_X[columns_to_keep]
                     
         # Get the 80% of the first matches every season...
-        objective_copy = objective_X.copy()
+        #use X1 since season may have been removed from the features
+        objective_copy = X1[['season']].copy()
         objective_copy = objective_copy.reset_index(drop=True)
         objective_copy['match_ind'] = pd.Series(match_ind[sel_name])
     
@@ -1216,8 +1231,6 @@ for ind, name in enumerate(unique_names[::-1]):
         early_stopping_rounds= int(best_hyperparams['early_stopping_rounds']),
         dtrain=dfit,
         evals=evals,
-        custom_metric=custom_metric,
-        obj=custom_objective,
         verbose_eval=False  # Set to True if you want to see detailed logging
             )
         

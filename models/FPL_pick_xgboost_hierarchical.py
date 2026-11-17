@@ -162,16 +162,6 @@ string_names = df_teams['short_name'].values
 
 am_num_team = np.where(string_names == assistant_manager_team)[0][0]
 
-# #log in
-# session = requests.session()
-# url = 'https://users.premierleague.com/accounts/login/'
-# payload = {
-#  'password': 'jorgeN8#larseN(3',
-#  'login': 'jorgen.sugar@gmail.com',
-#  'redirect_uri': 'https://fantasy.premierleague.com',
-#  'app': 'plfpl-web'
-# }
-# session.post(url, data=payload)
 
 #get my team and money in the bank
 
@@ -212,6 +202,32 @@ am_num_team = np.where(string_names == assistant_manager_team)[0][0]
         
         
 
+
+def align_categorical(values, info):
+    """Cast values to the categorical dtype used in training.
+
+    Values are matched on their type, not their string representation.
+    Training categories for e.g. own_difficulty are integers, so casting the
+    values to strings first makes every value NaN. Values not seen in
+    training are set to NaN."""
+    categories = list(info["categories"])
+    values = pd.Series(values).astype(object)
+
+    numeric_categories = len(categories) > 0 and all(
+        isinstance(c, (int, float, np.integer, np.floating)) and not isinstance(c, bool)
+        for c in categories)
+
+    if numeric_categories:
+        values = pd.to_numeric(values, errors='coerce')
+    else:
+        values = values.where(values.isna(), values.astype(str))
+
+    #avoid values outside of the training categories
+    values = values.where(values.isin(categories))
+
+    return pd.Categorical(values, categories=categories, ordered=info["ordered"])
+
+
 #https://discord.gg/cjY37fv
 def get_team():
     # -*- coding: utf-8 -*-
@@ -228,6 +244,12 @@ def get_team():
     import secrets
     import uuid
     import requests
+
+    #credentials are read from environment variables. never store them in the code
+    fpl_username = os.environ.get("FPL_USERNAME")
+    fpl_password = os.environ.get("FPL_PASSWORD")
+    if not fpl_username or not fpl_password:
+        raise RuntimeError("Set the FPL_USERNAME and FPL_PASSWORD environment variables to log in")
 
     URLS = {
         "auth": "https://account.premierleague.com/as/authorize",
@@ -316,8 +338,8 @@ def get_team():
             "parameters": {
                 "buttonType": "form-submit",
                 "buttonValue": "SIGNON",
-                "username": 'jorgen.sugar@gmail.com',
-                "password": '3QdyXEGAP6t_9ad',
+                "username": fpl_username,
+                "password": fpl_password,
             },
             "eventName": "continue",
         },
@@ -792,29 +814,32 @@ while True:
                 #print('No model for', name)
                 player_model = []
                     
-            #cif there is no historical data for player. use data from slim
-            #or if there are no matches
-            if sum(all_rows.name == name) == 0 or len(gws)==0 or not player_model:
-    
-                selected_ind = np.where(elements_df.id == player_id)[0][-1]
-    
-                #at beginnig of season data contains season sums
-                #if sum(all_rows.name == name) == 0:
-                    #print(name, ': set to zero. Does not exist in game database. Have no historical data')
-                    
+            has_history = sum(all_rows.name == name) > 0
+
+            #if there is no historical data for player: use an empty row (all features nan)
+            #with only the fixed features of the player. never use data from other players
+            if not has_history:
+
                 is_estimated = True
-                #just take some random data to make the script work
-                predicting_df = all_rows.iloc[-(temporal_window+1+rounds_to_value):]
-                
-                #game_idx = len(predicting_df)
-    
+
+                #one row with the same columns as all_rows, but only missing values
+                predicting_df = all_rows.iloc[:0].reindex([0])
+
+                #insert the fixed features of this player
+                own_fixed = {'name': name,
+                             'element_type': position,
+                             'string_team': string_names[team-1],
+                             'season': season}
+                for col, val in own_fixed.items():
+                    predicting_df[col] = predicting_df[col].astype(object)
+                    predicting_df.loc[0, col] = val
+
             else:
-                
-    
-                if player_model['hyperparams']:
+
+                if player_model and player_model.get('hyperparams'):
                     if temporal_window < player_model['hyperparams']['temporal_window']:
                         temporal_window = int(player_model['hyperparams']['temporal_window'])
-            
+
                 is_estimated = False
                 selected = all_rows.name == name
                 predicting_df = all_rows.loc[selected]
@@ -883,7 +908,8 @@ while True:
                 #new_row['difficulty'] = diff_difficulty[game_idx]
                 new_row['kickoff_time'] = game[1]['kickoff_time']
     
-                sum_transfers = sum(elements_df.transfers_in_event)
+                #same normalisation as in create_dataset: share of all transfers in and out
+                sum_transfers = sum(elements_df.transfers_in_event) + sum(np.abs(elements_df.transfers_out_event))
                 if gw_idx == 0 and sum_transfers > 0:
     
                     new_row['transfers_in'] = elements_df.iloc[df_name[0]].transfers_in_event/sum_transfers
@@ -1078,8 +1104,8 @@ while True:
     
             
             #set up the data
-            #local
-            if player_model:
+            #local. players without a local model or without history get nan
+            if player_model and has_history:
                 if player_model["model"]:
                     common_columns = [x for x in player_model['train_features']["feature_names"] if x in predicting_df.columns]
                     local_data = predicting_df[common_columns].copy()
@@ -1087,11 +1113,7 @@ while True:
                     try:
     
                         for col, info in player_model['train_features']["categorical_columns"].items():
-                            local_data[col] = pd.Categorical(
-                                local_data[col].astype("string"),
-                                categories=info["categories"],
-                                ordered=info["ordered"],
-                            )
+                            local_data[col] = align_categorical(local_data[col], info)
                         
                         Dgame = xgb.DMatrix(data=local_data, enable_categorical=True)
                         
@@ -1123,11 +1145,7 @@ while True:
             element_data = predicting_df[common_columns].copy()
             
             for col, info in element_model['train_features']["categorical_columns"].items():
-                element_data[col] = pd.Categorical(
-                    element_data[col].astype("string"),
-                    categories=info["categories"],
-                    ordered=info["ordered"],
-                )
+                element_data[col] = align_categorical(element_data[col], info)
             
             Dgame = xgb.DMatrix(data=element_data, enable_categorical=True)
                     
@@ -1147,11 +1165,7 @@ while True:
             all_data = predicting_df[common_columns].copy()
             
             for col, info in all_model_summary['train_features']["categorical_columns"].items():
-                all_data[col] = pd.Categorical(
-                    all_data[col].astype("string"),
-                    categories=info["categories"],
-                    ordered=info["ordered"],
-                )
+                all_data[col] = align_categorical(all_data[col], info)
                 
             Dgame = xgb.DMatrix(data=all_data, enable_categorical=True)
             
@@ -2166,14 +2180,15 @@ while True:
                                     
             saved_point, saved_price, saved_all_points = objective(check_transfers, unlimited_transfers, free_transfers)
             
-            if np.sum(saved_point) > best_points or (np.sum(saved_point) == best_points and saved_price < best_price) or (np.sum(saved_point) == best_points and saved_price == best_price and np.sum(saved_all_point) > best_all_points):
-                best_point = saved_point 
+            if np.sum(saved_point) > best_points or (np.sum(saved_point) == best_points and saved_price < best_price) or (np.sum(saved_point) == best_points and saved_price == best_price and np.sum(saved_all_points) > best_all_points):
+                #best_points and best_all_points are sums (as for the baseline)
+                best_points = np.sum(saved_point)
                 best_price = saved_price
-                best_all_points = saved_all_points
+                best_all_points = np.sum(saved_all_points)
                 best_transfer = saved_transfers
-                
-                best_pitch = best_point.copy()
-                best_bench = [a - b for a, b in zip(best_all_points, best_point)]
+
+                best_pitch = saved_point.copy()
+                best_bench = [a - b for a, b in zip(saved_all_points, saved_point)]
         except:
             print('Saved transfers did not work')
                     
