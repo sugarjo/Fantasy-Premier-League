@@ -228,6 +228,33 @@ def align_categorical(values, info):
     return pd.Categorical(values, categories=categories, ordered=info["ordered"])
 
 
+def model_predict(model_summary, df):
+    """Predict with a stored model (local, element or all).
+
+    Uses the training features that are present in df, with categories aligned
+    to the training data. Returns the predictions and the aligned feature data."""
+    common_columns = [x for x in model_summary['train_features']["feature_names"] if x in df.columns]
+    data = df[common_columns].copy()
+
+    for col, info in model_summary['train_features']["categorical_columns"].items():
+        data[col] = align_categorical(data[col], info)
+
+    predictions = model_summary['model'].predict(xgb.DMatrix(data=data, enable_categorical=True))
+
+    return predictions, data
+
+
+def remove_unrealistic(predictions, reference, name, model_name):
+    """Set predictions outside of the range of reference to NaN. Returns the removed positions."""
+    selected = (predictions > max(reference)) | (predictions < min(reference))
+    predictions[selected] = np.nan
+
+    if sum(selected) > 0:
+        print(name, ':', sum(selected), 'unrealistic', model_name, 'predictions set to NaN')
+
+    return selected
+
+
 #https://discord.gg/cjY37fv
 def get_team():
     # -*- coding: utf-8 -*-
@@ -1107,24 +1134,11 @@ while True:
             #local. players without a local model or without history get nan
             if player_model and has_history:
                 if player_model["model"]:
-                    common_columns = [x for x in player_model['train_features']["feature_names"] if x in predicting_df.columns]
-                    local_data = predicting_df[common_columns].copy()
-                    
                     try:
-    
-                        for col, info in player_model['train_features']["categorical_columns"].items():
-                            local_data[col] = align_categorical(local_data[col], info)
+                        local_pred, _ = model_predict(player_model, predicting_df)
                         
-                        Dgame = xgb.DMatrix(data=local_data, enable_categorical=True)
-                        
-                        local_pred =  player_model['model'].predict(Dgame)
-                        
-                        #remove unlikely values                    
-                        selected = (local_pred > max(all_rows.local_predictions)) |  (local_pred < min(all_rows.local_predictions))
-                        local_pred[selected] = np.nan
-                        
-                        if sum(selected) > 0:
-                            print(name, ':', sum(selected), 'unrealistic local predictions set to NaN')
+                        #remove unlikely values
+                        remove_unrealistic(local_pred, all_rows.local_predictions, name, 'local')
                         
                         predicting_df["local_predictions"] = local_pred
                     except: 
@@ -1141,37 +1155,15 @@ while True:
                 predicting_df["local_const_predictions"] = np.nan
             
             #element
-            common_columns = [x for x in element_model['train_features']["feature_names"] if x in predicting_df.columns]
-            element_data = predicting_df[common_columns].copy()
+            element_pred, _ = model_predict(element_model, predicting_df)
             
-            for col, info in element_model['train_features']["categorical_columns"].items():
-                element_data[col] = align_categorical(element_data[col], info)
+            #remove unlikely values
+            selected_el = remove_unrealistic(element_pred, all_rows.element_predictions, name, 'element')
             
-            Dgame = xgb.DMatrix(data=element_data, enable_categorical=True)
-                    
-            element_pred =  element_model['model'].predict(Dgame)
+            predicting_df["element_predictions"] = element_pred.copy()
             
-            #remove unlikely values    
-            selected_el = (element_pred > max(all_rows.element_predictions)) | (element_pred < min(all_rows.element_predictions))
-            element_pred[selected_el] = np.nan
-            
-            if sum(selected_el) > 0:
-                print(name, ':', sum(selected_el), 'unrealistic element predictions set to NaN')
-            
-            predicting_df["element_predictions"] = element_pred
-            
-            #all
-            common_columns = [x for x in all_model_summary['train_features']["feature_names"] if x in predicting_df.columns]
-            all_data = predicting_df[common_columns].copy()
-            
-            for col, info in all_model_summary['train_features']["categorical_columns"].items():
-                all_data[col] = align_categorical(all_data[col], info)
-                
-            Dgame = xgb.DMatrix(data=all_data, enable_categorical=True)
-            
-            all_predictions = all_model_summary['model'].predict(Dgame)
-            
-            
+            #all. used where the element prediction is unrealistic
+            all_predictions, all_data = model_predict(all_model_summary, predicting_df)
             
             element_pred[selected_el] = all_predictions[selected_el]
             
