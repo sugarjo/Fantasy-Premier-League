@@ -26,7 +26,7 @@ from fpl_model_utils import (GROW_POLICY, normalize_feature_flags, build_match_i
 
 directories = r'C:\Users\jorgels\Github\Fantasy-Premier-League\data'
 
-update_hyperparams = False
+update_hyperparams = True
 check_hyperparameters = True
 
 try:
@@ -249,7 +249,7 @@ for pos in range(1,5):
                             algo = atpe.suggest,
                             trials = new_trials,
                             max_evals=99999999,
-                            early_stop_fn=no_progress_loss(750)
+                            early_stop_fn=no_progress_loss(200)#(750)
                             )
             
             pickle.dump(new_trials, open(tested_hyperparam_path, "wb"))

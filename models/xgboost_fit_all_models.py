@@ -24,7 +24,7 @@ from fpl_model_utils import (GROW_POLICY, normalize_feature_flags, build_match_i
                              select_columns, fit_xgboost, training_metadata, remove_out_of_range)
 
 #runs the update
-update_hyperparams = False
+update_hyperparams = True
 #retrain but does not check the updated hyperparams
 check_hyperparameters = True
 
