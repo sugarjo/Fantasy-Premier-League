@@ -20,14 +20,21 @@ from hyperopt.early_stop import no_progress_loss
 
 #shared functions for the local and element models
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from fpl_model_utils import (GROW_POLICY, normalize_feature_flags, build_match_index,
-                             mask_unseen_categories, two_fold_loss, cross_fit_predictions,
+from fpl_model_utils import (GROW_POLICY, TEMPORAL_FEATURES, UNKNOWN_FEATURES, LOCAL_FEATURES, ELEMENT_FEATURES, ALL_FEATURES, normalize_feature_flags, build_match_index,
+                             mask_unseen_categories, two_fold_decision_loss, gameweek_keys, cross_fit_predictions,
                              select_columns, fit_xgboost, training_metadata, remove_out_of_range)
 
 directories = r'C:\Users\jorgels\Github\Fantasy-Premier-League\data'
 
 update_hyperparams = True
 check_hyperparameters = True
+
+#loss of the hyperparameter search: rmse + w_bias * max(bias, 0) + w_regret * regret.
+#bias and regret are calculated on the top decision_frac of the players in every gameweek
+#(and position) by predicted points. set w_bias and w_regret to 0 for rmse only
+decision_frac = 1/3
+w_bias = 0.5
+w_regret = 0.5
 
 try:
     folders = os.listdir(directories)
@@ -47,9 +54,14 @@ def objective_xgboost(space):
     if space["grow_policy"] == 0 or space["grow_policy"] == 1:
         space["grow_policy"] = GROW_POLICY[space["grow_policy"]]
     
-    #fit on the first half and predict the second, and vice versa
-    return two_fold_loss(space, cv_X, cv_y, cv_match_inds, val_X, val_y, val_match_inds,
-                         check_features, unknown_features)
+    #fit on the first half and predict the second, and vice versa. score the predictions
+    #with rmse and the bias and regret of the top picks
+    return two_fold_decision_loss(space, cv_X, cv_y, cv_match_inds, cv_groups, val_X, val_y, val_match_inds, val_groups,
+                                  check_features, unknown_features, decision_frac, w_bias, w_regret)
+
+
+def print_loss(label, loss):
+    print(label, loss['loss'], '| rmse:', loss.get('rmse'), '| bias:', loss.get('bias'), '| regret:', loss.get('regret'))
 
                
 with open(r"\\platon.uio.no\med-imb-u1\jorgels\fantasy\model_data.pkl", 'rb') as file:
@@ -73,18 +85,19 @@ for unique_ind, name in enumerate(unique_names):
 
 
 #included for all windows, but not current
-temporal_features = ['minutes', 'ict_index', 'influence', 'threat', 'creativity', 'bps',
-        'total_points', 'expected_goals', 'expected_assists',
-        'expected_goals_conceded', 'own_team_points', 'own_element_points', 'opp_team_points', 'opp_element_points', 'defcon']
+temporal_features = list(TEMPORAL_FEATURES)
 
 
 #the non digit version of these features will be removed
-unknown_features = ['minutes', 'ict_index', 'total_points', 'own_team_points', 'own_element_points', 'defcon']
+unknown_features = list(UNKNOWN_FEATURES)
 
 
 
 train_y = train_data['total_points'].astype(int)
 train_X = train_data.drop(columns=temporal_features)
+
+#gameweek of every row, for the bias and regret in the loss
+gw_keys = gameweek_keys(train_X)
 
 #get one index for each match. players of both teams in a match get the same index
 match_ind = build_match_index(train_X)
@@ -138,6 +151,13 @@ for pos in range(1,5):
     cv_match_inds = match_ind[sel_name][cvs_mask]
     val_match_inds = match_ind[sel_name][vals_mask]
     
+    #gameweek, player and position of the two halves (for bias and regret)
+    position_groups = pd.DataFrame({'gw': gw_keys[sel_name].values,
+                                    'player': train_X.loc[sel_name, 'name'].astype(str).values,
+                                    'position': pos})
+    cv_groups = position_groups.loc[cvs_mask.values].reset_index(drop=True)
+    val_groups = position_groups.loc[vals_mask.values].reset_index(drop=True)
+    
     cv_match_count = np.max(train_copy.loc[cvs_mask].groupby('season', observed=False)['match_ind'].agg(lambda s: len(np.unique(s))))
     val_match_count = np.max(train_copy.loc[vals_mask].groupby('season', observed=False)['match_ind'].agg(lambda s: len(np.unique(s))))
     min_eval_fraction = 1/np.min([cv_match_count, val_match_count])  
@@ -145,7 +165,7 @@ for pos in range(1,5):
     
     #individual_features = ['season', 'total_points', 'points_per_played_game', 'points_per_game', 'minutes', 'string_opp_team',  'opp_difficulty', 'was_home', 'own_difficulty', 'ict_index', 'transfers_in', 'transfers_out', 'bps'] #, 'difficulty']
     
-    element_features = ['ict_index', 'name', 'season', 'total_points', 'own_element_points', 'opp_element_points', 'own_difficulty', 'opp_difficulty', 'transfers_out', 'transfers_in', 'string_opp_team', 'name', 'points_per_played_game', 'points_per_game', 'local_predictions', 'local_const_predictions', 'minutes', 'was_home']
+    element_features = list(ELEMENT_FEATURES)
 
     # all_features = ['element_type', 'season', 'total_points', 'points_per_played_game', 'points_per_game', 'minutes', 'ict_index',  'influence', 'threat', 'creativity', 'bps', 'expected_goals', 'expected_assists',
     #         'expected_goals_conceded', 'defcon', 'string_opp_team',  'opp_difficulty', 'was_home', 'own_team_points', 'own_element_points', 'opp_team_points', 'opp_element_points', 'own_difficulty', 'transfers_in', 'transfers_out', 'local_predictions', 'local_const_predictions'] #, 'difficulty']
@@ -198,7 +218,7 @@ for pos in range(1,5):
     old_loss = loss['loss']
     
     
-    print('Old loss: ', old_loss)
+    print_loss('Old loss: ', loss)
     
     space={ 'early_stopping_rounds': hp.quniform("early_stopping_rounds", 1, 5500, 1),
             'eval_fraction': hp.uniform('eval_fraction', min_eval_fraction, 0.45),
@@ -282,7 +302,7 @@ for pos in range(1,5):
     loss = objective_xgboost(new_hyperparams)
     new_loss = loss['loss']
      
-    print('New loss: ', new_loss)
+    print_loss('New loss: ', loss)
 
 
     if new_loss < old_loss and check_hyperparameters:

@@ -20,7 +20,7 @@ from hyperopt.fmin import generate_trials_to_calculate
 
 #shared functions for the local and element models
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from fpl_model_utils import (GROW_POLICY, normalize_feature_flags, build_match_index,
+from fpl_model_utils import (GROW_POLICY, TEMPORAL_FEATURES, UNKNOWN_FEATURES, LOCAL_FEATURES, ELEMENT_FEATURES, ALL_FEATURES, normalize_feature_flags, build_match_index,
                              mask_unseen_categories, two_fold_loss, cross_fit_predictions,
                              select_columns, fit_xgboost, season_fit_eval_masks, training_metadata, remove_out_of_range)
 
@@ -76,13 +76,11 @@ train_data = original_data.loc[selected].copy()
 
 
 #included for all windows, but not current
-temporal_features = ['minutes', 'ict_index', 'influence', 'threat', 'creativity', 'bps',
-        'total_points', 'expected_goals', 'expected_assists',
-        'expected_goals_conceded', 'own_team_points', 'own_element_points', 'opp_team_points', 'opp_element_points', 'defcon']
+temporal_features = list(TEMPORAL_FEATURES)
 
 
 #the non digit version of these features will be removed
-unknown_features = ['minutes', 'ict_index', 'total_points', 'own_team_points', 'own_element_points', 'defcon']
+unknown_features = list(UNKNOWN_FEATURES)
 
 train_y = train_data['total_points'].astype(int)
 train_X = train_data.drop(columns=temporal_features)          
@@ -371,8 +369,7 @@ for ind, name in enumerate(unique_names[::-1]):
     
     
     
-    individual_features = ['season', 'total_points', 'points_per_played_game', 'points_per_game', 'minutes', 'string_opp_team',  'opp_difficulty', 'was_home', 'own_difficulty', 'ict_index', 'transfers_in', 'transfers_out', 'expected_goals', 'expected_assists',
-            'expected_goals_conceded', 'defcon', 'own_element_points', 'season']
+    individual_features = list(LOCAL_FEATURES)
     
     #all_features = ['total_points', 'points_per_played_game', 'points_per_game', 'minutes', 'ict_index',  'influence', 'threat', 'creativity', 'bps', 'expected_goals', 'expected_assists',
          #   'expected_goals_conceded', 'defcon', 'string_opp_team',  'opp_difficulty', 'was_home', 'own_team_points', 'own_element_points', 'opp_team_points', 'opp_element_points', 'own_difficulty'] #, 'difficulty']
