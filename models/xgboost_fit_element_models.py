@@ -26,8 +26,8 @@ from fpl_model_utils import (GROW_POLICY, normalize_feature_flags, build_match_i
 
 directories = r'C:\Users\jorgels\Github\Fantasy-Premier-League\data'
 
-update_hyperparams = True
-check_hyperparameters = False
+update_hyperparams = False
+check_hyperparameters = True
 
 try:
     folders = os.listdir(directories)

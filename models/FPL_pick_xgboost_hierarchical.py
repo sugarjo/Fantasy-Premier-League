@@ -8,18 +8,18 @@ import time
 
 my_players = [
     {'web_name': 'Dubravka', 'selling_price': 40, 'element_type': 1},
-    {'web_name': 'Roefs', 'selling_price': 49, 'element_type': 1},
+    {'web_name': 'Verbruggen', 'selling_price': 46, 'element_type': 1},
     
     {'web_name': 'Colwill', 'selling_price': 48, 'element_type': 2},
-    {'web_name': 'Konsa', 'selling_price': 45, 'element_type': 2},
+    {'web_name': 'Konsa', 'selling_price': 46, 'element_type': 2},
     {'web_name': "Calafiori", 'selling_price': 58, 'element_type': 2},
     {'web_name': 'Robinson', 'selling_price': 44, 'element_type': 2},
-    {'web_name': "Thiaw", 'selling_price': 50, 'element_type': 2},
+    {'web_name': "De Cuyper", 'selling_price': 54, 'element_type': 2},
     
     {'web_name': 'Rayan', 'selling_price': 63, 'element_type': 3},
     {'web_name': 'Palmer', 'selling_price': 97, 'element_type': 3},
     {'web_name': 'Dewsbury-Hall', 'selling_price': 66, 'element_type': 3},
-    {'web_name': 'Tavernier', 'selling_price': 64, 'element_type': 3},
+    {'web_name': 'Tavernier', 'selling_price': 65, 'element_type': 3},
     {'web_name': 'Enciso', 'selling_price': 55, 'element_type': 3},
     
     {'web_name': 'Evanilson', 'selling_price': 62, 'element_type': 4},
@@ -32,8 +32,8 @@ my_players = [
 
 
 
-bank = 20 #in 10ths of M
-free_transfers = 3
+bank = 19 #in 10ths of M
+free_transfers = 2
 save_transfers_for_later = 4 #transfers left at end of last round-1 (no need to put higher than 4)
 
 forward_price_limit = -1 #in millions
@@ -1165,9 +1165,10 @@ while True:
             #all. used where the element prediction is unrealistic
             all_predictions, all_data = model_predict(all_model_summary, predicting_df)
             
-            element_pred[selected_el] = all_predictions[selected_el]
+            #element_pred[selected_el] = all_predictions[selected_el]
             
-            player_predictions = element_pred
+            #player_predictions = element_pred
+            player_predictions = all_predictions
             
             
             #prediciting one by one:

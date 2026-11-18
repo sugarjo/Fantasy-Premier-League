@@ -35,7 +35,7 @@ except:
     main_directory = r'C:\Users\jorgels\Git\Fantasy-Premier-League'
 
 #optimize everything. Typically used when hyperparams ranges change. Does not predict new points
-optimize_mode = True
+optimize_mode = False
 
 #this will exclude the players with frozen data
 exclude_frozen_players = False
