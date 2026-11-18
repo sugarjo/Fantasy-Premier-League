@@ -19,7 +19,7 @@ from hyperopt.early_stop import no_progress_loss
 
 #shared functions for the local, element and all models
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from fpl_model_utils import (GROW_POLICY, normalize_feature_flags, build_match_index,
+from fpl_model_utils import (GROW_POLICY, TEMPORAL_FEATURES, UNKNOWN_FEATURES, LOCAL_FEATURES, ELEMENT_FEATURES, ALL_FEATURES, normalize_feature_flags, build_match_index,
                              mask_unseen_categories, two_fold_loss, cross_fit_predictions,
                              select_columns, fit_xgboost, training_metadata, remove_out_of_range)
 
@@ -76,13 +76,11 @@ for unique_ind, name in enumerate(unique_names):
 
 
 #included for all windows, but not current
-temporal_features = ['minutes', 'ict_index', 'influence', 'threat', 'creativity', 'bps',
-        'total_points', 'expected_goals', 'expected_assists',
-        'expected_goals_conceded', 'own_team_points', 'own_element_points', 'opp_team_points', 'opp_element_points', 'defcon']
+temporal_features = list(TEMPORAL_FEATURES)
 
 
 #the non digit version of these features will be removed
-unknown_features = ['minutes', 'ict_index', 'total_points', 'own_team_points', 'own_element_points', 'defcon']
+unknown_features = list(UNKNOWN_FEATURES)
 
 
 
@@ -148,8 +146,7 @@ min_eval_fraction = 1/np.min([cv_match_count, val_match_count])
  #         'own_team_points', 'own_element_points', 'opp_team_points', 'opp_element_points', 'string_opp_team', 'own_difficulty', 'opp_difficulty', 'local_predictions', 'local_const_predictions', 'influence', 'threat', 'creativity', 'bps'] #, 'difficulty']
 
 
-all_features = ['element_type', 'season', 'total_points', 'points_per_played_game', 'points_per_game', 'minutes', 'ict_index',  'influence', 'threat', 'creativity', 'bps', 'expected_goals', 'expected_assists',
-        'expected_goals_conceded', 'defcon', 'string_opp_team',  'opp_difficulty', 'was_home', 'own_team_points', 'own_element_points', 'opp_team_points', 'opp_element_points', 'own_difficulty', 'transfers_in', 'transfers_out', 'local_predictions', 'local_const_predictions', 'element_predictions'] #, 'difficulty']
+all_features = list(ALL_FEATURES)
 
 check_features = all_features
 

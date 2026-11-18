@@ -17,6 +17,26 @@ from hyperopt import STATUS_OK, STATUS_FAIL
 GROW_POLICY = ['depthwise', 'lossguide']
 
 
+#features of the current match that are only known after the match (lagged versions are used)
+TEMPORAL_FEATURES = ['minutes', 'ict_index', 'influence', 'threat', 'creativity', 'bps',
+        'total_points', 'expected_goals', 'expected_assists',
+        'expected_goals_conceded', 'own_team_points', 'own_element_points', 'opp_team_points', 'opp_element_points', 'defcon']
+
+#the non digit version of these features will be removed
+UNKNOWN_FEATURES = ['minutes', 'ict_index', 'total_points', 'own_team_points', 'own_element_points', 'defcon']
+
+#features of the local (player) models
+LOCAL_FEATURES = ['season', 'total_points', 'points_per_played_game', 'points_per_game', 'minutes', 'string_opp_team',  'opp_difficulty', 'was_home', 'own_difficulty', 'ict_index', 'transfers_in', 'transfers_out', 'expected_goals', 'expected_assists',
+        'expected_goals_conceded', 'defcon', 'own_element_points', 'season']
+
+#features of the element (position) models
+ELEMENT_FEATURES = ['ict_index', 'name', 'season', 'total_points', 'own_element_points', 'opp_element_points', 'own_difficulty', 'opp_difficulty', 'transfers_out', 'transfers_in', 'string_opp_team', 'name', 'points_per_played_game', 'points_per_game', 'local_predictions', 'local_const_predictions', 'minutes', 'was_home']
+
+#features of the all-players model
+ALL_FEATURES = ['element_type', 'season', 'total_points', 'points_per_played_game', 'points_per_game', 'minutes', 'ict_index',  'influence', 'threat', 'creativity', 'bps', 'expected_goals', 'expected_assists',
+        'expected_goals_conceded', 'defcon', 'string_opp_team',  'opp_difficulty', 'was_home', 'own_team_points', 'own_element_points', 'opp_team_points', 'opp_element_points', 'own_difficulty', 'transfers_in', 'transfers_out', 'local_predictions', 'local_const_predictions', 'element_predictions']
+
+
 def should_keep_column(column_name, threshold):
     """Keep fixed features (no number) and temporal features with a lag below threshold."""
     try:
@@ -103,6 +123,11 @@ def build_match_index(train_X):
                     print(ind,len(matches), kick_off, team_a, team_b)
 
     return match_ind
+
+
+def keep_feature_columns(X, features):
+    """Keep the columns of X that are one of features, also lagged (e.g. 0total_points for total_points)."""
+    return X[[col for col in X.columns if re.sub(r'\d+', '', col) in features]]
 
 
 def mask_unseen_categories(X, reference):
