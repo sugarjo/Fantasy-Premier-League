@@ -959,7 +959,8 @@ temporal_features = ['minutes', 'ict_index', 'influence', 'threat', 'creativity'
 temporal_single_features = ['points_per_game', 'points_per_played_game']
 #total_points, minutes, kickoff time not for prediction
 #included once
-fixed_features = ['kickoff_time', 'element_type', 'string_team', 'season', 'name']
+#round is not used as a feature, but defines the gameweeks in the loss of the element and all models
+fixed_features = ['kickoff_time', 'element_type', 'string_team', 'season', 'name', 'round']
 
 #categories for dtype
 categorical_variables = ['element_type', 'string_team', 'season', 'name']

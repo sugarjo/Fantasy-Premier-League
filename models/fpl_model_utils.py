@@ -269,6 +269,98 @@ def two_fold_loss(hyperparams, cv_X, cv_y, cv_match_inds, val_X, val_y, val_matc
     return {'loss': total_error, 'status': STATUS_OK}
 
 
+def gameweek_keys(df):
+    """One key per season and gameweek for each row of df.
+
+    Uses the round column. Older data without round falls back to weeks from Tuesday
+    to Monday based on kickoff_time (a midweek and the following weekend gameweek are
+    then one week)."""
+    seasons = df['season'].astype(str).values
+
+    if 'round' in df.columns:
+        return pd.Series(seasons, index=df.index) + '-gw' + df['round'].astype(int).astype(str)
+
+    print('No round column in the data (run create_dataset.py). Gameweeks are approximated by weeks from kickoff_time')
+    kickoff = pd.to_datetime(df['kickoff_time'])
+    if kickoff.dt.tz is not None:
+        kickoff = kickoff.dt.tz_localize(None)
+    weeks = (kickoff - pd.Timedelta(days=1)).dt.to_period('W-MON').astype(str)
+    return pd.Series(seasons, index=df.index) + '-' + weeks
+
+
+def decision_scores(groups, predictions, actual, frac):
+    """Bias and regret of the top picks in every gameweek, averaged over positions.
+
+    groups: DataFrame with gw, player and position for every row (one row per match).
+    Matches of a player in the same gameweek (double gameweeks) are summed. In every
+    gameweek and position, the picks are the top frac of the players by predicted points
+    (at least one), and the oracle picks are the top frac by actual points.
+
+    bias:   mean of predicted - actual points of the picks (positive = overprediction)
+    regret: mean over gameweeks of (mean actual points of the oracle picks
+            - mean actual points of the picks)
+
+    Both are calculated per position and then averaged, so all positions count equally."""
+    df = pd.DataFrame({'gw': np.asarray(groups['gw']), 'player': np.asarray(groups['player']).astype(str),
+                       'position': np.asarray(groups['position']).astype(int),
+                       'pred': np.asarray(predictions, dtype=float), 'actual': np.asarray(actual, dtype=float)})
+
+    #sum double gameweeks
+    df = df.groupby(['position', 'gw', 'player'], as_index=False)[['pred', 'actual']].sum()
+
+    by_gw = df.groupby(['position', 'gw'])
+    n_picks = np.maximum(1, np.ceil(frac * by_gw['pred'].transform('size'))).values
+
+    picked = (by_gw['pred'].rank(method='first', ascending=False).values <= n_picks)
+    oracle = (by_gw['actual'].rank(method='first', ascending=False).values <= n_picks)
+
+    biases = []
+    regrets = []
+    for position in np.unique(df['position']):
+        sel = (df['position'] == position).values
+
+        picks = df.loc[sel & picked]
+        biases.append((picks['pred'] - picks['actual']).mean())
+
+        pick_points = picks.groupby('gw')['actual'].mean()
+        oracle_points = df.loc[sel & oracle].groupby('gw')['actual'].mean()
+        regrets.append((oracle_points - pick_points).mean())
+
+    return np.mean(biases), np.mean(regrets)
+
+
+def two_fold_decision_loss(hyperparams, cv_X, cv_y, cv_match_inds, cv_groups, val_X, val_y, val_match_inds, val_groups,
+                           check_features, unknown_features, frac, w_bias, w_regret):
+    """hyperopt loss for the element and all models: rmse + w_bias * max(bias, 0) + w_regret * regret.
+
+    The model is fitted on cv and predicts val, and fitted on val and predicts cv. The rmse,
+    bias and regret are calculated on these out-of-fold predictions of all rows together.
+    See decision_scores for bias and regret. cv_groups and val_groups have the columns
+    gw, player and position for the rows of cv_X and val_X."""
+    columns = select_columns(cv_X, hyperparams, check_features, unknown_features)
+
+    #all features switched off. not possible to fit a model
+    if len(columns) == 0:
+        return {'loss': np.inf, 'status': STATUS_FAIL}
+
+    model = fit_xgboost(cv_X, cv_y, cv_match_inds, hyperparams, columns, mask_eval_categories=False)
+    val_pred = predict_xgboost(model, val_X, columns)
+
+    model = fit_xgboost(val_X, val_y, val_match_inds, hyperparams, columns, mask_eval_categories=False)
+    cv_pred = predict_xgboost(model, cv_X, columns)
+
+    predictions = np.concatenate([cv_pred, val_pred])
+    actual = np.concatenate([np.asarray(cv_y, dtype=float), np.asarray(val_y, dtype=float)])
+    groups = pd.concat([cv_groups, val_groups], ignore_index=True)
+
+    rmse = np.sqrt(np.mean((predictions - actual)**2))
+    bias, regret = decision_scores(groups, predictions, actual, frac)
+
+    loss = rmse + w_bias * max(bias, 0) + w_regret * regret
+
+    return {'loss': loss, 'status': STATUS_OK, 'rmse': rmse, 'bias': bias, 'regret': regret}
+
+
 def cross_fit_predictions(hyperparams, cv_X, cv_y, cv_match_inds, val_X, val_y, val_match_inds,
                           check_features, unknown_features):
     """Out-of-fold predictions: fit on cv and predict val, then fit on val and predict cv.
