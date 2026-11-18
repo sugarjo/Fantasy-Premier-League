@@ -652,6 +652,10 @@ while True:
     with open(r'\\platon.uio.no\med-imb-u1\jorgels\fantasy\model_data.pkl', 'rb') as file:
         all_rows = pickle.load(file) 
     
+    #range of points in the training data (matches with at least 60 minutes)
+    min_training_points = float(np.nanmin(all_rows.total_points.astype(float)))
+    max_training_points = float(np.nanmax(all_rows.total_points.astype(float)))
+    
     #min_y = np.min(train_X['0total_points'])
     
     predictions = []
@@ -1168,7 +1172,13 @@ while True:
             #element_pred[selected_el] = all_predictions[selected_el]
             
             #player_predictions = element_pred
-            player_predictions = all_predictions
+            #limit to the range of points in the training data. clip instead of nan,
+            #since there is no fallback model and nan would break the team optimization
+            unrealistic_all = (all_predictions < min_training_points) | (all_predictions > max_training_points)
+            if sum(unrealistic_all) > 0:
+                print(name, ':', sum(unrealistic_all), 'unrealistic all predictions clipped')
+            
+            player_predictions = np.clip(all_predictions, min_training_points, max_training_points)
             
             
             #prediciting one by one:
