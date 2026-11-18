@@ -151,6 +151,9 @@ for ind, name in enumerate(unique_names[::-1]):
     new_hyperparams = []
     tested_hyperparams = []
     
+    #start from an empty summary. otherwise the summary of the previous player is used if loading fails
+    summary = {}
+    
     if os.path.isfile(model_path):
         try:
             print('Loading model')

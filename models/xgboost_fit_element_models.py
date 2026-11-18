@@ -10,7 +10,6 @@ import numpy as np
 import warnings
 np.warnings = warnings
 
-from sklearn.metrics import mean_squared_error
 
 from matplotlib import pyplot as plt
 
@@ -343,7 +342,8 @@ for pos in range(1,5):
         
         local_const_error.append(np.nanmean((y2 - train_data.loc[rows_to_update, 'local_const_predictions'])**2))
         
-        element_error.append(mean_squared_error(y2,  train_data.loc[rows_to_update, 'element_predictions']))
+        #nanmean since predictions outside of the training range are set to nan
+        element_error.append(np.nanmean((y2 - train_data.loc[rows_to_update, 'element_predictions'])**2))
 
         
     print('Mean element error:', np.mean(random_error))
